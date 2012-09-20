@@ -3,6 +3,9 @@ namespace Icecave\Collections;
 
 // @codeCoverageIgnoreStart
 
+/**
+ * A FIFO queue.
+ */
 interface IQueue extends IMutableCollection {
 
     /**

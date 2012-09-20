@@ -3,6 +3,9 @@ namespace Icecave\Collections;
 
 // @codeCoverageIgnoreStart
 
+/**
+ * A LIFO stack.
+ */
 interface IStack extends IMutableCollection {
 
     /**
