@@ -1,0 +1,25 @@
+{
+    "name": "icecave/collections",
+    "type": "library",
+    "description": "PHP collections without leaky abstractions.",
+    "keywords": ["collection", "container", "array", "sequence", "map", "hash", "stack", "queue"],
+    "homepage": "https://github.com/IcecaveStudios/collections",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "James Harris",
+            "email": "james.harris@icecave.com.au"
+        }
+    ],
+    "require": {
+        "php": ">=5.3.0"
+    },
+    "require-dev": {
+        "phake/phake": "1.*"
+    },
+    "autoload": {
+        "psr-0": {
+            "Icecave\\Collections": "lib"
+        }
+    }
+}

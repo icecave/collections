@@ -1,0 +1,103 @@
+<?php
+namespace Icecave\Collections;
+
+// @codeCoverageIgnoreStart
+
+/**
+ * A mutable random access sequence is a sequence that allows for insertion and removal of arbitrary elements by their position in the sequence.
+ */
+interface IMutableRandomAccess extends IRandomAccess, IMutableSequence {
+
+    /**
+     * Replace the element at a particular position in the sequence.
+     *
+     * @param integer $index The index of the element to set.
+     * @param mixed $element The element to set.
+     *
+     * @throws Exception\IndexError Thrown if $index is out of range.
+     */
+    public function set($index, $element);
+
+    /**
+     * Insert an element at a particular index.
+     *
+     * @param integer $index The index at which the element is inserted, if index is a negative number the element is inserted that far from the end of the sequence.
+     * @param mixed $element The element to insert.
+     *
+     * @throws Exception\IndexError Thrown if $index is out of range.
+     */
+    public function insert($index, $element);
+
+    /**
+     * Insert a range of elements at a particular index.
+     *
+     * @param integer $index The index at which the elements are inserted, if index is a negative number the elements are inserted that far from the end of the sequence.
+     * @param traversable $elements The elements to insert.
+     */
+    public function insertSeq($index, $elements);
+
+    /**
+     * Remove the element at a given index.
+     *
+     * Elements after the given endex are moved forward by one.
+     *
+     * @param integer $index The index of the element to remove, if index is a negative number the element that far from the end of the sequence is removed.
+     *
+     * @return mixed The element at $index before removal.
+     * @throws Exception\IndexError Thrown if $index is out of range.
+     */
+    public function remove($index);
+
+    /**
+     * Remove a range of elements at a given index.
+     *
+     * @param integer $index The index of the first element to remove, if index is a negative number the removal begins that far from the end of the sequence.
+     * @param integer|null $count The number of elements to remove, or null to remove all elements up to the end of the sequence.
+     *
+     * @return traversable The elements that are removed.
+     * @throws Exception\IndexError Thrown if $index is out of range.
+     */
+    public function removeMany($index, $count = null);
+
+    /**
+     * Remove a range of elements at a given index.
+     *
+     * @param integer $begin The index of the first element to remove, if $begin is a negative number the removal begins that far from the end of the sequence.
+     * @param integer $end The index of the last element to remove, if $end is a negative number the removal ends that far from the end of the sequence.
+     *
+     * @return traversable The elements that are removed.
+     * @throws Exception\IndexError Thrown if $index is out of range.
+     */
+    public function removeRange($begin, $end);
+
+    /**
+     * Replace a range of elements with a second set of elements.
+     *
+     * @param integer $index The index of the first element to replace, if index is a negative number the replace begins that far from the end of the sequence.
+     * @param integer|null $count The number of elements to replace, or null to replace all elements up to the end of the sequence.
+     * @param traversable $elements The elements to insert.
+     *
+     * @return traversable The elements that are replaced.
+     */
+    public function replace($index, $count = null, $elements);
+
+    /**
+     * Swap the elements at two index positions.
+     *
+     * @param integer $index1 The index of the first element.
+     * @param integer $index2 The index of the second element.
+     *
+     * @throws Exception\IndexError Thrown if $index1 or $index2 is out of range.
+     */
+    public function swap($index1, $index2);
+
+    /**
+     * Swap the elements at two index positions.
+     *
+     * @param integer $index1 The index of the first element.
+     * @param integer $index2 The index of the second element.
+     *
+     * @return boolean true if $index1 and $index2 are in range and the swap is successful.
+     */
+    public function trySwap($index1, $index2);
+}

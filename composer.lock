@@ -1,0 +1,19 @@
+{
+    "hash": "97d81df39234b171c713ebce2b361024",
+    "packages": [
+
+    ],
+    "packages-dev": [
+        {
+            "package": "phake/phake",
+            "version": "v1.0.3"
+        }
+    ],
+    "aliases": [
+
+    ],
+    "minimum-stability": "stable",
+    "stability-flags": [
+
+    ]
+}
