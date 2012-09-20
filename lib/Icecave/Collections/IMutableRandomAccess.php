@@ -14,7 +14,7 @@ interface IMutableRandomAccess extends IRandomAccess, IMutableSequence {
      * @param integer $index The index of the element to set.
      * @param mixed $element The element to set.
      *
-     * @throws Exception\IndexError Thrown if $index is out of range.
+     * @throws Exception\IndexException if $index is out of range.
      */
     public function set($index, $element);
 
@@ -24,7 +24,7 @@ interface IMutableRandomAccess extends IRandomAccess, IMutableSequence {
      * @param integer $index The index at which the element is inserted, if index is a negative number the element is inserted that far from the end of the sequence.
      * @param mixed $element The element to insert.
      *
-     * @throws Exception\IndexError Thrown if $index is out of range.
+     * @throws Exception\IndexException if $index is out of range.
      */
     public function insert($index, $element);
 
@@ -44,7 +44,7 @@ interface IMutableRandomAccess extends IRandomAccess, IMutableSequence {
      * @param integer $index The index of the element to remove, if index is a negative number the element that far from the end of the sequence is removed.
      *
      * @return mixed The element at $index before removal.
-     * @throws Exception\IndexError Thrown if $index is out of range.
+     * @throws Exception\IndexException if $index is out of range.
      */
     public function remove($index);
 
@@ -55,7 +55,7 @@ interface IMutableRandomAccess extends IRandomAccess, IMutableSequence {
      * @param integer|null $count The number of elements to remove, or null to remove all elements up to the end of the sequence.
      *
      * @return traversable The elements that are removed.
-     * @throws Exception\IndexError Thrown if $index is out of range.
+     * @throws Exception\IndexException if $index is out of range.
      */
     public function removeMany($index, $count = null);
 
@@ -66,7 +66,7 @@ interface IMutableRandomAccess extends IRandomAccess, IMutableSequence {
      * @param integer $end The index of the last element to remove, if $end is a negative number the removal ends that far from the end of the sequence.
      *
      * @return traversable The elements that are removed.
-     * @throws Exception\IndexError Thrown if $index is out of range.
+     * @throws Exception\IndexException if $index is out of range.
      */
     public function removeRange($begin, $end);
 
@@ -87,7 +87,7 @@ interface IMutableRandomAccess extends IRandomAccess, IMutableSequence {
      * @param integer $index1 The index of the first element.
      * @param integer $index2 The index of the second element.
      *
-     * @throws Exception\IndexError Thrown if $index1 or $index2 is out of range.
+     * @throws Exception\IndexException if $index1 or $index2 is out of range.
      */
     public function swap($index1, $index2);
 
@@ -97,7 +97,7 @@ interface IMutableRandomAccess extends IRandomAccess, IMutableSequence {
      * @param integer $index1 The index of the first element.
      * @param integer $index2 The index of the second element.
      *
-     * @return boolean true if $index1 and $index2 are in range and the swap is successful.
+     * @return boolean True if $index1 and $index2 are in range and the swap is successful.
      */
     public function trySwap($index1, $index2);
 }

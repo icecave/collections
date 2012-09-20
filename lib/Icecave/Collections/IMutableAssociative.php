@@ -38,7 +38,7 @@ interface IMutableAssociative extends IAssociative, IMutableIterable {
      * @param mixed $key The element's key.
      * @param mixed $value The element's value.
      *
-     * @throws Exception\DuplicateKeyError Thrown if $key already exists.
+     * @throws Exception\DuplicateKeyException if $key already exists.
      */
     public function add($key, $value);
 
@@ -52,7 +52,7 @@ interface IMutableAssociative extends IAssociative, IMutableIterable {
      * @param mixed $key The element's key.
      * @param mixed $value The element's value.
      *
-     * @return boolean true if $key did not already exist and the value has been set; otherwise, false.
+     * @return boolean True if $key did not already exist and the value has been set; otherwise, false.
      */
     public function tryAdd($key, $value);
 
@@ -69,7 +69,7 @@ interface IMutableAssociative extends IAssociative, IMutableIterable {
      * @param mixed $value The element's value.
      *
      * @return mixed The value previously associated with this key.
-     * @throws Exception\UnknownKeyError Thrown if $key does not already exist.
+     * @throws Exception\UnknownKeyException if $key does not already exist.
      */
     public function replace($key, $value);
 
@@ -84,7 +84,7 @@ interface IMutableAssociative extends IAssociative, IMutableIterable {
      * @param mixed $value The element's value.
      * @param mixed &$previous Assigned the value previously associated with $key.
      *
-     * @return boolean true if $key already exists and the new value has been set; otherwise, false.
+     * @return boolean True if $key already exists and the new value has been set; otherwise, false.
      */
     public function tryReplace($key, $value, &$previous = null);
 
@@ -94,7 +94,7 @@ interface IMutableAssociative extends IAssociative, IMutableIterable {
      * @param mixed $key The key of the element to remove.
      *
      * @return mixed The value associated with this key.
-     * @throws Exception\UnknownKeyError Thrown if $key does not exist.
+     * @throws Exception\UnknownKeyException if $key does not exist.
      */
     public function remove($key);
 
@@ -104,7 +104,7 @@ interface IMutableAssociative extends IAssociative, IMutableIterable {
      * @param mixed $key The key of the element to remove.
      * @param mixed &$value Assigned the value associated with $key if it exists.
      *
-     * @return boolean true if the key exists and has been removed; otherwise, false.
+     * @return boolean True if the key exists and has been removed; otherwise, false.
      */
     public function tryRemove($key, &$value = null);
 
@@ -123,7 +123,7 @@ interface IMutableAssociative extends IAssociative, IMutableIterable {
      * @param mixed $key1 The key of the first element.
      * @param mixed $key2 The key of the second element.
      *
-     * @throws Exception\UnknownKeyError Thrown if $key1 or $key2 does not already exist.
+     * @throws Exception\UnknownKeyException if $key1 or $key2 does not already exist.
      */
     public function swap($key1, $key2);
 
@@ -133,7 +133,7 @@ interface IMutableAssociative extends IAssociative, IMutableIterable {
      * @param mixed $key1 The key of the first element.
      * @param mixed $key2 The key of the second element.
      *
-     * @return boolean true if $key1 and $key2 exist and the swap is successful.
+     * @return boolean True if $key1 and $key2 exist and the swap is successful.
      */
     public function trySwap($key1, $key2);
 
@@ -147,7 +147,7 @@ interface IMutableAssociative extends IAssociative, IMutableIterable {
      * @param mixed $source The existing key.
      * @param mixed $target The new key.
      *
-     * @throws Exception\UnknownKeyError Thrown if $source does not already exist.
+     * @throws Exception\UnknownKeyException if $source does not already exist.
      */
     public function move($source, $target);
 
@@ -161,7 +161,7 @@ interface IMutableAssociative extends IAssociative, IMutableIterable {
      * @param mixed $source The existing key.
      * @param mixed $target The new key.
      *
-     * @return boolean true if $source exists and the move is successful.
+     * @return boolean True if $source exists and the move is successful.
      */
     public function tryMove($source, $target);
 
@@ -177,8 +177,8 @@ interface IMutableAssociative extends IAssociative, IMutableIterable {
      * @param mixed $source The existing key.
      * @param mixed $target The new key.
      *
-     * @throws Exception\UnknownKeyError Thrown if $source does not already exist.
-     * @throws Exception\DuplicateKeyError Thrown if $target already exists.
+     * @throws Exception\UnknownKeyException if $source does not already exist.
+     * @throws Exception\DuplicateKeyException if $target already exists.
      */
     public function rename($source, $target);
 
@@ -194,7 +194,7 @@ interface IMutableAssociative extends IAssociative, IMutableIterable {
      * @param mixed $source The existing key.
      * @param mixed $target The new key.
      *
-     * @return boolean true if $source exists, $target does not exist and the move is successful.
+     * @return boolean True if $source exists, $target does not exist and the move is successful.
      */
     public function tryRename($source, $target);
 }

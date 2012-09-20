@@ -11,7 +11,7 @@ interface ICollection {
     /**
      * Check if the collection is empty.
      *
-     * @return boolean true if the collection is empty; otherwise, false.
+     * @return boolean True if the collection is empty; otherwise, false.
      */
     public function isEmpty();
 }

@@ -14,7 +14,7 @@ interface IRandomAccess extends ISequence {
      * @param mixed $index The index of the element to fetch, if index is a negative number the element that far from the end of the sequence is returned.
      *
      * @return mixed The element at $index.
-     * @throws Exception\IndexError Thrown if no such index exists.
+     * @throws Exception\IndexException if no such index exists.
      */
     public function get($index);
 
@@ -27,7 +27,7 @@ interface IRandomAccess extends ISequence {
      * @param integer|null $count The maximum number of elements to include in the slice, or null to include all elements from $index to the end of the sequence.
      *
      * @return ISequence The sliced sequence.
-     * @throws Exception\IndexError Thrown if $index is out of range.
+     * @throws Exception\IndexException if $index is out of range.
      */
     public function slice($index, $count = null);
 

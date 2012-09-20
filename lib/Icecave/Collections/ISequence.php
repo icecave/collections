@@ -12,7 +12,7 @@ interface ISequence extends ICollection {
      * Fetch the first element in the sequence.
      *
      * @return mixed The first element in the sequence.
-     * @throws Exception\EmptyError Thrown if the collection is empty.
+     * @throws Exception\EmptyException if the collection is empty.
      */
     public function front();
 
@@ -20,7 +20,7 @@ interface ISequence extends ICollection {
      * Fetch the first element in the sequence.
      *
      * @param mixed &$element Assigned the element at the front of collection.
-     * @return boolean true is the element exists and was assigned to $element; otherwise, false.
+     * @return boolean True is the element exists and was assigned to $element; otherwise, false.
      */
     public function tryFront(&$element);
 
@@ -28,7 +28,7 @@ interface ISequence extends ICollection {
      * Fetch the last element in the sequence.
      *
      * @return mixed The first element in the sequence.
-     * @throws Exception\EmptyError Thrown if the collection is empty.
+     * @throws Exception\EmptyException if the collection is empty.
      */
     public function back();
 
@@ -36,7 +36,7 @@ interface ISequence extends ICollection {
      * Fetch the last element in the sequence.
      *
      * @param mixed &$element Assigned the element at the front of collection.
-     * @return boolean true is the element exists and was assigned to $element; otherwise, false.
+     * @return boolean True is the element exists and was assigned to $element; otherwise, false.
      */
     public function tryBack(&$element);
 

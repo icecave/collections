@@ -15,7 +15,7 @@ interface IAssociative extends IIterable {
      *
      * @param mixed $key The key to check.
      *
-     * @return boolean true if the collection contains the given key; otherwise, false.
+     * @return boolean True if the collection contains the given key; otherwise, false.
      */
     public function hasKey($key);
 
@@ -25,7 +25,7 @@ interface IAssociative extends IIterable {
      * @param mixed $key The key to fetch.
      *
      * @return mixed The associated value.
-     * @throws Exception\UnknownKeyError Thrown if no such key exists.
+     * @throws Exception\UnknownKeyException if no such key exists.
      */
     public function get($key);
 
@@ -35,7 +35,7 @@ interface IAssociative extends IIterable {
      * @param mixed $key The key to fetch.
      * @param mixed &$value Assigned the value associated with $key if it exists.
      *
-     * @return boolean true if $key exists and $value was populated; otherwise, false.
+     * @return boolean True if $key exists and $value was populated; otherwise, false.
      */
     public function tryGet($key, &$value);
 
@@ -58,7 +58,7 @@ interface IAssociative extends IIterable {
      * @param mixed,... $key The keys to search for.
      *
      * @return mixed The value associated with the first key that exists.
-     * @throws Exception\UnknownKeyError Thrown if none of the keys exist.
+     * @throws Exception\UnknownKeyException if none of the keys exist.
      */
     public function getCascade($key);
 
@@ -81,7 +81,7 @@ interface IAssociative extends IIterable {
      * @param traversable $keys The list of keys.
      *
      * @return mixed The value associated with the first key that exists.
-     * @throws Exception\UnknownKeyError Thrown if none of the keys exist.
+     * @throws Exception\UnknownKeyException if none of the keys exist.
      */
     public function getCascadeSeq($keys);
 

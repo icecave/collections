@@ -33,12 +33,12 @@ interface IIterable extends ICollection {
      *
      * @param mixed $element The element to check.
      *
-     * @return boolean true if the collection contains $element; otherwise, false.
+     * @return boolean True if the collection contains $element; otherwise, false.
      */
     public function contains($element);
 
     /**
-     * Fetch a new colelction with a subset of the elements from this collection.
+     * Fetch a new collection with a subset of the elements from this collection.
      *
      * It is not guaranteed that the concrete type of the filtered collection will match this collection.
      *

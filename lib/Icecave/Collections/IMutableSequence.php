@@ -40,7 +40,7 @@ interface IMutableSequence extends ISequence, IMutableIterable {
      * Remove and return the element at the front of the sequence.
      *
      * @return mixed The element at the front of the sequence.
-     * @throws Exception\EmptyError Thrown if the collection is empty.
+     * @throws Exception\EmptyException if the collection is empty.
      */
     public function popFront();
 
@@ -49,7 +49,7 @@ interface IMutableSequence extends ISequence, IMutableIterable {
      *
      * @param mixed &$element Assigned the removed element.
      *
-     * @return boolean true if the front element is removed and assigned to $element; otherwise, false.
+     * @return boolean True if the front element is removed and assigned to $element; otherwise, false.
      */
     public function tryPopFront(&$element = null);
 
@@ -64,7 +64,7 @@ interface IMutableSequence extends ISequence, IMutableIterable {
      * Remove and return the element at the back of the sequence.
      *
      * @return mixed The element at the back of the sequence.
-     * @throws Exception\EmptyError Thrown if the collection is empty.
+     * @throws Exception\EmptyException if the collection is empty.
      */
     public function popBack();
 
@@ -73,7 +73,7 @@ interface IMutableSequence extends ISequence, IMutableIterable {
      *
      * @param mixed &$element Assigned the removed element.
      *
-     * @return boolean true if the back element is removed and assigned to $element; otherwise, false.
+     * @return boolean True if the back element is removed and assigned to $element; otherwise, false.
      */
     public function tryPopBack(&$element = null);
 

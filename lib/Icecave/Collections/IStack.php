@@ -9,7 +9,7 @@ interface IStack extends IMutableCollection {
      * Fetch the element at the top of the stack.
      *
      * @return mixed The element at the top of the stack.
-     * @throws Exception\EmptyError Thrown if the collection is empty.
+     * @throws Exception\EmptyException if the collection is empty.
      */
     public function top();
 
@@ -17,7 +17,7 @@ interface IStack extends IMutableCollection {
      * Fetch the element at the top of the stack.
      *
      * @param mixed &$element Assigned the element at the top of the stack.
-     * @return boolean true is the element exists and was assigned to $element; otherwise, false.
+     * @return boolean True is the element exists and was assigned to $element; otherwise, false.
      */
     public function tryTop(&$element);
 
@@ -32,7 +32,7 @@ interface IStack extends IMutableCollection {
      * Remove and return the element at the top of the stack.
      *
      * @return mixed The element at the top of the sequence.
-     * @throws Exception\EmptyError Thrown if the collection is empty.
+     * @throws Exception\EmptyException if the collection is empty.
      */
     public function pop();
 
@@ -41,7 +41,7 @@ interface IStack extends IMutableCollection {
      *
      * @param mixed &$element Assigned the removed element.
      *
-     * @return boolean true if the top element is removed and assigned to $element; otherwise, false.
+     * @return boolean True if the top element is removed and assigned to $element; otherwise, false.
      */
     public function tryPop(&$element = null);
 }
