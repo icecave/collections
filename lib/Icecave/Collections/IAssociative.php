@@ -76,7 +76,7 @@ interface IAssociative extends IIterable {
      * Return the value associated with the first existing key in the given sequence.
      *
      * Behaves as per {@see IAssociative::cascade()} except that the keys are provided as
-     * a traversible (eg, array) instead of via a variable argument list.
+     * a traversable (eg, array) instead of via a variable argument list.
      *
      * @param traversable $keys The list of keys.
      *
@@ -89,7 +89,7 @@ interface IAssociative extends IIterable {
      * Return the value associated with the first existing key in the given sequence, or a default value if none of the provided keys exist.
      *
      * Behaves as per {@see IAssociative::cascadeDefault()} except that the keys are provided as
-     * a traversible (eg, array) instead of via a variable argument list.
+     * a traversable (eg, array) instead of via a variable argument list.
      *
      * @param traversable $keys The list of keys.
      * @param mixed $default The default value to return if no such keys exist.

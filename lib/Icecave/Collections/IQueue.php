@@ -9,7 +9,7 @@ interface IQueue extends IMutableCollection {
      * Fetch the element at the front of the queue.
      *
      * @return mixed The element at the front of the queue.
-     * @throws Exception\EmptyException if the collection is empty.
+     * @throws Exception\EmptyCollectionException if the collection is empty.
      */
     public function front();
 
@@ -32,7 +32,7 @@ interface IQueue extends IMutableCollection {
      * Remove and return the element at the front of the queue.
      *
      * @return mixed The element at the front of the queue.
-     * @throws Exception\EmptyException if the collection is empty.
+     * @throws Exception\EmptyCollectionException if the collection is empty.
      */
     public function pop();
 

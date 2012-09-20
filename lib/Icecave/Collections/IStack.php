@@ -9,7 +9,7 @@ interface IStack extends IMutableCollection {
      * Fetch the element at the top of the stack.
      *
      * @return mixed The element at the top of the stack.
-     * @throws Exception\EmptyException if the collection is empty.
+     * @throws Exception\EmptyCollectionException if the collection is empty.
      */
     public function top();
 
@@ -32,7 +32,7 @@ interface IStack extends IMutableCollection {
      * Remove and return the element at the top of the stack.
      *
      * @return mixed The element at the top of the sequence.
-     * @throws Exception\EmptyException if the collection is empty.
+     * @throws Exception\EmptyCollectionException if the collection is empty.
      */
     public function pop();
 

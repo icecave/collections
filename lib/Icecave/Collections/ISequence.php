@@ -12,7 +12,7 @@ interface ISequence extends ICollection {
      * Fetch the first element in the sequence.
      *
      * @return mixed The first element in the sequence.
-     * @throws Exception\EmptyException if the collection is empty.
+     * @throws Exception\EmptyCollectionException if the collection is empty.
      */
     public function front();
 
@@ -28,7 +28,7 @@ interface ISequence extends ICollection {
      * Fetch the last element in the sequence.
      *
      * @return mixed The first element in the sequence.
-     * @throws Exception\EmptyException if the collection is empty.
+     * @throws Exception\EmptyCollectionException if the collection is empty.
      */
     public function back();
 

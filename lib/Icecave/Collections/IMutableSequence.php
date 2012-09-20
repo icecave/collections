@@ -40,7 +40,7 @@ interface IMutableSequence extends ISequence, IMutableIterable {
      * Remove and return the element at the front of the sequence.
      *
      * @return mixed The element at the front of the sequence.
-     * @throws Exception\EmptyException if the collection is empty.
+     * @throws Exception\EmptyCollectionException if the collection is empty.
      */
     public function popFront();
 
@@ -64,7 +64,7 @@ interface IMutableSequence extends ISequence, IMutableIterable {
      * Remove and return the element at the back of the sequence.
      *
      * @return mixed The element at the back of the sequence.
-     * @throws Exception\EmptyException if the collection is empty.
+     * @throws Exception\EmptyCollectionException if the collection is empty.
      */
     public function popBack();
 
