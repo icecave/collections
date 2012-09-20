@@ -21,18 +21,18 @@
 
 ## Concepts
 
-* [ICollection](/IcecaveStudios/collections/blob/master/lib/Icecave/Collections/ICollection.php): A collection is an object that stores other objects (called elements).
-* [IMutableCollection](/IcecaveStudios/collections/blob/master/lib/Icecave/Collections/IMutableCollection.php): A mutable collection is a collection on which elements can be added and removed.
-* [IIterable](/IcecaveStudios/collections/blob/master/lib/Icecave/Collections/IIterable.php): Iterable collections allow (at the very least) sequential access to the elements without modifying the collection.
-* [IMutableIterable](/IcecaveStudios/collections/blob/master/lib/Icecave/Collections/IMutableIterable.php): An interable collection that can be modified in place.
-* [ISequence](/IcecaveStudios/collections/blob/master/lib/Icecave/Collections/ISequence.php): A sequence is a variable-sized collection whose elements are arranged in a strict linear order.
-* [IMutableSequence](/IcecaveStudios/collections/blob/master/lib/Icecave/Collections/IMutableSequence.php): A sequence that supports insertion and removal of elements.
-* [IRandomAccess](/IcecaveStudios/collections/blob/master/lib/Icecave/Collections/IRandomAccess.php): A sequence that provides access to arbitrary elements by their position in the sequence.
-* [IMutableRandomAccess](/IcecaveStudios/collections/blob/master/lib/Icecave/Collections/IMutableRandomAccess.php): A sequence that allows for insertion and removal of arbitrary elements by their position in the sequence.
-* [IAssociative](/IcecaveStudios/collections/blob/master/lib/Icecave/Collections/Collections/ICollection.php): A variable-sized collection that supports efficient retrieval of values based on keys.
-* [IMutableAssociative](/IcecaveStudios/collections/blob/master/lib/Icecave/Collections/IMutableAssociative.php): An associative collection that supports insertion and removal of elements.
-* [IStack](/IcecaveStudios/collections/blob/master/lib/Icecave/Collections/IStack.php): A LIFO stack.
-* [IQueue](/IcecaveStudios/collections/blob/master/lib/Icecave/Collections/IQueue.php): A FIFO queue.
+* [Collection](/IcecaveStudios/collections/blob/master/lib/Icecave/Collections/ICollection.php): A collection is an object that stores other objects (called elements).
+* [Mutable Collection](/IcecaveStudios/collections/blob/master/lib/Icecave/Collections/IMutableCollection.php): A mutable collection is a collection on which elements can be added and removed.
+* [Iterable](/IcecaveStudios/collections/blob/master/lib/Icecave/Collections/IIterable.php): Iterable collections allow (at the very least) sequential access to the elements without modifying the collection.
+* [Mutable Iterable](/IcecaveStudios/collections/blob/master/lib/Icecave/Collections/IMutableIterable.php): An interable collection that can be modified in place.
+* [Sequence](/IcecaveStudios/collections/blob/master/lib/Icecave/Collections/ISequence.php): A sequence is a variable-sized collection whose elements are arranged in a strict linear order.
+* [Mutable Sequence](/IcecaveStudios/collections/blob/master/lib/Icecave/Collections/IMutableSequence.php): A sequence that supports insertion and removal of elements.
+* [Random Access Sequence](/IcecaveStudios/collections/blob/master/lib/Icecave/Collections/IRandomAccess.php): A sequence that provides access to arbitrary elements by their position in the sequence.
+* [Mutable Random Access Sequence](/IcecaveStudios/collections/blob/master/lib/Icecave/Collections/IMutableRandomAccess.php): A sequence that allows for insertion and removal of arbitrary elements by their position in the sequence.
+* [Associative Collection](/IcecaveStudios/collections/blob/master/lib/Icecave/Collections/Collections/ICollection.php): A variable-sized collection that supports efficient retrieval of values based on keys.
+* [Mutable Associative Collection](/IcecaveStudios/collections/blob/master/lib/Icecave/Collections/IMutableAssociative.php): An associative collection that supports insertion and removal of elements.
+* [Stack](/IcecaveStudios/collections/blob/master/lib/Icecave/Collections/IStack.php): A LIFO stack.
+* [Queue](/IcecaveStudios/collections/blob/master/lib/Icecave/Collections/IQueue.php): A FIFO queue.
 
 ## Models
 
