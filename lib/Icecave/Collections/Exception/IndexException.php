@@ -1,5 +1,5 @@
 <?php
-namespace Icecave\Collection\Exception;
+namespace Icecave\Collections\Exception;
 
 use Exception;
 use OutOfBoundsException;
