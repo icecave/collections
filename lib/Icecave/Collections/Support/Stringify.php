@@ -13,7 +13,7 @@ abstract class Stringify
     public static function stringify($value)
     {
         if (null === $value || is_bool($value)) {
-            return '<' . var_export($value, true) . '>';
+            return '<' . strtolower(var_export($value, true)) . '>';
         } elseif (is_scalar($value)) {
             return var_export($value, true);
         } elseif (is_object($value)) {
