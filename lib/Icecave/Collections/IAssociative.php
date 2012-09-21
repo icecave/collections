@@ -8,8 +8,8 @@ namespace Icecave\Collections;
  *
  * Each element in an associative collection is a 2-tuple of key and value.
  */
-interface IAssociative extends IIterable {
-
+interface IAssociative extends IIterable
+{
     /**
      * Check if the collection contains an element with the given key.
      *

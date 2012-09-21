@@ -6,8 +6,8 @@ namespace Icecave\Collections;
 /**
  * A Sequence is a variable-sized collection whose elements are arranged in a strict linear order.
  */
-interface ISequence extends ICollection {
-
+interface ISequence extends ICollection
+{
     /**
      * Fetch the first element in the sequence.
      *

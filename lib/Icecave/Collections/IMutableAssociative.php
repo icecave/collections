@@ -11,8 +11,8 @@ namespace Icecave\Collections;
  * Mutable associative collections support insertion and removal of elements, but differ from sequences in that they do
  * not provide a mechanism for inserting an element at a specific position.
  */
-interface IMutableAssociative extends IAssociative, IMutableIterable {
-
+interface IMutableAssociative extends IAssociative, IMutableIterable
+{
     /**
      * Associate a value with a key.
      *

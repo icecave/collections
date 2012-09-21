@@ -6,8 +6,8 @@ namespace Icecave\Collections;
 /**
  * A mutable random access sequence is a sequence that allows for insertion and removal of elements by their position in the sequence.
  */
-interface IMutableRandomAccess extends IRandomAccess, IMutableSequence {
-
+interface IMutableRandomAccess extends IRandomAccess, IMutableSequence
+{
     /**
      * Replace the element at a particular position in the sequence.
      *

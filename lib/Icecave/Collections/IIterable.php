@@ -10,8 +10,8 @@ namespace Icecave\Collections;
  * the order might, in fact, be different upon each iteration through the collection. However, some
  * specific collection types may provide such guarantees.
  */
-interface IIterable extends ICollection {
-
+interface IIterable extends ICollection
+{
     /**
      * Fetch the number of elements in the collection.
      *

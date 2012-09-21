@@ -6,8 +6,8 @@ namespace Icecave\Collections;
 /**
  * A random access sequence is a sequence that provides access to elements by their position in the sequence.
  */
-interface IRandomAccess extends ISequence {
-
+interface IRandomAccess extends ISequence
+{
     /**
      * Fetch the element at the given index.
      *

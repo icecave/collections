@@ -6,8 +6,8 @@ namespace Icecave\Collections;
 /**
  * A FIFO queue.
  */
-interface IQueue extends IMutableCollection {
-
+interface IQueue extends IMutableCollection
+{
     /**
      * Fetch the element at the front of the queue.
      *

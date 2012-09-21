@@ -6,8 +6,8 @@ namespace Icecave\Collections;
 /**
  * A mutable collection is a collection on which elements can be added and removed.
  */
-interface IMutableCollection extends ICollection {
-
+interface IMutableCollection extends ICollection
+{
     /**
      * Remove all elements from the collection.
      */

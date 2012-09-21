@@ -6,8 +6,8 @@ namespace Icecave\Collections;
 /**
  * A LIFO stack.
  */
-interface IStack extends IMutableCollection {
-
+interface IStack extends IMutableCollection
+{
     /**
      * Fetch the element at the top of the stack.
      *
