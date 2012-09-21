@@ -43,7 +43,6 @@ interface IMutableRandomAccess extends IRandomAccess, IMutableSequence
      *
      * @param integer $index The index of the element to remove, if index is a negative number the element that far from the end of the sequence is removed.
      *
-     * @return mixed The element at $index before removal.
      * @throws Exception\IndexException if $index is out of range.
      */
     public function remove($index);
@@ -54,7 +53,6 @@ interface IMutableRandomAccess extends IRandomAccess, IMutableSequence
      * @param integer $index The index of the first element to remove, if index is a negative number the removal begins that far from the end of the sequence.
      * @param integer|null $count The number of elements to remove, or null to remove all elements up to the end of the sequence.
      *
-     * @return traversable The elements that are removed.
      * @throws Exception\IndexException if $index is out of range.
      */
     public function removeMany($index, $count = null);
@@ -67,7 +65,6 @@ interface IMutableRandomAccess extends IRandomAccess, IMutableSequence
      * @param integer $begin The index of the first element to remove, if begin is a negative number the removal begins that far from the end of the sequence.
      * @param integer $end The index of the last element to remove, if end is a negative number the removal ends that far from the end of the sequence.
      *
-     * @return traversable The elements that are removed.
      * @throws Exception\IndexException if $index is out of range.
      */
     public function removeRange($begin, $end);
@@ -78,8 +75,6 @@ interface IMutableRandomAccess extends IRandomAccess, IMutableSequence
      * @param integer $index The index of the first element to replace, if index is a negative number the replace begins that far from the end of the sequence.
      * @param traversable $elements The elements to insert.
      * @param integer|null $count The number of elements to replace, or null to replace all elements up to the end of the sequence.
-     *
-     * @return traversable The elements that are replaced.
      */
     public function replace($index, $elements, $count = null);
 
@@ -91,8 +86,6 @@ interface IMutableRandomAccess extends IRandomAccess, IMutableSequence
      * @param integer $begin The index of the first element to replace, if begin is a negative number the replace begins that far from the end of the sequence.
      * @param integer $end  The index of the last element to replace, if end is a negativ enumber the replace ends that far from the end of the sequence.
      * @param traversable $elements The elements to insert.
-     *
-     * @return traversable The elements that are replaced.
      */
     public function replaceRange($begin, $end, $elements);
 

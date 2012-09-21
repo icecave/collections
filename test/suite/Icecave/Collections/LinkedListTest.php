@@ -20,7 +20,7 @@ class LinkedListTest extends PHPUnit_Framework_TestCase
         $collection = new LinkedList(array(1, 2, 3));
         $this->assertSame(array(1, 2, 3), $collection->elements());
     }
-    
+
     ///////////////////////////////////
     // Implementation of ICollection //
     ///////////////////////////////////
@@ -110,7 +110,7 @@ class LinkedListTest extends PHPUnit_Framework_TestCase
         $this->_collection->append(array(1, null, 2, null, 3));
 
         $result = $this->_collection->filtered();
-        
+
         $this->assertInstanceOf(__NAMESPACE__ . '\LinkedList', $result);
         $this->assertSame(array(1, 2, 3), $result->elements());
     }
@@ -152,7 +152,7 @@ class LinkedListTest extends PHPUnit_Framework_TestCase
         $this->_collection->append(array(1, null, 2, null, 3));
 
         $this->_collection->filter();
-        
+
         $this->assertSame(array(1, 2, 3), $this->_collection->elements());
     }
 
@@ -189,7 +189,7 @@ class LinkedListTest extends PHPUnit_Framework_TestCase
     public function testFront()
     {
         $this->_collection->append(array('foo', 'bar'));
-        
+
         $this->assertSame('foo', $this->_collection->front());
     }
 
@@ -202,7 +202,7 @@ class LinkedListTest extends PHPUnit_Framework_TestCase
     public function testTryFront()
     {
         $this->_collection->append(array('foo', 'bar'));
-        
+
         $element = null;
         $this->assertTrue($this->_collection->tryFront($element));
         $this->assertSame('foo', $element);
@@ -230,7 +230,7 @@ class LinkedListTest extends PHPUnit_Framework_TestCase
     public function testTryBack()
     {
         $this->_collection->append(array('foo', 'bar'));
-        
+
         $element = null;
         $this->assertTrue($this->_collection->tryBack($element));
         $this->assertSame('bar', $element);
@@ -280,7 +280,7 @@ class LinkedListTest extends PHPUnit_Framework_TestCase
     public function testJoin()
     {
         $this->_collection->append(array(1, 2, 3));
-        
+
         $result = $this->_collection->join(
             array(4, 5, 6),
             array(7, 8, 9)
@@ -560,7 +560,7 @@ class LinkedListTest extends PHPUnit_Framework_TestCase
     public function testSet()
     {
         $this->_collection->append(array('foo', 'bar', 'spam'));
-        
+
         $this->_collection->set(1, 'goose');
 
         $this->assertSame(array('foo', 'goose', 'spam'), $this->_collection->elements());
@@ -569,7 +569,7 @@ class LinkedListTest extends PHPUnit_Framework_TestCase
     public function testSetWithNegativeIndex()
     {
         $this->_collection->append(array('foo', 'bar', 'spam'));
-        
+
         $this->_collection->set(-2, 'goose');
 
         $this->assertSame(array('foo', 'goose', 'spam'), $this->_collection->elements());
@@ -660,7 +660,7 @@ class LinkedListTest extends PHPUnit_Framework_TestCase
     {
         $this->_collection->append(array('foo', 'bar', 'spam'));
 
-        $this->assertSame('bar', $this->_collection->remove(1));
+        $this->_collection->remove(1);
 
         $this->assertSame(array('foo', 'spam'), $this->_collection->elements());
     }
@@ -669,7 +669,7 @@ class LinkedListTest extends PHPUnit_Framework_TestCase
     {
         $this->_collection->append(array('foo', 'bar', 'spam'));
 
-        $this->assertSame('bar', $this->_collection->remove(-2));
+        $this->_collection->remove(-2);
 
         $this->assertSame(array('foo', 'spam'), $this->_collection->elements());
     }
@@ -684,9 +684,8 @@ class LinkedListTest extends PHPUnit_Framework_TestCase
     {
         $this->_collection->append(array('foo', 'bar', 'spam', 'doom'));
 
-        $result = $this->_collection->removeMany(1);
+        $this->_collection->removeMany(1);
 
-        $this->assertSame(array('bar', 'spam', 'doom'), $result);
         $this->assertSame(array('foo'), $this->_collection->elements());
     }
 
@@ -694,9 +693,8 @@ class LinkedListTest extends PHPUnit_Framework_TestCase
     {
         $this->_collection->append(array('foo', 'bar', 'spam', 'doom'));
 
-        $result = $this->_collection->removeMany(1, 2);
+        $this->_collection->removeMany(1, 2);
 
-        $this->assertSame(array('bar', 'spam'), $result);
         $this->assertSame(array('foo', 'doom'), $this->_collection->elements());
     }
 
@@ -704,9 +702,8 @@ class LinkedListTest extends PHPUnit_Framework_TestCase
     {
         $this->_collection->append(array('foo', 'bar', 'spam', 'doom'));
 
-        $result = $this->_collection->removeMany(-3, 2);
+        $this->_collection->removeMany(-3, 2);
 
-        $this->assertSame(array('bar', 'spam'), $result);
         $this->assertSame(array('foo', 'doom'), $this->_collection->elements());
     }
 
@@ -720,9 +717,8 @@ class LinkedListTest extends PHPUnit_Framework_TestCase
     {
         $this->_collection->append(array('foo', 'bar', 'spam', 'doom', 'frob'));
 
-        $result = $this->_collection->removeRange(1, 3);
+        $this->_collection->removeRange(1, 3);
 
-        $this->assertSame(array('bar', 'spam'), $result);
         $this->assertSame(array('foo', 'doom', 'frob'), $this->_collection->elements());
     }
 
@@ -730,9 +726,8 @@ class LinkedListTest extends PHPUnit_Framework_TestCase
     {
         $this->_collection->append(array('foo', 'bar', 'spam', 'doom'));
 
-        $result = $this->_collection->removeRange(1, 3);
+        $this->_collection->removeRange(1, 3);
 
-        $this->assertSame(array('bar', 'spam'), $result);
         $this->assertSame(array('foo', 'doom'), $this->_collection->elements());
     }
 
@@ -740,9 +735,8 @@ class LinkedListTest extends PHPUnit_Framework_TestCase
     {
         $this->_collection->append(array('foo', 'bar', 'spam', 'doom'));
 
-        $result = $this->_collection->removeRange(-3, -1);
+        $this->_collection->removeRange(-3, -1);
 
-        $this->assertSame(array('bar', 'spam'), $result);
         $this->assertSame(array('foo', 'doom'), $this->_collection->elements());
     }
 
@@ -750,9 +744,8 @@ class LinkedListTest extends PHPUnit_Framework_TestCase
     {
         $this->_collection->append(array('foo', 'bar', 'spam', 'doom'));
 
-        $result = $this->_collection->removeRange(3, 1);
+        $this->_collection->removeRange(3, 1);
 
-        $this->assertSame(array(), $result);
         $this->assertSame(array('foo', 'bar', 'spam', 'doom'), $this->_collection->elements());
     }
 
@@ -766,9 +759,8 @@ class LinkedListTest extends PHPUnit_Framework_TestCase
     {
         $this->_collection->append(array('foo', 'bar', 'spam', 'doom'));
 
-        $result = $this->_collection->replace(1, array('a', 'b'));
+        $this->_collection->replace(1, array('a', 'b'));
 
-        $this->assertSame(array('bar', 'spam', 'doom'), $result);
         $this->assertSame(array('foo', 'a', 'b'), $this->_collection->elements());
     }
 
@@ -776,9 +768,8 @@ class LinkedListTest extends PHPUnit_Framework_TestCase
     {
         $this->_collection->append(array('foo', 'bar', 'spam', 'doom'));
 
-        $result = $this->_collection->replace(1, array('a', 'b'), 2);
+        $this->_collection->replace(1, array('a', 'b'), 2);
 
-        $this->assertSame(array('bar', 'spam'), $result);
         $this->assertSame(array('foo', 'a', 'b', 'doom'), $this->_collection->elements());
     }
 
@@ -786,9 +777,8 @@ class LinkedListTest extends PHPUnit_Framework_TestCase
     {
         $this->_collection->append(array('foo', 'bar', 'spam', 'doom'));
 
-        $result = $this->_collection->replace(-3, array('a', 'b'), 2);
+        $this->_collection->replace(-3, array('a', 'b'), 2);
 
-        $this->assertSame(array('bar', 'spam'), $result);
         $this->assertSame(array('foo', 'a', 'b', 'doom'), $this->_collection->elements());
     }
 
@@ -802,9 +792,8 @@ class LinkedListTest extends PHPUnit_Framework_TestCase
     {
         $this->_collection->append(array('foo', 'bar', 'spam', 'doom'));
 
-        $result = $this->_collection->replaceRange(1, 3, array('a', 'b'));
+        $this->_collection->replaceRange(1, 3, array('a', 'b'));
 
-        $this->assertSame(array('bar', 'spam'), $result);
         $this->assertSame(array('foo', 'a', 'b', 'doom'), $this->_collection->elements());
     }
 
@@ -812,9 +801,8 @@ class LinkedListTest extends PHPUnit_Framework_TestCase
     {
         $this->_collection->append(array('foo', 'bar', 'spam', 'doom'));
 
-        $result = $this->_collection->replaceRange(-3, -1, array('a', 'b'), 2);
+        $this->_collection->replaceRange(-3, -1, array('a', 'b'), 2);
 
-        $this->assertSame(array('bar', 'spam'), $result);
         $this->assertSame(array('foo', 'a', 'b', 'doom'), $this->_collection->elements());
     }
 
@@ -822,9 +810,8 @@ class LinkedListTest extends PHPUnit_Framework_TestCase
     {
         $this->_collection->append(array('foo', 'bar', 'spam', 'doom'));
 
-        $result = $this->_collection->replaceRange(1, 1, array('a', 'b'));
+        $this->_collection->replaceRange(1, 1, array('a', 'b'));
 
-        $this->assertSame(array(), $result);
         $this->assertSame(array('foo', 'a', 'b', 'bar', 'spam', 'doom'), $this->_collection->elements());
     }
 
@@ -832,9 +819,8 @@ class LinkedListTest extends PHPUnit_Framework_TestCase
     {
         $this->_collection->append(array('foo', 'bar', 'spam', 'doom'));
 
-        $result = $this->_collection->replaceRange(1, 0, array('a', 'b'));
+        $this->_collection->replaceRange(1, 0, array('a', 'b'));
 
-        $this->assertSame(array(), $result);
         $this->assertSame(array('foo', 'a', 'b', 'bar', 'spam', 'doom'), $this->_collection->elements());
     }
 

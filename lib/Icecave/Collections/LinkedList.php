@@ -347,7 +347,7 @@ class LinkedList implements IMutableRandomAccess
         }
 
         $list = new SplDoublyLinkedList;
-        
+
         foreach ($elements as $element) {
             $list->push($element);
         }
@@ -650,11 +650,11 @@ class LinkedList implements IMutableRandomAccess
         }
 
         $count = count($elements);
-        
+
         if (0 === $count) {
             return;
         }
-        
+
         $this->append(array_fill(0, $count, null));
 
         for ($i = $this->size() - 1; $i >= $index + $count; --$i) {
@@ -673,13 +673,11 @@ class LinkedList implements IMutableRandomAccess
      *
      * @param integer $index The index of the element to remove, if index is a negative number the element that far from the end of the sequence is removed.
      *
-     * @return mixed The element at $index before removal.
      * @throws Exception\IndexException if $index is out of range.
      */
     public function remove($index)
     {
-        $elements = $this->removeRange($index, $index + 1);
-        return current($elements);
+        $this->removeRange($index, $index + 1);
     }
 
     /**
@@ -688,7 +686,6 @@ class LinkedList implements IMutableRandomAccess
      * @param integer $index The index of the first element to remove, if index is a negative number the removal begins that far from the end of the sequence.
      * @param integer|null $count The number of elements to remove, or null to remove all elements up to the end of the sequence.
      *
-     * @return traversable The elements that are removed.
      * @throws Exception\IndexException if $index is out of range.
      */
     public function removeMany($index, $count = null)
@@ -705,7 +702,7 @@ class LinkedList implements IMutableRandomAccess
             );
         }
 
-        return $this->removeRange($index, $end);
+        $this->removeRange($index, $end);
     }
 
     /**
@@ -716,7 +713,6 @@ class LinkedList implements IMutableRandomAccess
      * @param integer $begin The index of the first element to remove, if $begin is a negative number the removal begins that far from the end of the sequence.
      * @param integer $end The index of the last element to remove, if $end is a negative number the removal ends that far from the end of the sequence.
      *
-     * @return traversable The elements that are removed.
      * @throws Exception\IndexException if $index is out of range.
      */
     public function removeRange($begin, $end)
@@ -741,22 +737,15 @@ class LinkedList implements IMutableRandomAccess
             return array();
         }
 
-        $elements = array();
-
         $count = $end - $begin;
 
-        for ($index = $begin; $index < $end; ++$index) {
-            $elements[] = $this->elements[$index];
-            if ($index + $count < $this->size()) {
-                $this->elements[$index] = $this->elements[$index + $count];
-            }
+        for ($index = $begin; $index < $end && $index + $count < $this->size(); ++$index) {
+            $this->elements[$index] = $this->elements[$index + $count];
         }
 
         while ($count--) {
             $this->elements->pop();
         }
-
-        return $elements;
     }
 
     /**
@@ -767,8 +756,6 @@ class LinkedList implements IMutableRandomAccess
      * @param integer $index The index of the first element to replace, if index is a negative number the replace begins that far from the end of the sequence.
      * @param traversable $elements The elements to insert.
      * @param integer|null $count The number of elements to replace, or null to replace all elements up to the end of the sequence.
-     *
-     * @return traversable The elements that are replaced.
      */
     public function replace($index, $elements, $count = null)
     {
@@ -776,9 +763,8 @@ class LinkedList implements IMutableRandomAccess
             $index += $this->size();
         }
 
-        $removedElements = $this->removeMany($index, $count);
+        $this->removeMany($index, $count);
         $this->insertSeq($index, $elements);
-        return $removedElements;
     }
 
     /**
@@ -787,8 +773,6 @@ class LinkedList implements IMutableRandomAccess
      * @param integer $begin The index of the first element to replace, if begin is a negative number the replace begins that far from the end of the sequence.
      * @param integer $end  The index of the last element to replace, if end is a negativ enumber the replace ends that far from the end of the sequence.
      * @param traversable $elements The elements to insert.
-     *
-     * @return traversable The elements that are replaced.
      */
     public function replaceRange($begin, $end, $elements)
     {
@@ -800,9 +784,8 @@ class LinkedList implements IMutableRandomAccess
             $end += $this->size();
         }
 
-        $removedElements = $this->removeRange($begin, $end);
+        $this->removeRange($begin, $end);
         $this->insertSeq($begin, $elements);
-        return $removedElements;
     }
 
     /**
