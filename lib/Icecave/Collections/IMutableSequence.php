@@ -13,9 +13,9 @@ interface IMutableSequence extends ISequence, IMutableIterable
     /**
      * Sort this sequence in-place.
      *
-     * @param callable|null $comparitor A strcmp style comparitor function.
+     * @param callable|null $comparator A strcmp style comparator function.
      */
-    public function sort($comparitor = null);
+    public function sort($comparator = null);
 
     /**
      * Reverse this sequence in-place.

@@ -45,11 +45,11 @@ interface ISequence extends ICollection
      *
      * It is not guaranteed that the concrete type of the sorted collection will match this collection.
      *
-     * @param callable|null $comparitor A strcmp style comparitor function.
+     * @param callable|null $comparator A strcmp style comparator function.
      *
      * @return ISequence
      */
-    public function sorted($comparitor = null);
+    public function sorted($comparator = null);
 
     /**
      * Create a new sequence with the elements from this sequence in reverse order.
