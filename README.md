@@ -29,7 +29,7 @@
 * [Mutable Sequence](/IcecaveStudios/collections/blob/master/lib/Icecave/Collections/IMutableSequence.php): A sequence that supports insertion and removal of elements.
 * [Random Access Sequence](/IcecaveStudios/collections/blob/master/lib/Icecave/Collections/IRandomAccess.php): A sequence that provides access to elements by their position in the sequence.
 * [Mutable Random Access Sequence](/IcecaveStudios/collections/blob/master/lib/Icecave/Collections/IMutableRandomAccess.php): A sequence that allows for insertion / removal of elements by their position in the sequence.
-* [Associative Collection](/IcecaveStudios/collections/blob/master/lib/Icecave/Collections/IAssociativeCollection.php): A variable-sized collection that supports efficient retrieval of values based on keys.
+* [Associative Collection](/IcecaveStudios/collections/blob/master/lib/Icecave/Collections/IAssociative.php): A variable-sized collection that supports efficient retrieval of values based on keys.
 * [Mutable Associative Collection](/IcecaveStudios/collections/blob/master/lib/Icecave/Collections/IMutableAssociative.php): An associative collection that supports insertion and removal of elements.
 * [Stack](/IcecaveStudios/collections/blob/master/lib/Icecave/Collections/IStack.php): A LIFO stack.
 * [Queue](/IcecaveStudios/collections/blob/master/lib/Icecave/Collections/IQueue.php): A FIFO queue.
