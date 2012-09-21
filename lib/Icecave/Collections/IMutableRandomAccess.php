@@ -4,7 +4,7 @@ namespace Icecave\Collections;
 // @codeCoverageIgnoreStart
 
 /**
- * A mutable random access sequence is a sequence that allows for insertion and removal of arbitrary elements by their position in the sequence.
+ * A mutable random access sequence is a sequence that allows for insertion and removal of elements by their position in the sequence.
  */
 interface IMutableRandomAccess extends IRandomAccess, IMutableSequence {
 
@@ -60,10 +60,12 @@ interface IMutableRandomAccess extends IRandomAccess, IMutableSequence {
     public function removeMany($index, $count = null);
 
     /**
-     * Remove a range of elements at a given index.
+     * Remove a range of elements between two indices.
      *
-     * @param integer $begin The index of the first element to remove, if $begin is a negative number the removal begins that far from the end of the sequence.
-     * @param integer $end The index of the last element to remove, if $end is a negative number the removal ends that far from the end of the sequence.
+     * Removes all elements in the range [$begin, $end), i.e. $begin is inclusive, $end is exclusive.
+     *
+     * @param integer $begin The index of the first element to remove, if begin is a negative number the removal begins that far from the end of the sequence.
+     * @param integer $end The index of the last element to remove, if end is a negative number the removal ends that far from the end of the sequence.
      *
      * @return traversable The elements that are removed.
      * @throws Exception\IndexException if $index is out of range.
@@ -80,6 +82,19 @@ interface IMutableRandomAccess extends IRandomAccess, IMutableSequence {
      * @return traversable The elements that are replaced.
      */
     public function replace($index, $count = null, $elements);
+
+    /**
+     * Replace a range of elements with a second set of elements.
+     *
+     * Replaces all elements in the range [$begin, $end), i.e. $begin is inclusive, $end is exclusive.
+     *
+     * @param integer $begin The index of the first element to replace, if begin is a negative number the replace begins that far from the end of the sequence.
+     * @param integer $end  The index of the last element to replace, if end is a negativ enumber the replace ends that far from the end of the sequence.
+     * @param traversable $elements The elements to insert.
+     *
+     * @return traversable The elements that are replaced.
+     */
+    public function replaceRange($begin, $end, $elements);
 
     /**
      * Swap the elements at two index positions.

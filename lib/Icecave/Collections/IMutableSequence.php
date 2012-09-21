@@ -81,7 +81,7 @@ interface IMutableSequence extends ISequence, IMutableIterable {
      * Resize the sequence.
      *
      * @param integer $size The new size of the collection.
-     * @param mixed $new The value to use for populating new elements when $size > $this->size().
+     * @param mixed $element The value to use for populating new elements when $size > $this->size().
      */
-    public function resize($size, $new = null);
+    public function resize($size, $element = null);
 }
