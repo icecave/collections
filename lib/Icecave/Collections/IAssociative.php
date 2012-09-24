@@ -47,7 +47,7 @@ interface IAssociative extends IIterable
      *
      * @return mixed The value associated with $key, or the $default if nos such key exists.
      */
-    public function getDefault($key, $default = null);
+    public function getWithDefault($key, $default = null);
 
     /**
      * Return the value associated with the first key that exists.
@@ -60,7 +60,7 @@ interface IAssociative extends IIterable
      * @return mixed The value associated with the first key that exists.
      * @throws Exception\UnknownKeyException if none of the keys exist.
      */
-    public function getCascade($key);
+    public function cascade($key);
 
     /**
      * Return the value associated with the first key that exists, or a default value if none of the provided keys exist.
@@ -70,7 +70,7 @@ interface IAssociative extends IIterable
      *
      * @return mixed The value associated with the first key that exists, or $default if none of the keys exist.
      */
-    public function getCascadeDefault($key, $default = null);
+    public function cascadeWithDefault($key, $default = null);
 
     /**
      * Return the value associated with the first existing key in the given sequence.
@@ -83,7 +83,7 @@ interface IAssociative extends IIterable
      * @return mixed The value associated with the first key that exists.
      * @throws Exception\UnknownKeyException if none of the keys exist.
      */
-    public function getCascadeSeq($keys);
+    public function cascadeIterable($keys);
 
     /**
      * Return the value associated with the first existing key in the given sequence, or a default value if none of the provided keys exist.
@@ -96,7 +96,7 @@ interface IAssociative extends IIterable
      *
      * @return mixed The value associated with the first key that exists, or $default if none of the keys exist.
      */
-    public function getCascadeSeqDefault($keys, $default = null);
+    public function cascadeIterableWithDefault($keys, $default = null);
 
     /**
      * Fetch a native array containing the keys in the collection.
@@ -148,5 +148,5 @@ interface IAssociative extends IIterable
      *
      * @return IAssociative The projection of the collection.
      */
-    public function projectSeq($keys);
+    public function projectIterable($keys);
 }

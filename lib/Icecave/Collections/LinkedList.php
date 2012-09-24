@@ -625,7 +625,7 @@ class LinkedList implements IMutableRandomAccess
      */
     public function insert($index, $element)
     {
-        $this->insertSeq($index, array($element));
+        $this->insertMany($index, array($element));
     }
 
     /**
@@ -634,7 +634,7 @@ class LinkedList implements IMutableRandomAccess
      * @param integer $index The index at which the elements are inserted, if index is a negative number the elements are inserted that far from the end of the sequence.
      * @param traversable $elements The elements to insert.
      */
-    public function insertSeq($index, $elements)
+    public function insertMany($index, $elements)
     {
         if ($index < 0) {
             $index += $this->size();
@@ -764,7 +764,7 @@ class LinkedList implements IMutableRandomAccess
         }
 
         $this->removeMany($index, $count);
-        $this->insertSeq($index, $elements);
+        $this->insertMany($index, $elements);
     }
 
     /**
@@ -785,7 +785,7 @@ class LinkedList implements IMutableRandomAccess
         }
 
         $this->removeRange($begin, $end);
-        $this->insertSeq($begin, $elements);
+        $this->insertMany($begin, $elements);
     }
 
     /**

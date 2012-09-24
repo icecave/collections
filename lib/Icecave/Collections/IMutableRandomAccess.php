@@ -34,7 +34,7 @@ interface IMutableRandomAccess extends IRandomAccess, IMutableSequence
      * @param integer $index The index at which the elements are inserted, if index is a negative number the elements are inserted that far from the end of the sequence.
      * @param traversable $elements The elements to insert.
      */
-    public function insertSeq($index, $elements);
+    public function insertMany($index, $elements);
 
     /**
      * Remove the element at a given index.

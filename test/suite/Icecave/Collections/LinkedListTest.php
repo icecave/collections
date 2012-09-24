@@ -614,46 +614,46 @@ class LinkedListTest extends PHPUnit_Framework_TestCase
         $this->_collection->insert(1, 'foo');
     }
 
-    public function testInsertSeq()
+    public function testInsertMany()
     {
         $this->_collection->append(array('foo', 'spam'));
 
-        $this->_collection->insertSeq(1, array('bar', 'frob'));
+        $this->_collection->insertMany(1, array('bar', 'frob'));
 
         $this->assertSame(array('foo', 'bar', 'frob', 'spam'), $this->_collection->elements());
     }
 
-    public function testInsertSeqAtEnd()
+    public function testInsertManyAtEnd()
     {
         $this->_collection->append(array('foo', 'spam'));
 
-        $this->_collection->insertSeq($this->_collection->size(), array('bar', 'frob'));
+        $this->_collection->insertMany($this->_collection->size(), array('bar', 'frob'));
 
         $this->assertSame(array('foo', 'spam', 'bar', 'frob'), $this->_collection->elements());
     }
 
-    public function testInsertSeqWithEmptyElements()
+    public function testInsertManyWithEmptyElements()
     {
         $this->_collection->append(array('foo', 'spam'));
 
-        $this->_collection->insertSeq(1, array());
+        $this->_collection->insertMany(1, array());
 
         $this->assertSame(array('foo', 'spam'), $this->_collection->elements());
     }
 
-    public function testInsertSeqWithNegativeIndex()
+    public function testInsertManyWithNegativeIndex()
     {
         $this->_collection->append(array('foo', 'spam'));
 
-        $this->_collection->insertSeq(-1, array('bar', 'frob'));
+        $this->_collection->insertMany(-1, array('bar', 'frob'));
 
         $this->assertSame(array('foo', 'bar', 'frob', 'spam'), $this->_collection->elements());
     }
 
-    public function testInsertSeqWithInvalidIndex()
+    public function testInsertManyWithInvalidIndex()
     {
         $this->setExpectedException(__NAMESPACE__ . '\Exception\IndexException');
-        $this->_collection->insertSeq(1, array('bar', 'frob'));
+        $this->_collection->insertMany(1, array('bar', 'frob'));
     }
 
     public function testRemove()
