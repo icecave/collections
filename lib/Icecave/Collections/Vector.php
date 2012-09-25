@@ -517,14 +517,7 @@ class Vector implements IMutableRandomAccess
      */
     public function get($index)
     {
-        if ($index < 0) {
-            $index += $this->size;
-        }
-
-        if ($index < 0 || $index >= $this->size) {
-            throw new Exception\IndexException($index);
-        }
-
+        $this->validateIndex($index);
         return $this->elements[$index];
     }
 
@@ -541,18 +534,12 @@ class Vector implements IMutableRandomAccess
      */
     public function slice($index, $count = null)
     {
-        if ($index < 0) {
-            $index += $this->size;
-        }
-
-        if ($index < 0 || $index >= $this->size) {
-            throw new Exception\IndexException($index);
-        }
+        $this->validateIndex($index);
 
         if (null === $count) {
             $end = $this->size;
         } else {
-            $end = $this->constrain(
+            $end = $this->clamp(
                 $index + $count,
                 $index,
                 $this->size
@@ -577,21 +564,8 @@ class Vector implements IMutableRandomAccess
      */
     public function range($begin, $end)
     {
-        if ($begin < 0) {
-            $begin += $this->size;
-        }
-
-        if ($end < 0) {
-            $end += $this->size;
-        }
-
-        if ($begin < 0 || $begin >= $this->size) {
-            throw new Exception\IndexException($begin);
-        }
-
-        if ($end < 0 || $end > $this->size) {
-            throw new Exception\IndexException($end);
-        }
+        $this->validateIndex($begin);
+        $this->validateIndex($end, $this->size);
 
         $result = new static;
 
@@ -640,14 +614,7 @@ class Vector implements IMutableRandomAccess
      */
     public function set($index, $element)
     {
-        if ($index < 0) {
-            $index += $this->size;
-        }
-
-        if ($index < 0 || $index >= $this->size) {
-            throw new Exception\IndexException($index);
-        }
-
+        $this->validateIndex($index);
         $this->elements[$index] = $element;
     }
 
@@ -672,13 +639,7 @@ class Vector implements IMutableRandomAccess
      */
     public function insertMany($index, $elements)
     {
-        if ($index < 0) {
-            $index += $this->size;
-        }
-
-        if ($index < 0 || $index > $this->size) {
-            throw new Exception\IndexException($index);
-        }
+        $this->validateIndex($index, $this->size);
 
         $count = count($elements);
 
@@ -718,15 +679,9 @@ class Vector implements IMutableRandomAccess
      */
     public function removeMany($index, $count = null)
     {
-        if ($index < 0) {
-            $index += $this->size;
-        }
+        $this->validateIndex($index);
 
-        if ($index < 0 || $index >= $this->size) {
-            throw new Exception\IndexException($index);
-        }
-
-        $count = $this->constrain($count, 0, $this->size - $index);
+        $count = $this->clamp($count, 0, $this->size - $index);
         $this->shiftLeft($index + $count, $count);
         $this->size -= $count;
     }
@@ -743,22 +698,8 @@ class Vector implements IMutableRandomAccess
      */
     public function removeRange($begin, $end)
     {
-        if ($begin < 0) {
-            $begin += $this->size;
-        }
-
-        if ($end < 0) {
-            $end += $this->size;
-        }
-
-        if ($begin < 0 || $begin >= $this->size) {
-            throw new Exception\IndexException($begin);
-        }
-
-        if ($end < 0 || $end > $this->size) {
-            throw new Exception\IndexException($end);
-        }
-
+        $this->validateIndex($begin);
+        $this->validateIndex($end, $this->size);
         $this->removeMany($begin, $end - $begin);
     }
 
@@ -773,15 +714,9 @@ class Vector implements IMutableRandomAccess
      */
     public function replace($index, $elements, $count = null)
     {
-        if ($index < 0) {
-            $index += $this->size;
-        }
+        $this->validateIndex($index);
 
-        if ($index < 0 || $index >= $this->size) {
-            throw new Exception\IndexException($index);
-        }
-
-        $count = $this->constrain($count, 0, $this->size - $index);
+        $count = $this->clamp($count, 0, $this->size - $index);
         $diff  = count($elements) - $count;
 
         if ($diff > 0) {
@@ -806,22 +741,8 @@ class Vector implements IMutableRandomAccess
      */
     public function replaceRange($begin, $end, $elements)
     {
-        if ($begin < 0) {
-            $begin += $this->size;
-        }
-
-        if ($end < 0) {
-            $end += $this->size;
-        }
-
-        if ($begin < 0 || $begin >= $this->size) {
-            throw new Exception\IndexException($begin);
-        }
-
-        if ($end < 0 || $end > $this->size) {
-            throw new Exception\IndexException($end);
-        }
-
+        $this->validateIndex($begin);
+        $this->validateIndex($end, $this->size);
         $this->replace($begin, $elements, $end - $begin);
     }
 
@@ -835,21 +756,8 @@ class Vector implements IMutableRandomAccess
      */
     public function swap($index1, $index2)
     {
-        if ($index1 < 0) {
-            $index1 += $this->size;
-        }
-
-        if ($index2 < 0) {
-            $index2 += $this->size;
-        }
-
-        if ($index1 < 0 || $index1 >= $this->size) {
-            throw new Exception\IndexException($index1);
-        }
-
-        if ($index2 < 0 || $index2 >= $this->size) {
-            throw new Exception\IndexException($index2);
-        }
+        $this->validateIndex($index1);
+        $this->validateIndex($index2);
 
         $temp = $this->elements[$index1];
         $this->elements[$index1] = $this->elements[$index2];
@@ -889,11 +797,19 @@ class Vector implements IMutableRandomAccess
         return true;
     }
 
+    /**
+     * @return integer The current reserved capacity of the vector.
+     */
     public function capacity()
     {
         return $this->elements->count();
     }
 
+    /**
+     * Reserve enough memory to hold at least $size elements.
+     *
+     * @return integer $size
+     */
     public function reserve($size)
     {
         if ($size > $this->capacity()) {
@@ -901,9 +817,27 @@ class Vector implements IMutableRandomAccess
         }
     }
 
+    /**
+     * Shrink the reserved memory to match the current vector size.
+     */
     public function shrink()
     {
         $this->elements->setSize($this->size);
+    }
+
+    protected function validateIndex(&$index, $max = null)
+    {
+        if (null === $max) {
+            $max = $this->size - 1;
+        }
+
+        if ($index < 0) {
+            $index += $this->size;
+        }
+
+        if ($index < 0 || $index > $max) {
+            throw new Exception\IndexException($index);
+        }
     }
 
     protected function shiftLeft($index, $count)
@@ -932,7 +866,7 @@ class Vector implements IMutableRandomAccess
         }
     }
 
-    protected function constrain($value, $min, $max)
+    protected function clamp($value, $min, $max)
     {
         if (null === $value) {
             return $max;
