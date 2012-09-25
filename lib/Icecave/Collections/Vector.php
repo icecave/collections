@@ -406,7 +406,7 @@ class Vector implements IMutableRandomAccess
      */
     public function pushFront($element)
     {
-        $this->shiftElementsRight(0, 1);
+        $this->shiftRight(0, 1);
         $this->elements[0] = $element;
         ++$this->size;
     }
@@ -420,7 +420,7 @@ class Vector implements IMutableRandomAccess
     public function popFront()
     {
         $element = $this->front();
-        $this->shiftElementsLeft(1, 1);
+        $this->shiftLeft(1, 1);
         --$this->size;
         return $element;
     }
@@ -448,7 +448,7 @@ class Vector implements IMutableRandomAccess
      */
     public function pushBack($element)
     {
-        $this->reserve($this->size + 1);
+        $this->expand(1);
         $this->elements[$this->size++] = $element;
     }
 
@@ -546,7 +546,7 @@ class Vector implements IMutableRandomAccess
         }
 
         if ($index < 0 || $index >= $this->size) {
-            throw new Exception\IndexException($begin);
+            throw new Exception\IndexException($index);
         }
 
         if (null === $count) {
@@ -680,17 +680,13 @@ class Vector implements IMutableRandomAccess
             throw new Exception\IndexException($index);
         }
 
-        if (!$elements instanceof Countable && !is_array($elements)) {
-            $elements = iterator_to_array($elements);
-        }
-
         $count = count($elements);
 
         if (0 === $count) {
             return;
         }
 
-        $this->shiftElementsRight($index, $count);
+        $this->shiftRight($index, $count);
         $this->size += $count;
 
         foreach ($elements as $element) {
@@ -731,7 +727,7 @@ class Vector implements IMutableRandomAccess
         }
 
         $count = $this->constrain($count, 0, $this->size - $index);
-        $this->shiftElementsLeft($index + $count, $count);
+        $this->shiftLeft($index + $count, $count);
         $this->size -= $count;
     }
 
@@ -763,10 +759,6 @@ class Vector implements IMutableRandomAccess
             throw new Exception\IndexException($end);
         }
 
-        if ($end < $begin) {
-            return;
-        }
-
         $this->removeMany($begin, $end - $begin);
     }
 
@@ -790,17 +782,12 @@ class Vector implements IMutableRandomAccess
         }
 
         $count = $this->constrain($count, 0, $this->size - $index);
-
-        if (!$elements instanceof Countable && !is_array($elements)) {
-            $elements = iterator_to_array($elements);
-        }
-
-        $diff = count($elements) - $count;
+        $diff  = count($elements) - $count;
 
         if ($diff > 0) {
-            $this->shiftElementsRight($index + $count, $diff);
+            $this->shiftRight($index + $count, $diff);
         } elseif ($diff < 0) {
-            $this->shiftElementsLeft($index + $count, abs($diff));
+            $this->shiftLeft($index + $count, abs($diff));
         }
 
         $this->size += $diff;
@@ -919,7 +906,7 @@ class Vector implements IMutableRandomAccess
         $this->elements->setSize($this->size);
     }
 
-    protected function shiftElementsLeft($index, $count)
+    protected function shiftLeft($index, $count)
     {
         $target = $index - $count;
         $source = $index;
@@ -933,9 +920,9 @@ class Vector implements IMutableRandomAccess
         }
     }
 
-    protected function shiftElementsRight($index, $count)
+    protected function shiftRight($index, $count)
     {
-        $this->reserve($this->size + $count);
+        $this->expand($count);
 
         $source = $this->size - 1;
         $target = $source + $count;
@@ -956,6 +943,24 @@ class Vector implements IMutableRandomAccess
         } else {
             return $value;
         }
+    }
+
+    protected function expand($count)
+    {
+        if ($this->capacity() >= $this->size + $count) {
+            return;
+        }
+
+        if (0 === $this->size) {
+            $capacity = $this->size + $count;
+        } else {
+            $capacity = $this->capacity();
+            $target = $this->size + $count;
+            while ($capacity < $target) {
+                $capacity <<= 1;
+            }
+        }
+        $this->reserve($capacity);
     }
 
     private $elements;

@@ -107,6 +107,7 @@ class VectorTest extends PHPUnit_Framework_TestCase
 
     public function testFiltered()
     {
+        $this->_collection->reserve(16); // Inflate capacity to test that iteration stops at size().
         $this->_collection->append(array(1, null, 2, null, 3));
 
         $result = $this->_collection->filtered();
@@ -131,6 +132,7 @@ class VectorTest extends PHPUnit_Framework_TestCase
 
     public function testMap()
     {
+        $this->_collection->reserve(16); // Inflate capacity to test that iteration stops at size().
         $this->_collection->append(array(1, 2, 3));
 
         $result = $this->_collection->map(
@@ -149,6 +151,7 @@ class VectorTest extends PHPUnit_Framework_TestCase
 
     public function testFilter()
     {
+        $this->_collection->reserve(16); // Inflate capacity to test that iteration stops at size().
         $this->_collection->append(array(1, null, 2, null, 3));
 
         $this->_collection->filter();
@@ -171,6 +174,7 @@ class VectorTest extends PHPUnit_Framework_TestCase
 
     public function testApply()
     {
+        $this->_collection->reserve(16); // Inflate capacity to test that iteration stops at size().
         $this->_collection->append(array(1, 2, 3));
 
         $this->_collection->apply(
@@ -269,6 +273,7 @@ class VectorTest extends PHPUnit_Framework_TestCase
 
     public function testReversed()
     {
+        $this->_collection->reserve(16); // Inflate capacity to test that iteration stops at size().
         $this->_collection->append(array(1, 2, 3, 4, 5));
 
         $result = $this->_collection->reversed();
@@ -482,6 +487,16 @@ class VectorTest extends PHPUnit_Framework_TestCase
         $this->assertSame(array(2, 3, 4), $result->elements());
     }
 
+    public function testSliceWithCountOverflow()
+    {
+        $this->_collection->append(array(1, 2, 3, 4, 5));
+
+        $result = $this->_collection->slice(2, 100);
+
+        $this->assertInstanceOf(__NAMESPACE__ . '\ISequence', $result);
+        $this->assertSame(array(3, 4, 5), $result->elements());
+    }
+
     public function testSliceWithNegativeCount()
     {
         $this->_collection->append(array(1, 2, 3, 4, 5));
@@ -510,6 +525,12 @@ class VectorTest extends PHPUnit_Framework_TestCase
 
         $this->assertInstanceOf(__NAMESPACE__ . '\ISequence', $result);
         $this->assertSame(array(3, 4), $result->elements());
+    }
+
+    public function testSliceWithInvalidIndex()
+    {
+        $this->setExpectedException(__NAMESPACE__ . '\Exception\IndexException');
+        $this->_collection->slice(1);
     }
 
     public function testRange()
@@ -542,6 +563,20 @@ class VectorTest extends PHPUnit_Framework_TestCase
         $this->assertSame(array(), $result->elements());
     }
 
+    public function testRangeWithInvalidBegin()
+    {
+        $this->setExpectedException(__NAMESPACE__ . '\Exception\IndexException');
+        $result = $this->_collection->range(1, 3);
+    }
+
+    public function testRangeWithInvalidEnd()
+    {
+        $this->_collection->append(array(1, 2, 3, 4, 5));
+
+        $this->setExpectedException(__NAMESPACE__ . '\Exception\IndexException');
+        $result = $this->_collection->range(1, 100);
+    }
+
     public function testIndexOf()
     {
         $this->_collection->append(array('foo', 'bar', 'spam', 'bar', 'doom'));
@@ -550,6 +585,7 @@ class VectorTest extends PHPUnit_Framework_TestCase
 
     public function testIndexOfWithNoMatch()
     {
+        $this->_collection->reserve(16); // Inflate capacity to test that iteration stops at size().
         $this->assertNull($this->_collection->indexOf('foo'));
     }
 
@@ -698,6 +734,15 @@ class VectorTest extends PHPUnit_Framework_TestCase
         $this->assertSame(array('foo', 'doom'), $this->_collection->elements());
     }
 
+    public function testRemoveManyWithCountOverflow()
+    {
+        $this->_collection->append(array('foo', 'bar', 'spam', 'doom'));
+
+        $this->_collection->removeMany(1, 100);
+
+        $this->assertSame(array('foo'), $this->_collection->elements());
+    }
+
     public function testRemoveManyWithNegativeIndex()
     {
         $this->_collection->append(array('foo', 'bar', 'spam', 'doom'));
@@ -749,10 +794,18 @@ class VectorTest extends PHPUnit_Framework_TestCase
         $this->assertSame(array('foo', 'bar', 'spam', 'doom'), $this->_collection->elements());
     }
 
-    public function testRemoveRangeWithInvalidIndex()
+    public function testRemoveRangeWithInvalidBegin()
     {
         $this->setExpectedException(__NAMESPACE__ . '\Exception\IndexException');
         $this->_collection->removeRange(1, 2);
+    }
+
+    public function testRemoveRangeWithInvalidEnd()
+    {
+        $this->_collection->append(array('foo', 'bar', 'spam', 'doom'));
+
+        $this->setExpectedException(__NAMESPACE__ . '\Exception\IndexException');
+        $this->_collection->removeRange(1, 100);
     }
 
     public function testReplace()
@@ -771,6 +824,15 @@ class VectorTest extends PHPUnit_Framework_TestCase
         $this->_collection->replace(1, array('a', 'b'), 2);
 
         $this->assertSame(array('foo', 'a', 'b', 'doom'), $this->_collection->elements());
+    }
+
+    public function testReplaceWithCountOverflow()
+    {
+        $this->_collection->append(array('foo', 'bar', 'spam', 'doom'));
+
+        $this->_collection->replace(1, array('a', 'b'), 100);
+
+        $this->assertSame(array('foo', 'a', 'b'), $this->_collection->elements());
     }
 
     public function testReplaceWithNegativeIndex()
@@ -824,10 +886,18 @@ class VectorTest extends PHPUnit_Framework_TestCase
         $this->assertSame(array('foo', 'a', 'b', 'bar', 'spam', 'doom'), $this->_collection->elements());
     }
 
-    public function testReplaceRangeWithInvalidIndex()
+    public function testReplaceRangeWithInvalidBegin()
     {
         $this->setExpectedException(__NAMESPACE__ . '\Exception\IndexException');
         $this->_collection->replaceRange(1, 2, array());
+    }
+
+    public function testReplaceRangeWithInvalidEnd()
+    {
+        $this->_collection->append(array('foo', 'bar', 'spam', 'doom'));
+
+        $this->setExpectedException(__NAMESPACE__ . '\Exception\IndexException');
+        $this->_collection->replaceRange(1, 100, array());
     }
 
     public function testSwap()
@@ -839,10 +909,27 @@ class VectorTest extends PHPUnit_Framework_TestCase
         $this->assertSame(array('foo', 'spam', 'bar', 'doom'), $this->_collection->elements());
     }
 
-    public function testSwapWithInvalidIndices()
+    public function testSwapWithNegativeIndices()
+    {
+        $this->_collection->append(array('foo', 'bar', 'spam', 'doom'));
+
+        $this->_collection->swap(-1, -2);
+
+        $this->assertSame(array('foo', 'bar', 'doom', 'spam'), $this->_collection->elements());
+    }
+
+    public function testSwapWithInvalidIndex1()
     {
         $this->setExpectedException(__NAMESPACE__ . '\Exception\IndexException');
         $this->_collection->swap(1, 2);
+    }
+
+    public function testSwapWithInvalidIndex2()
+    {
+        $this->_collection->append(array('foo', 'bar', 'spam', 'doom'));
+
+        $this->setExpectedException(__NAMESPACE__ . '\Exception\IndexException');
+        $this->_collection->swap(1, 100);
     }
 
     public function testTrySwap()
@@ -854,8 +941,64 @@ class VectorTest extends PHPUnit_Framework_TestCase
         $this->assertSame(array('foo', 'spam', 'bar', 'doom'), $this->_collection->elements());
     }
 
-    public function testTrySwapWithInvalidIndices()
+    public function testTrySwapWithNegativeIndices()
+    {
+        $this->_collection->append(array('foo', 'bar', 'spam', 'doom'));
+
+        $this->assertTrue($this->_collection->trySwap(-1, -2));
+
+        $this->assertSame(array('foo', 'bar', 'doom', 'spam'), $this->_collection->elements());
+    }
+
+    public function testTrySwapWithInvalidIndex1()
     {
         $this->assertFalse($this->_collection->trySwap(1, 2));
     }
+
+    public function testTrySwapWithInvalidIndex2()
+    {
+        $this->_collection->append(array('foo', 'bar', 'spam', 'doom'));
+
+        $this->assertFalse($this->_collection->trySwap(1, 100));
+    }
+
+    public function testCapacity()
+    {
+        $this->assertSame(0, $this->_collection->capacity());
+        
+        $this->_collection->pushBack('foo');
+        
+        $this->assertSame(1, $this->_collection->capacity());
+        
+        $this->_collection->pushBack('foo');
+        
+        $this->assertSame(2, $this->_collection->capacity());
+        
+        $this->_collection->pushBack('foo');
+        
+        $this->assertSame(4, $this->_collection->capacity());
+        
+        $this->_collection->pushBack('foo');
+
+        $this->assertSame(4, $this->_collection->capacity());
+    }
+
+    public function testReserve()
+    {
+        $this->_collection->reserve(10);
+        $this->_collection->reserve(5);
+        $this->assertSame(10, $this->_collection->capacity());
+    }
+
+    public function testShrink()
+    {
+        $this->_collection->reserve(10);
+
+        $this->_collection->pushBack('foo');
+
+        $this->_collection->shrink();
+
+        $this->assertSame(1, $this->_collection->capacity());
+    }
+
 }
