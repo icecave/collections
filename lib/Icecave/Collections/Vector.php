@@ -3,9 +3,6 @@ namespace Icecave\Collections;
 
 use SplFixedArray;
 
-/**
- * A doubly-linked list.
- */
 class Vector implements IMutableRandomAccess
 {
     /**
