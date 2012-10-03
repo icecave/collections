@@ -2,49 +2,31 @@
 namespace Icecave\Collections;
 
 use Icecave\Collections\Support\Stringify;
-use SplQueue;
+use SplPriorityQueue;
 
-class Queue implements IQueuedAccess
+/**
+ * A prioritized queue.
+ *
+ * Higher priority values are moved closer to the front of the queue.
+ *
+ * Prioritization is provided by the prioritzation function specified in the constructor, but may
+ * be optionally overridden by the second parameter to {@see PriorityQueue::push()}.
+ */
+class PriorityQueue extends Queue
 {
     /**
+     * @param callable $ranker A function used to generate the priority for a given element.
      * @param traversable|null $collection An iterable type containing the elements to include in this list, or null to create an empty list.
      */
-    public function __construct($collection = null)
+    public function __construct($prioritizer, $collection = null)
     {
-        $this->clear();
-
-        if (null !== $collection) {
-            foreach ($collection as $element) {
-                $this->push($element);
-            }
-        }
+        $this->prioritizer = $prioritizer;
+        parent::__construct($collection);
     }
 
     ///////////////////////////////////
     // Implementation of ICollection //
     ///////////////////////////////////
-
-    /**
-     * Fetch the number of elements in the collection.
-     *
-     * @see ICollection::isEmpty()
-     *
-     * @return integer The number of elements in the collection.
-     */
-    public function size()
-    {
-        return $this->elements->count();
-    }
-
-    /**
-     * Check if the collection is empty.
-     *
-     * @return boolean True if the collection is empty; otherwise, false.
-     */
-    public function isEmpty()
-    {
-        return $this->elements->isEmpty();
-    }
 
     /**
      * Fetch a string representation of the collection.
@@ -57,11 +39,11 @@ class Queue implements IQueuedAccess
     public function __toString()
     {
         if ($this->isEmpty()) {
-            return '<Queue 0>';
+            return '<PriorityQueue 0>';
         }
 
         return sprintf(
-            '<Queue %d [next: %s]>',
+            '<PriorityQueue %d [next: %s]>',
             $this->size(),
             Stringify::stringify($this->next())
         );
@@ -76,7 +58,7 @@ class Queue implements IQueuedAccess
      */
     public function clear()
     {
-        $this->elements = new SplQueue;
+        $this->elements = new SplPriorityQueue;
     }
 
     /////////////////////////////////////
@@ -95,34 +77,22 @@ class Queue implements IQueuedAccess
             throw new Exception\EmptyCollectionException;
         }
 
-        return $this->elements->bottom();
-    }
-
-    /**
-     * Fetch the element at the front of the queue.
-     *
-     * @param mixed &$element Assigned the element at the front of the queue.
-     * @return boolean True is the element exists and was assigned to $element; otherwise, false.
-     */
-    public function tryNext(&$element)
-    {
-        if ($this->isEmpty()) {
-            return false;
-        }
-
-        $element = $this->next();
-
-        return true;
+        return $this->elements->top();
     }
 
     /**
      * Add a new element to the end of the queue.
      *
      * @param mixed $element The element to add.
+     * @param integer|null $priority The priority of the element being added, or NULL to use the queue's prioritizer.
      */
-    public function push($element)
+    public function push($element, $priority = null)
     {
-        $this->elements->push($element);
+        if (null == $priority) {
+            $priority = call_user_func($this->prioritizer, $element);
+        }
+
+        $this->elements->insert($element, $priority);
     }
 
     /**
@@ -137,26 +107,6 @@ class Queue implements IQueuedAccess
             throw new Exception\EmptyCollectionException;
         }
 
-        return $this->elements->dequeue();
+        return $this->elements->extract();
     }
-
-    /**
-     * Remove the element at the front of the queue.
-     *
-     * @param mixed &$element Assigned the removed element.
-     *
-     * @return boolean True if the front element is removed and assigned to $element; otherwise, false.
-     */
-    public function tryPop(&$element = null)
-    {
-        if ($this->isEmpty()) {
-            return false;
-        }
-
-        $element = $this->pop();
-
-        return true;
-    }
-
-    protected $elements;
 }

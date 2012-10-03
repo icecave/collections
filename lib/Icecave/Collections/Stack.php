@@ -110,7 +110,7 @@ class Stack implements IQueuedAccess
             return false;
         }
 
-        $element = $this->elements->top();
+        $element = $this->next();
 
         return true;
     }
@@ -153,7 +153,7 @@ class Stack implements IQueuedAccess
             return false;
         }
 
-        $element = $this->elements->pop();
+        $element = $this->pop();
 
         return true;
     }

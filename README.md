@@ -46,5 +46,5 @@ PHP has long been lacking formal, performant collection types. The addition of t
 * Set
 * MultiSet
 * [Queue](/IcecaveStudios/collections/blob/master/lib/Icecave/Collections/Queue.php): A FIFO queue.
-* PriorityQueue
+* [PriorityQueue](/IcecaveStudios/collections/blob/master/lib/Icecave/Collections/PriorityQueue.php): A prioritized queue.
 * [Stack]((/IcecaveStudios/collections/blob/master/lib/Icecave/Collections/Stack.php): A LIFO stack.
