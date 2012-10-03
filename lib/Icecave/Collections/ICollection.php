@@ -9,6 +9,15 @@ namespace Icecave\Collections;
 interface ICollection
 {
     /**
+     * Fetch the number of elements in the collection.
+     *
+     * @see ICollection::empty()
+     *
+     * @return integer The number of elements in the collection.
+     */
+    public function size();
+
+    /**
      * Check if the collection is empty.
      *
      * @return boolean True if the collection is empty; otherwise, false.

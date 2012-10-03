@@ -13,15 +13,6 @@ namespace Icecave\Collections;
 interface IIterable extends ICollection
 {
     /**
-     * Fetch the number of elements in the collection.
-     *
-     * @see ICollection::empty()
-     *
-     * @return integer The number of elements in the collection.
-     */
-    public function size();
-
-    /**
      * Fetch a native array containing the elements in the collection.
      *
      * @return array An array containing the elements in the collection.

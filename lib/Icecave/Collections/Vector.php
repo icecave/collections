@@ -26,6 +26,18 @@ class Vector implements IMutableRandomAccess
     ///////////////////////////////////
 
     /**
+     * Fetch the number of elements in the collection.
+     *
+     * @see ICollection::empty()
+     *
+     * @return integer The number of elements in the collection.
+     */
+    public function size()
+    {
+        return $this->size;
+    }
+
+    /**
      * Check if the collection is empty.
      *
      * @return boolean True if the collection is empty; otherwise, false.
@@ -82,18 +94,6 @@ class Vector implements IMutableRandomAccess
     /////////////////////////////////
     // Implementation of IIterable //
     /////////////////////////////////
-
-    /**
-     * Fetch the number of elements in the collection.
-     *
-     * @see ICollection::empty()
-     *
-     * @return integer The number of elements in the collection.
-     */
-    public function size()
-    {
-        return $this->size;
-    }
 
     /**
      * Fetch a native array containing the elements in the collection.

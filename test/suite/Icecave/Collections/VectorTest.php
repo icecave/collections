@@ -25,6 +25,21 @@ class VectorTest extends PHPUnit_Framework_TestCase
     // Implementation of ICollection //
     ///////////////////////////////////
 
+    public function testSize()
+    {
+        $this->assertSame(0, $this->_collection->size());
+
+        $this->_collection->pushBack('foo');
+        $this->_collection->pushBack('bar');
+        $this->_collection->pushBack('spam');
+
+        $this->assertSame(3, $this->_collection->size());
+
+        $this->_collection->clear();
+
+        $this->assertSame(0, $this->_collection->size());
+    }
+
     public function testIsEmpty()
     {
         $this->assertTrue($this->_collection->isEmpty());
@@ -69,21 +84,6 @@ class VectorTest extends PHPUnit_Framework_TestCase
     /////////////////////////////////
     // Implementation of IIterable //
     /////////////////////////////////
-
-    public function testSize()
-    {
-        $this->assertSame(0, $this->_collection->size());
-
-        $this->_collection->pushBack('foo');
-        $this->_collection->pushBack('bar');
-        $this->_collection->pushBack('spam');
-
-        $this->assertSame(3, $this->_collection->size());
-
-        $this->_collection->clear();
-
-        $this->assertSame(0, $this->_collection->size());
-    }
 
     public function testElements()
     {
