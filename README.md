@@ -35,12 +35,12 @@
 
 ## Models
 
-* Vector
-* LinkedList
+* [Vector](/IcecaveStudios/collections/blob/master/lib/Icecave/Collections/Vector.php): A mutable sequence with efficient access by position and iteration.
+* [LinkedList](/IcecaveStudios/collections/blob/master/lib/Icecave/Collections/LinkedList.php): A mutable sequence with efficient addition and removal of elements.
 * Map
 * MultiMap
 * Set
 * MultiSet
-* Queue
+* [Queue](/IcecaveStudios/collections/blob/master/lib/Icecave/Collections/Queue.php): A FIFO queue.
 * PriorityQueue
-* Stack
+* [Stack]((/IcecaveStudios/collections/blob/master/lib/Icecave/Collections/Stack.php): A LIFO stack.
