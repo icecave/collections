@@ -19,6 +19,10 @@
 * Use a [PSR-0](https://github.com/php-fig/fig-standards//IcecaveStudios/collections/blob/master/accepted/PSR-0.md)
   compatible autoloader (namespace 'Icecave\Collections' in the 'lib' directory)
 
+## Rationale
+
+PHP has long been lacking formal, performant collection types. The addition of the heap-centric collections to the SPL has gone some way to addressing this problem but has fallen short in some regards. For example, [SplDoublyLinkedList](http://www.php.net/manual/en/class.spldoublylinkedlist.php) does not expose some of the operations that linked lists are designed to solve efficiently, such as insertion and deletion operations in the middle of the collection. There are also several broken abstractions. One example is [SplQueue](http://php.net/manual/en/class.splqueue.php) which exposes methods for manipulating both the head and tail of the queue.
+
 ## Concepts
 
 * [Collection](/IcecaveStudios/collections/blob/master/lib/Icecave/Collections/ICollection.php): A collection is an object that stores other objects (called elements).
