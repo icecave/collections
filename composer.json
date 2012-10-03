@@ -15,7 +15,8 @@
         "php": ">=5.3.0"
     },
     "require-dev": {
-        "phake/phake": "1.*"
+        "phake/phake": "1.*",
+        "eloquent/liberator": "*"
     },
     "autoload": {
         "psr-0": {

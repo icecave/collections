@@ -1,10 +1,10 @@
 <?php
 namespace Icecave\Collections;
 
-use SplDoublyLinkedList;
+use stdClass;
 
 /**
- * A doubly-linked list.
+ * A singly-linked list.
  */
 class LinkedList implements IMutableRandomAccess
 {
@@ -31,7 +31,7 @@ class LinkedList implements IMutableRandomAccess
      */
     public function isEmpty()
     {
-        return $this->elements->isEmpty();
+        return null === $this->head;
     }
 
     /**
@@ -52,13 +52,15 @@ class LinkedList implements IMutableRandomAccess
             ->slice(0, 3)
             ->map('Icecave\Collections\Support\Stringify::stringify');
 
-        if ($this->size() > 3) {
-            $elements->pushBack('...');
+        if ($this->size > 3) {
+            $format = '<LinkedList %d [%s, ...]>';
+        } else {
+            $format = '<LinkedList %d [%s]>';
         }
 
         return sprintf(
-            '<LinkedList %d [%s]>',
-            $this->size(),
+            $format,
+            $this->size,
             implode(', ', $elements->elements())
         );
     }
@@ -72,7 +74,9 @@ class LinkedList implements IMutableRandomAccess
      */
     public function clear()
     {
-        $this->elements = new SplDoublyLinkedList;
+        $this->head = null;
+        $this->tail = null;
+        $this->size = 0;
     }
 
     /////////////////////////////////
@@ -88,7 +92,7 @@ class LinkedList implements IMutableRandomAccess
      */
     public function size()
     {
-        return $this->elements->count();
+        return $this->size;
     }
 
     /**
@@ -98,7 +102,13 @@ class LinkedList implements IMutableRandomAccess
      */
     public function elements()
     {
-        return iterator_to_array($this->elements);
+        $elements = array();
+
+        for ($node = $this->head; null !== $node; $node = $node->next) {
+            $elements[] = $node->element;
+        }
+
+        return $elements;
     }
 
     /**
@@ -110,7 +120,13 @@ class LinkedList implements IMutableRandomAccess
      */
     public function contains($element)
     {
-        return null !== $this->indexOf($element);
+        for ($node = $this->head; null !== $node; $node = $node->next) {
+            if ($element === $node->element) {
+                return true;
+            }
+        }
+
+        return false;
     }
 
     /**
@@ -128,14 +144,15 @@ class LinkedList implements IMutableRandomAccess
             };
         }
 
-        $list = new static;
-        foreach ($this->elements as $element) {
-            if (call_user_func($predicate, $element)) {
-                $list->pushBack($element);
+        $result = new static;
+
+        for ($node = $this->head; null !== $node; $node = $node->next) {
+            if (call_user_func($predicate, $node->element)) {
+                $result->pushBack($node->element);
             }
         }
 
-        return $list;
+        return $result;
     }
 
     /**
@@ -150,13 +167,13 @@ class LinkedList implements IMutableRandomAccess
      */
     public function map($transform)
     {
-        $list = new static;
+        $result = new static;
 
-        foreach ($this->elements as $element) {
-            $list->pushBack(call_user_func($transform, $element));
+        for ($node = $this->head; null !== $node; $node = $node->next) {
+            $result->pushBack(call_user_func($transform, $node->element));
         }
 
-        return $list;
+        return $result;
     }
 
     ////////////////////////////////////////
@@ -176,15 +193,28 @@ class LinkedList implements IMutableRandomAccess
             };
         }
 
-        $elements = new SplDoublyLinkedList;
+        $node = $this->head;
+        $prev = null;
 
-        foreach ($this->elements as $element) {
-            if (call_user_func($predicate, $element)) {
-                $elements->push($element);
+        while ($node) {
+
+            // Keep the node ...
+            if (call_user_func($predicate, $node->element)) {
+                $prev = $node;
+            // Don't keep the node, and it's the first one ...
+            } elseif (null === $prev) {
+                $this->head = $node->next;
+                --$this->size;
+            // Don't keep the node ...
+            } else {
+                $prev->next = $node->next;
+                --$this->size;
             }
+
+            $node = $node->next;
         }
 
-        $this->elements = $elements;
+        $this->tail = $prev;
     }
 
     /**
@@ -196,13 +226,9 @@ class LinkedList implements IMutableRandomAccess
      */
     public function apply($transform)
     {
-        $elements = new SplDoublyLinkedList;
-
-        foreach ($this->elements as $element) {
-            $elements->push(call_user_func($transform, $element));
+        for ($node = $this->head; null !== $node; $node = $node->next) {
+            $node->element = call_user_func($transform, $node->element);
         }
-
-        $this->elements = $elements;
     }
 
     /////////////////////////////////
@@ -220,7 +246,8 @@ class LinkedList implements IMutableRandomAccess
         if ($this->isEmpty()) {
             throw new Exception\EmptyCollectionException;
         }
-        return $this->elements[0];
+
+        return $this->head->element;
     }
 
     /**
@@ -234,7 +261,9 @@ class LinkedList implements IMutableRandomAccess
         if ($this->isEmpty()) {
             return false;
         }
-        $element = $this->elements[0];
+
+        $element = $this->head->element;
+
         return true;
     }
 
@@ -249,7 +278,8 @@ class LinkedList implements IMutableRandomAccess
         if ($this->isEmpty()) {
             throw new Exception\EmptyCollectionException;
         }
-        return $this->elements[$this->size() - 1];
+
+        return $this->tail->element;
     }
 
     /**
@@ -263,7 +293,9 @@ class LinkedList implements IMutableRandomAccess
         if ($this->isEmpty()) {
             return false;
         }
-        $element = $this->elements[$this->size() - 1];
+
+        $element = $this->tail->element;
+
         return true;
     }
 
@@ -284,7 +316,10 @@ class LinkedList implements IMutableRandomAccess
             usort($elements, $comparator);
         }
 
-        return new static($elements);
+        $result = new static;
+        list($result->head, $result->tail, $result->size) = $this->createNodes($elements);
+
+        return $result;
     }
 
     /**
@@ -296,13 +331,13 @@ class LinkedList implements IMutableRandomAccess
      */
     public function reversed()
     {
-        $list = new static;
+        $result = new static;
 
-        foreach ($this->elements as $element) {
-            $list->pushFront($element);
+        for ($node = $this->head; null !== $node; $node = $node->next) {
+            $result->pushFront($node->element);
         }
 
-        return $list;
+        return $result;
     }
 
     /**
@@ -314,15 +349,14 @@ class LinkedList implements IMutableRandomAccess
      */
     public function join($sequence)
     {
-        $list = new static($this->elements);
+        $result = new static;
+        list($result->head, $result->tail, $result->size) = $this->cloneNodes($this->head);
 
         foreach (func_get_args() as $sequence) {
-            foreach ($sequence as $element) {
-                $list->pushBack($element);
-            }
+            $result->insertMany($result->size, $sequence);
         }
 
-        return $list;
+        return $result;
     }
 
     ////////////////////////////////////////
@@ -344,13 +378,7 @@ class LinkedList implements IMutableRandomAccess
             usort($elements, $comparator);
         }
 
-        $list = new SplDoublyLinkedList;
-
-        foreach ($elements as $element) {
-            $list->push($element);
-        }
-
-        $this->elements = $list;
+        list($this->head, $this->tail, $this->size) = $this->createNodes($elements);
     }
 
     /**
@@ -358,13 +386,19 @@ class LinkedList implements IMutableRandomAccess
      */
     public function reverse()
     {
-        $elements = new SplDoublyLinkedList;
+        $prev = null;
+        $node = $this->head;
 
-        foreach ($this->elements as $element) {
-            $elements->unshift($element);
+        while ($node) {
+            $next = $node->next;
+            $node->next = $prev;
+            $prev = $node;
+            $node = $next;
         }
 
-        $this->elements = $elements;
+        $head       = $this->head;
+        $this->head = $this->tail;
+        $this->tail = $head;
     }
 
     /**
@@ -375,9 +409,7 @@ class LinkedList implements IMutableRandomAccess
     public function append($sequence)
     {
         foreach (func_get_args() as $sequence) {
-            foreach ($sequence as $element) {
-                $this->pushBack($element);
-            }
+            $this->insertMany($this->size, $sequence);
         }
     }
 
@@ -388,7 +420,11 @@ class LinkedList implements IMutableRandomAccess
      */
     public function pushFront($element)
     {
-        $this->elements->unshift($element);
+        $this->head = $this->createNode($element, $this->head);
+
+        if (0 === $this->size++) {
+            $this->tail = $this->head;
+        }
     }
 
     /**
@@ -402,7 +438,15 @@ class LinkedList implements IMutableRandomAccess
         if ($this->isEmpty()) {
             throw new Exception\EmptyCollectionException;
         }
-        return $this->elements->shift();
+
+        $element    = $this->head->element;
+        $this->head = $this->head->next;
+
+        if (0 === --$this->size) {
+            $this->tail = null;
+        }
+
+        return $element;
     }
 
     /**
@@ -417,7 +461,9 @@ class LinkedList implements IMutableRandomAccess
         if ($this->isEmpty()) {
             return false;
         }
-        $element = $this->elements->shift();
+
+        $element = $this->popFront();
+
         return true;
     }
 
@@ -428,7 +474,15 @@ class LinkedList implements IMutableRandomAccess
      */
     public function pushBack($element)
     {
-        $this->elements->push($element);
+        $node = $this->createNode($element);
+
+        if (0 === $this->size++) {
+            $this->head = $node;
+        } else {
+            $this->tail->next = $node;
+        }
+
+        $this->tail = $node;
     }
 
     /**
@@ -442,7 +496,18 @@ class LinkedList implements IMutableRandomAccess
         if ($this->isEmpty()) {
             throw new Exception\EmptyCollectionException;
         }
-        return $this->elements->pop();
+
+        $element = $this->tail->element;
+
+        if (0 === --$this->size) {
+            $this->head = null;
+            $this->tail = null;
+        } else {
+            $this->tail = $this->nodeAt($this->size - 1);
+            $this->tail->next = null;
+        }
+
+        return $element;
     }
 
     /**
@@ -457,7 +522,9 @@ class LinkedList implements IMutableRandomAccess
         if ($this->isEmpty()) {
             return false;
         }
-        $element = $this->elements->pop();
+
+        $element = $this->popBack();
+
         return true;
     }
 
@@ -469,12 +536,12 @@ class LinkedList implements IMutableRandomAccess
      */
     public function resize($size, $element = null)
     {
-        while ($this->size() > $size) {
-            $this->popBack();
-        }
-
-        while ($this->size() < $size) {
-            $this->pushBack($element);
+        if ($this->size > $size) {
+            $this->removeMany($size);
+        } else {
+            while ($size--) {
+                $this->pushBack($element);
+            }
         }
     }
 
@@ -492,15 +559,9 @@ class LinkedList implements IMutableRandomAccess
      */
     public function get($index)
     {
-        if ($index < 0) {
-            $index += $this->size();
-        }
+        $this->validateIndex($index);
 
-        if ($index < 0 || $index >= $this->size()) {
-            throw new Exception\IndexException($index);
-        }
-
-        return $this->elements[$index];
+        return $this->nodeAt($index)->element;
     }
 
     /**
@@ -516,19 +577,21 @@ class LinkedList implements IMutableRandomAccess
      */
     public function slice($index, $count = null)
     {
+        $this->validateIndex($index);
+
+        $start = $this->nodeAt($index);
+
         if (null === $count) {
-            $end = $this->size();
+            $stop = null;
         } else {
-            $end = max(
-                $index,
-                min(
-                    $index + $count,
-                    $this->size() + 1
-                )
-            );
+            $count = max(0, min($this->size - $index, $count));
+            $stop = $this->nodeFrom($start, $count);
         }
 
-        return $this->range($index, $end);
+        $result = new static;
+        list($result->head, $result->tail, $result->size) = $this->cloneNodes($start, $stop);
+
+        return $result;
     }
 
     /**
@@ -546,29 +609,10 @@ class LinkedList implements IMutableRandomAccess
      */
     public function range($begin, $end)
     {
-        if ($begin < 0) {
-            $begin += $this->size();
-        }
+        $this->validateIndex($begin);
+        $this->validateIndex($end, $this->size);
 
-        if ($end < 0) {
-            $end += $this->size();
-        }
-
-        if ($begin < 0 || $begin >= $this->size()) {
-            throw new Exception\IndexException($begin);
-        }
-
-        if ($end < 0 || $end > $this->size()) {
-            throw new Exception\IndexException($end);
-        }
-
-        $list = new static;
-
-        while ($begin < $end) {
-            $list->pushBack($this->elements[$begin++]);
-        }
-
-        return $list;
+        return $this->slice($begin, $end - $begin);
     }
 
     /**
@@ -580,11 +624,12 @@ class LinkedList implements IMutableRandomAccess
      */
     public function indexOf($element)
     {
-        foreach ($this->elements as $index => $e) {
-            if ($element === $e) {
+        for ($index = 0, $node = $this->head; null !== $node; ++$index, $node = $node->next) {
+            if ($element === $node->element) {
                 return $index;
             }
         }
+
         return null;
     }
 
@@ -602,15 +647,9 @@ class LinkedList implements IMutableRandomAccess
      */
     public function set($index, $element)
     {
-        if ($index < 0) {
-            $index += $this->size();
-        }
+        $this->validateIndex($index);
 
-        if ($index < 0 || $index >= $this->size()) {
-            throw new Exception\IndexException($index);
-        }
-
-        $this->elements[$index] = $element;
+        $this->nodeAt($index)->element = $element;
     }
 
     /**
@@ -634,34 +673,28 @@ class LinkedList implements IMutableRandomAccess
      */
     public function insertMany($index, $elements)
     {
-        if ($index < 0) {
-            $index += $this->size();
-        }
+        $this->validateIndex($index, $this->size);
 
-        if ($index < 0 || $index > $this->size()) {
-            throw new Exception\IndexException($index);
-        }
+        list($head, $tail, $size) = $this->createNodes($elements);
 
-        // This is very un-list-like behaviour ...
-        if (!is_array($elements)) {
-            $elements = iterator_to_array($elements);
-        }
-
-        $count = count($elements);
-
-        if (0 === $count) {
+        if (null === $head) {
             return;
+        } elseif (0 === $this->size) {
+            $this->head = $head;
+            $this->tail = $tail;
+        } elseif (0 === $index) {
+            $tail->next = $this->head;
+            $this->head = $head;
+        } elseif ($this->size === $index) {
+            $this->tail->next = $head;
+            $this->tail = $tail;
+        } else {
+            $node = $this->nodeAt($index - 1);
+            $tail->next = $node->next;
+            $node->next = $head;
         }
 
-        $this->append(array_fill(0, $count, null));
-
-        for ($i = $this->size() - 1; $i >= $index + $count; --$i) {
-            $this->elements[$i] = $this->elements[$i - $count];
-        }
-
-        foreach ($elements as $element) {
-            $this->elements[$index++] = $element;
-        }
+        $this->size += $size;
     }
 
     /**
@@ -688,19 +721,26 @@ class LinkedList implements IMutableRandomAccess
      */
     public function removeMany($index, $count = null)
     {
-        if (null === $count) {
-            $end = $this->size();
-        } else {
-            $end = max(
-                $index,
-                min(
-                    $index + $count,
-                    $this->size() + 1
-                )
-            );
-        }
+        $this->validateIndex($index);
 
-        $this->removeRange($index, $end);
+        // Remove, but not all the way to the end ...
+        if (null !== $count && $count < $this->size - $index) {
+            $count = max(0, $count);
+            $node = $this->nodeAt($index - 1);
+            $node->next = $this->nodeFrom($node, $count + 1);
+            $this->size -= $count;
+
+        // Remove everything ...
+        } elseif (0 === $index) {
+            $this->clear();
+
+        // Remove everything to the end ...
+        } else {
+            $node = $this->nodeAt($index - 1);
+            $node->next = null;
+            $this->tail = $node;
+            $this->size = $index;
+        }
     }
 
     /**
@@ -715,35 +755,10 @@ class LinkedList implements IMutableRandomAccess
      */
     public function removeRange($begin, $end)
     {
-        if ($begin < 0) {
-            $begin += $this->size();
-        }
+        $this->validateIndex($begin);
+        $this->validateIndex($end, $this->size);
 
-        if ($end < 0) {
-            $end += $this->size();
-        }
-
-        if ($begin < 0 || $begin >= $this->size()) {
-            throw new Exception\IndexException($begin);
-        }
-
-        if ($end < 0 || $end > $this->size()) {
-            throw new Exception\IndexException($end);
-        }
-
-        if ($end < $begin) {
-            return array();
-        }
-
-        $count = $end - $begin;
-
-        for ($index = $begin; $index < $end && $index + $count < $this->size(); ++$index) {
-            $this->elements[$index] = $this->elements[$index + $count];
-        }
-
-        while ($count--) {
-            $this->elements->pop();
-        }
+        $this->removeMany($begin, $end - $begin);
     }
 
     /**
@@ -757,9 +772,7 @@ class LinkedList implements IMutableRandomAccess
      */
     public function replace($index, $elements, $count = null)
     {
-        if ($index < 0) {
-            $index += $this->size();
-        }
+        $this->validateIndex($index);
 
         $this->removeMany($index, $count);
         $this->insertMany($index, $elements);
@@ -774,13 +787,7 @@ class LinkedList implements IMutableRandomAccess
      */
     public function replaceRange($begin, $end, $elements)
     {
-        if ($begin < 0) {
-            $begin += $this->size();
-        }
-
-        if ($end < 0) {
-            $end += $this->size();
-        }
+        $this->validateIndex($begin);
 
         $this->removeRange($begin, $end);
         $this->insertMany($begin, $elements);
@@ -796,25 +803,10 @@ class LinkedList implements IMutableRandomAccess
      */
     public function swap($index1, $index2)
     {
-        if ($index1 < 0) {
-            $index1 += $this->size();
-        }
+        $this->validateIndex($index1);
+        $this->validateIndex($index2);
 
-        if ($index2 < 0) {
-            $index2 += $this->size();
-        }
-
-        if ($index1 < 0 || $index1 >= $this->size()) {
-            throw new Exception\IndexException($index1);
-        }
-
-        if ($index2 < 0 || $index2 >= $this->size()) {
-            throw new Exception\IndexException($index2);
-        }
-
-        $temp = $this->elements[$index1];
-        $this->elements[$index1] = $this->elements[$index2];
-        $this->elements[$index2] = $temp;
+        $this->doSwap($index1, $index2);
     }
 
     /**
@@ -843,12 +835,97 @@ class LinkedList implements IMutableRandomAccess
             return false;
         }
 
-        $temp = $this->elements[$index1];
-        $this->elements[$index1] = $this->elements[$index2];
-        $this->elements[$index2] = $temp;
+        $this->doSwap($index1, $index2);
 
         return true;
     }
 
-    private $elements;
+    protected function doSwap($index1, $index2)
+    {
+        $a = min($index1, $index2);
+        $b = max($index1, $index2);
+
+        $node1 = $this->nodeAt($a);
+        $node2 = $this->nodeFrom($node1, $b - $a);
+
+        $element        = $node1->element;
+        $node1->element = $node2->element;
+        $node2->element = $element;
+    }
+
+    protected function validateIndex(&$index, $max = null)
+    {
+        if (null === $max) {
+            $max = $this->size - 1;
+        }
+
+        if ($index < 0) {
+            $index += $this->size;
+        }
+
+        if ($index < 0 || $index > $max) {
+            throw new Exception\IndexException($index);
+        }
+    }
+
+    protected function createNode($element = null, $next = null)
+    {
+        $node = new stdClass;
+        $node->next = $next;
+        $node->element = $element;
+        return $node;
+    }
+
+    protected function nodeAt($index) {
+        return $this->nodeFrom($this->head, $index);
+    }
+
+    protected function nodeFrom($node, $count) {
+        while ($node && $count--) {
+            $node = $node->next;
+        }
+        return $node;
+    }
+
+    protected function cloneNodes($start, $stop = null) {
+        $head = null;
+        $tail = null;
+        $size = 0;
+
+        for ($node = $start; $stop !== $node; $node = $node->next) {
+            $n = $this->createNode($node->element);
+            if (null === $head) {
+                $head = $n;
+            } else {
+                $tail->next = $n;
+            }
+            $tail = $n;
+            ++$size;
+        }
+
+        return array($head, $tail, $size);
+    }
+
+    protected function createNodes($elements) {
+        $head = null;
+        $tail = null;
+        $size = 0;
+
+        foreach ($elements as $element) {
+            $node = $this->createNode($element);
+            if (null === $head) {
+                $head = $node;
+            } else {
+                $tail->next = $node;
+            }
+            $tail = $node;
+            ++$size;
+        }
+
+        return array($head, $tail, $size);
+    }
+
+    private $head;
+    private $tail;
+    private $size;
 }

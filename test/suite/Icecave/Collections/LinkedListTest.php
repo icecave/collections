@@ -1,6 +1,7 @@
 <?php
 namespace Icecave\Collections;
 
+use Eloquent\Liberator\Liberator;
 use PHPUnit_Framework_TestCase;
 
 class LinkedListTest extends PHPUnit_Framework_TestCase
@@ -8,6 +9,21 @@ class LinkedListTest extends PHPUnit_Framework_TestCase
     public function setUp()
     {
         $this->_collection = new LinkedList;
+    }
+
+    public function tearDown()
+    {
+        // Verify size ...
+        $this->assertSame(count($this->_collection->elements()), $this->_collection->size());
+
+        // Verify tail node ...
+        $head = Liberator::liberate($this->_collection)->head;
+        $tail = Liberator::liberate($this->_collection)->tail;
+
+        for ($node = $head; $node && null !== $node->next; $node = $node->next) {
+            // no-op ...
+        }
+        $this->assertSame($tail, $node);
     }
 
     public function testConstructor()
@@ -101,8 +117,9 @@ class LinkedListTest extends PHPUnit_Framework_TestCase
         $this->assertFalse($this->_collection->contains('foo'));
 
         $this->_collection->pushBack('foo');
+        $this->_collection->pushBack('bar');
 
-        $this->assertTrue($this->_collection->contains('foo'));
+        $this->assertTrue($this->_collection->contains('bar'));
     }
 
     public function testFiltered()
@@ -149,7 +166,7 @@ class LinkedListTest extends PHPUnit_Framework_TestCase
 
     public function testFilter()
     {
-        $this->_collection->append(array(1, null, 2, null, 3));
+        $this->_collection->append(array(null, 1, null, 2, null, 3));
 
         $this->_collection->filter();
 
@@ -352,6 +369,14 @@ class LinkedListTest extends PHPUnit_Framework_TestCase
         $this->assertSame(array(2, 3), $this->_collection->elements());
     }
 
+    public function testPopFrontLastElement()
+    {
+        $this->_collection->append(array(1));
+
+        $this->assertSame(1, $this->_collection->popFront());
+        $this->assertSame(array(), $this->_collection->elements());
+    }
+
     public function testPopFrontWithEmptyCollection()
     {
         $this->setExpectedException(__NAMESPACE__ . '\Exception\EmptyCollectionException');
@@ -390,6 +415,14 @@ class LinkedListTest extends PHPUnit_Framework_TestCase
 
         $this->assertSame(3, $this->_collection->popBack());
         $this->assertSame(array(1, 2), $this->_collection->elements());
+    }
+
+    public function testPopBackLastElement()
+    {
+        $this->_collection->append(array(1));
+
+        $this->assertSame(1, $this->_collection->popBack());
+        $this->assertSame(array(), $this->_collection->elements());
     }
 
     public function testPopBackWithEmptyCollection()
@@ -623,6 +656,15 @@ class LinkedListTest extends PHPUnit_Framework_TestCase
         $this->assertSame(array('foo', 'bar', 'frob', 'spam'), $this->_collection->elements());
     }
 
+    public function testInsertManyAtBegin()
+    {
+        $this->_collection->append(array('foo', 'spam'));
+
+        $this->_collection->insertMany(0, array('bar', 'frob'));
+
+        $this->assertSame(array('bar', 'frob', 'foo', 'spam'), $this->_collection->elements());
+    }
+
     public function testInsertManyAtEnd()
     {
         $this->_collection->append(array('foo', 'spam'));
@@ -689,6 +731,15 @@ class LinkedListTest extends PHPUnit_Framework_TestCase
         $this->assertSame(array('foo'), $this->_collection->elements());
     }
 
+    public function testRemoveManyEverything()
+    {
+        $this->_collection->append(array('foo', 'bar', 'spam', 'doom'));
+
+        $this->_collection->removeMany(0);
+
+        $this->assertSame(array(), $this->_collection->elements());
+    }
+
     public function testRemoveManyWithCount()
     {
         $this->_collection->append(array('foo', 'bar', 'spam', 'doom'));
@@ -696,6 +747,15 @@ class LinkedListTest extends PHPUnit_Framework_TestCase
         $this->_collection->removeMany(1, 2);
 
         $this->assertSame(array('foo', 'doom'), $this->_collection->elements());
+    }
+
+    public function testRemoveManyWithCountToEnd()
+    {
+        $this->_collection->append(array('foo', 'bar', 'spam', 'doom'));
+
+        $this->_collection->removeMany(1, 3);
+
+        $this->assertSame(array('foo'), $this->_collection->elements());
     }
 
     public function testRemoveManyWithNegativeIndex()
@@ -839,10 +899,27 @@ class LinkedListTest extends PHPUnit_Framework_TestCase
         $this->assertSame(array('foo', 'spam', 'bar', 'doom'), $this->_collection->elements());
     }
 
-    public function testSwapWithInvalidIndices()
+    public function testSwapWithNegativeIndices()
+    {
+        $this->_collection->append(array('foo', 'bar', 'spam', 'doom'));
+
+        $this->_collection->swap(-1, -2);
+
+        $this->assertSame(array('foo', 'bar', 'doom', 'spam'), $this->_collection->elements());
+    }
+
+    public function testSwapWithInvalidIndex1()
     {
         $this->setExpectedException(__NAMESPACE__ . '\Exception\IndexException');
         $this->_collection->swap(1, 2);
+    }
+
+    public function testSwapWithInvalidIndex2()
+    {
+        $this->_collection->append(array('foo', 'bar', 'spam', 'doom'));
+
+        $this->setExpectedException(__NAMESPACE__ . '\Exception\IndexException');
+        $this->_collection->swap(1, 100);
     }
 
     public function testTrySwap()
@@ -854,8 +931,24 @@ class LinkedListTest extends PHPUnit_Framework_TestCase
         $this->assertSame(array('foo', 'spam', 'bar', 'doom'), $this->_collection->elements());
     }
 
-    public function testTrySwapWithInvalidIndices()
+    public function testTrySwapWithNegativeIndices()
+    {
+        $this->_collection->append(array('foo', 'bar', 'spam', 'doom'));
+
+        $this->assertTrue($this->_collection->trySwap(-1, -2));
+
+        $this->assertSame(array('foo', 'bar', 'doom', 'spam'), $this->_collection->elements());
+    }
+
+    public function testTrySwapWithInvalidIndex1()
     {
         $this->assertFalse($this->_collection->trySwap(1, 2));
+    }
+
+    public function testTrySwapWithInvalidIndex2()
+    {
+        $this->_collection->append(array('foo', 'bar', 'spam', 'doom'));
+
+        $this->assertFalse($this->_collection->trySwap(1, 100));
     }
 }
