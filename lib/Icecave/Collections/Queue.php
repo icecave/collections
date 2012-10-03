@@ -2,9 +2,9 @@
 namespace Icecave\Collections;
 
 use Icecave\Collections\Support\Stringify;
-use SplStack;
+use SplQueue;
 
-class Stack implements IQueuedAccess
+class Queue implements IQueuedAccess
 {
     /**
      * @param traversable|null $collection An iterable type containing the elements to include in this list, or null to create an empty list.
@@ -57,11 +57,11 @@ class Stack implements IQueuedAccess
     public function __toString()
     {
         if ($this->isEmpty()) {
-            return '<Stack 0>';
+            return '<Queue 0>';
         }
 
         return sprintf(
-            '<Stack %d [next: %s]>',
+            '<Queue %d [next: %s]>',
             $this->size(),
             Stringify::stringify($this->next())
         );
@@ -76,7 +76,7 @@ class Stack implements IQueuedAccess
      */
     public function clear()
     {
-        $this->elements = new SplStack;
+        $this->elements = new SplQueue;
     }
 
     /////////////////////////////////////
@@ -84,9 +84,9 @@ class Stack implements IQueuedAccess
     /////////////////////////////////////
 
     /**
-     * Fetch the element at the top of the stack.
+     * Fetch the element at the front of the queue.
      *
-     * @return mixed The element at the top of the stack.
+     * @return mixed The element at the front of the queue.
      * @throws Exception\EmptyCollectionException if the collection is empty.
      */
     public function next()
@@ -95,13 +95,13 @@ class Stack implements IQueuedAccess
             throw new Exception\EmptyCollectionException;
         }
 
-        return $this->elements->top();
+        return $this->elements->bottom();
     }
 
     /**
-     * Fetch the element at the top of the stack.
+     * Fetch the element at the front of the queue.
      *
-     * @param mixed &$element Assigned the element at the top of the stack.
+     * @param mixed &$element Assigned the element at the front of the queue.
      * @return boolean True is the element exists and was assigned to $element; otherwise, false.
      */
     public function tryNext(&$element)
@@ -110,13 +110,13 @@ class Stack implements IQueuedAccess
             return false;
         }
 
-        $element = $this->elements->top();
+        $element = $this->elements->bottom();
 
         return true;
     }
 
     /**
-     * Add a new element to the end of the stack.
+     * Add a new element to the end of the queue.
      *
      * @param mixed $element The element to add.
      */
@@ -126,9 +126,9 @@ class Stack implements IQueuedAccess
     }
 
     /**
-     * Remove and return the element at the top of the stack.
+     * Remove and return the element at the front of the queue.
      *
-     * @return mixed The element at the top of the sequence.
+     * @return mixed The element at the front of the sequence.
      * @throws Exception\EmptyCollectionException if the collection is empty.
      */
     public function pop()
@@ -137,15 +137,15 @@ class Stack implements IQueuedAccess
             throw new Exception\EmptyCollectionException;
         }
 
-        return $this->elements->pop();
+        return $this->elements->dequeue();
     }
 
     /**
-     * Remove the element at the top of the stack.
+     * Remove the element at the front of the queue.
      *
      * @param mixed &$element Assigned the removed element.
      *
-     * @return boolean True if the top element is removed and assigned to $element; otherwise, false.
+     * @return boolean True if the front element is removed and assigned to $element; otherwise, false.
      */
     public function tryPop(&$element = null)
     {
@@ -153,7 +153,7 @@ class Stack implements IQueuedAccess
             return false;
         }
 
-        $element = $this->elements->pop();
+        $element = $this->elements->dequeue();
 
         return true;
     }

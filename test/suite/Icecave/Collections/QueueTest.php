@@ -3,11 +3,11 @@ namespace Icecave\Collections;
 
 use PHPUnit_Framework_TestCase;
 
-class StackTest extends PHPUnit_Framework_TestCase
+class QueueTest extends PHPUnit_Framework_TestCase
 {
     public function setUp()
     {
-        $this->_collection = new Stack;
+        $this->_collection = new Queue;
     }
 
     public function testConstructor()
@@ -17,11 +17,11 @@ class StackTest extends PHPUnit_Framework_TestCase
 
     public function testConstructorWithArray()
     {
-        $collection = new Stack(array(1, 2, 3));
+        $collection = new Queue(array(1, 2, 3));
         $this->assertSame(3, $collection->size());
-        $this->assertSame(3, $collection->pop());
-        $this->assertSame(2, $collection->pop());
         $this->assertSame(1, $collection->pop());
+        $this->assertSame(2, $collection->pop());
+        $this->assertSame(3, $collection->pop());
         $this->assertSame(0, $collection->size());
     }
 
@@ -59,13 +59,13 @@ class StackTest extends PHPUnit_Framework_TestCase
 
     public function testToString()
     {
-        $this->assertSame('<Stack 0>', $this->_collection->__toString());
+        $this->assertSame('<Queue 0>', $this->_collection->__toString());
 
         $this->_collection->push('foo');
         $this->_collection->push('bar');
         $this->_collection->push('spam');
 
-        $this->assertSame("<Stack 3 [next: 'spam']>", $this->_collection->__toString());
+        $this->assertSame("<Queue 3 [next: 'foo']>", $this->_collection->__toString());
     }
 
     //////////////////////////////////////////
@@ -90,7 +90,7 @@ class StackTest extends PHPUnit_Framework_TestCase
         $this->_collection->push('foo');
         $this->_collection->push('bar');
 
-        $this->assertSame('bar', $this->_collection->next());
+        $this->assertSame('foo', $this->_collection->next());
     }
 
     public function testNextWithEmptyCollection()
@@ -106,7 +106,7 @@ class StackTest extends PHPUnit_Framework_TestCase
 
         $element = null;
         $this->assertTrue($this->_collection->tryNext($element));
-        $this->assertSame('bar', $element);
+        $this->assertSame('foo', $element);
     }
 
     public function testTryNextWithEmptyCollection()
@@ -121,7 +121,7 @@ class StackTest extends PHPUnit_Framework_TestCase
         $this->_collection->push('foo');
         $this->_collection->push('bar');
 
-        $this->assertSame('bar', $this->_collection->pop());
+        $this->assertSame('foo', $this->_collection->pop());
         $this->assertSame(1, $this->_collection->size());
     }
 
@@ -138,7 +138,7 @@ class StackTest extends PHPUnit_Framework_TestCase
 
         $element = null;
         $this->assertTrue($this->_collection->tryPop($element));
-        $this->assertSame('bar', $element);
+        $this->assertSame('foo', $element);
         $this->assertSame(1, $this->_collection->size());
     }
 

@@ -965,19 +965,19 @@ class VectorTest extends PHPUnit_Framework_TestCase
     public function testCapacity()
     {
         $this->assertSame(0, $this->_collection->capacity());
-        
+
         $this->_collection->pushBack('foo');
-        
+
         $this->assertSame(1, $this->_collection->capacity());
-        
+
         $this->_collection->pushBack('foo');
-        
+
         $this->assertSame(2, $this->_collection->capacity());
-        
+
         $this->_collection->pushBack('foo');
-        
+
         $this->assertSame(4, $this->_collection->capacity());
-        
+
         $this->_collection->pushBack('foo');
 
         $this->assertSame(4, $this->_collection->capacity());

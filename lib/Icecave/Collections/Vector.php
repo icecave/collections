@@ -28,7 +28,7 @@ class Vector implements IMutableRandomAccess
     /**
      * Fetch the number of elements in the collection.
      *
-     * @see ICollection::empty()
+     * @see ICollection::isEmpty()
      *
      * @return integer The number of elements in the collection.
      */
