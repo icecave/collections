@@ -1,0 +1,87 @@
+<?php
+namespace Icecave\Collections;
+
+/**
+ * A basic associative key generator that allows for keys of any type.
+ *
+ * Given any value, generates a value suitable for use as an identifying key in a PHP array.
+ */
+class AssociativeKeyGenerator
+{
+    /**
+     * @param callable $arrayHashFunction The function to use for generating a hash of array keys and values.
+     * @param callable $objectHashFunction The function to use for generating a hash of objects.
+     */
+    public function __construct($arrayHashFunction = 'md5', $objectHashFunction = 'spl_object_hash')
+    {
+        $this->arrayHashFunction = $arrayHashFunction;
+        $this->objectHashFunction = $objectHashFunction;
+    }
+
+    /**
+     * @param mixed $value The value for which a key is required.
+     *
+     * @return int|string The key to use.
+     */
+    public function __invoke($value)
+    {
+        return $this->generate($value);
+    }
+
+    /**
+     * @param mixed $value The value for which a key is required.
+     *
+     * @return int|string The key to use.
+     */
+    public function generate($value)
+    {
+        switch (gettype($value)) {
+            case 'boolean':
+                return 'b' . ($value ? 't' : 'f');
+            case 'integer':
+                return $value;
+            case 'double':
+                return 'd' . $value;
+            case 'string':
+                return 's' . $value;
+            case 'resource':
+                return 'r' . intval($value);
+            case 'NULL':
+                return 'n';
+            case 'object':
+                return 'o' . call_user_func($this->objectHashFunction, $value);
+        }
+        
+        return $this->generateForArray($value);
+    }
+
+    protected function generateForArray(array $value)
+    {
+        if (empty($value)) {
+            return 'a';
+        }
+
+        $keyHashes = '';
+        $valueHashes = '';
+        $isAssociative = false;
+        $nextIndex = 0;
+
+        foreach ($value as $key => $value) {
+            $keyHashes .= $this->generate($key) . ',';
+            $valueHashes .= $this->generate($value) . ',';
+
+            if (!$isAssociative && $key !== $nextIndex++) {
+                $isAssociative = true;
+            }
+        }
+
+        if ($isAssociative) {
+            return 'a' . call_user_func($this->arrayHashFunction, $keyHashes . $valueHashes);
+        }
+
+        return 'v' . call_user_func($this->arrayHashFunction, $valueHashes);
+    }
+
+    private $arrayHashFunction;
+    private $objectHashFunction;
+}
