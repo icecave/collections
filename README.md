@@ -37,7 +37,7 @@ PHP has long been lacking formal, performant collection types. The addition of t
 * [Mutable Associative Collection](/IcecaveStudios/collections/blob/master/lib/Icecave/Collections/MutableAssociativeInterface.php): An associative collection that supports insertion and removal of elements.
 * [Queued Access](/IcecaveStudios/collections/blob/master/lib/Icecave/Collections/QueuedAccessInterface.php): A F/LIFO buffer (ie, stacks and queues).
 
-## Models
+## Collections
 
 * [Vector](/IcecaveStudios/collections/blob/master/lib/Icecave/Collections/Vector.php): A mutable sequence with efficient access by position and iteration.
 * [LinkedList](/IcecaveStudios/collections/blob/master/lib/Icecave/Collections/LinkedList.php): A mutable sequence with efficient addition and removal of elements.
@@ -46,3 +46,8 @@ PHP has long been lacking formal, performant collection types. The addition of t
 * [Queue](/IcecaveStudios/collections/blob/master/lib/Icecave/Collections/Queue.php): A FIFO queue.
 * [PriorityQueue](/IcecaveStudios/collections/blob/master/lib/Icecave/Collections/PriorityQueue.php): A prioritized queue.
 * [Stack]((/IcecaveStudios/collections/blob/master/lib/Icecave/Collections/Stack.php): A LIFO stack.
+
+## Iterators
+
+* [AssociativeIterator](/IcecaveStudios/collections/blob/master/lib/Icecave/Collections/Iterator/AssociativeIterator.php): An iterator for iterating any associative collection.
+* [RandomAccessIterator](/IcecaveStudios/collections/blob/master/lib/Icecave/Collections/Iterator/RandomAccessIterator.php): An iterator for iterating any random access collection.
