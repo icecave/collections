@@ -148,4 +148,23 @@ class StackTest extends PHPUnit_Framework_TestCase
         $this->assertFalse($this->_collection->tryPop($element));
         $this->assertSame('<not null>', $element); // Reference should not be changed on failure.
     }
+
+    /////////////////////////////////
+    // Implementation of Countable //
+    /////////////////////////////////
+
+    public function testCount()
+    {
+        $this->assertSame(0, count($this->_collection));
+
+        $this->_collection->push('foo');
+        $this->_collection->push('bar');
+        $this->_collection->push('spam');
+
+        $this->assertSame(3, count($this->_collection));
+
+        $this->_collection->clear();
+
+        $this->assertSame(0, count($this->_collection));
+    }
 }

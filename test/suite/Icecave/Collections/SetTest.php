@@ -198,6 +198,29 @@ class SetTest extends PHPUnit_Framework_TestCase
         $this->assertSame(array(2, 3, 4), $this->_collection->elements());
     }
 
+    /////////////////////////////////
+    // Implementation of Countable //
+    /////////////////////////////////
+
+    public function testCount()
+    {
+        $this->assertSame(0, count($this->_collection));
+
+        $this->_collection->add('a');
+        $this->_collection->add('b');
+        $this->_collection->add('c');
+
+        $this->assertSame(3, count($this->_collection));
+
+        $this->_collection->clear();
+
+        $this->assertSame(0, count($this->_collection));
+    }
+
+    ////////////////////////////
+    // Model specific methods //
+    ////////////////////////////
+
     public function testCascade()
     {
         $this->_collection->add('b');

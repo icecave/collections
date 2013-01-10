@@ -1,9 +1,10 @@
 <?php
 namespace Icecave\Collections;
 
+use Countable;
 use Icecave\Collections\Support\Stringify;
 
-class Map implements MutableAssociativeInterface
+class Map implements MutableAssociativeInterface, Countable
 {
     /**
      * @param traversable<tuple<mixed, mixed>>|null $collection An iterable type containing the elements to include in this map, or null to create an empty map.
@@ -808,6 +809,15 @@ class Map implements MutableAssociativeInterface
 
         unset($this->elements[$hash1]);
         return true;
+    }
+
+    /////////////////////////////////
+    // Implementation of Countable //
+    /////////////////////////////////
+
+    public function count()
+    {
+        return $this->size();
     }
 
     ////////////////////////////

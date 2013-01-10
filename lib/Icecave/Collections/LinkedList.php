@@ -1,12 +1,13 @@
 <?php
 namespace Icecave\Collections;
 
+use Countable;
 use stdClass;
 
 /**
  * A singly-linked list.
  */
-class LinkedList implements MutableRandomAccessInterface
+class LinkedList implements MutableRandomAccessInterface, Countable
 {
     /**
      * @param traversable|null $collection An iterable type containing the elements to include in this list, or null to create an empty list.
@@ -838,6 +839,15 @@ class LinkedList implements MutableRandomAccessInterface
         $this->doSwap($index1, $index2);
 
         return true;
+    }
+
+    /////////////////////////////////
+    // Implementation of Countable //
+    /////////////////////////////////
+
+    public function count()
+    {
+        return $this->size();
     }
 
     ////////////////////////////

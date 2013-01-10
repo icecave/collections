@@ -1,6 +1,7 @@
 <?php
 namespace Icecave\Collections;
 
+use Countable;
 use Icecave\Collections\Support\Stringify;
 use SplPriorityQueue;
 

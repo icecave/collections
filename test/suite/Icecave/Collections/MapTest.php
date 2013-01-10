@@ -598,27 +598,22 @@ class MapTest extends PHPUnit_Framework_TestCase
         $this->assertSame(array(array('a', 1), array('b', 2)), $this->_collection->elements());
     }
 
-    /**
-     * @dataProvider mixedTypeKeys
-     */
-    public function testKeyTypeSupport($key)
-    {
-        $this->_collection->set($key, '<value>');
-        $this->assertSame('<value>', $this->_collection->get($key));
-    }
+    /////////////////////////////////
+    // Implementation of Countable //
+    /////////////////////////////////
 
-    public function mixedTypeKeys()
+    public function testCount()
     {
-        return array(
-            array(true),
-            array(false),
-            array(100),
-            array(123.45),
-            array('foo'),
-            array(fopen(__FILE__, 'r')),
-            array(null),
-            array(new \stdClass),
-            array(array(1, 2, 3))
-        );
+        $this->assertSame(0, count($this->_collection));
+
+        $this->_collection->set('a', 1);
+        $this->_collection->set('b', 2);
+        $this->_collection->set('c', 3);
+
+        $this->assertSame(3, count($this->_collection));
+
+        $this->_collection->clear();
+
+        $this->assertSame(0, count($this->_collection));
     }
 }

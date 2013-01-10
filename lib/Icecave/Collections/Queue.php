@@ -1,10 +1,11 @@
 <?php
 namespace Icecave\Collections;
 
+use Countable;
 use Icecave\Collections\Support\Stringify;
 use SplQueue;
 
-class Queue implements QueuedAccessInterface
+class Queue implements QueuedAccessInterface, Countable
 {
     /**
      * @param traversable|null $collection An iterable type containing the elements to include in this list, or null to create an empty list.
@@ -156,6 +157,15 @@ class Queue implements QueuedAccessInterface
         $element = $this->pop();
 
         return true;
+    }
+
+    /////////////////////////////////
+    // Implementation of Countable //
+    /////////////////////////////////
+
+    public function count()
+    {
+        return $this->size();
     }
 
     protected $elements;

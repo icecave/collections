@@ -951,4 +951,23 @@ class LinkedListTest extends PHPUnit_Framework_TestCase
 
         $this->assertFalse($this->_collection->trySwap(1, 100));
     }
+
+    /////////////////////////////////
+    // Implementation of Countable //
+    /////////////////////////////////
+
+    public function testCount()
+    {
+        $this->assertSame(0, count($this->_collection));
+
+        $this->_collection->pushBack('foo');
+        $this->_collection->pushBack('bar');
+        $this->_collection->pushBack('spam');
+
+        $this->assertSame(3, count($this->_collection));
+
+        $this->_collection->clear();
+
+        $this->assertSame(0, count($this->_collection));
+    }
 }
