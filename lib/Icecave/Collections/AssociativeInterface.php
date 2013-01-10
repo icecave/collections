@@ -6,7 +6,7 @@ namespace Icecave\Collections;
  *
  * Each element in an associative collection is a 2-tuple of key and value.
  */
-interface IAssociative extends IIterable
+interface AssociativeInterface extends IterableInterface
 {
     /**
      * Check if the collection contains an element with the given key.
@@ -73,7 +73,7 @@ interface IAssociative extends IIterable
     /**
      * Return the value associated with the first existing key in the given sequence.
      *
-     * Behaves as per {@see IAssociative::cascade()} except that the keys are provided as
+     * Behaves as per {@see AssociativeInterface::cascade()} except that the keys are provided as
      * a traversable (eg, array) instead of via a variable argument list.
      *
      * @param traversable $keys The list of keys.
@@ -86,7 +86,7 @@ interface IAssociative extends IIterable
     /**
      * Return the value associated with the first existing key in the given sequence, or a default value if none of the provided keys exist.
      *
-     * Behaves as per {@see IAssociative::cascadeDefault()} except that the keys are provided as
+     * Behaves as per {@see AssociativeInterface::cascadeDefault()} except that the keys are provided as
      * a traversable (eg, array) instead of via a variable argument list.
      *
      * @param traversable $keys The list of keys.
@@ -99,7 +99,7 @@ interface IAssociative extends IIterable
     /**
      * Fetch a native array containing the keys in the collection.
      *
-     * There is no guarantee that the order of keys will match the order of values produced by {@see IAssociative::values()}.
+     * There is no guarantee that the order of keys will match the order of values produced by {@see AssociativeInterface::values()}.
      *
      * @return array A native array containing the keys in the collection.
      */
@@ -108,7 +108,7 @@ interface IAssociative extends IIterable
     /**
      * Fetch a native array containing the values in the collection.
      *
-     * There is no guarantee that the order of values will match the order of keys produced by {@see IAssociative::keys()}.
+     * There is no guarantee that the order of values will match the order of keys produced by {@see AssociativeInterface::keys()}.
      *
      * @return array A native array containing the values in the collection.
      */
@@ -120,11 +120,11 @@ interface IAssociative extends IIterable
      * Any existing keys are overwritten from left to right.
      * It is not guaranteed that the concrete type of the merged collection will match this collection.
      *
-     * @param IAssociative,... $collection The collections to combine.
+     * @param AssociativeInterface,... $collection The collections to combine.
      *
-     * @return IAssociative The merged collection.
+     * @return AssociativeInterface The merged collection.
      */
-    public function combine(IAssociative $collection);
+    public function combine(AssociativeInterface $collection);
 
     /**
      * Create a new collection containing the elements associated with the provided keys.
@@ -133,7 +133,7 @@ interface IAssociative extends IIterable
      *
      * @param mixed,... $key The keys to include in the new collection.
      *
-     * @return IAssociative The projection of the collection.
+     * @return AssociativeInterface The projection of the collection.
      */
     public function project($key);
 
@@ -144,7 +144,7 @@ interface IAssociative extends IIterable
      *
      * @param traversable $keys The keys to include in the new collection.
      *
-     * @return IAssociative The projection of the collection.
+     * @return AssociativeInterface The projection of the collection.
      */
     public function projectIterable($keys);
 }

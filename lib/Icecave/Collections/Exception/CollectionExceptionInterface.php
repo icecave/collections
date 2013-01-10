@@ -4,6 +4,6 @@ namespace Icecave\Collections\Exception;
 /**
  * A common interface for all collection exceptions.
  */
-interface ICollectionException
+interface CollectionExceptionInterface
 {
 }

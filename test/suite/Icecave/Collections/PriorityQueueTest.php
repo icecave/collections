@@ -22,9 +22,9 @@ class PriorityQueueTest extends PHPUnit_Framework_TestCase
         $this->assertSame(3, $collection->size());
     }
 
-    ///////////////////////////////////
-    // Implementation of ICollection //
-    ///////////////////////////////////
+    ///////////////////////////////////////////
+    // Implementation of CollectionInterface //
+    ///////////////////////////////////////////
 
     public function testSize()
     {
@@ -65,9 +65,9 @@ class PriorityQueueTest extends PHPUnit_Framework_TestCase
         $this->assertSame("<PriorityQueue 3 [next: 3]>", $this->_collection->__toString());
     }
 
-    //////////////////////////////////////////
-    // Implementation of IMutableCollection //
-    //////////////////////////////////////////
+    //////////////////////////////////////////////////
+    // Implementation of MutableCollectionInterface //
+    //////////////////////////////////////////////////
 
     public function testClear()
     {
@@ -78,9 +78,9 @@ class PriorityQueueTest extends PHPUnit_Framework_TestCase
         $this->assertTrue($this->_collection->isEmpty());
     }
 
-    /////////////////////////////////////
-    // Implementation of IQueuedAccess //
-    /////////////////////////////////////
+    /////////////////////////////////////////////
+    // Implementation of QueuedAccessInterface //
+    /////////////////////////////////////////////
 
     public function testNext()
     {

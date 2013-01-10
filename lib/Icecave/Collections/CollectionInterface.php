@@ -4,12 +4,12 @@ namespace Icecave\Collections;
 /**
  * A collection is an object that stores other objects (called elements).
  */
-interface ICollection
+interface CollectionInterface
 {
     /**
      * Fetch the number of elements in the collection.
      *
-     * @see ICollection::isEmpty()
+     * @see CollectionInterface::isEmpty()
      *
      * @return integer The number of elements in the collection.
      */

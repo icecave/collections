@@ -25,9 +25,9 @@ class StackTest extends PHPUnit_Framework_TestCase
         $this->assertSame(0, $collection->size());
     }
 
-    ///////////////////////////////////
-    // Implementation of ICollection //
-    ///////////////////////////////////
+    ///////////////////////////////////////////
+    // Implementation of CollectionInterface //
+    ///////////////////////////////////////////
 
     public function testSize()
     {
@@ -68,9 +68,9 @@ class StackTest extends PHPUnit_Framework_TestCase
         $this->assertSame("<Stack 3 [next: 'spam']>", $this->_collection->__toString());
     }
 
-    //////////////////////////////////////////
-    // Implementation of IMutableCollection //
-    //////////////////////////////////////////
+    //////////////////////////////////////////////////
+    // Implementation of MutableCollectionInterface //
+    //////////////////////////////////////////////////
 
     public function testClear()
     {
@@ -81,9 +81,9 @@ class StackTest extends PHPUnit_Framework_TestCase
         $this->assertTrue($this->_collection->isEmpty());
     }
 
-    /////////////////////////////////////
-    // Implementation of IQueuedAccess //
-    /////////////////////////////////////
+    /////////////////////////////////////////////
+    // Implementation of QueuedAccessInterface //
+    /////////////////////////////////////////////
 
     public function testNext()
     {

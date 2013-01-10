@@ -4,7 +4,7 @@ namespace Icecave\Collections;
 /**
  * A [LF]IFO queue.
  */
-interface IQueuedAccess extends IMutableCollection
+interface QueuedAccessInterface extends MutableCollectionInterface
 {
     /**
      * Fetch the element next to be returned by pop(), without removing it from the collection.

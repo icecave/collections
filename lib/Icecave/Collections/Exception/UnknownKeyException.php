@@ -8,7 +8,7 @@ use OutOfBoundsException;
 /**
  * The key of an associative collection was not found in the set of existing keys.
  */
-class UnknownKeyException extends OutOfBoundsException implements ICollectionException
+class UnknownKeyException extends OutOfBoundsException implements CollectionExceptionInterface
 {
     /**
      * @param mixed $key The unknown key.

@@ -4,7 +4,7 @@ namespace Icecave\Collections;
 /**
  * A Sequence is a variable-sized collection whose elements are arranged in a strict linear order.
  */
-interface ISequence extends ICollection
+interface SequenceInterface extends CollectionInterface
 {
     /**
      * Fetch the first element in the sequence.
@@ -45,7 +45,7 @@ interface ISequence extends ICollection
      *
      * @param callable|null $comparator A strcmp style comparator function.
      *
-     * @return ISequence
+     * @return SequenceInterface
      */
     public function sorted($comparator = null);
 
@@ -54,7 +54,7 @@ interface ISequence extends ICollection
      *
      * It is not guaranteed that the concrete type of the reversed collection will match this collection.
      *
-     * @return ISequence The reversed sequence.
+     * @return SequenceInterface The reversed sequence.
      */
     public function reversed();
 
@@ -63,7 +63,7 @@ interface ISequence extends ICollection
      *
      * @param traversable,... The sequence(s) to append.
      *
-     * @return ISequence A new sequence containing all elements from this sequence and $sequence.
+     * @return SequenceInterface A new sequence containing all elements from this sequence and $sequence.
      */
     public function join($sequence);
 }

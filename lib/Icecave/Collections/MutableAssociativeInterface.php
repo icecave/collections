@@ -9,15 +9,15 @@ namespace Icecave\Collections;
  * Mutable associative collections support insertion and removal of elements, but differ from sequences in that they do
  * not provide a mechanism for inserting an element at a specific position.
  */
-interface IMutableAssociative extends IAssociative, IMutableIterable
+interface MutableAssociativeInterface extends AssociativeInterface, MutableIterableInterface
 {
     /**
      * Associate a value with a key.
      *
      * Associates $value with $key regardless of whether or not $key already exists.
      *
-     * @see IMutableAssociative::add()
-     * @see IMutableAssociative::replace()
+     * @see MutableAssociativeInterface::add()
+     * @see MutableAssociativeInterface::replace()
      *
      * @param mixed $key The element's key.
      * @param mixed $value The element's value.
@@ -29,9 +29,9 @@ interface IMutableAssociative extends IAssociative, IMutableIterable
      *
      * Associates $value with $key only if $key does not already exist.
      *
-     * @see IMutableAssociative::set()
-     * @see IMutableAssociative::replace()
-     * @see IMutableAssociative::tryAdd()
+     * @see MutableAssociativeInterface::set()
+     * @see MutableAssociativeInterface::replace()
+     * @see MutableAssociativeInterface::tryAdd()
      *
      * @param mixed $key The element's key.
      * @param mixed $value The element's value.
@@ -45,7 +45,7 @@ interface IMutableAssociative extends IAssociative, IMutableIterable
      *
      * Associates $value with $key only if $key does not already exist.
      *
-     * @see IMutableAssociative::add()
+     * @see MutableAssociativeInterface::add()
      *
      * @param mixed $key The element's key.
      * @param mixed $value The element's value.
@@ -59,9 +59,9 @@ interface IMutableAssociative extends IAssociative, IMutableIterable
      *
      * Associates $value with $key only if $key already exists.
      *
-     * @see IMutableAssociative::add()
-     * @see IMutableAssociative::set()
-     * @see IMutableAssociative::tryReplace()
+     * @see MutableAssociativeInterface::add()
+     * @see MutableAssociativeInterface::set()
+     * @see MutableAssociativeInterface::tryReplace()
      *
      * @param mixed $key The element's key.
      * @param mixed $value The element's value.
@@ -76,7 +76,7 @@ interface IMutableAssociative extends IAssociative, IMutableIterable
      *
      * Associates $value with $key only if $key already exists.
      *
-     * @see IMutableAssociative::replace()
+     * @see MutableAssociativeInterface::replace()
      *
      * @param mixed $key The element's key.
      * @param mixed $value The element's value.
@@ -111,9 +111,9 @@ interface IMutableAssociative extends IAssociative, IMutableIterable
      *
      * Any existing keys are overwritten from left to right.
      *
-     * @param IAssociative,... $collection The collections to merge.
+     * @param AssociativeInterface,... $collection The collections to merge.
      */
-    public function merge(IAssociative $collection);
+    public function merge(AssociativeInterface $collection);
 
     /**
      * Swap the elements associated with two keys.
@@ -138,9 +138,9 @@ interface IMutableAssociative extends IAssociative, IMutableIterable
     /**
      * Move an element from one key to another, replacing the target key if it already exists.
      *
-     * @see IMutableAssociative::tryMove()
-     * @see IMutableAssociative::rename()
-     * @see IMutableAssociative::tryRename()
+     * @see MutableAssociativeInterface::tryMove()
+     * @see MutableAssociativeInterface::rename()
+     * @see MutableAssociativeInterface::tryRename()
      *
      * @param mixed $source The existing key.
      * @param mixed $target The new key.
@@ -152,9 +152,9 @@ interface IMutableAssociative extends IAssociative, IMutableIterable
     /**
      * Move an element from one key to another, replacing the target key if it already exists.
      *
-     * @see IMutableAssociative::move()
-     * @see IMutableAssociative::rename()
-     * @see IMutableAssociative::tryRename()
+     * @see MutableAssociativeInterface::move()
+     * @see MutableAssociativeInterface::rename()
+     * @see MutableAssociativeInterface::tryRename()
      *
      * @param mixed $source The existing key.
      * @param mixed $target The new key.
@@ -168,9 +168,9 @@ interface IMutableAssociative extends IAssociative, IMutableIterable
      *
      * It is an error if the target key already exists.
      *
-     * @see IMutableAssociative::move()
-     * @see IMutableAssociative::tryMove()
-     * @see IMutableAssociative::tryRename()
+     * @see MutableAssociativeInterface::move()
+     * @see MutableAssociativeInterface::tryMove()
+     * @see MutableAssociativeInterface::tryRename()
      *
      * @param mixed $source The existing key.
      * @param mixed $target The new key.
@@ -185,9 +185,9 @@ interface IMutableAssociative extends IAssociative, IMutableIterable
      *
      * It is an error if the target key already exists.
      *
-     * @see IMutableAssociative::move()
-     * @see IMutableAssociative::tryMove()
-     * @see IMutableAssociative::rename()
+     * @see MutableAssociativeInterface::move()
+     * @see MutableAssociativeInterface::tryMove()
+     * @see MutableAssociativeInterface::rename()
      *
      * @param mixed $source The existing key.
      * @param mixed $target The new key.

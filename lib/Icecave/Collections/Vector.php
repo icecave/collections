@@ -3,7 +3,7 @@ namespace Icecave\Collections;
 
 use SplFixedArray;
 
-class Vector implements IMutableRandomAccess
+class Vector implements MutableRandomAccessInterface
 {
     /**
      * @param traversable|null $collection An iterable type containing the elements to include in this list, or null to create an empty list.
@@ -21,14 +21,14 @@ class Vector implements IMutableRandomAccess
         }
     }
 
-    ///////////////////////////////////
-    // Implementation of ICollection //
-    ///////////////////////////////////
+    ///////////////////////////////////////////
+    // Implementation of CollectionInterface //
+    ///////////////////////////////////////////
 
     /**
      * Fetch the number of elements in the collection.
      *
-     * @see ICollection::isEmpty()
+     * @see CollectionInterface::isEmpty()
      *
      * @return integer The number of elements in the collection.
      */
@@ -78,9 +78,9 @@ class Vector implements IMutableRandomAccess
         );
     }
 
-    //////////////////////////////////////////
-    // Implementation of IMutableCollection //
-    //////////////////////////////////////////
+    //////////////////////////////////////////////////
+    // Implementation of MutableCollectionInterface //
+    //////////////////////////////////////////////////
 
     /**
      * Remove all elements from the collection.
@@ -91,9 +91,9 @@ class Vector implements IMutableRandomAccess
         $this->size = 0;
     }
 
-    /////////////////////////////////
-    // Implementation of IIterable //
-    /////////////////////////////////
+    /////////////////////////////////////////
+    // Implementation of IterableInterface //
+    /////////////////////////////////////////
 
     /**
      * Fetch a native array containing the elements in the collection.
@@ -162,7 +162,7 @@ class Vector implements IMutableRandomAccess
      *
      * @param callable $transform The transform to apply to each element.
      *
-     * @return IIterable A new collection produced by applying $transform to each element in this collection.
+     * @return IterableInterface A new collection produced by applying $transform to each element in this collection.
      */
     public function map($transform)
     {
@@ -180,9 +180,9 @@ class Vector implements IMutableRandomAccess
         return $result;
     }
 
-    ////////////////////////////////////////
-    // Implementation of IMutableIterable //
-    ////////////////////////////////////////
+    ////////////////////////////////////////////////
+    // Implementation of MutableIterableInterface //
+    ////////////////////////////////////////////////
 
     /**
      * Filter this collection in-place.
@@ -227,9 +227,9 @@ class Vector implements IMutableRandomAccess
         }
     }
 
-    /////////////////////////////////
-    // Implementation of ISequence //
-    /////////////////////////////////
+    /////////////////////////////////////////
+    // Implementation of SequenceInterface //
+    /////////////////////////////////////////
 
     /**
      * Fetch the first element in the sequence.
@@ -338,7 +338,7 @@ class Vector implements IMutableRandomAccess
      *
      * @param traversable,... The sequence(s) to append.
      *
-     * @return ISequence A new sequence containing all elements from this sequence and $sequence.
+     * @return SequenceInterface A new sequence containing all elements from this sequence and $sequence.
      */
     public function join($sequence)
     {
@@ -349,9 +349,9 @@ class Vector implements IMutableRandomAccess
         return $result;
     }
 
-    ////////////////////////////////////////
-    // Implementation of IMutableSequence //
-    ////////////////////////////////////////
+    ////////////////////////////////////////////////
+    // Implementation of MutableSequenceInterface //
+    ////////////////////////////////////////////////
 
     /**
      * Sort this sequence in-place.
@@ -500,9 +500,9 @@ class Vector implements IMutableRandomAccess
         }
     }
 
-    /////////////////////////////////////
-    // Implementation of IRandomAccess //
-    /////////////////////////////////////
+    /////////////////////////////////////////////
+    // Implementation of RandomAccessInterface //
+    /////////////////////////////////////////////
 
     /**
      * Fetch the element at the given index.
@@ -526,7 +526,7 @@ class Vector implements IMutableRandomAccess
      * @param integer $index The index from which the slice will start. If index is a negative number the slice will begin that far from the end of the sequence.
      * @param integer|null $count The maximum number of elements to include in the slice, or null to include all elements from $index to the end of the sequence.
      *
-     * @return ISequence The sliced sequence.
+     * @return SequenceInterface The sliced sequence.
      * @throws Exception\IndexException if $index is out of range.
      */
     public function slice($index, $count = null)
@@ -556,7 +556,7 @@ class Vector implements IMutableRandomAccess
      * @param integer $begin The index from which the slice will start. If begin is a negative number the slice will begin that far from the end of the sequence.
      * @param integer $end The index at which the slice will end. If end is a negative number the slice will end that far from the end of the sequence.
      *
-     * @return ISequence The sliced sequence.
+     * @return SequenceInterface The sliced sequence.
      * @throws Exception\IndexException if $index is out of range.
      */
     public function range($begin, $end)
@@ -597,9 +597,9 @@ class Vector implements IMutableRandomAccess
         return null;
     }
 
-    ////////////////////////////////////////////
-    // Implementation of IMutableRandomAccess //
-    ////////////////////////////////////////////
+    ////////////////////////////////////////////////////
+    // Implementation of MutableRandomAccessInterface //
+    ////////////////////////////////////////////////////
 
     /**
      * Replace the element at a particular position in the sequence.

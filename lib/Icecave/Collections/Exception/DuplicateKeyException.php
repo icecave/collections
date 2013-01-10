@@ -8,7 +8,7 @@ use RuntimeException;
 /**
  * The key of an associative collection already exists in the set of existing keys.
  */
-class DuplicateKeyException extends RuntimeException implements ICollectionException
+class DuplicateKeyException extends RuntimeException implements CollectionExceptionInterface
 {
     /**
      * @param mixed $key The unknown key.

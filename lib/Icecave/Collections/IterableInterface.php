@@ -8,7 +8,7 @@ namespace Icecave\Collections;
  * the order might, in fact, be different upon each iteration through the collection. However, some
  * specific collection types may provide such guarantees.
  */
-interface IIterable extends ICollection
+interface IterableInterface extends CollectionInterface
 {
     /**
      * Fetch a native array containing the elements in the collection.
@@ -33,7 +33,7 @@ interface IIterable extends ICollection
      *
      * @param callable|null $predicate A predicate function used to determine which elements to include, or null to include all non-null elements.
      *
-     * @return IIterable The filtered collection.
+     * @return IterableInterface The filtered collection.
      */
     public function filtered($predicate = null);
 
@@ -45,7 +45,7 @@ interface IIterable extends ICollection
      *
      * @param callable $transform The transform to apply to each element.
      *
-     * @return IIterable A new collection produced by applying $transform to each element in this collection.
+     * @return IterableInterface A new collection produced by applying $transform to each element in this collection.
      */
     public function map($transform);
 }

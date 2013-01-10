@@ -7,7 +7,7 @@ use UnderflowException;
 /**
  * An operation requiring an element was performed on an empty collection.
  */
-class EmptyCollectionException extends UnderflowException implements ICollectionException
+class EmptyCollectionException extends UnderflowException implements CollectionExceptionInterface
 {
     /**
      * @param Exception|null The previous exception, if any.

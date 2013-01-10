@@ -4,7 +4,7 @@ namespace Icecave\Collections;
 use Icecave\Collections\Support\Stringify;
 use SplQueue;
 
-class Queue implements IQueuedAccess
+class Queue implements QueuedAccessInterface
 {
     /**
      * @param traversable|null $collection An iterable type containing the elements to include in this list, or null to create an empty list.
@@ -20,14 +20,14 @@ class Queue implements IQueuedAccess
         }
     }
 
-    ///////////////////////////////////
-    // Implementation of ICollection //
-    ///////////////////////////////////
+    ///////////////////////////////////////////
+    // Implementation of CollectionInterface //
+    ///////////////////////////////////////////
 
     /**
      * Fetch the number of elements in the collection.
      *
-     * @see ICollection::isEmpty()
+     * @see CollectionInterface::isEmpty()
      *
      * @return integer The number of elements in the collection.
      */
@@ -67,9 +67,9 @@ class Queue implements IQueuedAccess
         );
     }
 
-    //////////////////////////////////////////
-    // Implementation of IMutableCollection //
-    //////////////////////////////////////////
+    //////////////////////////////////////////////////
+    // Implementation of MutableCollectionInterface //
+    //////////////////////////////////////////////////
 
     /**
      * Remove all elements from the collection.
@@ -79,9 +79,9 @@ class Queue implements IQueuedAccess
         $this->elements = new SplQueue;
     }
 
-    /////////////////////////////////////
-    // Implementation of IQueuedAccess //
-    /////////////////////////////////////
+    /////////////////////////////////////////////
+    // Implementation of QueuedAccessInterface //
+    /////////////////////////////////////////////
 
     /**
      * Fetch the element at the front of the queue.

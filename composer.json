@@ -16,7 +16,7 @@
     },
     "require-dev": {
         "phake/phake": "1.*",
-        "eloquent/liberator": "*"
+        "eloquent/liberator": "1.*"
     },
     "autoload": {
         "psr-0": {

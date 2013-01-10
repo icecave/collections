@@ -24,9 +24,9 @@ class PriorityQueue extends Queue
         parent::__construct($collection);
     }
 
-    ///////////////////////////////////
-    // Implementation of ICollection //
-    ///////////////////////////////////
+    ///////////////////////////////////////////
+    // Implementation of CollectionInterface //
+    ///////////////////////////////////////////
 
     /**
      * Fetch a string representation of the collection.
@@ -49,9 +49,9 @@ class PriorityQueue extends Queue
         );
     }
 
-    //////////////////////////////////////////
-    // Implementation of IMutableCollection //
-    //////////////////////////////////////////
+    //////////////////////////////////////////////////
+    // Implementation of MutableCollectionInterface //
+    //////////////////////////////////////////////////
 
     /**
      * Remove all elements from the collection.
@@ -61,9 +61,9 @@ class PriorityQueue extends Queue
         $this->elements = new SplPriorityQueue;
     }
 
-    /////////////////////////////////////
-    // Implementation of IQueuedAccess //
-    /////////////////////////////////////
+    /////////////////////////////////////////////
+    // Implementation of QueuedAccessInterface //
+    /////////////////////////////////////////////
 
     /**
      * Fetch the element at the front of the queue.

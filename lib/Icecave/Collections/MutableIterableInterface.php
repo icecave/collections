@@ -4,7 +4,7 @@ namespace Icecave\Collections;
 /**
  * A mutable collection is a collection on which elements can be added and removed.
  */
-interface IMutableIterable extends IIterable, IMutableCollection
+interface MutableIterableInterface extends IterableInterface, MutableCollectionInterface
 {
     /**
      * Filter this collection in-place.

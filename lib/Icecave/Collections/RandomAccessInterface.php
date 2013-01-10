@@ -4,7 +4,7 @@ namespace Icecave\Collections;
 /**
  * A random access sequence is a sequence that provides access to elements by their position in the sequence.
  */
-interface IRandomAccess extends ISequence
+interface RandomAccessInterface extends SequenceInterface
 {
     /**
      * Fetch the element at the given index.
@@ -24,7 +24,7 @@ interface IRandomAccess extends ISequence
      * @param integer $index The index from which the slice will start. If index is a negative number the slice will begin that far from the end of the sequence.
      * @param integer|null $count The maximum number of elements to include in the slice, or null to include all elements from $index to the end of the sequence.
      *
-     * @return ISequence The sliced sequence.
+     * @return SequenceInterface The sliced sequence.
      * @throws Exception\IndexException if $index is out of range.
      */
     public function slice($index, $count = null);
@@ -39,7 +39,7 @@ interface IRandomAccess extends ISequence
      * @param integer $begin The index from which the slice will start. If begin is a negative number the slice will begin that far from the end of the sequence.
      * @param integer $end The index at which the slice will end. If end is a negative number the slice will end that far from the end of the sequence.
      *
-     * @return ISequence The sliced sequence.
+     * @return SequenceInterface The sliced sequence.
      * @throws Exception\IndexException if $index is out of range.
      */
     public function range($begin, $end);

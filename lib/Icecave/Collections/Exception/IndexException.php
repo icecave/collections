@@ -7,7 +7,7 @@ use OutOfBoundsException;
 /**
  * The index (subscript) of a random-access sequence was out of range.
  */
-class IndexException extends OutOfBoundsException implements ICollectionException
+class IndexException extends OutOfBoundsException implements CollectionExceptionInterface
 {
     /**
      * @param integer $index The out-of-range index.

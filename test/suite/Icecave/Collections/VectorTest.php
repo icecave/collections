@@ -21,9 +21,9 @@ class VectorTest extends PHPUnit_Framework_TestCase
         $this->assertSame(array(1, 2, 3), $collection->elements());
     }
 
-    ///////////////////////////////////
-    // Implementation of ICollection //
-    ///////////////////////////////////
+    ///////////////////////////////////////////
+    // Implementation of CollectionInterface //
+    ///////////////////////////////////////////
 
     public function testSize()
     {
@@ -68,9 +68,9 @@ class VectorTest extends PHPUnit_Framework_TestCase
         $this->assertSame("<Vector 4 ['foo', 'bar', 'spam', ...]>", $this->_collection->__toString());
     }
 
-    //////////////////////////////////////////
-    // Implementation of IMutableCollection //
-    //////////////////////////////////////////
+    //////////////////////////////////////////////////
+    // Implementation of MutableCollectionInterface //
+    //////////////////////////////////////////////////
 
     public function testClear()
     {
@@ -81,9 +81,9 @@ class VectorTest extends PHPUnit_Framework_TestCase
         $this->assertTrue($this->_collection->isEmpty());
     }
 
-    /////////////////////////////////
-    // Implementation of IIterable //
-    /////////////////////////////////
+    /////////////////////////////////////////
+    // Implementation of IterableInterface //
+    /////////////////////////////////////////
 
     public function testElements()
     {
@@ -145,9 +145,9 @@ class VectorTest extends PHPUnit_Framework_TestCase
         $this->assertSame(array(2, 3, 4), $result->elements());
     }
 
-    ////////////////////////////////////////
-    // Implementation of IMutableIterable //
-    ////////////////////////////////////////
+    ////////////////////////////////////////////////
+    // Implementation of MutableIterableInterface //
+    ////////////////////////////////////////////////
 
     public function testFilter()
     {
@@ -186,9 +186,9 @@ class VectorTest extends PHPUnit_Framework_TestCase
         $this->assertSame(array(2, 3, 4), $this->_collection->elements());
     }
 
-    /////////////////////////////////
-    // Implementation of ISequence //
-    /////////////////////////////////
+    /////////////////////////////////////////
+    // Implementation of SequenceInterface //
+    /////////////////////////////////////////
 
     public function testFront()
     {
@@ -295,9 +295,9 @@ class VectorTest extends PHPUnit_Framework_TestCase
         $this->assertSame(array(1, 2, 3, 4, 5, 6, 7, 8, 9), $result->elements());
     }
 
-    ////////////////////////////////////////
-    // Implementation of IMutableSequence //
-    ////////////////////////////////////////
+    ////////////////////////////////////////////////
+    // Implementation of MutableSequenceInterface //
+    ////////////////////////////////////////////////
 
     public function testSort()
     {
@@ -443,9 +443,9 @@ class VectorTest extends PHPUnit_Framework_TestCase
         $this->assertSame(array(1, 2), $this->_collection->elements());
     }
 
-    //////////////////////////////////////
-    // Implementation of IRandomAccess //
-    /////////////////////////////////////
+    //////////////////////////////////////////////
+    // Implementation of RandomAccessInterface //
+    /////////////////////////////////////////////
 
     public function testGet()
     {
@@ -473,7 +473,7 @@ class VectorTest extends PHPUnit_Framework_TestCase
 
         $result = $this->_collection->slice(2);
 
-        $this->assertInstanceOf(__NAMESPACE__ . '\ISequence', $result);
+        $this->assertInstanceOf(__NAMESPACE__ . '\SequenceInterface', $result);
         $this->assertSame(array(3, 4, 5), $result->elements());
     }
 
@@ -483,7 +483,7 @@ class VectorTest extends PHPUnit_Framework_TestCase
 
         $result = $this->_collection->slice(1, 3);
 
-        $this->assertInstanceOf(__NAMESPACE__ . '\ISequence', $result);
+        $this->assertInstanceOf(__NAMESPACE__ . '\SequenceInterface', $result);
         $this->assertSame(array(2, 3, 4), $result->elements());
     }
 
@@ -493,7 +493,7 @@ class VectorTest extends PHPUnit_Framework_TestCase
 
         $result = $this->_collection->slice(2, 100);
 
-        $this->assertInstanceOf(__NAMESPACE__ . '\ISequence', $result);
+        $this->assertInstanceOf(__NAMESPACE__ . '\SequenceInterface', $result);
         $this->assertSame(array(3, 4, 5), $result->elements());
     }
 
@@ -503,7 +503,7 @@ class VectorTest extends PHPUnit_Framework_TestCase
 
         $result = $this->_collection->slice(1, -3);
 
-        $this->assertInstanceOf(__NAMESPACE__ . '\ISequence', $result);
+        $this->assertInstanceOf(__NAMESPACE__ . '\SequenceInterface', $result);
         $this->assertSame(array(), $result->elements());
     }
 
@@ -513,7 +513,7 @@ class VectorTest extends PHPUnit_Framework_TestCase
 
         $result = $this->_collection->slice(-2);
 
-        $this->assertInstanceOf(__NAMESPACE__ . '\ISequence', $result);
+        $this->assertInstanceOf(__NAMESPACE__ . '\SequenceInterface', $result);
         $this->assertSame(array(4, 5), $result->elements());
     }
 
@@ -523,7 +523,7 @@ class VectorTest extends PHPUnit_Framework_TestCase
 
         $result = $this->_collection->slice(-3, 2);
 
-        $this->assertInstanceOf(__NAMESPACE__ . '\ISequence', $result);
+        $this->assertInstanceOf(__NAMESPACE__ . '\SequenceInterface', $result);
         $this->assertSame(array(3, 4), $result->elements());
     }
 
@@ -539,7 +539,7 @@ class VectorTest extends PHPUnit_Framework_TestCase
 
         $result = $this->_collection->range(1, 3);
 
-        $this->assertInstanceOf(__NAMESPACE__ . '\ISequence', $result);
+        $this->assertInstanceOf(__NAMESPACE__ . '\SequenceInterface', $result);
         $this->assertSame(array(2, 3), $result->elements());
     }
 
@@ -549,7 +549,7 @@ class VectorTest extends PHPUnit_Framework_TestCase
 
         $result = $this->_collection->range(-3, -1);
 
-        $this->assertInstanceOf(__NAMESPACE__ . '\ISequence', $result);
+        $this->assertInstanceOf(__NAMESPACE__ . '\SequenceInterface', $result);
         $this->assertSame(array(3, 4), $result->elements());
     }
 
@@ -559,7 +559,7 @@ class VectorTest extends PHPUnit_Framework_TestCase
 
         $result = $this->_collection->range(3, 1);
 
-        $this->assertInstanceOf(__NAMESPACE__ . '\ISequence', $result);
+        $this->assertInstanceOf(__NAMESPACE__ . '\SequenceInterface', $result);
         $this->assertSame(array(), $result->elements());
     }
 
@@ -589,9 +589,9 @@ class VectorTest extends PHPUnit_Framework_TestCase
         $this->assertNull($this->_collection->indexOf('foo'));
     }
 
-    ////////////////////////////////////////////
-    // Implementation of IMutableRandomAccess //
-    ////////////////////////////////////////////
+    ////////////////////////////////////////////////////
+    // Implementation of MutableRandomAccessInterface //
+    ////////////////////////////////////////////////////
 
     public function testSet()
     {

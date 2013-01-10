@@ -6,7 +6,7 @@ namespace Icecave\Collections;
  *
  * Mutable sequences support insertion and removal of elements.
  */
-interface IMutableSequence extends ISequence, IMutableIterable
+interface MutableSequenceInterface extends SequenceInterface, MutableIterableInterface
 {
     /**
      * Sort this sequence in-place.
