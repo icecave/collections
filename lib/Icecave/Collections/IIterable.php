@@ -1,8 +1,6 @@
 <?php
 namespace Icecave\Collections;
 
-// @codeCoverageIgnoreStart
-
 /**
  * Iterable collections allow (at the very least) sequential access to the elements without modifying the collection.
  *

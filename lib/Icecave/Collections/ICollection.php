@@ -1,8 +1,6 @@
 <?php
 namespace Icecave\Collections;
 
-// @codeCoverageIgnoreStart
-
 /**
  * A collection is an object that stores other objects (called elements).
  */

@@ -1,8 +1,6 @@
 <?php
 namespace Icecave\Collections;
 
-// @codeCoverageIgnoreStart
-
 /**
  * An associative collection is a variable-sized collection that supports efficient retrieval of values based on keys.
  *

@@ -1,8 +1,6 @@
 <?php
 namespace Icecave\Collections;
 
-// @codeCoverageIgnoreStart
-
 /**
  * A mutable random access sequence is a sequence that allows for insertion and removal of elements by their position in the sequence.
  */

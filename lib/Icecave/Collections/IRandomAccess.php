@@ -1,8 +1,6 @@
 <?php
 namespace Icecave\Collections;
 
-// @codeCoverageIgnoreStart
-
 /**
  * A random access sequence is a sequence that provides access to elements by their position in the sequence.
  */

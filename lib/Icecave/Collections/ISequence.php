@@ -1,8 +1,6 @@
 <?php
 namespace Icecave\Collections;
 
-// @codeCoverageIgnoreStart
-
 /**
  * A Sequence is a variable-sized collection whose elements are arranged in a strict linear order.
  */
