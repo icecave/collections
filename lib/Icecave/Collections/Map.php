@@ -1,12 +1,13 @@
 <?php
 namespace Icecave\Collections;
 
+use ArrayAccess;
 use Countable;
 use Icecave\Collections\Iterator\AssociativeIterator;
 use Icecave\Collections\Support\Stringify;
 use IteratorAggregate;
 
-class Map implements MutableAssociativeInterface, Countable, IteratorAggregate
+class Map implements MutableAssociativeInterface, Countable, IteratorAggregate, ArrayAccess
 {
     /**
      * @param traversable|null $collection An iterable type containing the elements to include in this map, or null to create an empty map.
@@ -828,6 +829,30 @@ class Map implements MutableAssociativeInterface, Countable, IteratorAggregate
     public function getIterator()
     {
         return new AssociativeIterator($this);
+    }
+
+    ///////////////////////////////////
+    // Implementation of ArrayAccess //
+    ///////////////////////////////////
+
+    public function offsetExists($offset)
+    {
+        return $this->hasKey($offset);
+    }
+
+    public function offsetGet($offset)
+    {
+        return $this->get($offset);
+    }
+
+    public function offsetSet($offset, $value)
+    {
+        $this->set($offset, $value);
+    }
+
+    public function offsetUnset($offset)
+    {
+        $this->tryRemove($offset);
     }
 
     ////////////////////////////

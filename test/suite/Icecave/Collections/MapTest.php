@@ -630,4 +630,45 @@ class MapTest extends PHPUnit_Framework_TestCase
 
         $this->assertSame(array('a' => 1, 'b' => 2, 'c' => 3), $result);
     }
+
+    ///////////////////////////////////
+    // Implementation of ArrayAccess //
+    ///////////////////////////////////
+
+    public function testOffsetExists()
+    {
+        $this->assertFalse(isset($this->_collection['a']));
+
+        $this->_collection->set('a', 1);
+
+        $this->assertTrue(isset($this->_collection['a']));
+    }
+
+    public function testOffsetGet()
+    {
+        $this->_collection->set('a', 1);
+
+        $this->assertSame(1, $this->_collection['a']);
+    }
+
+    public function testOffsetGetFailure()
+    {
+        $this->setExpectedException(__NAMESPACE__ . '\Exception\UnknownKeyException', "Key 'a' does not exist.");
+
+        $this->_collection['a'];
+    }
+
+    public function testOffsetSet()
+    {
+        $this->_collection['a'] = 1;
+
+        $this->assertSame(array(array('a', 1)), $this->_collection->elements());
+    }
+
+    public function testOffsetUnset()
+    {
+        unset($this->_collection['a']);
+
+        $this->assertTrue($this->_collection->isEmpty());
+    }
 }
