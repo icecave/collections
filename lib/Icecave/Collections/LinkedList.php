@@ -2,12 +2,13 @@
 namespace Icecave\Collections;
 
 use Countable;
+use Iterator;
 use stdClass;
 
 /**
  * A singly-linked list.
  */
-class LinkedList implements MutableRandomAccessInterface, Countable
+class LinkedList implements MutableRandomAccessInterface, Countable, Iterator
 {
     /**
      * @param traversable|null $collection An iterable type containing the elements to include in this list, or null to create an empty list.
@@ -90,6 +91,9 @@ class LinkedList implements MutableRandomAccessInterface, Countable
         $this->head = null;
         $this->tail = null;
         $this->size = 0;
+
+        $this->currentNode = null;
+        $this->currentIndex = 0;
     }
 
     /////////////////////////////////////////
@@ -850,6 +854,37 @@ class LinkedList implements MutableRandomAccessInterface, Countable
         return $this->size();
     }
 
+    ////////////////////////////////
+    // Implementation of Iterator //
+    ////////////////////////////////
+
+    public function current()
+    {
+        return $this->currentNode->element;
+    }
+
+    public function key()
+    {
+        return $this->currentIndex;
+    }
+
+    public function next()
+    {
+        $this->currentNode = $this->currentNode->next;
+        ++$this->currentIndex;
+    }
+
+    public function rewind()
+    {
+        $this->currentNode = $this->head;
+        $this->currentIndex = 0;
+    }
+
+    public function valid()
+    {
+        return null !== $this->currentNode;
+    }
+
     ////////////////////////////
     // Model specific methods //
     ////////////////////////////
@@ -942,4 +977,6 @@ class LinkedList implements MutableRandomAccessInterface, Countable
     private $head;
     private $tail;
     private $size;
+    private $currentNode;
+    private $currentIndex;
 }

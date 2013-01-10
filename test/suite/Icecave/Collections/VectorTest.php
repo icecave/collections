@@ -985,7 +985,7 @@ class VectorTest extends PHPUnit_Framework_TestCase
     // Implementation of IteratorAggregate //
     /////////////////////////////////////////
 
-    public function testGetIterator()
+    public function testIteration()
     {
         $input = array(1, 2, 3, 4, 5);
 
@@ -1085,5 +1085,4 @@ class VectorTest extends PHPUnit_Framework_TestCase
 
         $this->assertSame(1, $this->_collection->capacity());
     }
-
 }

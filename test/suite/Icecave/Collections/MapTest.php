@@ -620,7 +620,7 @@ class MapTest extends PHPUnit_Framework_TestCase
     // Implementation of IteratorAggregate //
     /////////////////////////////////////////
 
-    public function testGetIterator()
+    public function testIteration()
     {
         $this->_collection->set('a', 1);
         $this->_collection->set('b', 2);

@@ -221,7 +221,7 @@ class SetTest extends PHPUnit_Framework_TestCase
     // Implementation of IteratorAggregate //
     /////////////////////////////////////////
 
-    public function testGetIterator()
+    public function testIteration()
     {
         $this->_collection->add('a');
         $this->_collection->add('b');

@@ -970,4 +970,19 @@ class LinkedListTest extends PHPUnit_Framework_TestCase
 
         $this->assertSame(0, count($this->_collection));
     }
+
+    ////////////////////////////////
+    // Implementation of Iterator //
+    ////////////////////////////////
+
+    public function testIteration()
+    {
+        $input = array(1, 2, 3, 4, 5);
+
+        $this->_collection->append($input);
+
+        $result = iterator_to_array($this->_collection);
+
+        $this->assertSame($input, $result);
+    }
 }
