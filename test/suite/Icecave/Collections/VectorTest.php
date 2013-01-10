@@ -199,7 +199,7 @@ class VectorTest extends PHPUnit_Framework_TestCase
 
     public function testFrontWithEmptyCollection()
     {
-        $this->setExpectedException(__NAMESPACE__ . '\Exception\EmptyCollectionException');
+        $this->setExpectedException(__NAMESPACE__ . '\Exception\EmptyCollectionException', 'Collection is empty.');
         $this->_collection->front();
     }
 
@@ -227,7 +227,7 @@ class VectorTest extends PHPUnit_Framework_TestCase
 
     public function testBackWithEmptyCollection()
     {
-        $this->setExpectedException(__NAMESPACE__ . '\Exception\EmptyCollectionException');
+        $this->setExpectedException(__NAMESPACE__ . '\Exception\EmptyCollectionException', 'Collection is empty.');
         $this->_collection->back();
     }
 
@@ -359,7 +359,7 @@ class VectorTest extends PHPUnit_Framework_TestCase
 
     public function testPopFrontWithEmptyCollection()
     {
-        $this->setExpectedException(__NAMESPACE__ . '\Exception\EmptyCollectionException');
+        $this->setExpectedException(__NAMESPACE__ . '\Exception\EmptyCollectionException', 'Collection is empty.');
         $this->_collection->popFront();
     }
 
@@ -399,7 +399,7 @@ class VectorTest extends PHPUnit_Framework_TestCase
 
     public function testPopBackWithEmptyCollection()
     {
-        $this->setExpectedException(__NAMESPACE__ . '\Exception\EmptyCollectionException');
+        $this->setExpectedException(__NAMESPACE__ . '\Exception\EmptyCollectionException', 'Collection is empty.');
         $this->_collection->popBack();
     }
 
@@ -463,7 +463,7 @@ class VectorTest extends PHPUnit_Framework_TestCase
 
     public function testGetWithInvalidIndex()
     {
-        $this->setExpectedException(__NAMESPACE__ . '\Exception\IndexException');
+        $this->setExpectedException(__NAMESPACE__ . '\Exception\IndexException', 'Index 0 is out of range.');
         $this->_collection->get(0);
     }
 
@@ -529,7 +529,7 @@ class VectorTest extends PHPUnit_Framework_TestCase
 
     public function testSliceWithInvalidIndex()
     {
-        $this->setExpectedException(__NAMESPACE__ . '\Exception\IndexException');
+        $this->setExpectedException(__NAMESPACE__ . '\Exception\IndexException', 'Index 1 is out of range.');
         $this->_collection->slice(1);
     }
 
@@ -565,7 +565,7 @@ class VectorTest extends PHPUnit_Framework_TestCase
 
     public function testRangeWithInvalidBegin()
     {
-        $this->setExpectedException(__NAMESPACE__ . '\Exception\IndexException');
+        $this->setExpectedException(__NAMESPACE__ . '\Exception\IndexException', 'Index 1 is out of range.');
         $result = $this->_collection->range(1, 3);
     }
 
@@ -573,7 +573,7 @@ class VectorTest extends PHPUnit_Framework_TestCase
     {
         $this->_collection->append(array(1, 2, 3, 4, 5));
 
-        $this->setExpectedException(__NAMESPACE__ . '\Exception\IndexException');
+        $this->setExpectedException(__NAMESPACE__ . '\Exception\IndexException', 'Index 100 is out of range.');
         $result = $this->_collection->range(1, 100);
     }
 
@@ -613,7 +613,7 @@ class VectorTest extends PHPUnit_Framework_TestCase
 
     public function testSetWithInvalidIndex()
     {
-        $this->setExpectedException(__NAMESPACE__ . '\Exception\IndexException');
+        $this->setExpectedException(__NAMESPACE__ . '\Exception\IndexException', 'Index 0 is out of range.');
         $this->_collection->set(0, 'bar');
     }
 
@@ -646,7 +646,7 @@ class VectorTest extends PHPUnit_Framework_TestCase
 
     public function testInsertWithInvalidIndex()
     {
-        $this->setExpectedException(__NAMESPACE__ . '\Exception\IndexException');
+        $this->setExpectedException(__NAMESPACE__ . '\Exception\IndexException', 'Index 1 is out of range.');
         $this->_collection->insert(1, 'foo');
     }
 
@@ -688,7 +688,7 @@ class VectorTest extends PHPUnit_Framework_TestCase
 
     public function testInsertManyWithInvalidIndex()
     {
-        $this->setExpectedException(__NAMESPACE__ . '\Exception\IndexException');
+        $this->setExpectedException(__NAMESPACE__ . '\Exception\IndexException', 'Index 1 is out of range.');
         $this->_collection->insertMany(1, array('bar', 'frob'));
     }
 
@@ -712,7 +712,7 @@ class VectorTest extends PHPUnit_Framework_TestCase
 
     public function testRemoveWithInvalidIndex()
     {
-        $this->setExpectedException(__NAMESPACE__ . '\Exception\IndexException');
+        $this->setExpectedException(__NAMESPACE__ . '\Exception\IndexException', 'Index 1 is out of range.');
         $this->_collection->remove(1);
     }
 
@@ -754,7 +754,7 @@ class VectorTest extends PHPUnit_Framework_TestCase
 
     public function testRemoveManyWithInvalidIndex()
     {
-        $this->setExpectedException(__NAMESPACE__ . '\Exception\IndexException');
+        $this->setExpectedException(__NAMESPACE__ . '\Exception\IndexException', 'Index 1 is out of range.');
         $this->_collection->removeMany(1, 2);
     }
 
@@ -796,7 +796,7 @@ class VectorTest extends PHPUnit_Framework_TestCase
 
     public function testRemoveRangeWithInvalidBegin()
     {
-        $this->setExpectedException(__NAMESPACE__ . '\Exception\IndexException');
+        $this->setExpectedException(__NAMESPACE__ . '\Exception\IndexException', 'Index 1 is out of range.');
         $this->_collection->removeRange(1, 2);
     }
 
@@ -804,7 +804,7 @@ class VectorTest extends PHPUnit_Framework_TestCase
     {
         $this->_collection->append(array('foo', 'bar', 'spam', 'doom'));
 
-        $this->setExpectedException(__NAMESPACE__ . '\Exception\IndexException');
+        $this->setExpectedException(__NAMESPACE__ . '\Exception\IndexException', 'Index 100 is out of range.');
         $this->_collection->removeRange(1, 100);
     }
 
@@ -846,7 +846,7 @@ class VectorTest extends PHPUnit_Framework_TestCase
 
     public function testReplaceWithInvalidIndex()
     {
-        $this->setExpectedException(__NAMESPACE__ . '\Exception\IndexException');
+        $this->setExpectedException(__NAMESPACE__ . '\Exception\IndexException', 'Index 1 is out of range.');
         $this->_collection->replace(1, 2);
     }
 
@@ -888,7 +888,7 @@ class VectorTest extends PHPUnit_Framework_TestCase
 
     public function testReplaceRangeWithInvalidBegin()
     {
-        $this->setExpectedException(__NAMESPACE__ . '\Exception\IndexException');
+        $this->setExpectedException(__NAMESPACE__ . '\Exception\IndexException', 'Index 1 is out of range.');
         $this->_collection->replaceRange(1, 2, array());
     }
 
@@ -896,7 +896,7 @@ class VectorTest extends PHPUnit_Framework_TestCase
     {
         $this->_collection->append(array('foo', 'bar', 'spam', 'doom'));
 
-        $this->setExpectedException(__NAMESPACE__ . '\Exception\IndexException');
+        $this->setExpectedException(__NAMESPACE__ . '\Exception\IndexException', 'Index 100 is out of range.');
         $this->_collection->replaceRange(1, 100, array());
     }
 
@@ -920,7 +920,7 @@ class VectorTest extends PHPUnit_Framework_TestCase
 
     public function testSwapWithInvalidIndex1()
     {
-        $this->setExpectedException(__NAMESPACE__ . '\Exception\IndexException');
+        $this->setExpectedException(__NAMESPACE__ . '\Exception\IndexException', 'Index 1 is out of range.');
         $this->_collection->swap(1, 2);
     }
 
@@ -928,7 +928,7 @@ class VectorTest extends PHPUnit_Framework_TestCase
     {
         $this->_collection->append(array('foo', 'bar', 'spam', 'doom'));
 
-        $this->setExpectedException(__NAMESPACE__ . '\Exception\IndexException');
+        $this->setExpectedException(__NAMESPACE__ . '\Exception\IndexException', 'Index 100 is out of range.');
         $this->_collection->swap(1, 100);
     }
 
@@ -961,6 +961,89 @@ class VectorTest extends PHPUnit_Framework_TestCase
 
         $this->assertFalse($this->_collection->trySwap(1, 100));
     }
+
+    /////////////////////////////////
+    // Implementation of Countable //
+    /////////////////////////////////
+
+    public function testCount()
+    {
+        $this->assertSame(0, count($this->_collection));
+
+        $this->_collection->pushBack('foo');
+        $this->_collection->pushBack('bar');
+        $this->_collection->pushBack('spam');
+
+        $this->assertSame(3, count($this->_collection));
+
+        $this->_collection->clear();
+
+        $this->assertSame(0, count($this->_collection));
+    }
+
+    /////////////////////////////////////////
+    // Implementation of IteratorAggregate //
+    /////////////////////////////////////////
+
+    public function testGetIterator()
+    {
+        $input = array(1, 2, 3, 4, 5);
+
+        $this->_collection->append($input);
+
+        $result = iterator_to_array($this->_collection);
+
+        $this->assertSame($input, $result);
+    }
+
+    ///////////////////////////////////
+    // Implementation of ArrayAccess //
+    ///////////////////////////////////
+
+    public function testOffsetExists()
+    {
+        $this->assertFalse(isset($this->_collection[0]));
+
+        $this->_collection->pushBack('foo');
+
+        $this->assertTrue(isset($this->_collection[0]));
+    }
+
+    public function testOffsetGet()
+    {
+        $this->_collection->pushBack('foo');
+
+        $this->assertSame('foo', $this->_collection[0]);
+    }
+
+    public function testOffsetGetFailure()
+    {
+        $this->setExpectedException(__NAMESPACE__ . '\Exception\IndexException', 'Index 0 is out of range.');
+
+        $this->_collection[0];
+    }
+
+    public function testOffsetSet()
+    {
+        $this->_collection[] = 'foo';
+
+        $this->assertSame(array('foo'), $this->_collection->elements());
+
+        $this->_collection[0] = 'bar';
+
+        $this->assertSame(array('bar'), $this->_collection->elements());
+    }
+
+    public function testOffsetUnset()
+    {
+        $this->setExpectedException('LogicException', 'Can not unset indices of a vector.');
+
+        unset($this->_collection[0]);
+    }
+
+    ////////////////////////////
+    // Model specific methods //
+    ////////////////////////////
 
     public function testCapacity()
     {

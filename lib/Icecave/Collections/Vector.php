@@ -1,9 +1,14 @@
 <?php
 namespace Icecave\Collections;
 
+use ArrayAccess;
+use Countable;
+use Icecave\Collections\Iterator\RandomAccessIterator;
+use IteratorAggregate;
+use LogicException;
 use SplFixedArray;
 
-class Vector implements MutableRandomAccessInterface
+class Vector implements MutableRandomAccessInterface, Countable, IteratorAggregate, ArrayAccess
 {
     /**
      * @param traversable|null $collection An iterable type containing the elements to include in this vector, or null to create an empty vector.
@@ -793,6 +798,58 @@ class Vector implements MutableRandomAccessInterface
 
         return true;
     }
+
+    /////////////////////////////////
+    // Implementation of Countable //
+    /////////////////////////////////
+
+    public function count()
+    {
+        return $this->size();
+    }
+
+    /////////////////////////////////////////
+    // Implementation of IteratorAggregate //
+    /////////////////////////////////////////
+
+    public function getIterator()
+    {
+        return new RandomAccessIterator($this);
+    }
+
+    ///////////////////////////////////
+    // Implementation of ArrayAccess //
+    ///////////////////////////////////
+
+    public function offsetExists($offset)
+    {
+        return is_integer($offset)
+            && $offset >= 0
+            && $offset < $this->size();
+    }
+
+    public function offsetGet($offset)
+    {
+        return $this->get($offset);
+    }
+
+    public function offsetSet($offset, $value)
+    {
+        if (null === $offset) {
+            $this->pushBack($value);
+        } else {
+            $this->set($offset, $value);
+        }
+    }
+
+    public function offsetUnset($offset)
+    {
+        throw new LogicException('Can not unset indices of a vector.');
+    }
+
+    ////////////////////////////
+    // Model specific methods //
+    ////////////////////////////
 
     /**
      * @return integer The current reserved capacity of the vector.
