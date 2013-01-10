@@ -68,7 +68,7 @@ interface AssociativeInterface extends IterableInterface
      *
      * @return mixed The value associated with the first key that exists, or $default if none of the keys exist.
      */
-    public function cascadeWithDefault($key, $default = null);
+    public function cascadeWithDefault($key, $default);
 
     /**
      * Return the value associated with the first existing key in the given sequence.
