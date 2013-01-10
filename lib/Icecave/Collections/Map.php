@@ -5,9 +5,9 @@ use ArrayAccess;
 use Countable;
 use Icecave\Collections\Iterator\AssociativeIterator;
 use Icecave\Collections\Support\Stringify;
-use IteratorAggregate;
+use Iterator;
 
-class Map implements MutableAssociativeInterface, Countable, IteratorAggregate, ArrayAccess
+class Map implements MutableAssociativeInterface, Countable, Iterator, ArrayAccess
 {
     /**
      * @param traversable|null $collection An iterable type containing the elements to include in this map, or null to create an empty map.
@@ -822,13 +822,37 @@ class Map implements MutableAssociativeInterface, Countable, IteratorAggregate, 
         return $this->size();
     }
 
-    /////////////////////////////////////////
-    // Implementation of IteratorAggregate //
-    /////////////////////////////////////////
+    ////////////////////////////////
+    // Implementation of Iterator //
+    ////////////////////////////////
 
-    public function getIterator()
+    public function current()
     {
-        return new AssociativeIterator($this);
+        $element = current($this->elements);
+        list($key, $value) = $element;
+        return $value;
+    }
+
+    public function key()
+    {
+        $element = current($this->elements);
+        list($key, $value) = $element;
+        return $key;
+    }
+
+    public function next()
+    {
+        next($this->elements);
+    }
+
+    public function rewind()
+    {
+        reset($this->elements);
+    }
+
+    public function valid()
+    {
+        return null !== key($this->elements);
     }
 
     ///////////////////////////////////

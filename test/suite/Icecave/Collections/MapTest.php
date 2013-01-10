@@ -616,9 +616,9 @@ class MapTest extends PHPUnit_Framework_TestCase
         $this->assertSame(0, count($this->_collection));
     }
 
-    /////////////////////////////////////////
-    // Implementation of IteratorAggregate //
-    /////////////////////////////////////////
+    ////////////////////////////////
+    // Implementation of Iterator //
+    ////////////////////////////////
 
     public function testIteration()
     {

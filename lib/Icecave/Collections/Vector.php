@@ -4,10 +4,10 @@ namespace Icecave\Collections;
 use ArrayAccess;
 use Countable;
 use Icecave\Collections\Iterator\RandomAccessIterator;
-use IteratorAggregate;
+use Iterator;
 use SplFixedArray;
 
-class Vector implements MutableRandomAccessInterface, Countable, IteratorAggregate, ArrayAccess
+class Vector implements MutableRandomAccessInterface, Countable, Iterator, ArrayAccess
 {
     /**
      * @param traversable|null $collection An iterable type containing the elements to include in this vector, or null to create an empty vector.
@@ -807,13 +807,36 @@ class Vector implements MutableRandomAccessInterface, Countable, IteratorAggrega
         return $this->size();
     }
 
-    /////////////////////////////////////////
-    // Implementation of IteratorAggregate //
-    /////////////////////////////////////////
+    ////////////////////////////////
+    // Implementation of Iterator //
+    ////////////////////////////////
 
-    public function getIterator()
+    public function current()
     {
-        return new RandomAccessIterator($this);
+        return current($this->elements);
+    }
+
+    public function key()
+    {
+        return key($this->elements);
+    }
+
+    public function next()
+    {
+        next($this->elements);
+    }
+
+    public function rewind()
+    {
+        reset($this->elements);
+    }
+
+    public function valid()
+    {
+        $index = $this->key();
+
+        return null !== $index
+            && $index < $this->size();
     }
 
     ///////////////////////////////////
