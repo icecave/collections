@@ -41,7 +41,7 @@ PHP has long been lacking formal, performant collection types. The addition of t
 
 * [Vector](/IcecaveStudios/collections/blob/master/lib/Icecave/Collections/Vector.php): A mutable sequence with efficient access by position and iteration.
 * [LinkedList](/IcecaveStudios/collections/blob/master/lib/Icecave/Collections/LinkedList.php): A mutable sequence with efficient addition and removal of elements.
-* Map
+* [Map](/IcecaveStudios/collections/blob/master/lib/Icecave/Collections/Map.php): An associative collection with efficient access by key.
 * MultiMap
 * Set
 * MultiSet
