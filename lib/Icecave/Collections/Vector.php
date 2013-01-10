@@ -5,7 +5,6 @@ use ArrayAccess;
 use Countable;
 use Icecave\Collections\Iterator\RandomAccessIterator;
 use IteratorAggregate;
-use LogicException;
 use SplFixedArray;
 
 class Vector implements MutableRandomAccessInterface, Countable, IteratorAggregate, ArrayAccess
@@ -844,7 +843,9 @@ class Vector implements MutableRandomAccessInterface, Countable, IteratorAggrega
 
     public function offsetUnset($offset)
     {
-        throw new LogicException('Can not unset indices of a vector.');
+        if ($this->offsetExists($offset)) {
+            $this->remove($offset);
+        }
     }
 
     ////////////////////////////

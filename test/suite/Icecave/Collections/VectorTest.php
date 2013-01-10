@@ -1036,9 +1036,11 @@ class VectorTest extends PHPUnit_Framework_TestCase
 
     public function testOffsetUnset()
     {
-        $this->setExpectedException('LogicException', 'Can not unset indices of a vector.');
+        $this->_collection->append(array('foo', 'bar', 'spam'));
 
-        unset($this->_collection[0]);
+        unset($this->_collection[1]);
+
+        $this->assertSame(array('foo', 'spam'), $this->_collection->elements());
     }
 
     ////////////////////////////
