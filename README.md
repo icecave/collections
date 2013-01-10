@@ -43,7 +43,7 @@ PHP has long been lacking formal, performant collection types. The addition of t
 * [LinkedList](/IcecaveStudios/collections/blob/master/lib/Icecave/Collections/LinkedList.php): A mutable sequence with efficient addition and removal of elements.
 * [Map](/IcecaveStudios/collections/blob/master/lib/Icecave/Collections/Map.php): An associative collection with efficient access by key.
 * MultiMap
-* Set
+* [Set](/IcecaveStudios/collections/blob/master/lib/Icecave/Collections/Set.php): An iterable collection with unique elements.
 * MultiSet
 * [Queue](/IcecaveStudios/collections/blob/master/lib/Icecave/Collections/Queue.php): A FIFO queue.
 * [PriorityQueue](/IcecaveStudios/collections/blob/master/lib/Icecave/Collections/PriorityQueue.php): A prioritized queue.
