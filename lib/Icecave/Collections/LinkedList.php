@@ -840,6 +840,10 @@ class LinkedList implements MutableRandomAccessInterface
         return true;
     }
 
+    ////////////////////////////
+    // Model specific methods //
+    ////////////////////////////
+
     protected function doSwap($index1, $index2)
     {
         $a = min($index1, $index2);

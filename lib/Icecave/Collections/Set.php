@@ -223,6 +223,10 @@ class Set implements MutableIterableInterface
         $this->elements = $result->elements;
     }
 
+    ////////////////////////////
+    // Model specific methods //
+    ////////////////////////////
+
     /**
      * Return the first of the given elements that is contained in the set.
      *

@@ -810,6 +810,10 @@ class Map implements MutableAssociativeInterface
         return true;
     }
 
+    ////////////////////////////
+    // Model specific methods //
+    ////////////////////////////
+
     protected function generateHash($key)
     {
         return call_user_func($this->hashFunction, $key);
