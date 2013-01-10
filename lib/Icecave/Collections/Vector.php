@@ -130,7 +130,7 @@ class Vector implements MutableRandomAccessInterface
      *
      * @param callable|null $predicate A predicate function used to determine which elements to include, or null to include all non-null elements.
      *
-     * @return LinkedList The filtered collection.
+     * @return Vector The filtered collection.
      */
     public function filtered($predicate = null)
     {
@@ -294,7 +294,7 @@ class Vector implements MutableRandomAccessInterface
      *
      * @param callable|null $comparator A strcmp style comparator function.
      *
-     * @return LinkedList
+     * @return Vector
      */
     public function sorted($comparator = null)
     {
@@ -314,7 +314,7 @@ class Vector implements MutableRandomAccessInterface
      *
      * It is not guaranteed that the concrete type of the reversed collection will match this collection.
      *
-     * @return LinkedList The reversed sequence.
+     * @return Vector The reversed sequence.
      */
     public function reversed()
     {
