@@ -1,12 +1,12 @@
 <?php
 namespace Icecave\Collections\Iterator;
 
-use Icecave\Collections\AssociativeInterface;
+use Icecave\Collections\Set;
 use Iterator;
 
-class AssociativeIterator implements Iterator
+class SetIterator implements Iterator
 {
-    public function __construct(AssociativeInterface $collection)
+    public function __construct(Set $collection)
     {
         $this->index = 0;
         $this->collection = $collection;
@@ -19,13 +19,13 @@ class AssociativeIterator implements Iterator
 
     public function current()
     {
-        return $this->collection->get($this->key());
+        $elements = $this->collection->elements();
+        return $elements[$this->index];
     }
 
     public function key()
     {
-        $keys = $this->collection->keys();
-        return $keys[$this->index];
+        return $this->index;
     }
 
     public function next()
@@ -41,7 +41,7 @@ class AssociativeIterator implements Iterator
     public function valid()
     {
         return $this->index < $this->collection->size()
-            && $this->collection->hasKey($this->key());
+            && $this->collection->contains($this->current());
     }
 
     private $index;

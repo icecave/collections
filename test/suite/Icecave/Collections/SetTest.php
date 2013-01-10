@@ -217,6 +217,21 @@ class SetTest extends PHPUnit_Framework_TestCase
         $this->assertSame(0, count($this->_collection));
     }
 
+    /////////////////////////////////////////
+    // Implementation of IteratorAggregate //
+    /////////////////////////////////////////
+
+    public function testGetIterator()
+    {
+        $this->_collection->add('a');
+        $this->_collection->add('b');
+        $this->_collection->add('c');
+
+        $result = iterator_to_array($this->_collection);
+
+        $this->assertSame(array('a', 'b', 'c'), $result);
+    }
+
     ////////////////////////////
     // Model specific methods //
     ////////////////////////////

@@ -2,9 +2,11 @@
 namespace Icecave\Collections;
 
 use Countable;
+use Icecave\Collections\Iterator\SetIterator;
 use Icecave\Collections\Support\Stringify;
+use IteratorAggregate;
 
-class Set implements MutableIterableInterface, Countable
+class Set implements MutableIterableInterface, Countable, IteratorAggregate
 {
     /**
      * @param traversable|null $collection An iterable type containing the elements to include in this set, or null to create an empty set.
@@ -231,6 +233,15 @@ class Set implements MutableIterableInterface, Countable
     public function count()
     {
         return $this->size();
+    }
+
+    /////////////////////////////////////////
+    // Implementation of IteratorAggregate //
+    /////////////////////////////////////////
+
+    public function getIterator()
+    {
+        return new SetIterator($this);
     }
 
     ////////////////////////////
