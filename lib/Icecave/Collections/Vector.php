@@ -6,7 +6,7 @@ use SplFixedArray;
 class Vector implements MutableRandomAccessInterface
 {
     /**
-     * @param traversable|null $collection An iterable type containing the elements to include in this list, or null to create an empty list.
+     * @param traversable|null $collection An iterable type containing the elements to include in this vector, or null to create an empty vector.
      */
     public function __construct($collection = null)
     {
