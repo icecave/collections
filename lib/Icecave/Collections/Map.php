@@ -5,7 +5,11 @@ use Icecave\Collections\Support\Stringify;
 
 class Map implements MutableAssociativeInterface
 {
-    public function __construct($hashFunction = null)
+    /**
+     * @param traversable<tuple<mixed, mixed>>|null $collection An iterable type containing the elements to include in this map, or null to create an empty map.
+     * @param callable|null $hashFunction The function to use for generating hashes of element values, or null to use the default.
+     */
+    public function __construct($collection = null, $hashFunction = null)
     {
         if (null === $hashFunction) {
             $hashFunction = new AssociativeKeyGenerator;
@@ -13,6 +17,13 @@ class Map implements MutableAssociativeInterface
 
         $this->hashFunction = $hashFunction;
         $this->elements = array();
+
+        if (null !== $collection) {
+            foreach ($collection as $element) {
+                list($key, $value) = $element;
+                $this->set($key, $value);
+            }
+        }
     }
 
     ///////////////////////////////////////////
@@ -22,7 +33,7 @@ class Map implements MutableAssociativeInterface
     /**
      * Fetch the number of elements in the collection.
      *
-     * @see CollectionInterface::isEmpty()
+     * @see Map::isEmpty()
      *
      * @return integer The number of elements in the collection.
      */
@@ -133,7 +144,7 @@ class Map implements MutableAssociativeInterface
      *
      * @param callable|null $predicate A predicate function used to determine which elements to include, or null to include all elements with non-null values.
      *
-     * @return LinkedList The filtered collection.
+     * @return Map The filtered collection.
      */
     public function filtered($predicate = null)
     {
@@ -143,7 +154,7 @@ class Map implements MutableAssociativeInterface
             };
         }
 
-        $result = new static($this->hashFunction);
+        $result = new static(null, $this->hashFunction);
 
         foreach ($this->elements as $element) {
             list($key, $value) = $element;
@@ -170,7 +181,7 @@ class Map implements MutableAssociativeInterface
      */
     public function map($transform)
     {
-        $result = new static($this->hashFunction);
+        $result = new static(null, $this->hashFunction);
 
         foreach ($this->elements as $element) {
             list($key, $value) = $element;
@@ -336,7 +347,7 @@ class Map implements MutableAssociativeInterface
     /**
      * Return the value associated with the first existing key in the given sequence.
      *
-     * Behaves as per {@see AssociativeInterface::cascade()} except that the keys are provided as
+     * Behaves as per {@see Map::cascade()} except that the keys are provided as
      * a traversable (eg, array) instead of via a variable argument list.
      *
      * @param traversable $keys The list of keys.
@@ -359,7 +370,7 @@ class Map implements MutableAssociativeInterface
     /**
      * Return the value associated with the first existing key in the given sequence, or a default value if none of the provided keys exist.
      *
-     * Behaves as per {@see AssociativeInterface::cascadeDefault()} except that the keys are provided as
+     * Behaves as per {@see Map::cascadeDefault()} except that the keys are provided as
      * a traversable (eg, array) instead of via a variable argument list.
      *
      * @param traversable $keys The list of keys.
@@ -382,7 +393,7 @@ class Map implements MutableAssociativeInterface
     /**
      * Fetch a native array containing the keys in the collection.
      *
-     * There is no guarantee that the order of keys will match the order of values produced by {@see AssociativeInterface::values()}.
+     * There is no guarantee that the order of keys will match the order of values produced by {@see Map::values()}.
      *
      * @return array A native array containing the keys in the collection.
      */
@@ -399,7 +410,7 @@ class Map implements MutableAssociativeInterface
     /**
      * Fetch a native array containing the values in the collection.
      *
-     * There is no guarantee that the order of values will match the order of keys produced by {@see AssociativeInterface::keys()}.
+     * There is no guarantee that the order of values will match the order of keys produced by {@see Map::keys()}.
      *
      * @return array A native array containing the values in the collection.
      */
@@ -462,7 +473,7 @@ class Map implements MutableAssociativeInterface
      */
     public function projectIterable($keys)
     {
-        $result = new static($this->hashFunction);
+        $result = new static(null, $this->hashFunction);
 
         $value = null;
         foreach ($keys as $key) {
@@ -770,9 +781,9 @@ class Map implements MutableAssociativeInterface
      *
      * It is an error if the target key already exists.
      *
-     * @see MutableAssociativeInterface::move()
-     * @see MutableAssociativeInterface::tryMove()
-     * @see MutableAssociativeInterface::rename()
+     * @see Map::move()
+     * @see Map::tryMove()
+     * @see Map::rename()
      *
      * @param mixed $source The existing key.
      * @param mixed $target The new key.

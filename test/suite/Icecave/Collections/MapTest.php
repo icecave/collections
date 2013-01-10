@@ -17,8 +17,15 @@ class MapTest extends PHPUnit_Framework_TestCase
 
     public function testConstructorWithArray()
     {
-        $collection = new Vector(array(1, 2, 3));
-        $this->assertSame(array(1, 2, 3), $collection->elements());
+        $array = array(
+            array('a', 1),
+            array('b', 1),
+            array('b', 2),
+            array('c', 3),
+        );
+
+        $collection = new Map($array);
+        $this->assertSame(array(array('a', 1), array('b', 2), array('c', 3)), $collection->elements());
     }
 
     ///////////////////////////////////////////
@@ -352,6 +359,10 @@ class MapTest extends PHPUnit_Framework_TestCase
         $this->_collection->set('a', 1);
 
         $this->assertSame(1, $this->_collection->get('a'));
+
+        $this->_collection->set('a', 2);
+
+        $this->assertSame(2, $this->_collection->get('a'));
     }
 
     public function testAdd()
