@@ -2,12 +2,14 @@
 namespace Icecave\Collections;
 
 use Countable;
+use Icecave\Collections\Iterator\AssociativeIterator;
 use Icecave\Collections\Support\Stringify;
+use IteratorAggregate;
 
-class Map implements MutableAssociativeInterface, Countable
+class Map implements MutableAssociativeInterface, Countable, IteratorAggregate
 {
     /**
-     * @param traversable<tuple<mixed, mixed>>|null $collection An iterable type containing the elements to include in this map, or null to create an empty map.
+     * @param traversable|null $collection An iterable type containing the elements to include in this map, or null to create an empty map.
      * @param callable|null $hashFunction The function to use for generating hashes of element values, or null to use the default.
      */
     public function __construct($collection = null, $hashFunction = null)
@@ -20,8 +22,7 @@ class Map implements MutableAssociativeInterface, Countable
         $this->elements = array();
 
         if (null !== $collection) {
-            foreach ($collection as $element) {
-                list($key, $value) = $element;
+            foreach ($collection as $key => $value) {
                 $this->set($key, $value);
             }
         }
@@ -818,6 +819,15 @@ class Map implements MutableAssociativeInterface, Countable
     public function count()
     {
         return $this->size();
+    }
+
+    /////////////////////////////////////////
+    // Implementation of IteratorAggregate //
+    /////////////////////////////////////////
+
+    public function getIterator()
+    {
+        return new AssociativeIterator($this);
     }
 
     ////////////////////////////

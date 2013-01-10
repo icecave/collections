@@ -18,10 +18,9 @@ class MapTest extends PHPUnit_Framework_TestCase
     public function testConstructorWithArray()
     {
         $array = array(
-            array('a', 1),
-            array('b', 1),
-            array('b', 2),
-            array('c', 3),
+            'a' => 1,
+            'b' => 2,
+            'c' => 3,
         );
 
         $collection = new Map($array);
@@ -615,5 +614,20 @@ class MapTest extends PHPUnit_Framework_TestCase
         $this->_collection->clear();
 
         $this->assertSame(0, count($this->_collection));
+    }
+
+    /////////////////////////////////////////
+    // Implementation of IteratorAggregate //
+    /////////////////////////////////////////
+
+    public function testGetIterator()
+    {
+        $this->_collection->set('a', 1);
+        $this->_collection->set('b', 2);
+        $this->_collection->set('c', 3);
+
+        $result = iterator_to_array($this->_collection);
+
+        $this->assertSame(array('a' => 1, 'b' => 2, 'c' => 3), $result);
     }
 }
