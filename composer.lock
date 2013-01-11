@@ -345,27 +345,28 @@
         },
         {
             "name": "eloquent/typhax",
-            "version": "0.7.0",
+            "version": "0.7.1",
             "source": {
                 "type": "git",
                 "url": "git://github.com/eloquent/typhax.git",
-                "reference": "0.6.4"
+                "reference": "0.7.1"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://github.com/eloquent/typhax/zipball/0.6.4",
-                "reference": "0.6.4",
+                "url": "https://github.com/eloquent/typhax/archive/0.7.1.zip",
+                "reference": "0.7.1",
                 "shasum": ""
             },
             "require": {
                 "php": ">=5.3.0",
                 "eloquent/cosmos": ">=1,<2",
-                "icecave/visita": "0.1.*"
+                "icecave/visita": "0.1.*",
+                "ext-mbstring": "*"
             },
             "require-dev": {
                 "phake/phake": "1.*"
             },
-            "time": "2012-09-08 20:17:35",
+            "time": "2013-01-11 01:05:28",
             "type": "library",
             "installation-source": "dist",
             "autoload": {
