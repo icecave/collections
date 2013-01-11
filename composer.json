@@ -24,5 +24,13 @@
             "Icecave\\Collections": "lib",
             "Icecave\\Collections\\TypeCheck": "lib-typhoon"
         }
+    },
+    "extra": {
+        "typhoon": {
+            "output-path": "lib-typhoon",
+            "source-paths": ["lib"],
+            "validator-namespace": "Icecave\\Collections\\TypeCheck",
+            "use-native-callable": false
+        }
     }
 }

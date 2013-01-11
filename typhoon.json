@@ -1,6 +1,0 @@
-{
-    "output-path": "lib-typhoon",
-    "source-paths": ["lib"],
-    "validator-namespace": "Icecave\\Collections\\TypeCheck",
-    "use-native-callable": false
-}
