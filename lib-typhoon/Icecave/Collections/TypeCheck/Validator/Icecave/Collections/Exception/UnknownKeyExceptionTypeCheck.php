@@ -2,7 +2,7 @@
 namespace Icecave\Collections\TypeCheck\Validator\Icecave\Collections\Exception;
 
 
-class UnknownKeyExceptionTyphoon extends \Icecave\Collections\TypeCheck\AbstractValidator
+class UnknownKeyExceptionTypeCheck extends \Icecave\Collections\TypeCheck\AbstractValidator
 {
     public function validateConstruct(array $arguments)
     {

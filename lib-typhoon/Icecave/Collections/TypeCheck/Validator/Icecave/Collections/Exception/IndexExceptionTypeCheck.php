@@ -2,7 +2,7 @@
 namespace Icecave\Collections\TypeCheck\Validator\Icecave\Collections\Exception;
 
 
-class IndexExceptionTyphoon extends \Icecave\Collections\TypeCheck\AbstractValidator
+class IndexExceptionTypeCheck extends \Icecave\Collections\TypeCheck\AbstractValidator
 {
     public function validateConstruct(array $arguments)
     {

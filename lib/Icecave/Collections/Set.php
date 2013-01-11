@@ -3,7 +3,7 @@ namespace Icecave\Collections;
 
 use Countable;
 use Icecave\Collections\Iterator\SetIterator;
-use Icecave\Collections\TypeCheck\Typhoon;
+use Icecave\Collections\TypeCheck\TypeCheck;
 use Icecave\Repr\Repr;
 use Iterator;
 
@@ -15,7 +15,7 @@ class Set implements MutableIterableInterface, Countable, Iterator
      */
     public function __construct($collection = null, $hashFunction = null)
     {
-        $this->typeCheck = Typhoon::get(__CLASS__, func_get_args());
+        $this->typeCheck = TypeCheck::get(__CLASS__, func_get_args());
 
         if (null === $hashFunction) {
             $hashFunction = new AssociativeKeyGenerator;

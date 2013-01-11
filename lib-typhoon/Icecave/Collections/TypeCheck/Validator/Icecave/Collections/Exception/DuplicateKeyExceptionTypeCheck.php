@@ -2,7 +2,7 @@
 namespace Icecave\Collections\TypeCheck\Validator\Icecave\Collections\Exception;
 
 
-class DuplicateKeyExceptionTyphoon extends \Icecave\Collections\TypeCheck\AbstractValidator
+class DuplicateKeyExceptionTypeCheck extends \Icecave\Collections\TypeCheck\AbstractValidator
 {
     public function validateConstruct(array $arguments)
     {

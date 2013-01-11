@@ -2,7 +2,7 @@
 namespace Icecave\Collections\Iterator;
 
 use Icecave\Collections\RandomAccessInterface;
-use Icecave\Collections\TypeCheck\Typhoon;
+use Icecave\Collections\TypeCheck\TypeCheck;
 use Iterator;
 
 /**
@@ -18,7 +18,7 @@ class RandomAccessIterator implements Iterator
      */
     public function __construct(RandomAccessInterface $collection)
     {
-        $this->typeCheck = Typhoon::get(__CLASS__, func_get_args());
+        $this->typeCheck = TypeCheck::get(__CLASS__, func_get_args());
 
         $this->index = 0;
         $this->collection = $collection;

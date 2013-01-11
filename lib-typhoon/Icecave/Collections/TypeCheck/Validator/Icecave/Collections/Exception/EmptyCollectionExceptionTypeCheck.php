@@ -2,7 +2,7 @@
 namespace Icecave\Collections\TypeCheck\Validator\Icecave\Collections\Exception;
 
 
-class EmptyCollectionExceptionTyphoon extends \Icecave\Collections\TypeCheck\AbstractValidator
+class EmptyCollectionExceptionTypeCheck extends \Icecave\Collections\TypeCheck\AbstractValidator
 {
     public function validateConstruct(array $arguments)
     {

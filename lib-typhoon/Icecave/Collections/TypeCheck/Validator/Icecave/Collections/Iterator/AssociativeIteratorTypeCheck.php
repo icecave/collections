@@ -2,14 +2,14 @@
 namespace Icecave\Collections\TypeCheck\Validator\Icecave\Collections\Iterator;
 
 
-class RandomAccessIteratorTyphoon extends \Icecave\Collections\TypeCheck\AbstractValidator
+class AssociativeIteratorTypeCheck extends \Icecave\Collections\TypeCheck\AbstractValidator
 {
     public function validateConstruct(array $arguments)
     {
         ($argumentCount = \count($arguments));
         if (($argumentCount < 1))
         {
-            throw (new \Icecave\Collections\TypeCheck\Exception\MissingArgumentException('collection', 0, 'Icecave\\Collections\\RandomAccessInterface'));
+            throw (new \Icecave\Collections\TypeCheck\Exception\MissingArgumentException('collection', 0, 'Icecave\\Collections\\AssociativeInterface'));
         }
         elseif (($argumentCount > 1))
         {

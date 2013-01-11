@@ -2,7 +2,7 @@
 namespace Icecave\Collections\TypeCheck\Validator\Icecave\Collections;
 
 
-class StackTyphoon extends \Icecave\Collections\TypeCheck\AbstractValidator
+class StackTypeCheck extends \Icecave\Collections\TypeCheck\AbstractValidator
 {
     public function validateConstruct(array $arguments)
     {

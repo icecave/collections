@@ -2,7 +2,7 @@
 namespace Icecave\Collections;
 
 use Countable;
-use Icecave\Collections\TypeCheck\Typhoon;
+use Icecave\Collections\TypeCheck\TypeCheck;
 use Iterator;
 use stdClass;
 
@@ -16,7 +16,7 @@ class LinkedList implements MutableRandomAccessInterface, Countable, Iterator
      */
     public function __construct($collection = null)
     {
-        $this->typeCheck = Typhoon::get(__CLASS__, func_get_args());
+        $this->typeCheck = TypeCheck::get(__CLASS__, func_get_args());
 
         $this->clear();
 

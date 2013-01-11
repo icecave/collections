@@ -2,7 +2,7 @@
 namespace Icecave\Collections\TypeCheck\Validator\Icecave\Collections;
 
 
-class MapTyphoon extends \Icecave\Collections\TypeCheck\AbstractValidator
+class MapTypeCheck extends \Icecave\Collections\TypeCheck\AbstractValidator
 {
     public function validateConstruct(array $arguments)
     {

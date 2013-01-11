@@ -2,7 +2,7 @@
 namespace Icecave\Collections;
 
 use Countable;
-use Icecave\Collections\TypeCheck\Typhoon;
+use Icecave\Collections\TypeCheck\TypeCheck;
 use Icecave\Repr\Repr;
 use SplPriorityQueue;
 
@@ -22,7 +22,7 @@ class PriorityQueue extends Queue
      */
     public function __construct($prioritizer, $collection = null)
     {
-        $this->typeCheck = Typhoon::get(__CLASS__, func_get_args());
+        $this->typeCheck = TypeCheck::get(__CLASS__, func_get_args());
 
         $this->prioritizer = $prioritizer;
         parent::__construct($collection);

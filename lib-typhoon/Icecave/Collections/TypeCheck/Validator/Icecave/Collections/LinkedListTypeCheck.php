@@ -2,7 +2,7 @@
 namespace Icecave\Collections\TypeCheck\Validator\Icecave\Collections;
 
 
-class LinkedListTyphoon extends \Icecave\Collections\TypeCheck\AbstractValidator
+class LinkedListTypeCheck extends \Icecave\Collections\TypeCheck\AbstractValidator
 {
     public function validateConstruct(array $arguments)
     {

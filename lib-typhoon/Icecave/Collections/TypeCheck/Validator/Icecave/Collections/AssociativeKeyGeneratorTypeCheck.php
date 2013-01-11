@@ -2,7 +2,7 @@
 namespace Icecave\Collections\TypeCheck\Validator\Icecave\Collections;
 
 
-class AssociativeKeyGeneratorTyphoon extends \Icecave\Collections\TypeCheck\AbstractValidator
+class AssociativeKeyGeneratorTypeCheck extends \Icecave\Collections\TypeCheck\AbstractValidator
 {
     public function validateConstruct(array $arguments)
     {

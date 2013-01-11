@@ -1,7 +1,7 @@
 <?php
 namespace Icecave\Collections;
 
-use Icecave\Collections\TypeCheck\Typhoon;
+use Icecave\Collections\TypeCheck\TypeCheck;
 
 /**
  * A basic associative key generator that allows for keys of any type.
@@ -16,7 +16,7 @@ class AssociativeKeyGenerator
      */
     public function __construct($arrayHashFunction = 'md5', $objectHashFunction = 'spl_object_hash')
     {
-        $this->typeCheck = Typhoon::get(__CLASS__, func_get_args());
+        $this->typeCheck = TypeCheck::get(__CLASS__, func_get_args());
 
         $this->arrayHashFunction = $arrayHashFunction;
         $this->objectHashFunction = $objectHashFunction;

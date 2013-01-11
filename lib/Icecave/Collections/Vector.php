@@ -4,7 +4,7 @@ namespace Icecave\Collections;
 use ArrayAccess;
 use Countable;
 use Icecave\Collections\Iterator\RandomAccessIterator;
-use Icecave\Collections\TypeCheck\Typhoon;
+use Icecave\Collections\TypeCheck\TypeCheck;
 use Iterator;
 use SplFixedArray;
 
@@ -15,7 +15,7 @@ class Vector implements MutableRandomAccessInterface, Countable, Iterator, Array
      */
     public function __construct($collection = null)
     {
-        $this->typeCheck = Typhoon::get(__CLASS__, func_get_args());
+        $this->typeCheck = TypeCheck::get(__CLASS__, func_get_args());
 
         if (is_array($collection)) {
             $this->elements = SplFixedArray::fromArray($collection, false);

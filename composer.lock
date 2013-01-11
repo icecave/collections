@@ -399,16 +399,16 @@
         },
         {
             "name": "eloquent/typhoon",
-            "version": "0.5.2",
+            "version": "0.6.0",
             "source": {
                 "type": "git",
                 "url": "git://github.com/eloquent/typhoon.git",
-                "reference": "0.5.2"
+                "reference": "0.6.0"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://github.com/eloquent/typhoon/archive/0.5.2.zip",
-                "reference": "0.5.2",
+                "url": "https://github.com/eloquent/typhoon/archive/0.6.0.zip",
+                "reference": "0.6.0",
                 "shasum": ""
             },
             "require": {
@@ -430,7 +430,7 @@
                 "eloquent/liberator": ">=1.0,<2.0",
                 "ezzatron/phpunit-extensions": ">=1.0,<2.0"
             },
-            "time": "2012-12-04 04:59:47",
+            "time": "2013-01-11 01:17:04",
             "bin": [
                 "bin/typhoon"
             ],
@@ -438,7 +438,7 @@
             "installation-source": "dist",
             "autoload": {
                 "psr-0": {
-                    "Eloquent\\Typhoon\\Validators": "src-typhoon",
+                    "Eloquent\\Typhoon\\TypeCheck": "src-typhoon",
                     "Eloquent\\Typhoon": "src"
                 }
             },
