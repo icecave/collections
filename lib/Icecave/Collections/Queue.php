@@ -2,16 +2,19 @@
 namespace Icecave\Collections;
 
 use Countable;
+use Icecave\Collections\TypeCheck\Typhoon;
 use Icecave\Repr\Repr;
 use SplQueue;
 
 class Queue implements QueuedAccessInterface, Countable
 {
     /**
-     * @param traversable|null $collection An iterable type containing the elements to include in this list, or null to create an empty list.
+     * @param mixed<mixed>|null $collection An iterable type containing the elements to include in this list, or null to create an empty list.
      */
     public function __construct($collection = null)
     {
+        $this->typeCheck = Typhoon::get(__CLASS__, func_get_args());
+
         $this->clear();
 
         if (null !== $collection) {
@@ -34,6 +37,8 @@ class Queue implements QueuedAccessInterface, Countable
      */
     public function size()
     {
+        $this->typeCheck->size(func_get_args());
+
         return $this->elements->count();
     }
 
@@ -44,6 +49,8 @@ class Queue implements QueuedAccessInterface, Countable
      */
     public function isEmpty()
     {
+        $this->typeCheck->isEmpty(func_get_args());
+
         return $this->elements->isEmpty();
     }
 
@@ -57,6 +64,8 @@ class Queue implements QueuedAccessInterface, Countable
      */
     public function __toString()
     {
+        $this->typeCheck->__toString(func_get_args());
+
         if ($this->isEmpty()) {
             return '<Queue 0>';
         }
@@ -77,6 +86,8 @@ class Queue implements QueuedAccessInterface, Countable
      */
     public function clear()
     {
+        $this->typeCheck->clear(func_get_args());
+
         $this->elements = new SplQueue;
     }
 
@@ -92,6 +103,8 @@ class Queue implements QueuedAccessInterface, Countable
      */
     public function next()
     {
+        $this->typeCheck->next(func_get_args());
+
         if ($this->isEmpty()) {
             throw new Exception\EmptyCollectionException;
         }
@@ -107,6 +120,8 @@ class Queue implements QueuedAccessInterface, Countable
      */
     public function tryNext(&$element)
     {
+        $this->typeCheck->tryNext(func_get_args());
+
         if ($this->isEmpty()) {
             return false;
         }
@@ -123,6 +138,8 @@ class Queue implements QueuedAccessInterface, Countable
      */
     public function push($element)
     {
+        $this->typeCheck->push(func_get_args());
+
         $this->elements->push($element);
     }
 
@@ -134,6 +151,8 @@ class Queue implements QueuedAccessInterface, Countable
      */
     public function pop()
     {
+        $this->typeCheck->pop(func_get_args());
+
         if ($this->isEmpty()) {
             throw new Exception\EmptyCollectionException;
         }
@@ -150,6 +169,8 @@ class Queue implements QueuedAccessInterface, Countable
      */
     public function tryPop(&$element = null)
     {
+        $this->typeCheck->tryPop(func_get_args());
+
         if ($this->isEmpty()) {
             return false;
         }
@@ -165,8 +186,11 @@ class Queue implements QueuedAccessInterface, Countable
 
     public function count()
     {
+        $this->typeCheck->count(func_get_args());
+
         return $this->size();
     }
 
+    private $typeCheck;
     protected $elements;
 }

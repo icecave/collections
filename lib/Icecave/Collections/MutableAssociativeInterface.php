@@ -111,7 +111,8 @@ interface MutableAssociativeInterface extends AssociativeInterface, MutableItera
      *
      * Any existing keys are overwritten from left to right.
      *
-     * @param AssociativeInterface,... $collection The collections to merge.
+     * @param AssociativeInterface $collection The collection to merge.
+     * @param AssociativeInterface $additional,... Additional collections to merge.
      */
     public function merge(AssociativeInterface $collection);
 

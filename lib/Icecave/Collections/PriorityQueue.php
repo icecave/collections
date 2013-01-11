@@ -2,6 +2,7 @@
 namespace Icecave\Collections;
 
 use Countable;
+use Icecave\Collections\TypeCheck\Typhoon;
 use Icecave\Repr\Repr;
 use SplPriorityQueue;
 
@@ -16,11 +17,13 @@ use SplPriorityQueue;
 class PriorityQueue extends Queue
 {
     /**
-     * @param callable $ranker A function used to generate the priority for a given element.
-     * @param traversable|null $collection An iterable type containing the elements to include in this list, or null to create an empty list.
+     * @param callable $prioritizer A function used to generate the priority for a given element.
+     * @param mixed<mixed>|null $collection An iterable type containing the elements to include in this list, or null to create an empty list.
      */
     public function __construct($prioritizer, $collection = null)
     {
+        $this->typeCheck = Typhoon::get(__CLASS__, func_get_args());
+
         $this->prioritizer = $prioritizer;
         parent::__construct($collection);
     }
@@ -39,6 +42,8 @@ class PriorityQueue extends Queue
      */
     public function __toString()
     {
+        $this->typeCheck->__toString(func_get_args());
+
         if ($this->isEmpty()) {
             return '<PriorityQueue 0>';
         }
@@ -59,6 +64,8 @@ class PriorityQueue extends Queue
      */
     public function clear()
     {
+        $this->typeCheck->clear(func_get_args());
+
         $this->elements = new SplPriorityQueue;
     }
 
@@ -74,6 +81,8 @@ class PriorityQueue extends Queue
      */
     public function next()
     {
+        $this->typeCheck->next(func_get_args());
+
         if ($this->isEmpty()) {
             throw new Exception\EmptyCollectionException;
         }
@@ -89,6 +98,8 @@ class PriorityQueue extends Queue
      */
     public function push($element, $priority = null)
     {
+        $this->typeCheck->push(func_get_args());
+
         if (null == $priority) {
             $priority = call_user_func($this->prioritizer, $element);
         }
@@ -104,10 +115,14 @@ class PriorityQueue extends Queue
      */
     public function pop()
     {
+        $this->typeCheck->pop(func_get_args());
+
         if ($this->isEmpty()) {
             throw new Exception\EmptyCollectionException;
         }
 
         return $this->elements->extract();
     }
+
+    private $typeCheck;
 }

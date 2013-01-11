@@ -270,11 +270,11 @@ class MapTest extends PHPUnit_Framework_TestCase
 
     public function testCascadeWithDefault()
     {
-        $this->assertSame('<default>', $this->_collection->cascadeWithDefault('a', 'b', 'c', '<default>'));
+        $this->assertSame('<default>', $this->_collection->cascadeWithDefault('<default>', 'a', 'b', 'c'));
 
         $this->_collection->set('b', 2);
 
-        $this->assertSame(2, $this->_collection->cascadeWithDefault('a', 'b', 'c', '<default>'));
+        $this->assertSame(2, $this->_collection->cascadeWithDefault('<default>', 'a', 'b', 'c'));
     }
 
     public function testCascadeIterable()
@@ -286,11 +286,11 @@ class MapTest extends PHPUnit_Framework_TestCase
 
     public function testCascadeIterableWithDefault()
     {
-        $this->assertSame('<default>', $this->_collection->cascadeIterableWithDefault(array('a', 'b', 'c'), '<default>'));
+        $this->assertSame('<default>', $this->_collection->cascadeIterableWithDefault('<default>', array('a', 'b', 'c')));
 
         $this->_collection->set('b', 2);
 
-        $this->assertSame(2, $this->_collection->cascadeIterableWithDefault(array('a', 'b', 'c'), '<default>'));
+        $this->assertSame(2, $this->_collection->cascadeIterableWithDefault('<default>', array('a', 'b', 'c')));
     }
 
     public function testKeys()

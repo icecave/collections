@@ -3,17 +3,20 @@ namespace Icecave\Collections;
 
 use Countable;
 use Icecave\Collections\Iterator\SetIterator;
+use Icecave\Collections\TypeCheck\Typhoon;
 use Icecave\Repr\Repr;
 use Iterator;
 
 class Set implements MutableIterableInterface, Countable, Iterator
 {
     /**
-     * @param traversable|null $collection An iterable type containing the elements to include in this set, or null to create an empty set.
+     * @param mixed<mixed>|null $collection An iterable type containing the elements to include in this set, or null to create an empty set.
      * @param callable|null $hashFunction The function to use for generating hashes of elements, or null to use the default.
      */
     public function __construct($collection = null, $hashFunction = null)
     {
+        $this->typeCheck = Typhoon::get(__CLASS__, func_get_args());
+
         if (null === $hashFunction) {
             $hashFunction = new AssociativeKeyGenerator;
         }
@@ -41,6 +44,8 @@ class Set implements MutableIterableInterface, Countable, Iterator
      */
     public function size()
     {
+        $this->typeCheck->size(func_get_args());
+
         return count($this->elements);
     }
 
@@ -51,6 +56,8 @@ class Set implements MutableIterableInterface, Countable, Iterator
      */
     public function isEmpty()
     {
+        $this->typeCheck->isEmpty(func_get_args());
+
         return empty($this->elements);
     }
 
@@ -64,6 +71,8 @@ class Set implements MutableIterableInterface, Countable, Iterator
      */
     public function __toString()
     {
+        $this->typeCheck->__toString(func_get_args());
+
         if ($this->isEmpty()) {
             return '<Set 0>';
         }
@@ -100,6 +109,8 @@ class Set implements MutableIterableInterface, Countable, Iterator
      */
     public function clear()
     {
+        $this->typeCheck->clear(func_get_args());
+
         $this->elements = array();
     }
 
@@ -114,6 +125,8 @@ class Set implements MutableIterableInterface, Countable, Iterator
      */
     public function elements()
     {
+        $this->typeCheck->elements(func_get_args());
+
         return array_values($this->elements);
     }
 
@@ -126,6 +139,8 @@ class Set implements MutableIterableInterface, Countable, Iterator
      */
     public function contains($value)
     {
+        $this->typeCheck->contains(func_get_args());
+
         $hash = $this->generateHash($value);
         return array_key_exists($hash, $this->elements);
     }
@@ -142,6 +157,8 @@ class Set implements MutableIterableInterface, Countable, Iterator
      */
     public function filtered($predicate = null)
     {
+        $this->typeCheck->filtered(func_get_args());
+
         if (null === $predicate) {
             $predicate = function ($element) {
                 return null !== $element;
@@ -174,6 +191,8 @@ class Set implements MutableIterableInterface, Countable, Iterator
      */
     public function map($transform)
     {
+        $this->typeCheck->map(func_get_args());
+
         $result = new static(null, $this->hashFunction);
 
         foreach ($this->elements as $element) {
@@ -197,6 +216,8 @@ class Set implements MutableIterableInterface, Countable, Iterator
      */
     public function filter($predicate = null)
     {
+        $this->typeCheck->filter(func_get_args());
+
         if (null === $predicate) {
             $predicate = function ($element) {
                 return null !== $element;
@@ -222,6 +243,8 @@ class Set implements MutableIterableInterface, Countable, Iterator
      */
     public function apply($transform)
     {
+        $this->typeCheck->apply(func_get_args());
+
         $result = $this->map($transform);
         $this->elements = $result->elements;
     }
@@ -232,6 +255,8 @@ class Set implements MutableIterableInterface, Countable, Iterator
 
     public function count()
     {
+        $this->typeCheck->count(func_get_args());
+
         return $this->size();
     }
 
@@ -241,26 +266,36 @@ class Set implements MutableIterableInterface, Countable, Iterator
 
     public function current()
     {
+        $this->typeCheck->current(func_get_args());
+
         return current($this->elements);
     }
 
     public function key()
     {
+        $this->typeCheck->key(func_get_args());
+
         return $this->current();
     }
 
     public function next()
     {
+        $this->typeCheck->next(func_get_args());
+
         next($this->elements);
     }
 
     public function rewind()
     {
+        $this->typeCheck->rewind(func_get_args());
+
         reset($this->elements);
     }
 
     public function valid()
     {
+        $this->typeCheck->valid(func_get_args());
+
         return null !== key($this->elements);
     }
 
@@ -271,30 +306,36 @@ class Set implements MutableIterableInterface, Countable, Iterator
     /**
      * Return the first of the given elements that is contained in the set.
      *
-     * @param mixed,... $element The elements to search for.
+     * @param mixed $element The element to search for.
+     * @param mixed $additional,... Additional elements to search for.
      *
      * @return mixed The first of the given elements that is contained in the set.
      * @throws Exception\UnknownKeyException if none of the elements exist.
      */
     public function cascade($element)
     {
+        $this->typeCheck->cascade(func_get_args());
+
         return $this->cascadeIterable(func_get_args());
     }
 
     /**
      * Return the first of the given elements that is contained in the set, or a default if none are found.
      *
-     * @param mixed,... $element The elements to search for.
      * @param mixed $default The default value to return if no such elements exist.
+     * @param mixed $element The element to search for.
+     * @param mixed $additional,... Additional elements to search for.
      *
      * @return mixed The first of the given elements that is contained in the set, or $default if none are found.
      */
-    public function cascadeWithDefault($element, $default)
+    public function cascadeWithDefault($default, $element)
     {
-        $elements = func_get_args();
-        $default = array_pop($elements);
+        $this->typeCheck->cascadeWithDefault(func_get_args());
 
-        return $this->cascadeIterableWithDefault($elements, $default);
+        $elements = func_get_args();
+        $default = array_shift($elements);
+
+        return $this->cascadeIterableWithDefault($default, $elements);
     }
 
     /**
@@ -303,13 +344,15 @@ class Set implements MutableIterableInterface, Countable, Iterator
      * Behaves as per {@see Set::cascade()} except that the elements are provided as
      * a traversable (eg, array) instead of via a variable argument list.
      *
-     * @param traversable $elements The list of elements.
+     * @param mixed<mixed> $elements The list of elements.
      *
      * @return mixed The first of the given elements that is contained in the set.
      * @throws Exception\UnknownKeyException if none of the elements exist.
      */
     public function cascadeIterable($elements)
     {
+        $this->typeCheck->cascadeIterable(func_get_args());
+
         foreach ($elements as $element) {
             $hash = $this->generateHash($element);
             if (array_key_exists($hash, $this->elements)) {
@@ -326,13 +369,15 @@ class Set implements MutableIterableInterface, Countable, Iterator
      * Behaves as per {@see Set::cascadeDefault()} except that the elements are provided as
      * a traversable (eg, array) instead of via a variable argument list.
      *
-     * @param traversable $elements The list of elements.
      * @param mixed $default The default value to return if no such elements exist.
+     * @param mixed<mixed> $elements The list of elements.
      *
      * @return mixed The first of the given elements that is contained in the set, or $default if none are found.
      */
-    public function cascadeIterableWithDefault($elements, $default = null)
+    public function cascadeIterableWithDefault($default, $elements)
     {
+        $this->typeCheck->cascadeIterableWithDefault(func_get_args());
+
         foreach ($elements as $element) {
             $hash = $this->generateHash($element);
             if (array_key_exists($hash, $this->elements)) {
@@ -343,8 +388,17 @@ class Set implements MutableIterableInterface, Countable, Iterator
         return $default;
     }
 
+    /**
+     * Add an element to the set.
+     *
+     * @param mixed $element The element to add.
+     *
+     * @return boolean True if the element was added to the set, or false if the set already contained the element.
+     */
     public function add($element)
     {
+        $this->typeCheck->add(func_get_args());
+
         $hash = $this->generateHash($element);
         if (array_key_exists($hash, $this->elements)) {
             return false;
@@ -354,8 +408,17 @@ class Set implements MutableIterableInterface, Countable, Iterator
         return true;
     }
 
+    /**
+     * Remove an element from the set, if it exists.
+     *
+     * @param mixed $element The element to remove.
+     *
+     * @return boolean True if the element was removed from the set, or false if the set dot not contain the element.
+     */
     public function remove($element)
     {
+        $this->typeCheck->remove(func_get_args());
+
         $hash = $this->generateHash($element);
         if (array_key_exists($hash, $this->elements)) {
             unset($this->elements[$hash]);
@@ -364,15 +427,31 @@ class Set implements MutableIterableInterface, Countable, Iterator
         return false;
     }
 
+    /**
+     * Compute the union of this set and another.
+     *
+     * @param mixed $elements The elements of the second set.
+     *
+     * @return Set A set containing all elements of $this and $elements.
+     */
     public function union($elements)
     {
+        $this->typeCheck->union(func_get_args());
+
         $result = clone $this;
         $result->unionInPlace($elements);
         return $result;
     }
 
+    /**
+     * Compute the union of this set and another, in place.
+     *
+     * @param mixed $elements The elements of the second set.
+     */
     public function unionInPlace($elements)
     {
+        $this->typeCheck->unionInPlace(func_get_args());
+
         if ($elements instanceof self && $this->hashFunction == $elements->hashFunction) {
             $this->elements += $elements->elements;
         } else {
@@ -382,15 +461,31 @@ class Set implements MutableIterableInterface, Countable, Iterator
         }
     }
 
+    /**
+     * Compute the intersection of this set and another.
+     *
+     * @param mixed $elements The elements of the second set.
+     *
+     * @return Set A set containing only the elements present in $this and $elements.
+     */
     public function intersect($elements)
     {
+        $this->typeCheck->intersect(func_get_args());
+
         $result = clone $this;
         $result->intersectInPlace($elements);
         return $result;
     }
 
+    /**
+     * Compute the intersection of this set and another, in place.
+     *
+     * @param mixed $elements The elements of the second set.
+     */
     public function intersectInPlace($elements)
     {
+        $this->typeCheck->intersectInPlace(func_get_args());
+
         if ($elements instanceof self && $this->hashFunction == $elements->hashFunction) {
             $this->elements = array_intersect_assoc($this->elements, $elements->elements);
         } else {
@@ -407,15 +502,31 @@ class Set implements MutableIterableInterface, Countable, Iterator
         }
     }
 
+    /**
+     * Compute the complement (or difference) of this set and another.
+     *
+     * @param mixed $elements The elements of the second set.
+     *
+     * @return Set A set containing only the elements present in $this, but not $elements.
+     */
     public function complement($elements)
     {
+        $this->typeCheck->complement(func_get_args());
+
         $result = clone $this;
         $result->complementInPlace($elements);
         return $result;
     }
 
+    /**
+     * Compute the complement (or difference) of this set and another, in place.
+     *
+     * @param mixed $elements The elements of the second set.
+     */
     public function complementInPlace($elements)
     {
+        $this->typeCheck->complementInPlace(func_get_args());
+
         if ($elements instanceof self && $this->hashFunction == $elements->hashFunction) {
             $this->elements = array_diff_assoc($this->elements, $elements->elements);
         } else {
@@ -426,11 +537,17 @@ class Set implements MutableIterableInterface, Countable, Iterator
         }
     }
 
+    /**
+     * @param mixed $key
+     *
+     * @return integer|string
+     */
     protected function generateHash($key)
     {
         return call_user_func($this->hashFunction, $key);
     }
 
+    private $typeCheck;
     private $hashFunction;
     private $elements;
 }

@@ -12,7 +12,7 @@ class DuplicateKeyException extends RuntimeException implements CollectionExcept
 {
     /**
      * @param mixed $key The unknown key.
-     * @param Exception|null The previous exception, if any.
+     * @param Exception|null $previous The previous exception, if any.
      */
     public function __construct($key, Exception $previous = null)
     {

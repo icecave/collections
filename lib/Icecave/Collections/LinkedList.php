@@ -2,6 +2,7 @@
 namespace Icecave\Collections;
 
 use Countable;
+use Icecave\Collections\TypeCheck\Typhoon;
 use Iterator;
 use stdClass;
 
@@ -11,10 +12,12 @@ use stdClass;
 class LinkedList implements MutableRandomAccessInterface, Countable, Iterator
 {
     /**
-     * @param traversable|null $collection An iterable type containing the elements to include in this list, or null to create an empty list.
+     * @param mixed<mixed>|null $collection An iterable type containing the elements to include in this list, or null to create an empty list.
      */
     public function __construct($collection = null)
     {
+        $this->typeCheck = Typhoon::get(__CLASS__, func_get_args());
+
         $this->clear();
 
         if (null !== $collection) {
@@ -35,6 +38,8 @@ class LinkedList implements MutableRandomAccessInterface, Countable, Iterator
      */
     public function size()
     {
+        $this->typeCheck->size(func_get_args());
+
         return $this->size;
     }
 
@@ -45,6 +50,8 @@ class LinkedList implements MutableRandomAccessInterface, Countable, Iterator
      */
     public function isEmpty()
     {
+        $this->typeCheck->isEmpty(func_get_args());
+
         return null === $this->head;
     }
 
@@ -58,6 +65,8 @@ class LinkedList implements MutableRandomAccessInterface, Countable, Iterator
      */
     public function __toString()
     {
+        $this->typeCheck->__toString(func_get_args());
+
         if ($this->isEmpty()) {
             return '<LinkedList 0>';
         }
@@ -88,6 +97,8 @@ class LinkedList implements MutableRandomAccessInterface, Countable, Iterator
      */
     public function clear()
     {
+        $this->typeCheck->clear(func_get_args());
+
         $this->head = null;
         $this->tail = null;
         $this->size = 0;
@@ -107,6 +118,8 @@ class LinkedList implements MutableRandomAccessInterface, Countable, Iterator
      */
     public function elements()
     {
+        $this->typeCheck->elements(func_get_args());
+
         $elements = array();
 
         for ($node = $this->head; null !== $node; $node = $node->next) {
@@ -125,6 +138,8 @@ class LinkedList implements MutableRandomAccessInterface, Countable, Iterator
      */
     public function contains($element)
     {
+        $this->typeCheck->contains(func_get_args());
+
         for ($node = $this->head; null !== $node; $node = $node->next) {
             if ($element === $node->element) {
                 return true;
@@ -143,6 +158,8 @@ class LinkedList implements MutableRandomAccessInterface, Countable, Iterator
      */
     public function filtered($predicate = null)
     {
+        $this->typeCheck->filtered(func_get_args());
+
         if (null === $predicate) {
             $predicate = function ($element) {
                 return null !== $element;
@@ -172,6 +189,8 @@ class LinkedList implements MutableRandomAccessInterface, Countable, Iterator
      */
     public function map($transform)
     {
+        $this->typeCheck->map(func_get_args());
+
         $result = new static;
 
         for ($node = $this->head; null !== $node; $node = $node->next) {
@@ -192,6 +211,8 @@ class LinkedList implements MutableRandomAccessInterface, Countable, Iterator
      */
     public function filter($predicate = null)
     {
+        $this->typeCheck->filter(func_get_args());
+
         if (null === $predicate) {
             $predicate = function ($element) {
                 return null !== $element;
@@ -231,6 +252,8 @@ class LinkedList implements MutableRandomAccessInterface, Countable, Iterator
      */
     public function apply($transform)
     {
+        $this->typeCheck->apply(func_get_args());
+
         for ($node = $this->head; null !== $node; $node = $node->next) {
             $node->element = call_user_func($transform, $node->element);
         }
@@ -248,6 +271,8 @@ class LinkedList implements MutableRandomAccessInterface, Countable, Iterator
      */
     public function front()
     {
+        $this->typeCheck->front(func_get_args());
+
         if ($this->isEmpty()) {
             throw new Exception\EmptyCollectionException;
         }
@@ -263,6 +288,8 @@ class LinkedList implements MutableRandomAccessInterface, Countable, Iterator
      */
     public function tryFront(&$element)
     {
+        $this->typeCheck->tryFront(func_get_args());
+
         if ($this->isEmpty()) {
             return false;
         }
@@ -280,6 +307,8 @@ class LinkedList implements MutableRandomAccessInterface, Countable, Iterator
      */
     public function back()
     {
+        $this->typeCheck->back(func_get_args());
+
         if ($this->isEmpty()) {
             throw new Exception\EmptyCollectionException;
         }
@@ -295,6 +324,8 @@ class LinkedList implements MutableRandomAccessInterface, Countable, Iterator
      */
     public function tryBack(&$element)
     {
+        $this->typeCheck->tryBack(func_get_args());
+
         if ($this->isEmpty()) {
             return false;
         }
@@ -313,6 +344,8 @@ class LinkedList implements MutableRandomAccessInterface, Countable, Iterator
      */
     public function sorted($comparator = null)
     {
+        $this->typeCheck->sorted(func_get_args());
+
         $elements = $this->elements();
 
         if (null === $comparator) {
@@ -336,6 +369,8 @@ class LinkedList implements MutableRandomAccessInterface, Countable, Iterator
      */
     public function reversed()
     {
+        $this->typeCheck->reversed(func_get_args());
+
         $result = new static;
 
         for ($node = $this->head; null !== $node; $node = $node->next) {
@@ -348,12 +383,15 @@ class LinkedList implements MutableRandomAccessInterface, Countable, Iterator
     /**
      * Create a new sequence by appending the elements in the given sequence to this sequence.
      *
-     * @param traversable,... The sequence(s) to append.
+     * @param mixed<mixed> $sequence The sequence to append.
+     * @param mixed<mixed> $additional,... Additional sequences to append.
      *
      * @return SequenceInterface A new sequence containing all elements from this sequence and $sequence.
      */
     public function join($sequence)
     {
+        $this->typeCheck->join(func_get_args());
+
         $result = new static;
         list($result->head, $result->tail, $result->size) = $this->cloneNodes($this->head);
 
@@ -375,6 +413,8 @@ class LinkedList implements MutableRandomAccessInterface, Countable, Iterator
      */
     public function sort($comparator = null)
     {
+        $this->typeCheck->sort(func_get_args());
+
         $elements = $this->elements();
 
         if (null === $comparator) {
@@ -391,6 +431,8 @@ class LinkedList implements MutableRandomAccessInterface, Countable, Iterator
      */
     public function reverse()
     {
+        $this->typeCheck->reverse(func_get_args());
+
         $prev = null;
         $node = $this->head;
 
@@ -409,10 +451,13 @@ class LinkedList implements MutableRandomAccessInterface, Countable, Iterator
     /**
      * Appending elements in the given sequence to this sequence.
      *
-     * @param traversable,... The sequence(s) to append.
+     * @param mixed<mixed> $sequence The sequence to append.
+     * @param mixed<mixed> $additional,... Additional sequences to append.
      */
     public function append($sequence)
     {
+        $this->typeCheck->append(func_get_args());
+
         foreach (func_get_args() as $sequence) {
             $this->insertMany($this->size, $sequence);
         }
@@ -425,6 +470,8 @@ class LinkedList implements MutableRandomAccessInterface, Countable, Iterator
      */
     public function pushFront($element)
     {
+        $this->typeCheck->pushFront(func_get_args());
+
         $this->head = $this->createNode($element, $this->head);
 
         if (0 === $this->size++) {
@@ -440,6 +487,8 @@ class LinkedList implements MutableRandomAccessInterface, Countable, Iterator
      */
     public function popFront()
     {
+        $this->typeCheck->popFront(func_get_args());
+
         if ($this->isEmpty()) {
             throw new Exception\EmptyCollectionException;
         }
@@ -463,6 +512,8 @@ class LinkedList implements MutableRandomAccessInterface, Countable, Iterator
      */
     public function tryPopFront(&$element = null)
     {
+        $this->typeCheck->tryPopFront(func_get_args());
+
         if ($this->isEmpty()) {
             return false;
         }
@@ -479,6 +530,8 @@ class LinkedList implements MutableRandomAccessInterface, Countable, Iterator
      */
     public function pushBack($element)
     {
+        $this->typeCheck->pushBack(func_get_args());
+
         $node = $this->createNode($element);
 
         if (0 === $this->size++) {
@@ -498,6 +551,8 @@ class LinkedList implements MutableRandomAccessInterface, Countable, Iterator
      */
     public function popBack()
     {
+        $this->typeCheck->popBack(func_get_args());
+
         if ($this->isEmpty()) {
             throw new Exception\EmptyCollectionException;
         }
@@ -524,6 +579,8 @@ class LinkedList implements MutableRandomAccessInterface, Countable, Iterator
      */
     public function tryPopBack(&$element = null)
     {
+        $this->typeCheck->tryPopBack(func_get_args());
+
         if ($this->isEmpty()) {
             return false;
         }
@@ -541,6 +598,8 @@ class LinkedList implements MutableRandomAccessInterface, Countable, Iterator
      */
     public function resize($size, $element = null)
     {
+        $this->typeCheck->resize(func_get_args());
+
         if ($this->size > $size) {
             $this->removeMany($size);
         } else {
@@ -564,6 +623,8 @@ class LinkedList implements MutableRandomAccessInterface, Countable, Iterator
      */
     public function get($index)
     {
+        $this->typeCheck->get(func_get_args());
+
         $this->validateIndex($index);
 
         return $this->nodeAt($index)->element;
@@ -582,6 +643,8 @@ class LinkedList implements MutableRandomAccessInterface, Countable, Iterator
      */
     public function slice($index, $count = null)
     {
+        $this->typeCheck->slice(func_get_args());
+
         $this->validateIndex($index);
 
         $start = $this->nodeAt($index);
@@ -614,6 +677,8 @@ class LinkedList implements MutableRandomAccessInterface, Countable, Iterator
      */
     public function range($begin, $end)
     {
+        $this->typeCheck->range(func_get_args());
+
         $this->validateIndex($begin);
         $this->validateIndex($end, $this->size);
 
@@ -629,6 +694,8 @@ class LinkedList implements MutableRandomAccessInterface, Countable, Iterator
      */
     public function indexOf($element)
     {
+        $this->typeCheck->indexOf(func_get_args());
+
         for ($index = 0, $node = $this->head; null !== $node; ++$index, $node = $node->next) {
             if ($element === $node->element) {
                 return $index;
@@ -652,6 +719,8 @@ class LinkedList implements MutableRandomAccessInterface, Countable, Iterator
      */
     public function set($index, $element)
     {
+        $this->typeCheck->set(func_get_args());
+
         $this->validateIndex($index);
 
         $this->nodeAt($index)->element = $element;
@@ -667,6 +736,8 @@ class LinkedList implements MutableRandomAccessInterface, Countable, Iterator
      */
     public function insert($index, $element)
     {
+        $this->typeCheck->insert(func_get_args());
+
         $this->insertMany($index, array($element));
     }
 
@@ -674,10 +745,12 @@ class LinkedList implements MutableRandomAccessInterface, Countable, Iterator
      * Insert a range of elements at a particular index.
      *
      * @param integer $index The index at which the elements are inserted, if index is a negative number the elements are inserted that far from the end of the sequence.
-     * @param traversable $elements The elements to insert.
+     * @param mixed<mixed> $elements The elements to insert.
      */
     public function insertMany($index, $elements)
     {
+        $this->typeCheck->insertMany(func_get_args());
+
         $this->validateIndex($index, $this->size);
 
         list($head, $tail, $size) = $this->createNodes($elements);
@@ -713,6 +786,8 @@ class LinkedList implements MutableRandomAccessInterface, Countable, Iterator
      */
     public function remove($index)
     {
+        $this->typeCheck->remove(func_get_args());
+
         $this->removeRange($index, $index + 1);
     }
 
@@ -726,6 +801,8 @@ class LinkedList implements MutableRandomAccessInterface, Countable, Iterator
      */
     public function removeMany($index, $count = null)
     {
+        $this->typeCheck->removeMany(func_get_args());
+
         $this->validateIndex($index);
 
         // Remove, but not all the way to the end ...
@@ -760,6 +837,8 @@ class LinkedList implements MutableRandomAccessInterface, Countable, Iterator
      */
     public function removeRange($begin, $end)
     {
+        $this->typeCheck->removeRange(func_get_args());
+
         $this->validateIndex($begin);
         $this->validateIndex($end, $this->size);
 
@@ -772,11 +851,13 @@ class LinkedList implements MutableRandomAccessInterface, Countable, Iterator
      * Replaces all elements in the range [$begin, $end), i.e. $begin is inclusive, $end is exclusive.
      *
      * @param integer $index The index of the first element to replace, if index is a negative number the replace begins that far from the end of the sequence.
-     * @param traversable $elements The elements to insert.
+     * @param mixed<mixed> $elements The elements to insert.
      * @param integer|null $count The number of elements to replace, or null to replace all elements up to the end of the sequence.
      */
     public function replace($index, $elements, $count = null)
     {
+        $this->typeCheck->replace(func_get_args());
+
         $this->validateIndex($index);
 
         $this->removeMany($index, $count);
@@ -788,10 +869,12 @@ class LinkedList implements MutableRandomAccessInterface, Countable, Iterator
      *
      * @param integer $begin The index of the first element to replace, if begin is a negative number the replace begins that far from the end of the sequence.
      * @param integer $end  The index of the last element to replace, if end is a negativ enumber the replace ends that far from the end of the sequence.
-     * @param traversable $elements The elements to insert.
+     * @param mixed<mixed> $elements The elements to insert.
      */
     public function replaceRange($begin, $end, $elements)
     {
+        $this->typeCheck->replaceRange(func_get_args());
+
         $this->validateIndex($begin);
 
         $this->removeRange($begin, $end);
@@ -808,6 +891,8 @@ class LinkedList implements MutableRandomAccessInterface, Countable, Iterator
      */
     public function swap($index1, $index2)
     {
+        $this->typeCheck->swap(func_get_args());
+
         $this->validateIndex($index1);
         $this->validateIndex($index2);
 
@@ -824,6 +909,8 @@ class LinkedList implements MutableRandomAccessInterface, Countable, Iterator
      */
     public function trySwap($index1, $index2)
     {
+        $this->typeCheck->trySwap(func_get_args());
+
         if ($index1 < 0) {
             $index1 += $this->size();
         }
@@ -851,6 +938,8 @@ class LinkedList implements MutableRandomAccessInterface, Countable, Iterator
 
     public function count()
     {
+        $this->typeCheck->count(func_get_args());
+
         return $this->size();
     }
 
@@ -860,28 +949,38 @@ class LinkedList implements MutableRandomAccessInterface, Countable, Iterator
 
     public function current()
     {
+        $this->typeCheck->current(func_get_args());
+
         return $this->currentNode->element;
     }
 
     public function key()
     {
+        $this->typeCheck->key(func_get_args());
+
         return $this->currentIndex;
     }
 
     public function next()
     {
+        $this->typeCheck->next(func_get_args());
+
         $this->currentNode = $this->currentNode->next;
         ++$this->currentIndex;
     }
 
     public function rewind()
     {
+        $this->typeCheck->rewind(func_get_args());
+
         $this->currentNode = $this->head;
         $this->currentIndex = 0;
     }
 
     public function valid()
     {
+        $this->typeCheck->valid(func_get_args());
+
         return null !== $this->currentNode;
     }
 
@@ -889,6 +988,10 @@ class LinkedList implements MutableRandomAccessInterface, Countable, Iterator
     // Model specific methods //
     ////////////////////////////
 
+    /**
+     * @param integer $index1
+     * @param integer $index2
+     */
     protected function doSwap($index1, $index2)
     {
         $a = min($index1, $index2);
@@ -902,6 +1005,10 @@ class LinkedList implements MutableRandomAccessInterface, Countable, Iterator
         $node2->element = $element;
     }
 
+    /**
+     * @param integer &$index
+     * @param integer|null $max
+     */
     protected function validateIndex(&$index, $max = null)
     {
         if (null === $max) {
@@ -917,7 +1024,11 @@ class LinkedList implements MutableRandomAccessInterface, Countable, Iterator
         }
     }
 
-    protected function createNode($element = null, $next = null)
+    /**
+     * @param mixed $element
+     * @param stdClass|null $next
+     */
+    protected function createNode($element = null, stdClass $next = null)
     {
         $node = new stdClass;
         $node->next = $next;
@@ -925,18 +1036,29 @@ class LinkedList implements MutableRandomAccessInterface, Countable, Iterator
         return $node;
     }
 
+    /**
+     * @param integer $index
+     */
     protected function nodeAt($index) {
         return $this->nodeFrom($this->head, $index);
     }
 
-    protected function nodeFrom($node, $count) {
+    /**
+     * @param stdClass $node
+     * @param integer $count
+     */
+    protected function nodeFrom(stdClass $node, $count) {
         while ($node && $count--) {
             $node = $node->next;
         }
         return $node;
     }
 
-    protected function cloneNodes($start, $stop = null) {
+    /**
+     * @param stdClass $start
+     * @param stdClass|null $stop
+     */
+    protected function cloneNodes(stdClass $start, stdClass $stop = null) {
         $head = null;
         $tail = null;
         $size = 0;
@@ -955,6 +1077,9 @@ class LinkedList implements MutableRandomAccessInterface, Countable, Iterator
         return array($head, $tail, $size);
     }
 
+    /**
+     * @param mixed<mixed> $elements
+     */
     protected function createNodes($elements) {
         $head = null;
         $tail = null;
@@ -974,6 +1099,7 @@ class LinkedList implements MutableRandomAccessInterface, Countable, Iterator
         return array($head, $tail, $size);
     }
 
+    private $typeCheck;
     private $head;
     private $tail;
     private $size;

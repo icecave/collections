@@ -61,7 +61,8 @@ interface SequenceInterface extends CollectionInterface
     /**
      * Create a new sequence by appending the elements in the given sequence to this sequence.
      *
-     * @param traversable,... The sequence(s) to append.
+     * @param mixed<mixed> $sequence The sequence to append.
+     * @param mixed<mixed> $additional,... Additional sequences to append.
      *
      * @return SequenceInterface A new sequence containing all elements from this sequence and $sequence.
      */

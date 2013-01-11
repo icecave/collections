@@ -11,7 +11,7 @@ class IndexException extends OutOfBoundsException implements CollectionException
 {
     /**
      * @param integer $index The out-of-range index.
-     * @param Exception|null The previous exception, if any.
+     * @param Exception|null $previous The previous exception, if any.
      */
     public function __construct($index, Exception $previous = null)
     {

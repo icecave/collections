@@ -53,7 +53,8 @@ interface AssociativeInterface extends IterableInterface
      * Takes a variable number of keys and searches for each one in order,
      * returns the value associated with the first key that exists.
      *
-     * @param mixed,... $key The keys to search for.
+     * @param mixed $key The key to search for.
+     * @param mixed $additional,... Additional keys to search for.
      *
      * @return mixed The value associated with the first key that exists.
      * @throws Exception\UnknownKeyException if none of the keys exist.
@@ -63,12 +64,13 @@ interface AssociativeInterface extends IterableInterface
     /**
      * Return the value associated with the first key that exists, or a default value if none of the provided keys exist.
      *
-     * @param mixed,... $key The keys to search for.
      * @param mixed $default The default value to return if no such keys exist.
+     * @param mixed $key The key to search for.
+     * @param mixed $additional,... Additional keys to search for.
      *
      * @return mixed The value associated with the first key that exists, or $default if none of the keys exist.
      */
-    public function cascadeWithDefault($key, $default);
+    public function cascadeWithDefault($default, $key);
 
     /**
      * Return the value associated with the first existing key in the given sequence.
@@ -76,7 +78,7 @@ interface AssociativeInterface extends IterableInterface
      * Behaves as per {@see AssociativeInterface::cascade()} except that the keys are provided as
      * a traversable (eg, array) instead of via a variable argument list.
      *
-     * @param traversable $keys The list of keys.
+     * @param mixed<mixed> $keys The list of keys.
      *
      * @return mixed The value associated with the first key that exists.
      * @throws Exception\UnknownKeyException if none of the keys exist.
@@ -89,12 +91,12 @@ interface AssociativeInterface extends IterableInterface
      * Behaves as per {@see AssociativeInterface::cascadeDefault()} except that the keys are provided as
      * a traversable (eg, array) instead of via a variable argument list.
      *
-     * @param traversable $keys The list of keys.
      * @param mixed $default The default value to return if no such keys exist.
+     * @param mixed<mixed> $keys The list of keys.
      *
      * @return mixed The value associated with the first key that exists, or $default if none of the keys exist.
      */
-    public function cascadeIterableWithDefault($keys, $default = null);
+    public function cascadeIterableWithDefault($default, $keys);
 
     /**
      * Fetch a native array containing the keys in the collection.
@@ -120,7 +122,8 @@ interface AssociativeInterface extends IterableInterface
      * Any existing keys are overwritten from left to right.
      * It is not guaranteed that the concrete type of the merged collection will match this collection.
      *
-     * @param AssociativeInterface,... $collection The collections to combine.
+     * @param AssociativeInterface $collection The collection to combine.
+     * @param AssociativeInterface $additional,... Additional collections to combine.
      *
      * @return AssociativeInterface The merged collection.
      */
@@ -131,7 +134,8 @@ interface AssociativeInterface extends IterableInterface
      *
      * It is not guaranteed that the concrete type of the projected collection will match this collection.
      *
-     * @param mixed,... $key The keys to include in the new collection.
+     * @param mixed $key The key to include in the new collection.
+     * @param mixed $additional,... Ådditional keys to include in the new collection.
      *
      * @return AssociativeInterface The projection of the collection.
      */
@@ -142,7 +146,7 @@ interface AssociativeInterface extends IterableInterface
      *
      * It is not guaranteed that the concrete type of the projected collection will match this collection.
      *
-     * @param traversable $keys The keys to include in the new collection.
+     * @param mixed<mixed> $keys The keys to include in the new collection.
      *
      * @return AssociativeInterface The projection of the collection.
      */

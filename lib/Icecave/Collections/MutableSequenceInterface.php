@@ -23,7 +23,8 @@ interface MutableSequenceInterface extends SequenceInterface, MutableIterableInt
     /**
      * Appending elements in the given sequence to this sequence.
      *
-     * @param traversable,... The sequence(s) to append.
+     * @param mixed<mixed> $sequence The sequence to append.
+     * @param mixed<mixed> $additional,... Additional sequences to append.
      */
     public function append($sequence);
 

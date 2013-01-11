@@ -845,7 +845,7 @@ class LinkedListTest extends PHPUnit_Framework_TestCase
     public function testReplaceWithInvalidIndex()
     {
         $this->setExpectedException(__NAMESPACE__ . '\Exception\IndexException');
-        $this->_collection->replace(1, 2);
+        $this->_collection->replace(1, array());
     }
 
     public function testReplaceRange()
@@ -861,7 +861,7 @@ class LinkedListTest extends PHPUnit_Framework_TestCase
     {
         $this->_collection->append(array('foo', 'bar', 'spam', 'doom'));
 
-        $this->_collection->replaceRange(-3, -1, array('a', 'b'), 2);
+        $this->_collection->replaceRange(-3, -1, array('a', 'b'));
 
         $this->assertSame(array('foo', 'a', 'b', 'doom'), $this->_collection->elements());
     }

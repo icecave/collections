@@ -30,7 +30,7 @@ interface MutableRandomAccessInterface extends RandomAccessInterface, MutableSeq
      * Insert a range of elements at a particular index.
      *
      * @param integer $index The index at which the elements are inserted, if index is a negative number the elements are inserted that far from the end of the sequence.
-     * @param traversable $elements The elements to insert.
+     * @param mixed<mixed> $elements The elements to insert.
      */
     public function insertMany($index, $elements);
 
@@ -71,7 +71,7 @@ interface MutableRandomAccessInterface extends RandomAccessInterface, MutableSeq
      * Replace a range of elements with a second set of elements.
      *
      * @param integer $index The index of the first element to replace, if index is a negative number the replace begins that far from the end of the sequence.
-     * @param traversable $elements The elements to insert.
+     * @param mixed<mixed> $elements The elements to insert.
      * @param integer|null $count The number of elements to replace, or null to replace all elements up to the end of the sequence.
      */
     public function replace($index, $elements, $count = null);
@@ -83,7 +83,7 @@ interface MutableRandomAccessInterface extends RandomAccessInterface, MutableSeq
      *
      * @param integer $begin The index of the first element to replace, if begin is a negative number the replace begins that far from the end of the sequence.
      * @param integer $end  The index of the last element to replace, if end is a negativ enumber the replace ends that far from the end of the sequence.
-     * @param traversable $elements The elements to insert.
+     * @param mixed<mixed> $elements The elements to insert.
      */
     public function replaceRange($begin, $end, $elements);
 

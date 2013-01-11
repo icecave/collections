@@ -10,7 +10,7 @@ use UnderflowException;
 class EmptyCollectionException extends UnderflowException implements CollectionExceptionInterface
 {
     /**
-     * @param Exception|null The previous exception, if any.
+     * @param Exception|null $previous The previous exception, if any.
      */
     public function __construct(Exception $previous = null)
     {

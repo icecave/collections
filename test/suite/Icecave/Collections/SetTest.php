@@ -252,11 +252,11 @@ class SetTest extends PHPUnit_Framework_TestCase
 
     public function testCascadeWithDefault()
     {
-        $this->assertSame('<default>', $this->_collection->cascadeWithDefault('a', 'b', 'c', '<default>'));
+        $this->assertSame('<default>', $this->_collection->cascadeWithDefault('<default>', 'a', 'b', 'c'));
 
         $this->_collection->add('b');
 
-        $this->assertSame('b', $this->_collection->cascadeWithDefault('a', 'b', 'c', '<default>'));
+        $this->assertSame('b', $this->_collection->cascadeWithDefault('<default>', 'a', 'b', 'c'));
     }
 
     public function testCascadeIterable()
@@ -268,11 +268,11 @@ class SetTest extends PHPUnit_Framework_TestCase
 
     public function testCascadeIterableWithDefault()
     {
-        $this->assertSame('<default>', $this->_collection->cascadeIterableWithDefault(array('a', 'b', 'c'), '<default>'));
+        $this->assertSame('<default>', $this->_collection->cascadeIterableWithDefault('<default>', array('a', 'b', 'c')));
 
         $this->_collection->add('b');
 
-        $this->assertSame('b', $this->_collection->cascadeIterableWithDefault(array('a', 'b', 'c'), '<default>'));
+        $this->assertSame('b', $this->_collection->cascadeIterableWithDefault('<default>', array('a', 'b', 'c')));
     }
 
     public function testAdd()

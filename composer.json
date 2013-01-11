@@ -16,11 +16,13 @@
         "icecave/repr": "1.*"
     },
     "require-dev": {
-        "eloquent/liberator": "1.*"
+        "eloquent/liberator": "1.*",
+        "eloquent/typhoon": "*"
     },
     "autoload": {
         "psr-0": {
-            "Icecave\\Collections": "lib"
+            "Icecave\\Collections": "lib",
+            "Icecave\\Collections\\TypeCheck": "lib-typhoon"
         }
     }
 }
