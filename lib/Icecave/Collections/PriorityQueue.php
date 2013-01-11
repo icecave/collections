@@ -2,7 +2,7 @@
 namespace Icecave\Collections;
 
 use Countable;
-use Icecave\Collections\Support\Stringify;
+use Icecave\Repr\Repr;
 use SplPriorityQueue;
 
 /**
@@ -46,7 +46,7 @@ class PriorityQueue extends Queue
         return sprintf(
             '<PriorityQueue %d [next: %s]>',
             $this->size(),
-            Stringify::stringify($this->next())
+            Repr::repr($this->next())
         );
     }
 

@@ -11,7 +11,7 @@ class DuplicateKeyExceptionTest extends PHPUnit_Framework_TestCase
         $previous = new Exception;
         $exception = new DuplicateKeyException('foo', $previous);
 
-        $this->assertSame("Key 'foo' already exists.", $exception->getMessage());
+        $this->assertSame('Key "foo" already exists.', $exception->getMessage());
         $this->assertSame($previous, $exception->getPrevious());
     }
 }

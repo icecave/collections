@@ -2,7 +2,7 @@
 namespace Icecave\Collections\Exception;
 
 use Exception;
-use Icecave\Collections\Support\Stringify;
+use Icecave\Repr\Repr;
 use RuntimeException;
 
 /**
@@ -16,6 +16,6 @@ class DuplicateKeyException extends RuntimeException implements CollectionExcept
      */
     public function __construct($key, Exception $previous = null)
     {
-        parent::__construct('Key ' . Stringify::stringify($key) . ' already exists.', 0, $previous);
+        parent::__construct('Key ' . Repr::repr($key) . ' already exists.', 0, $previous);
     }
 }

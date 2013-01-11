@@ -61,11 +61,11 @@ class SetTest extends PHPUnit_Framework_TestCase
         $this->_collection->add('b');
         $this->_collection->add('c');
 
-        $this->assertSame("<Set 3 ['a', 'b', 'c']>", $this->_collection->__toString());
+        $this->assertSame('<Set 3 ["a", "b", "c"]>', $this->_collection->__toString());
 
         $this->_collection->add('d');
 
-        $this->assertSame("<Set 4 ['a', 'b', 'c', ...]>", $this->_collection->__toString());
+        $this->assertSame('<Set 4 ["a", "b", "c", ...]>', $this->_collection->__toString());
     }
 
     //////////////////////////////////////////////////
@@ -245,7 +245,7 @@ class SetTest extends PHPUnit_Framework_TestCase
 
     public function testCascadeFailure()
     {
-        $this->setExpectedException(__NAMESPACE__ . '\Exception\UnknownKeyException', "Key 'c' does not exist.");
+        $this->setExpectedException(__NAMESPACE__ . '\Exception\UnknownKeyException', 'Key "c" does not exist.');
 
         $this->_collection->cascade('a', 'b', 'c');
     }

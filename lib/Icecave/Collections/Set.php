@@ -3,7 +3,7 @@ namespace Icecave\Collections;
 
 use Countable;
 use Icecave\Collections\Iterator\SetIterator;
-use Icecave\Collections\Support\Stringify;
+use Icecave\Repr\Repr;
 use Iterator;
 
 class Set implements MutableIterableInterface, Countable, Iterator
@@ -75,7 +75,7 @@ class Set implements MutableIterableInterface, Countable, Iterator
                 break;
             }
 
-            $elements[] = Stringify::stringify($element);
+            $elements[] = Repr::repr($element);
         }
 
         if ($this->size() > 3) {

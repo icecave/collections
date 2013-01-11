@@ -67,11 +67,11 @@ class MapTest extends PHPUnit_Framework_TestCase
         $this->_collection->set('b', 2);
         $this->_collection->set('c', 3);
 
-        $this->assertSame("<Map 3 ['a' => 1, 'b' => 2, 'c' => 3]>", $this->_collection->__toString());
+        $this->assertSame('<Map 3 ["a" => 1, "b" => 2, "c" => 3]>', $this->_collection->__toString());
 
         $this->_collection->set('d', 4);
 
-        $this->assertSame("<Map 4 ['a' => 1, 'b' => 2, 'c' => 3, ...]>", $this->_collection->__toString());
+        $this->assertSame('<Map 4 ["a" => 1, "b" => 2, "c" => 3, ...]>', $this->_collection->__toString());
     }
 
     //////////////////////////////////////////////////
@@ -226,7 +226,7 @@ class MapTest extends PHPUnit_Framework_TestCase
 
     public function testGetFailure()
     {
-        $this->setExpectedException(__NAMESPACE__ . '\Exception\UnknownKeyException', "Key 'a' does not exist.");
+        $this->setExpectedException(__NAMESPACE__ . '\Exception\UnknownKeyException', 'Key "a" does not exist.');
 
         $this->_collection->get('a');
     }
@@ -263,7 +263,7 @@ class MapTest extends PHPUnit_Framework_TestCase
 
     public function testCascadeFailure()
     {
-        $this->setExpectedException(__NAMESPACE__ . '\Exception\UnknownKeyException', "Key 'c' does not exist.");
+        $this->setExpectedException(__NAMESPACE__ . '\Exception\UnknownKeyException', 'Key "c" does not exist.');
 
         $this->_collection->cascade('a', 'b', 'c');
     }
@@ -375,7 +375,7 @@ class MapTest extends PHPUnit_Framework_TestCase
     {
         $this->_collection->set('a', 1);
 
-        $this->setExpectedException(__NAMESPACE__ . '\Exception\DuplicateKeyException', "Key 'a' already exists.");
+        $this->setExpectedException(__NAMESPACE__ . '\Exception\DuplicateKeyException', 'Key "a" already exists.');
         $this->_collection->add('a', 1);
     }
 
@@ -396,7 +396,7 @@ class MapTest extends PHPUnit_Framework_TestCase
 
     public function testReplaceFailure()
     {
-        $this->setExpectedException(__NAMESPACE__ . '\Exception\UnknownKeyException', "Key 'a' does not exist.");
+        $this->setExpectedException(__NAMESPACE__ . '\Exception\UnknownKeyException', 'Key "a" does not exist.');
         $this->_collection->replace('a', 2);
     }
 
@@ -422,7 +422,7 @@ class MapTest extends PHPUnit_Framework_TestCase
 
     public function testRemoveFailure()
     {
-        $this->setExpectedException(__NAMESPACE__ . '\Exception\UnknownKeyException', "Key 'a' does not exist.");
+        $this->setExpectedException(__NAMESPACE__ . '\Exception\UnknownKeyException', 'Key "a" does not exist.');
         $this->_collection->remove('a');
     }
 
@@ -468,7 +468,7 @@ class MapTest extends PHPUnit_Framework_TestCase
     {
         $this->_collection->set('b', 2);
 
-        $this->setExpectedException(__NAMESPACE__ . '\Exception\UnknownKeyException', "Key 'a' does not exist.");
+        $this->setExpectedException(__NAMESPACE__ . '\Exception\UnknownKeyException', 'Key "a" does not exist.');
         $this->_collection->swap('a', 'b');
     }
 
@@ -476,7 +476,7 @@ class MapTest extends PHPUnit_Framework_TestCase
     {
         $this->_collection->set('a', 1);
 
-        $this->setExpectedException(__NAMESPACE__ . '\Exception\UnknownKeyException', "Key 'b' does not exist.");
+        $this->setExpectedException(__NAMESPACE__ . '\Exception\UnknownKeyException', 'Key "b" does not exist.');
         $this->_collection->swap('a', 'b');
     }
 
@@ -522,7 +522,7 @@ class MapTest extends PHPUnit_Framework_TestCase
     {
         $this->_collection->set('b', 2);
 
-        $this->setExpectedException(__NAMESPACE__ . '\Exception\UnknownKeyException', "Key 'a' does not exist.");
+        $this->setExpectedException(__NAMESPACE__ . '\Exception\UnknownKeyException', 'Key "a" does not exist.');
         $this->_collection->move('a', 'b');
     }
 
@@ -556,7 +556,7 @@ class MapTest extends PHPUnit_Framework_TestCase
 
     public function testRenameFailureWithUnknownSource()
     {
-        $this->setExpectedException(__NAMESPACE__ . '\Exception\UnknownKeyException', "Key 'a' does not exist.");
+        $this->setExpectedException(__NAMESPACE__ . '\Exception\UnknownKeyException', 'Key "a" does not exist.');
         $this->_collection->rename('a', 'b');
     }
 
@@ -565,7 +565,7 @@ class MapTest extends PHPUnit_Framework_TestCase
         $this->_collection->set('a', 1);
         $this->_collection->set('b', 2);
 
-        $this->setExpectedException(__NAMESPACE__ . '\Exception\DuplicateKeyException', "Key 'b' already exists.");
+        $this->setExpectedException(__NAMESPACE__ . '\Exception\DuplicateKeyException', 'Key "b" already exists.');
         $this->_collection->rename('a', 'b');
     }
 
@@ -653,7 +653,7 @@ class MapTest extends PHPUnit_Framework_TestCase
 
     public function testOffsetGetFailure()
     {
-        $this->setExpectedException(__NAMESPACE__ . '\Exception\UnknownKeyException', "Key 'a' does not exist.");
+        $this->setExpectedException(__NAMESPACE__ . '\Exception\UnknownKeyException', 'Key "a" does not exist.');
 
         $this->_collection['a'];
     }

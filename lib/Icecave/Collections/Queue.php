@@ -2,7 +2,7 @@
 namespace Icecave\Collections;
 
 use Countable;
-use Icecave\Collections\Support\Stringify;
+use Icecave\Repr\Repr;
 use SplQueue;
 
 class Queue implements QueuedAccessInterface, Countable
@@ -64,7 +64,7 @@ class Queue implements QueuedAccessInterface, Countable
         return sprintf(
             '<Queue %d [next: %s]>',
             $this->size(),
-            Stringify::stringify($this->next())
+            Repr::repr($this->next())
         );
     }
 

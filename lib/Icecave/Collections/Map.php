@@ -4,7 +4,7 @@ namespace Icecave\Collections;
 use ArrayAccess;
 use Countable;
 use Icecave\Collections\Iterator\AssociativeIterator;
-use Icecave\Collections\Support\Stringify;
+use Icecave\Repr\Repr;
 use Iterator;
 
 class Map implements MutableAssociativeInterface, Countable, Iterator, ArrayAccess
@@ -78,7 +78,7 @@ class Map implements MutableAssociativeInterface, Countable, Iterator, ArrayAcce
 
             list($key, $value) = $element;
 
-            $elements[] = Stringify::stringify($key) . ' => ' . Stringify::stringify($value);
+            $elements[] = Repr::repr($key) . ' => ' . Repr::repr($value);
         }
 
         if ($this->size() > 3) {

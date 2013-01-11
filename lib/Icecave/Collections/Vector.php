@@ -67,7 +67,7 @@ class Vector implements MutableRandomAccessInterface, Countable, Iterator, Array
 
         $elements = $this
             ->slice(0, 3)
-            ->map('Icecave\Collections\Support\Stringify::stringify');
+            ->map('Icecave\Repr\Repr::repr');
 
         if ($this->size > 3) {
             $format = '<Vector %d [%s, ...]>';

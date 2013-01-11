@@ -12,7 +12,8 @@
         }
     ],
     "require": {
-        "php": ">=5.3.0"
+        "php": ">=5.3.0",
+        "icecave/repr": "1.*"
     },
     "require-dev": {
         "eloquent/liberator": "1.*"

@@ -65,7 +65,7 @@ class QueueTest extends PHPUnit_Framework_TestCase
         $this->_collection->push('bar');
         $this->_collection->push('spam');
 
-        $this->assertSame("<Queue 3 [next: 'foo']>", $this->_collection->__toString());
+        $this->assertSame('<Queue 3 [next: "foo"]>', $this->_collection->__toString());
     }
 
     //////////////////////////////////////////////////

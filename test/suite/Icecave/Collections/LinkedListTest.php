@@ -77,11 +77,11 @@ class LinkedListTest extends PHPUnit_Framework_TestCase
         $this->_collection->pushBack('bar');
         $this->_collection->pushBack('spam');
 
-        $this->assertSame("<LinkedList 3 ['foo', 'bar', 'spam']>", $this->_collection->__toString());
+        $this->assertSame('<LinkedList 3 ["foo", "bar", "spam"]>', $this->_collection->__toString());
 
         $this->_collection->pushBack('doom');
 
-        $this->assertSame("<LinkedList 4 ['foo', 'bar', 'spam', ...]>", $this->_collection->__toString());
+        $this->assertSame('<LinkedList 4 ["foo", "bar", "spam", ...]>', $this->_collection->__toString());
     }
 
     //////////////////////////////////////////////////

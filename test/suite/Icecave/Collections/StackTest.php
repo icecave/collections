@@ -65,7 +65,7 @@ class StackTest extends PHPUnit_Framework_TestCase
         $this->_collection->push('bar');
         $this->_collection->push('spam');
 
-        $this->assertSame("<Stack 3 [next: 'spam']>", $this->_collection->__toString());
+        $this->assertSame('<Stack 3 [next: "spam"]>', $this->_collection->__toString());
     }
 
     //////////////////////////////////////////////////
