@@ -35,6 +35,18 @@ class VectorTest extends PHPUnit_Framework_TestCase
         $this->assertSame(array(1, 2, 3), $this->_collection->elements());
     }
 
+    public function testSerialization()
+    {
+        $this->_collection->pushBack(1);
+        $this->_collection->pushBack(2);
+        $this->_collection->pushBack(3);
+
+        $packet = serialize($this->_collection);
+        $collection = unserialize($packet);
+
+        $this->assertSame($this->_collection->elements(), $collection->elements());
+    }
+
     ///////////////////////////////////////////
     // Implementation of CollectionInterface //
     ///////////////////////////////////////////

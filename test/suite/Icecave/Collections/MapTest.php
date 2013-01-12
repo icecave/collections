@@ -41,6 +41,18 @@ class MapTest extends PHPUnit_Framework_TestCase
         $this->assertSame(array(array('a', 1), array('b', 2), array('c', 3)), $this->_collection->elements());
     }
 
+    public function testSerialization()
+    {
+        $this->_collection->set('a', 1);
+        $this->_collection->set('b', 2);
+        $this->_collection->set('c', 3);
+
+        $packet = serialize($this->_collection);
+        $collection = unserialize($packet);
+
+        $this->assertSame($this->_collection->elements(), $collection->elements());
+    }
+
     ///////////////////////////////////////////
     // Implementation of CollectionInterface //
     ///////////////////////////////////////////

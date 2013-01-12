@@ -39,6 +39,21 @@ class StackTest extends PHPUnit_Framework_TestCase
         $this->assertSame(3, $this->_collection->next());
     }
 
+    public function testSerialization()
+    {
+        $this->_collection->push(1);
+        $this->_collection->push(2);
+        $this->_collection->push(3);
+
+        $packet = serialize($this->_collection);
+        $collection = unserialize($packet);
+
+        $this->assertSame(3, $collection->pop());
+        $this->assertSame(2, $collection->pop());
+        $this->assertSame(1, $collection->pop());
+        $this->assertTrue($collection->isEmpty());
+    }
+
     ///////////////////////////////////////////
     // Implementation of CollectionInterface //
     ///////////////////////////////////////////

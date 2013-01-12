@@ -1208,6 +1208,35 @@ class VectorTypeCheck extends \Icecave\Collections\TypeCheck\AbstractValidator
             ));
         }
     }
+    public function serialize(array $arguments)
+    {
+        if ((\count($arguments) > 0))
+        {
+            throw (new \Icecave\Collections\TypeCheck\Exception\UnexpectedArgumentException(0, $arguments[0]));
+        }
+    }
+    public function unserialize(array $arguments)
+    {
+        ($argumentCount = \count($arguments));
+        if (($argumentCount < 1))
+        {
+            throw (new \Icecave\Collections\TypeCheck\Exception\MissingArgumentException('packet', 0, 'string'));
+        }
+        elseif (($argumentCount > 1))
+        {
+            throw (new \Icecave\Collections\TypeCheck\Exception\UnexpectedArgumentException(1, $arguments[1]));
+        }
+        ($value = $arguments[0]);
+        if ((!\is_string($value)))
+        {
+            throw (new \Icecave\Collections\TypeCheck\Exception\UnexpectedArgumentValueException(
+                'packet',
+                0,
+                $arguments[0],
+                'string'
+            ));
+        }
+    }
     public function capacity(array $arguments)
     {
         if ((\count($arguments) > 0))

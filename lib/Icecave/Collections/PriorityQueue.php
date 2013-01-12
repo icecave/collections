@@ -4,6 +4,7 @@ namespace Icecave\Collections;
 use Icecave\Collections\TypeCheck\TypeCheck;
 use Icecave\Repr\Repr;
 use SplPriorityQueue;
+use Serializable;
 
 /**
  * A prioritized queue.
@@ -13,7 +14,7 @@ use SplPriorityQueue;
  * Prioritization is provided by the prioritzation function specified in the constructor, but may
  * be optionally overridden by the second parameter to {@see PriorityQueue::push()}.
  */
-class PriorityQueue extends Queue
+class PriorityQueue extends Queue implements Serializable
 {
     /**
      * @param callable          $prioritizer A function used to generate the priority for a given element.
@@ -121,6 +122,36 @@ class PriorityQueue extends Queue
         }
 
         return $this->elements->extract();
+    }
+
+    ////////////////////////////////////
+    // Implementation of Serializable //
+    ////////////////////////////////////
+
+    /**
+     * @return string The serialized data.
+     */
+    public function serialize()
+    {
+        $this->typeCheck->serialize(func_get_args());
+
+        return serialize(
+            array(
+                $this->prioritizer,
+                iterator_to_array($this->elements)
+            )
+        );
+    }
+
+    /**
+     * @param string $packet The serialized data.
+     */
+    public function unserialize($packet)
+    {
+        TypeCheck::get(__CLASS__)->unserialize(func_get_args());
+
+        list($prioritizer, $elements) = unserialize($packet);
+        $this->__construct($prioritizer, $elements);
     }
 
     private $typeCheck;

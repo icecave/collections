@@ -6,8 +6,9 @@ use Countable;
 use Icecave\Collections\TypeCheck\TypeCheck;
 use Icecave\Repr\Repr;
 use Iterator;
+use Serializable;
 
-class Map implements MutableAssociativeInterface, Countable, Iterator, ArrayAccess
+class Map implements MutableAssociativeInterface, Countable, Iterator, ArrayAccess, Serializable
 {
     /**
      * @param mixed<mixed>|null $collection   An iterable type containing the elements to include in this map, or null to create an empty map.
@@ -1017,6 +1018,37 @@ class Map implements MutableAssociativeInterface, Countable, Iterator, ArrayAcce
         $this->typeCheck->offsetUnset(func_get_args());
 
         $this->tryRemove($offset);
+    }
+
+    ////////////////////////////////////
+    // Implementation of Serializable //
+    ////////////////////////////////////
+
+    /**
+     * @return string The serialized data.
+     */
+    public function serialize()
+    {
+        $this->typeCheck->serialize(func_get_args());
+
+        return serialize($this->elements());
+    }
+
+    /**
+     * @param string $packet The serialized data.
+     */
+    public function unserialize($packet)
+    {
+        TypeCheck::get(__CLASS__)->unserialize(func_get_args());
+
+        $elements = unserialize($packet);
+
+        $this->__construct();
+
+        foreach ($elements as $element) {
+            list($key, $value) = $element;
+            $this->set($key, $value);
+        }
     }
 
     ////////////////////////////

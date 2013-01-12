@@ -5,8 +5,9 @@ use Countable;
 use Icecave\Collections\TypeCheck\TypeCheck;
 use Icecave\Repr\Repr;
 use SplQueue;
+use Serializable;
 
-class Queue implements QueuedAccessInterface, Countable
+class Queue implements QueuedAccessInterface, Countable, Serializable
 {
     /**
      * @param mixed<mixed>|null $collection An iterable type containing the elements to include in this list, or null to create an empty list.
@@ -195,6 +196,31 @@ class Queue implements QueuedAccessInterface, Countable
         $this->typeCheck->count(func_get_args());
 
         return $this->size();
+    }
+
+    ////////////////////////////////////
+    // Implementation of Serializable //
+    ////////////////////////////////////
+
+    /**
+     * @return string The serialized data.
+     */
+    public function serialize()
+    {
+        $this->typeCheck->serialize(func_get_args());
+
+        return serialize(iterator_to_array($this->elements));
+    }
+
+    /**
+     * @param string $packet The serialized data.
+     */
+    public function unserialize($packet)
+    {
+        TypeCheck::get(__CLASS__)->unserialize(func_get_args());
+
+        $elements = unserialize($packet);
+        $this->__construct($elements);
     }
 
     private $typeCheck;

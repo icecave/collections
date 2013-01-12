@@ -5,11 +5,12 @@ use Countable;
 use Icecave\Collections\TypeCheck\TypeCheck;
 use Iterator;
 use stdClass;
+use Serializable;
 
 /**
  * A singly-linked list.
  */
-class LinkedList implements MutableRandomAccessInterface, Countable, Iterator
+class LinkedList implements MutableRandomAccessInterface, Countable, Iterator, Serializable
 {
     /**
      * @param mixed<mixed>|null $collection An iterable type containing the elements to include in this list, or null to create an empty list.
@@ -1159,6 +1160,37 @@ class LinkedList implements MutableRandomAccessInterface, Countable, Iterator
         $this->typeCheck->valid(func_get_args());
 
         return null !== $this->currentNode;
+    }
+
+    ////////////////////////////////////
+    // Implementation of Serializable //
+    ////////////////////////////////////
+
+    /**
+     * @return string The serialized data.
+     */
+    public function serialize()
+    {
+        $this->typeCheck->serialize(func_get_args());
+
+        return serialize(
+            array(
+                $this->currentIndex,
+                $this->elements()
+            )
+        );
+    }
+
+    /**
+     * @param string $packet The serialized data.
+     */
+    public function unserialize($packet)
+    {
+        TypeCheck::get(__CLASS__)->unserialize(func_get_args());
+
+        list($currentIndex, $elements) = unserialize($packet);
+        $this->__construct($elements);
+        $this->currentNode = $this->nodeFrom($this->head, $currentIndex);
     }
 
     ////////////////////////////

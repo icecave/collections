@@ -7,8 +7,13 @@ class PriorityQueueTest extends PHPUnit_Framework_TestCase
 {
     public function setUp()
     {
-        $this->_identity = function ($element) { return $element; };
-        $this->_collection = new PriorityQueue($this->_identity);
+        $this->_prioritizer = __CLASS__ . '::identityPrioritizer';
+        $this->_collection = new PriorityQueue($this->_prioritizer);
+    }
+
+    public static function identityPrioritizer($value)
+    {
+        return $value;
     }
 
     public function testConstructor()
@@ -18,8 +23,23 @@ class PriorityQueueTest extends PHPUnit_Framework_TestCase
 
     public function testConstructorWithArray()
     {
-        $collection = new PriorityQueue($this->_identity, array(1, 2, 3));
+        $collection = new PriorityQueue($this->_prioritizer, array(1, 2, 3));
         $this->assertSame(3, $collection->size());
+    }
+
+    public function testSerialization()
+    {
+        $this->_collection->push(1);
+        $this->_collection->push(2);
+        $this->_collection->push(3);
+
+        $packet = serialize($this->_collection);
+        $collection = unserialize($packet);
+
+        $this->assertSame(3, $collection->pop());
+        $this->assertSame(2, $collection->pop());
+        $this->assertSame(1, $collection->pop());
+        $this->assertTrue($collection->isEmpty());
     }
 
     ///////////////////////////////////////////

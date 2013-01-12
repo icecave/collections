@@ -6,8 +6,9 @@ use Countable;
 use Icecave\Collections\TypeCheck\TypeCheck;
 use Iterator;
 use SplFixedArray;
+use Serializable;
 
-class Vector implements MutableRandomAccessInterface, Countable, Iterator, ArrayAccess
+class Vector implements MutableRandomAccessInterface, Countable, Iterator, ArrayAccess, Serializable
 {
     /**
      * @param mixed<mixed>|null $collection An iterable type containing the elements to include in this vector, or null to create an empty vector.
@@ -1085,6 +1086,31 @@ class Vector implements MutableRandomAccessInterface, Countable, Iterator, Array
         if ($this->offsetExists($offset)) {
             $this->remove($offset);
         }
+    }
+
+    ////////////////////////////////////
+    // Implementation of Serializable //
+    ////////////////////////////////////
+
+    /**
+     * @return string The serialized data.
+     */
+    public function serialize()
+    {
+        $this->typeCheck->serialize(func_get_args());
+
+        return serialize($this->elements());
+    }
+
+    /**
+     * @param string $packet The serialized data.
+     */
+    public function unserialize($packet)
+    {
+        TypeCheck::get(__CLASS__)->unserialize(func_get_args());
+
+        $elements = unserialize($packet);
+        $this->__construct($elements);
     }
 
     ////////////////////////////
