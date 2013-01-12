@@ -43,7 +43,14 @@ class LinkedListTest extends PHPUnit_Framework_TestCase
         $this->_collection->pushBack(2);
         $this->_collection->pushBack(3);
 
+        $this->_collection->rewind();
+        $this->_collection->next();
+
         $collection = clone $this->_collection;
+
+        // Check that currentNode is updated correctly ...
+        $this->assertSame(2, $collection->current());
+        $this->assertSame(2, $this->_collection->current());
 
         $collection->popBack();
 
