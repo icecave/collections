@@ -457,9 +457,118 @@ class Set implements MutableIterableInterface, Countable, Iterator, Serializable
     }
 
     /**
+     * Check if this set is equal to another.
+     *
+     * @param mixed<mixed> $elements The elements of the second set.
+     *
+     * @return boolean True if this set contains the same elements as $elements; otherwise false.
+     */
+    public function isEqual($elements)
+    {
+        $this->typeCheck->isEqual(func_get_args());
+
+        $size = 0;
+        foreach ($elements as $element) {
+            ++$size;
+            if (!$this->contains($element)) {
+                return false;
+            }
+        }
+
+        return $this->size() === $size;
+    }
+
+    /**
+     * Check if this set is equal to, or a superset of another.
+     *
+     * @param mixed<mixed> $elements The $elements of the second set.
+     *
+     * @return boolean True if this set contains all of the given elements; otherwise, false.
+     */
+    public function isSuperset($elements)
+    {
+        $this->typeCheck->isSuperset(func_get_args());
+
+        foreach ($elements as $element) {
+            if (!$this->contains($element)) {
+                return false;
+            }
+        }
+
+        return true;
+    }
+
+    /**
+     * Check if this set is equal to, or a subset of another.
+     *
+     * @param mixed<mixed> $elements The $elements of the second set.
+     *
+     * @return boolean True if this set contains only elements present in $elements; otherwise, false.
+     */
+    public function isSubset($elements)
+    {
+        $this->typeCheck->isSubset(func_get_args());
+
+        $matches = 0;
+        foreach ($elements as $element) {
+            if ($this->contains($element)) {
+                ++$matches;
+            }
+        }
+
+        return $this->size() === $matches;
+    }
+
+    /**
+     * Check if this set is a strict superset of another.
+     *
+     * @param mixed<mixed> $elements The $elements of the second set.
+     *
+     * @return boolean True if this set contains all of the given elements; otherwise, false.
+     */
+    public function isStrictSuperset($elements)
+    {
+        $this->typeCheck->isStrictSuperset(func_get_args());
+
+        $size = 0;
+        foreach ($elements as $element) {
+            ++$size;
+            if (!$this->contains($element)) {
+                return false;
+            }
+        }
+
+        return $this->size() > $size;
+    }
+
+    /**
+     * Check if this set is a strict subset of another.
+     *
+     * @param mixed<mixed> $elements The $elements of the second set.
+     *
+     * @return boolean True if this set contains only elements present in $elements; otherwise, false.
+     */
+    public function isStrictSubset($elements)
+    {
+        $this->typeCheck->isStrictSubset(func_get_args());
+
+        $matches = 0;
+        $size = 0;
+        foreach ($elements as $element) {
+            ++$size;
+            if ($this->contains($element)) {
+                ++$matches;
+            }
+        }
+
+        return $matches < $size
+            && $this->size() === $matches;
+    }
+
+    /**
      * Compute the union of this set and another.
      *
-     * @param mixed $elements The elements of the second set.
+     * @param mixed<mixed> $elements The elements of the second set.
      *
      * @return Set A set containing all elements of $this and $elements.
      */
@@ -476,7 +585,7 @@ class Set implements MutableIterableInterface, Countable, Iterator, Serializable
     /**
      * Compute the union of this set and another, in place.
      *
-     * @param mixed $elements The elements of the second set.
+     * @param mixed<mixed> $elements The elements of the second set.
      */
     public function unionInPlace($elements)
     {
@@ -494,7 +603,7 @@ class Set implements MutableIterableInterface, Countable, Iterator, Serializable
     /**
      * Compute the intersection of this set and another.
      *
-     * @param mixed $elements The elements of the second set.
+     * @param mixed<mixed> $elements The elements of the second set.
      *
      * @return Set A set containing only the elements present in $this and $elements.
      */
@@ -511,7 +620,7 @@ class Set implements MutableIterableInterface, Countable, Iterator, Serializable
     /**
      * Compute the intersection of this set and another, in place.
      *
-     * @param mixed $elements The elements of the second set.
+     * @param mixed<mixed> $elements The elements of the second set.
      */
     public function intersectInPlace($elements)
     {
@@ -536,7 +645,7 @@ class Set implements MutableIterableInterface, Countable, Iterator, Serializable
     /**
      * Compute the complement (or difference) of this set and another.
      *
-     * @param mixed $elements The elements of the second set.
+     * @param mixed<mixed> $elements The elements of the second set.
      *
      * @return Set A set containing only the elements present in $this, but not $elements.
      */
@@ -553,7 +662,7 @@ class Set implements MutableIterableInterface, Countable, Iterator, Serializable
     /**
      * Compute the complement (or difference) of this set and another, in place.
      *
-     * @param mixed $elements The elements of the second set.
+     * @param mixed<mixed> $elements The elements of the second set.
      */
     public function complementInPlace($elements)
     {

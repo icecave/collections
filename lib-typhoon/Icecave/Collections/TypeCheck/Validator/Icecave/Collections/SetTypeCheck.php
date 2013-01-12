@@ -390,16 +390,208 @@ class SetTypeCheck extends \Icecave\Collections\TypeCheck\AbstractValidator
             throw (new \Icecave\Collections\TypeCheck\Exception\UnexpectedArgumentException(1, $arguments[1]));
         }
     }
+    public function isEqual(array $arguments)
+    {
+        ($argumentCount = \count($arguments));
+        if (($argumentCount < 1))
+        {
+            throw (new \Icecave\Collections\TypeCheck\Exception\MissingArgumentException('elements', 0, 'mixed<mixed>'));
+        }
+        elseif (($argumentCount > 1))
+        {
+            throw (new \Icecave\Collections\TypeCheck\Exception\UnexpectedArgumentException(1, $arguments[1]));
+        }
+        ($value = $arguments[0]);
+        ($check =         function ($value)
+                {
+                    if (((!\is_array($value)) && (!($value instanceof \Traversable))))
+                    {
+                        return false;
+                    }
+                    foreach ($value as $key => $subValue)
+                    {
+                    }
+                    return true;
+                }
+        );
+        if ((!$check($arguments[0])))
+        {
+            throw (new \Icecave\Collections\TypeCheck\Exception\UnexpectedArgumentValueException(
+                'elements',
+                0,
+                $arguments[0],
+                'mixed<mixed>'
+            ));
+        }
+    }
+    public function isSuperset(array $arguments)
+    {
+        ($argumentCount = \count($arguments));
+        if (($argumentCount < 1))
+        {
+            throw (new \Icecave\Collections\TypeCheck\Exception\MissingArgumentException('elements', 0, 'mixed<mixed>'));
+        }
+        elseif (($argumentCount > 1))
+        {
+            throw (new \Icecave\Collections\TypeCheck\Exception\UnexpectedArgumentException(1, $arguments[1]));
+        }
+        ($value = $arguments[0]);
+        ($check =         function ($value)
+                {
+                    if (((!\is_array($value)) && (!($value instanceof \Traversable))))
+                    {
+                        return false;
+                    }
+                    foreach ($value as $key => $subValue)
+                    {
+                    }
+                    return true;
+                }
+        );
+        if ((!$check($arguments[0])))
+        {
+            throw (new \Icecave\Collections\TypeCheck\Exception\UnexpectedArgumentValueException(
+                'elements',
+                0,
+                $arguments[0],
+                'mixed<mixed>'
+            ));
+        }
+    }
+    public function isSubset(array $arguments)
+    {
+        ($argumentCount = \count($arguments));
+        if (($argumentCount < 1))
+        {
+            throw (new \Icecave\Collections\TypeCheck\Exception\MissingArgumentException('elements', 0, 'mixed<mixed>'));
+        }
+        elseif (($argumentCount > 1))
+        {
+            throw (new \Icecave\Collections\TypeCheck\Exception\UnexpectedArgumentException(1, $arguments[1]));
+        }
+        ($value = $arguments[0]);
+        ($check =         function ($value)
+                {
+                    if (((!\is_array($value)) && (!($value instanceof \Traversable))))
+                    {
+                        return false;
+                    }
+                    foreach ($value as $key => $subValue)
+                    {
+                    }
+                    return true;
+                }
+        );
+        if ((!$check($arguments[0])))
+        {
+            throw (new \Icecave\Collections\TypeCheck\Exception\UnexpectedArgumentValueException(
+                'elements',
+                0,
+                $arguments[0],
+                'mixed<mixed>'
+            ));
+        }
+    }
+    public function isStrictSuperset(array $arguments)
+    {
+        ($argumentCount = \count($arguments));
+        if (($argumentCount < 1))
+        {
+            throw (new \Icecave\Collections\TypeCheck\Exception\MissingArgumentException('elements', 0, 'mixed<mixed>'));
+        }
+        elseif (($argumentCount > 1))
+        {
+            throw (new \Icecave\Collections\TypeCheck\Exception\UnexpectedArgumentException(1, $arguments[1]));
+        }
+        ($value = $arguments[0]);
+        ($check =         function ($value)
+                {
+                    if (((!\is_array($value)) && (!($value instanceof \Traversable))))
+                    {
+                        return false;
+                    }
+                    foreach ($value as $key => $subValue)
+                    {
+                    }
+                    return true;
+                }
+        );
+        if ((!$check($arguments[0])))
+        {
+            throw (new \Icecave\Collections\TypeCheck\Exception\UnexpectedArgumentValueException(
+                'elements',
+                0,
+                $arguments[0],
+                'mixed<mixed>'
+            ));
+        }
+    }
+    public function isStrictSubset(array $arguments)
+    {
+        ($argumentCount = \count($arguments));
+        if (($argumentCount < 1))
+        {
+            throw (new \Icecave\Collections\TypeCheck\Exception\MissingArgumentException('elements', 0, 'mixed<mixed>'));
+        }
+        elseif (($argumentCount > 1))
+        {
+            throw (new \Icecave\Collections\TypeCheck\Exception\UnexpectedArgumentException(1, $arguments[1]));
+        }
+        ($value = $arguments[0]);
+        ($check =         function ($value)
+                {
+                    if (((!\is_array($value)) && (!($value instanceof \Traversable))))
+                    {
+                        return false;
+                    }
+                    foreach ($value as $key => $subValue)
+                    {
+                    }
+                    return true;
+                }
+        );
+        if ((!$check($arguments[0])))
+        {
+            throw (new \Icecave\Collections\TypeCheck\Exception\UnexpectedArgumentValueException(
+                'elements',
+                0,
+                $arguments[0],
+                'mixed<mixed>'
+            ));
+        }
+    }
     public function union(array $arguments)
     {
         ($argumentCount = \count($arguments));
         if (($argumentCount < 1))
         {
-            throw (new \Icecave\Collections\TypeCheck\Exception\MissingArgumentException('elements', 0, 'mixed'));
+            throw (new \Icecave\Collections\TypeCheck\Exception\MissingArgumentException('elements', 0, 'mixed<mixed>'));
         }
         elseif (($argumentCount > 1))
         {
             throw (new \Icecave\Collections\TypeCheck\Exception\UnexpectedArgumentException(1, $arguments[1]));
+        }
+        ($value = $arguments[0]);
+        ($check =         function ($value)
+                {
+                    if (((!\is_array($value)) && (!($value instanceof \Traversable))))
+                    {
+                        return false;
+                    }
+                    foreach ($value as $key => $subValue)
+                    {
+                    }
+                    return true;
+                }
+        );
+        if ((!$check($arguments[0])))
+        {
+            throw (new \Icecave\Collections\TypeCheck\Exception\UnexpectedArgumentValueException(
+                'elements',
+                0,
+                $arguments[0],
+                'mixed<mixed>'
+            ));
         }
     }
     public function unionInPlace(array $arguments)
@@ -407,11 +599,33 @@ class SetTypeCheck extends \Icecave\Collections\TypeCheck\AbstractValidator
         ($argumentCount = \count($arguments));
         if (($argumentCount < 1))
         {
-            throw (new \Icecave\Collections\TypeCheck\Exception\MissingArgumentException('elements', 0, 'mixed'));
+            throw (new \Icecave\Collections\TypeCheck\Exception\MissingArgumentException('elements', 0, 'mixed<mixed>'));
         }
         elseif (($argumentCount > 1))
         {
             throw (new \Icecave\Collections\TypeCheck\Exception\UnexpectedArgumentException(1, $arguments[1]));
+        }
+        ($value = $arguments[0]);
+        ($check =         function ($value)
+                {
+                    if (((!\is_array($value)) && (!($value instanceof \Traversable))))
+                    {
+                        return false;
+                    }
+                    foreach ($value as $key => $subValue)
+                    {
+                    }
+                    return true;
+                }
+        );
+        if ((!$check($arguments[0])))
+        {
+            throw (new \Icecave\Collections\TypeCheck\Exception\UnexpectedArgumentValueException(
+                'elements',
+                0,
+                $arguments[0],
+                'mixed<mixed>'
+            ));
         }
     }
     public function intersect(array $arguments)
@@ -419,11 +633,33 @@ class SetTypeCheck extends \Icecave\Collections\TypeCheck\AbstractValidator
         ($argumentCount = \count($arguments));
         if (($argumentCount < 1))
         {
-            throw (new \Icecave\Collections\TypeCheck\Exception\MissingArgumentException('elements', 0, 'mixed'));
+            throw (new \Icecave\Collections\TypeCheck\Exception\MissingArgumentException('elements', 0, 'mixed<mixed>'));
         }
         elseif (($argumentCount > 1))
         {
             throw (new \Icecave\Collections\TypeCheck\Exception\UnexpectedArgumentException(1, $arguments[1]));
+        }
+        ($value = $arguments[0]);
+        ($check =         function ($value)
+                {
+                    if (((!\is_array($value)) && (!($value instanceof \Traversable))))
+                    {
+                        return false;
+                    }
+                    foreach ($value as $key => $subValue)
+                    {
+                    }
+                    return true;
+                }
+        );
+        if ((!$check($arguments[0])))
+        {
+            throw (new \Icecave\Collections\TypeCheck\Exception\UnexpectedArgumentValueException(
+                'elements',
+                0,
+                $arguments[0],
+                'mixed<mixed>'
+            ));
         }
     }
     public function intersectInPlace(array $arguments)
@@ -431,11 +667,33 @@ class SetTypeCheck extends \Icecave\Collections\TypeCheck\AbstractValidator
         ($argumentCount = \count($arguments));
         if (($argumentCount < 1))
         {
-            throw (new \Icecave\Collections\TypeCheck\Exception\MissingArgumentException('elements', 0, 'mixed'));
+            throw (new \Icecave\Collections\TypeCheck\Exception\MissingArgumentException('elements', 0, 'mixed<mixed>'));
         }
         elseif (($argumentCount > 1))
         {
             throw (new \Icecave\Collections\TypeCheck\Exception\UnexpectedArgumentException(1, $arguments[1]));
+        }
+        ($value = $arguments[0]);
+        ($check =         function ($value)
+                {
+                    if (((!\is_array($value)) && (!($value instanceof \Traversable))))
+                    {
+                        return false;
+                    }
+                    foreach ($value as $key => $subValue)
+                    {
+                    }
+                    return true;
+                }
+        );
+        if ((!$check($arguments[0])))
+        {
+            throw (new \Icecave\Collections\TypeCheck\Exception\UnexpectedArgumentValueException(
+                'elements',
+                0,
+                $arguments[0],
+                'mixed<mixed>'
+            ));
         }
     }
     public function complement(array $arguments)
@@ -443,11 +701,33 @@ class SetTypeCheck extends \Icecave\Collections\TypeCheck\AbstractValidator
         ($argumentCount = \count($arguments));
         if (($argumentCount < 1))
         {
-            throw (new \Icecave\Collections\TypeCheck\Exception\MissingArgumentException('elements', 0, 'mixed'));
+            throw (new \Icecave\Collections\TypeCheck\Exception\MissingArgumentException('elements', 0, 'mixed<mixed>'));
         }
         elseif (($argumentCount > 1))
         {
             throw (new \Icecave\Collections\TypeCheck\Exception\UnexpectedArgumentException(1, $arguments[1]));
+        }
+        ($value = $arguments[0]);
+        ($check =         function ($value)
+                {
+                    if (((!\is_array($value)) && (!($value instanceof \Traversable))))
+                    {
+                        return false;
+                    }
+                    foreach ($value as $key => $subValue)
+                    {
+                    }
+                    return true;
+                }
+        );
+        if ((!$check($arguments[0])))
+        {
+            throw (new \Icecave\Collections\TypeCheck\Exception\UnexpectedArgumentValueException(
+                'elements',
+                0,
+                $arguments[0],
+                'mixed<mixed>'
+            ));
         }
     }
     public function complementInPlace(array $arguments)
@@ -455,11 +735,33 @@ class SetTypeCheck extends \Icecave\Collections\TypeCheck\AbstractValidator
         ($argumentCount = \count($arguments));
         if (($argumentCount < 1))
         {
-            throw (new \Icecave\Collections\TypeCheck\Exception\MissingArgumentException('elements', 0, 'mixed'));
+            throw (new \Icecave\Collections\TypeCheck\Exception\MissingArgumentException('elements', 0, 'mixed<mixed>'));
         }
         elseif (($argumentCount > 1))
         {
             throw (new \Icecave\Collections\TypeCheck\Exception\UnexpectedArgumentException(1, $arguments[1]));
+        }
+        ($value = $arguments[0]);
+        ($check =         function ($value)
+                {
+                    if (((!\is_array($value)) && (!($value instanceof \Traversable))))
+                    {
+                        return false;
+                    }
+                    foreach ($value as $key => $subValue)
+                    {
+                    }
+                    return true;
+                }
+        );
+        if ((!$check($arguments[0])))
+        {
+            throw (new \Icecave\Collections\TypeCheck\Exception\UnexpectedArgumentValueException(
+                'elements',
+                0,
+                $arguments[0],
+                'mixed<mixed>'
+            ));
         }
     }
     public function generateHash(array $arguments)

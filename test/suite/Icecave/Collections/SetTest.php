@@ -325,6 +325,117 @@ class SetTest extends PHPUnit_Framework_TestCase
         $this->assertFalse($this->_collection->contains('a'));
     }
 
+    public function testIsEqual()
+    {
+        $this->_collection->add('a');
+        $this->_collection->add('b');
+        $this->_collection->add('c');
+        
+        $collection = new Set;
+        $collection->add('c');
+        $collection->add('b');
+        $collection->add('a');
+
+        $this->assertTrue($this->_collection->isEqual($collection));
+
+        $collection->remove('b');
+
+        $this->assertFalse($this->_collection->isEqual($collection));
+
+        $collection->add('b');
+        $this->_collection->remove('b');
+
+        $this->assertFalse($this->_collection->isEqual($collection));
+    }
+
+    public function testIsSuperset()
+    {
+        $this->_collection->add('a');
+        $this->_collection->add('b');
+        $this->_collection->add('c');
+
+        $collection = new Set;
+        $collection->add('c');
+        $collection->add('b');
+        $collection->add('a');
+
+        $this->assertTrue($this->_collection->isSuperset($collection));
+
+        $this->_collection->add('d');
+
+        $this->assertTrue($this->_collection->isSuperset($collection));
+
+        $this->_collection->remove('a');
+
+        $this->assertFalse($this->_collection->isSuperset($collection));
+    }
+
+    public function testIsSubset()
+    {
+        $this->_collection->add('a');
+        $this->_collection->add('b');
+        $this->_collection->add('c');
+
+        $collection = new Set;
+        $collection->add('c');
+        $collection->add('b');
+        $collection->add('a');
+
+        $this->assertTrue($this->_collection->isSubset($collection));
+
+        $collection->add('d');
+
+        $this->assertTrue($this->_collection->isSubset($collection));
+
+        $collection->remove('a');
+
+        $this->assertFalse($this->_collection->isSubset($collection));
+    }
+
+    public function testIsStrictSuperset()
+    {
+        $this->_collection->add('a');
+        $this->_collection->add('b');
+        $this->_collection->add('c');
+
+        $collection = new Set;
+        $collection->add('c');
+        $collection->add('b');
+        $collection->add('a');
+
+        $this->assertFalse($this->_collection->isStrictSuperset($collection));
+
+        $this->_collection->add('d');
+
+        $this->assertTrue($this->_collection->isStrictSuperset($collection));
+
+        $this->_collection->remove('a');
+
+        $this->assertFalse($this->_collection->isStrictSuperset($collection));
+    }
+
+    public function testIsStrictSubset()
+    {
+        $this->_collection->add('a');
+        $this->_collection->add('b');
+        $this->_collection->add('c');
+
+        $collection = new Set;
+        $collection->add('c');
+        $collection->add('b');
+        $collection->add('a');
+
+        $this->assertFalse($this->_collection->isStrictSubset($collection));
+
+        $collection->add('d');
+
+        $this->assertTrue($this->_collection->isStrictSubset($collection));
+
+        $collection->remove('a');
+
+        $this->assertFalse($this->_collection->isStrictSubset($collection));
+    }
+
     public function testUnion()
     {
         $this->_collection->add('a');
