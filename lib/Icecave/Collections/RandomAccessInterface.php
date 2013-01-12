@@ -11,7 +11,7 @@ interface RandomAccessInterface extends SequenceInterface
      *
      * @param mixed $index The index of the element to fetch, if index is a negative number the element that far from the end of the sequence is returned.
      *
-     * @return mixed The element at $index.
+     * @return mixed                    The element at $index.
      * @throws Exception\IndexException if no such index exists.
      */
     public function get($index);
@@ -21,10 +21,10 @@ interface RandomAccessInterface extends SequenceInterface
      *
      * It is not guaranteed that the concrete type of the slice collection will match this collection.
      *
-     * @param integer $index The index from which the slice will start. If index is a negative number the slice will begin that far from the end of the sequence.
+     * @param integer      $index The index from which the slice will start. If index is a negative number the slice will begin that far from the end of the sequence.
      * @param integer|null $count The maximum number of elements to include in the slice, or null to include all elements from $index to the end of the sequence.
      *
-     * @return SequenceInterface The sliced sequence.
+     * @return SequenceInterface        The sliced sequence.
      * @throws Exception\IndexException if $index is out of range.
      */
     public function slice($index, $count = null);
@@ -37,9 +37,9 @@ interface RandomAccessInterface extends SequenceInterface
      * Extracts all elements in the range [$begin, $end), i.e. $begin is inclusive, $end is exclusive.
      *
      * @param integer $begin The index from which the slice will start. If begin is a negative number the slice will begin that far from the end of the sequence.
-     * @param integer $end The index at which the slice will end. If end is a negative number the slice will end that far from the end of the sequence.
+     * @param integer $end   The index at which the slice will end. If end is a negative number the slice will end that far from the end of the sequence.
      *
-     * @return SequenceInterface The sliced sequence.
+     * @return SequenceInterface        The sliced sequence.
      * @throws Exception\IndexException if $index is out of range.
      */
     public function range($begin, $end);

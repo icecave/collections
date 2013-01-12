@@ -11,7 +11,7 @@ use Icecave\Collections\TypeCheck\TypeCheck;
 class AssociativeKeyGenerator
 {
     /**
-     * @param callable $arrayHashFunction The function to use for generating a hash of array keys and values.
+     * @param callable $arrayHashFunction  The function to use for generating a hash of array keys and values.
      * @param callable $objectHashFunction The function to use for generating a hash of objects.
      */
     public function __construct($arrayHashFunction = 'md5', $objectHashFunction = 'spl_object_hash')
@@ -59,7 +59,7 @@ class AssociativeKeyGenerator
             case 'object':
                 return 'o' . call_user_func($this->objectHashFunction, $value);
         }
-        
+
         return $this->generateForArray($value);
     }
 

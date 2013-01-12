@@ -11,7 +11,7 @@ use RuntimeException;
 class DuplicateKeyException extends RuntimeException implements CollectionExceptionInterface
 {
     /**
-     * @param mixed $key The unknown key.
+     * @param mixed          $key      The unknown key.
      * @param Exception|null $previous The previous exception, if any.
      */
     public function __construct($key, Exception $previous = null)

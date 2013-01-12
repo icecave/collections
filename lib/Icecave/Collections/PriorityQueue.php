@@ -1,7 +1,6 @@
 <?php
 namespace Icecave\Collections;
 
-use Countable;
 use Icecave\Collections\TypeCheck\TypeCheck;
 use Icecave\Repr\Repr;
 use SplPriorityQueue;
@@ -17,8 +16,8 @@ use SplPriorityQueue;
 class PriorityQueue extends Queue
 {
     /**
-     * @param callable $prioritizer A function used to generate the priority for a given element.
-     * @param mixed<mixed>|null $collection An iterable type containing the elements to include in this list, or null to create an empty list.
+     * @param callable          $prioritizer A function used to generate the priority for a given element.
+     * @param mixed<mixed>|null $collection  An iterable type containing the elements to include in this list, or null to create an empty list.
      */
     public function __construct($prioritizer, $collection = null)
     {
@@ -76,7 +75,7 @@ class PriorityQueue extends Queue
     /**
      * Fetch the element at the front of the queue.
      *
-     * @return mixed The element at the front of the queue.
+     * @return mixed                              The element at the front of the queue.
      * @throws Exception\EmptyCollectionException if the collection is empty.
      */
     public function next()
@@ -93,7 +92,7 @@ class PriorityQueue extends Queue
     /**
      * Add a new element to the end of the queue.
      *
-     * @param mixed $element The element to add.
+     * @param mixed        $element  The element to add.
      * @param integer|null $priority The priority of the element being added, or NULL to use the queue's prioritizer.
      */
     public function push($element, $priority = null)
@@ -110,7 +109,7 @@ class PriorityQueue extends Queue
     /**
      * Remove and return the element at the front of the queue.
      *
-     * @return mixed The element at the front of the sequence.
+     * @return mixed                              The element at the front of the sequence.
      * @throws Exception\EmptyCollectionException if the collection is empty.
      */
     public function pop()

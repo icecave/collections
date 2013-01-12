@@ -9,7 +9,7 @@ interface QueuedAccessInterface extends MutableCollectionInterface
     /**
      * Fetch the element next to be returned by pop(), without removing it from the collection.
      *
-     * @return mixed The next element.
+     * @return mixed                              The next element.
      * @throws Exception\EmptyCollectionException if the collection is empty.
      */
     public function next();
@@ -18,6 +18,7 @@ interface QueuedAccessInterface extends MutableCollectionInterface
     * Fetch the element next to be returned by pop(), without removing it from the collection.
      *
      * @param mixed &$element Assigned the next element.
+     *
      * @return boolean True is the element exists and was assigned to $element; otherwise, false.
      */
     public function tryNext(&$element);
@@ -32,7 +33,7 @@ interface QueuedAccessInterface extends MutableCollectionInterface
     /**
      * Remove and return the next element.
      *
-     * @return mixed The next element.
+     * @return mixed                              The next element.
      * @throws Exception\EmptyCollectionException if the collection is empty.
      */
     public function pop();

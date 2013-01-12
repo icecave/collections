@@ -10,7 +10,7 @@ use OutOfBoundsException;
 class IndexException extends OutOfBoundsException implements CollectionExceptionInterface
 {
     /**
-     * @param integer $index The out-of-range index.
+     * @param integer        $index    The out-of-range index.
      * @param Exception|null $previous The previous exception, if any.
      */
     public function __construct($index, Exception $previous = null)

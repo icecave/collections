@@ -266,7 +266,7 @@ class LinkedList implements MutableRandomAccessInterface, Countable, Iterator
     /**
      * Fetch the first element in the sequence.
      *
-     * @return mixed The first element in the sequence.
+     * @return mixed                              The first element in the sequence.
      * @throws Exception\EmptyCollectionException if the collection is empty.
      */
     public function front()
@@ -284,6 +284,7 @@ class LinkedList implements MutableRandomAccessInterface, Countable, Iterator
      * Fetch the first element in the sequence.
      *
      * @param mixed &$element Assigned the element at the front of collection.
+     *
      * @return boolean True is the element exists and was assigned to $element; otherwise, false.
      */
     public function tryFront(&$element)
@@ -302,7 +303,7 @@ class LinkedList implements MutableRandomAccessInterface, Countable, Iterator
     /**
      * Fetch the last element in the sequence.
      *
-     * @return mixed The first element in the sequence.
+     * @return mixed                              The first element in the sequence.
      * @throws Exception\EmptyCollectionException if the collection is empty.
      */
     public function back()
@@ -320,6 +321,7 @@ class LinkedList implements MutableRandomAccessInterface, Countable, Iterator
      * Fetch the last element in the sequence.
      *
      * @param mixed &$element Assigned the element at the front of collection.
+     *
      * @return boolean True is the element exists and was assigned to $element; otherwise, false.
      */
     public function tryBack(&$element)
@@ -383,7 +385,7 @@ class LinkedList implements MutableRandomAccessInterface, Countable, Iterator
     /**
      * Create a new sequence by appending the elements in the given sequence to this sequence.
      *
-     * @param mixed<mixed> $sequence The sequence to append.
+     * @param mixed<mixed> $sequence       The sequence to append.
      * @param mixed<mixed> $additional,... Additional sequences to append.
      *
      * @return SequenceInterface A new sequence containing all elements from this sequence and $sequence.
@@ -451,7 +453,7 @@ class LinkedList implements MutableRandomAccessInterface, Countable, Iterator
     /**
      * Appending elements in the given sequence to this sequence.
      *
-     * @param mixed<mixed> $sequence The sequence to append.
+     * @param mixed<mixed> $sequence       The sequence to append.
      * @param mixed<mixed> $additional,... Additional sequences to append.
      */
     public function append($sequence)
@@ -482,7 +484,7 @@ class LinkedList implements MutableRandomAccessInterface, Countable, Iterator
     /**
      * Remove and return the element at the front of the sequence.
      *
-     * @return mixed The element at the front of the sequence.
+     * @return mixed                              The element at the front of the sequence.
      * @throws Exception\EmptyCollectionException if the collection is empty.
      */
     public function popFront()
@@ -546,7 +548,7 @@ class LinkedList implements MutableRandomAccessInterface, Countable, Iterator
     /**
      * Remove and return the element at the back of the sequence.
      *
-     * @return mixed The element at the back of the sequence.
+     * @return mixed                              The element at the back of the sequence.
      * @throws Exception\EmptyCollectionException if the collection is empty.
      */
     public function popBack()
@@ -593,8 +595,8 @@ class LinkedList implements MutableRandomAccessInterface, Countable, Iterator
     /**
      * Resize the sequence.
      *
-     * @param integer $size The new size of the collection.
-     * @param mixed $element The value to use for populating new elements when $size > $this->size().
+     * @param integer $size    The new size of the collection.
+     * @param mixed   $element The value to use for populating new elements when $size > $this->size().
      */
     public function resize($size, $element = null)
     {
@@ -618,7 +620,7 @@ class LinkedList implements MutableRandomAccessInterface, Countable, Iterator
      *
      * @param mixed $index The index of the element to fetch, if index is a negative number the element that far from the end of the sequence is returned.
      *
-     * @return mixed The element at $index.
+     * @return mixed                    The element at $index.
      * @throws Exception\IndexException if no such index exists.
      */
     public function get($index)
@@ -635,10 +637,10 @@ class LinkedList implements MutableRandomAccessInterface, Countable, Iterator
      *
      * It is not guaranteed that the concrete type of the slice collection will match this collection.
      *
-     * @param integer $index The index from which the slice will start. If index is a negative number the slice will begin that far from the end of the sequence.
+     * @param integer      $index The index from which the slice will start. If index is a negative number the slice will begin that far from the end of the sequence.
      * @param integer|null $count The maximum number of elements to include in the slice, or null to include all elements from $index to the end of the sequence.
      *
-     * @return SequenceInterface The sliced sequence.
+     * @return SequenceInterface        The sliced sequence.
      * @throws Exception\IndexException if $index is out of range.
      */
     public function slice($index, $count = null)
@@ -670,9 +672,9 @@ class LinkedList implements MutableRandomAccessInterface, Countable, Iterator
      * Extracts all elements in the range [$begin, $end), i.e. $begin is inclusive, $end is exclusive.
      *
      * @param integer $begin The index from which the slice will start. If begin is a negative number the slice will begin that far from the end of the sequence.
-     * @param integer $end The index at which the slice will end. If end is a negative number the slice will end that far from the end of the sequence.
+     * @param integer $end   The index at which the slice will end. If end is a negative number the slice will end that far from the end of the sequence.
      *
-     * @return SequenceInterface The sliced sequence.
+     * @return SequenceInterface        The sliced sequence.
      * @throws Exception\IndexException if $index is out of range.
      */
     public function range($begin, $end)
@@ -712,8 +714,8 @@ class LinkedList implements MutableRandomAccessInterface, Countable, Iterator
     /**
      * Replace the element at a particular position in the sequence.
      *
-     * @param integer $index The index of the element to set, if index is a negative number the element that far from the end of the sequence is set.
-     * @param mixed $element The element to set.
+     * @param integer $index   The index of the element to set, if index is a negative number the element that far from the end of the sequence is set.
+     * @param mixed   $element The element to set.
      *
      * @throws Exception\IndexException if $index is out of range.
      */
@@ -729,8 +731,8 @@ class LinkedList implements MutableRandomAccessInterface, Countable, Iterator
     /**
      * Insert an element at a particular index.
      *
-     * @param integer $index The index at which the element is inserted, if index is a negative number the element is inserted that far from the end of the sequence.
-     * @param mixed $element The element to insert.
+     * @param integer $index   The index at which the element is inserted, if index is a negative number the element is inserted that far from the end of the sequence.
+     * @param mixed   $element The element to insert.
      *
      * @throws Exception\IndexException if $index is out of range.
      */
@@ -744,7 +746,7 @@ class LinkedList implements MutableRandomAccessInterface, Countable, Iterator
     /**
      * Insert a range of elements at a particular index.
      *
-     * @param integer $index The index at which the elements are inserted, if index is a negative number the elements are inserted that far from the end of the sequence.
+     * @param integer      $index    The index at which the elements are inserted, if index is a negative number the elements are inserted that far from the end of the sequence.
      * @param mixed<mixed> $elements The elements to insert.
      */
     public function insertMany($index, $elements)
@@ -794,7 +796,7 @@ class LinkedList implements MutableRandomAccessInterface, Countable, Iterator
     /**
      * Remove a range of elements at a given index.
      *
-     * @param integer $index The index of the first element to remove, if index is a negative number the removal begins that far from the end of the sequence.
+     * @param integer      $index The index of the first element to remove, if index is a negative number the removal begins that far from the end of the sequence.
      * @param integer|null $count The number of elements to remove, or null to remove all elements up to the end of the sequence.
      *
      * @throws Exception\IndexException if $index is out of range.
@@ -831,7 +833,7 @@ class LinkedList implements MutableRandomAccessInterface, Countable, Iterator
      * Removes all elements in the range [$begin, $end), i.e. $begin is inclusive, $end is exclusive.
      *
      * @param integer $begin The index of the first element to remove, if $begin is a negative number the removal begins that far from the end of the sequence.
-     * @param integer $end The index of the last element to remove, if $end is a negative number the removal ends that far from the end of the sequence.
+     * @param integer $end   The index of the last element to remove, if $end is a negative number the removal ends that far from the end of the sequence.
      *
      * @throws Exception\IndexException if $index is out of range.
      */
@@ -850,9 +852,9 @@ class LinkedList implements MutableRandomAccessInterface, Countable, Iterator
      *
      * Replaces all elements in the range [$begin, $end), i.e. $begin is inclusive, $end is exclusive.
      *
-     * @param integer $index The index of the first element to replace, if index is a negative number the replace begins that far from the end of the sequence.
+     * @param integer      $index    The index of the first element to replace, if index is a negative number the replace begins that far from the end of the sequence.
      * @param mixed<mixed> $elements The elements to insert.
-     * @param integer|null $count The number of elements to replace, or null to replace all elements up to the end of the sequence.
+     * @param integer|null $count    The number of elements to replace, or null to replace all elements up to the end of the sequence.
      */
     public function replace($index, $elements, $count = null)
     {
@@ -867,8 +869,8 @@ class LinkedList implements MutableRandomAccessInterface, Countable, Iterator
     /**
      * Replace a range of elements with a second set of elements.
      *
-     * @param integer $begin The index of the first element to replace, if begin is a negative number the replace begins that far from the end of the sequence.
-     * @param integer $end  The index of the last element to replace, if end is a negativ enumber the replace ends that far from the end of the sequence.
+     * @param integer      $begin    The index of the first element to replace, if begin is a negative number the replace begins that far from the end of the sequence.
+     * @param integer      $end      The index of the last element to replace, if end is a negativ enumber the replace ends that far from the end of the sequence.
      * @param mixed<mixed> $elements The elements to insert.
      */
     public function replaceRange($begin, $end, $elements)
@@ -1006,7 +1008,7 @@ class LinkedList implements MutableRandomAccessInterface, Countable, Iterator
     }
 
     /**
-     * @param integer &$index
+     * @param integer      &$index
      * @param integer|null $max
      */
     protected function validateIndex(&$index, $max = null)
@@ -1025,7 +1027,7 @@ class LinkedList implements MutableRandomAccessInterface, Countable, Iterator
     }
 
     /**
-     * @param mixed $element
+     * @param mixed         $element
      * @param stdClass|null $next
      */
     protected function createNode($element = null, stdClass $next = null)
@@ -1033,32 +1035,37 @@ class LinkedList implements MutableRandomAccessInterface, Countable, Iterator
         $node = new stdClass;
         $node->next = $next;
         $node->element = $element;
+
         return $node;
     }
 
     /**
      * @param integer $index
      */
-    protected function nodeAt($index) {
+    protected function nodeAt($index)
+    {
         return $this->nodeFrom($this->head, $index);
     }
 
     /**
      * @param stdClass $node
-     * @param integer $count
+     * @param integer  $count
      */
-    protected function nodeFrom(stdClass $node, $count) {
+    protected function nodeFrom(stdClass $node, $count)
+    {
         while ($node && $count--) {
             $node = $node->next;
         }
+
         return $node;
     }
 
     /**
-     * @param stdClass $start
+     * @param stdClass      $start
      * @param stdClass|null $stop
      */
-    protected function cloneNodes(stdClass $start, stdClass $stop = null) {
+    protected function cloneNodes(stdClass $start, stdClass $stop = null)
+    {
         $head = null;
         $tail = null;
         $size = 0;
@@ -1080,7 +1087,8 @@ class LinkedList implements MutableRandomAccessInterface, Countable, Iterator
     /**
      * @param mixed<mixed> $elements
      */
-    protected function createNodes($elements) {
+    protected function createNodes($elements)
+    {
         $head = null;
         $tail = null;
         $size = 0;

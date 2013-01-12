@@ -52,6 +52,7 @@ class AssociativeIterator implements Iterator
         $this->typeCheck->key(func_get_args());
 
         $keys = $this->collection->keys();
+
         return $keys[$this->index];
     }
 

@@ -2,7 +2,6 @@
 namespace Icecave\Collections;
 
 use Countable;
-use Icecave\Collections\Iterator\SetIterator;
 use Icecave\Collections\TypeCheck\TypeCheck;
 use Icecave\Repr\Repr;
 use Iterator;
@@ -10,8 +9,8 @@ use Iterator;
 class Set implements MutableIterableInterface, Countable, Iterator
 {
     /**
-     * @param mixed<mixed>|null $collection An iterable type containing the elements to include in this set, or null to create an empty set.
-     * @param callable|null $hashFunction The function to use for generating hashes of elements, or null to use the default.
+     * @param mixed<mixed>|null $collection   An iterable type containing the elements to include in this set, or null to create an empty set.
+     * @param callable|null     $hashFunction The function to use for generating hashes of elements, or null to use the default.
      */
     public function __construct($collection = null, $hashFunction = null)
     {
@@ -142,6 +141,7 @@ class Set implements MutableIterableInterface, Countable, Iterator
         $this->typeCheck->contains(func_get_args());
 
         $hash = $this->generateHash($value);
+
         return array_key_exists($hash, $this->elements);
     }
 
@@ -306,10 +306,10 @@ class Set implements MutableIterableInterface, Countable, Iterator
     /**
      * Return the first of the given elements that is contained in the set.
      *
-     * @param mixed $element The element to search for.
+     * @param mixed $element        The element to search for.
      * @param mixed $additional,... Additional elements to search for.
      *
-     * @return mixed The first of the given elements that is contained in the set.
+     * @return mixed                         The first of the given elements that is contained in the set.
      * @throws Exception\UnknownKeyException if none of the elements exist.
      */
     public function cascade($element)
@@ -322,8 +322,8 @@ class Set implements MutableIterableInterface, Countable, Iterator
     /**
      * Return the first of the given elements that is contained in the set, or a default if none are found.
      *
-     * @param mixed $default The default value to return if no such elements exist.
-     * @param mixed $element The element to search for.
+     * @param mixed $default        The default value to return if no such elements exist.
+     * @param mixed $element        The element to search for.
      * @param mixed $additional,... Additional elements to search for.
      *
      * @return mixed The first of the given elements that is contained in the set, or $default if none are found.
@@ -346,7 +346,7 @@ class Set implements MutableIterableInterface, Countable, Iterator
      *
      * @param mixed<mixed> $elements The list of elements.
      *
-     * @return mixed The first of the given elements that is contained in the set.
+     * @return mixed                         The first of the given elements that is contained in the set.
      * @throws Exception\UnknownKeyException if none of the elements exist.
      */
     public function cascadeIterable($elements)
@@ -369,7 +369,7 @@ class Set implements MutableIterableInterface, Countable, Iterator
      * Behaves as per {@see Set::cascadeDefault()} except that the elements are provided as
      * a traversable (eg, array) instead of via a variable argument list.
      *
-     * @param mixed $default The default value to return if no such elements exist.
+     * @param mixed        $default  The default value to return if no such elements exist.
      * @param mixed<mixed> $elements The list of elements.
      *
      * @return mixed The first of the given elements that is contained in the set, or $default if none are found.
@@ -405,6 +405,7 @@ class Set implements MutableIterableInterface, Countable, Iterator
         }
 
         $this->elements[$hash] = $element;
+
         return true;
     }
 
@@ -422,8 +423,10 @@ class Set implements MutableIterableInterface, Countable, Iterator
         $hash = $this->generateHash($element);
         if (array_key_exists($hash, $this->elements)) {
             unset($this->elements[$hash]);
+
             return true;
         }
+
         return false;
     }
 
@@ -440,6 +443,7 @@ class Set implements MutableIterableInterface, Countable, Iterator
 
         $result = clone $this;
         $result->unionInPlace($elements);
+
         return $result;
     }
 
@@ -474,6 +478,7 @@ class Set implements MutableIterableInterface, Countable, Iterator
 
         $result = clone $this;
         $result->intersectInPlace($elements);
+
         return $result;
     }
 
@@ -515,6 +520,7 @@ class Set implements MutableIterableInterface, Countable, Iterator
 
         $result = clone $this;
         $result->complementInPlace($elements);
+
         return $result;
     }
 

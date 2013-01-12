@@ -22,7 +22,7 @@ interface AssociativeInterface extends IterableInterface
      *
      * @param mixed $key The key to fetch.
      *
-     * @return mixed The associated value.
+     * @return mixed                         The associated value.
      * @throws Exception\UnknownKeyException if no such key exists.
      */
     public function get($key);
@@ -30,7 +30,7 @@ interface AssociativeInterface extends IterableInterface
     /**
      * Fetch the value associated with the given key if it exists.
      *
-     * @param mixed $key The key to fetch.
+     * @param mixed $key    The key to fetch.
      * @param mixed &$value Assigned the value associated with $key if it exists.
      *
      * @return boolean True if $key exists and $value was populated; otherwise, false.
@@ -40,7 +40,7 @@ interface AssociativeInterface extends IterableInterface
     /**
      * Fetch the value associated with the given key, or a default value if it does not exist.
      *
-     * @param mixed $key The key to fetch.
+     * @param mixed $key     The key to fetch.
      * @param mixed $default The default value to return if $key does not exist.
      *
      * @return mixed The value associated with $key, or the $default if nos such key exists.
@@ -53,10 +53,10 @@ interface AssociativeInterface extends IterableInterface
      * Takes a variable number of keys and searches for each one in order,
      * returns the value associated with the first key that exists.
      *
-     * @param mixed $key The key to search for.
+     * @param mixed $key            The key to search for.
      * @param mixed $additional,... Additional keys to search for.
      *
-     * @return mixed The value associated with the first key that exists.
+     * @return mixed                         The value associated with the first key that exists.
      * @throws Exception\UnknownKeyException if none of the keys exist.
      */
     public function cascade($key);
@@ -64,8 +64,8 @@ interface AssociativeInterface extends IterableInterface
     /**
      * Return the value associated with the first key that exists, or a default value if none of the provided keys exist.
      *
-     * @param mixed $default The default value to return if no such keys exist.
-     * @param mixed $key The key to search for.
+     * @param mixed $default        The default value to return if no such keys exist.
+     * @param mixed $key            The key to search for.
      * @param mixed $additional,... Additional keys to search for.
      *
      * @return mixed The value associated with the first key that exists, or $default if none of the keys exist.
@@ -80,7 +80,7 @@ interface AssociativeInterface extends IterableInterface
      *
      * @param mixed<mixed> $keys The list of keys.
      *
-     * @return mixed The value associated with the first key that exists.
+     * @return mixed                         The value associated with the first key that exists.
      * @throws Exception\UnknownKeyException if none of the keys exist.
      */
     public function cascadeIterable($keys);
@@ -91,8 +91,8 @@ interface AssociativeInterface extends IterableInterface
      * Behaves as per {@see AssociativeInterface::cascadeDefault()} except that the keys are provided as
      * a traversable (eg, array) instead of via a variable argument list.
      *
-     * @param mixed $default The default value to return if no such keys exist.
-     * @param mixed<mixed> $keys The list of keys.
+     * @param mixed        $default The default value to return if no such keys exist.
+     * @param mixed<mixed> $keys    The list of keys.
      *
      * @return mixed The value associated with the first key that exists, or $default if none of the keys exist.
      */
@@ -122,7 +122,7 @@ interface AssociativeInterface extends IterableInterface
      * Any existing keys are overwritten from left to right.
      * It is not guaranteed that the concrete type of the merged collection will match this collection.
      *
-     * @param AssociativeInterface $collection The collection to combine.
+     * @param AssociativeInterface $collection     The collection to combine.
      * @param AssociativeInterface $additional,... Additional collections to combine.
      *
      * @return AssociativeInterface The merged collection.
@@ -134,7 +134,7 @@ interface AssociativeInterface extends IterableInterface
      *
      * It is not guaranteed that the concrete type of the projected collection will match this collection.
      *
-     * @param mixed $key The key to include in the new collection.
+     * @param mixed $key            The key to include in the new collection.
      * @param mixed $additional,... Ådditional keys to include in the new collection.
      *
      * @return AssociativeInterface The projection of the collection.

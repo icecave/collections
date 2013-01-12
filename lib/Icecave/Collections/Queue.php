@@ -98,7 +98,7 @@ class Queue implements QueuedAccessInterface, Countable
     /**
      * Fetch the element at the front of the queue.
      *
-     * @return mixed The element at the front of the queue.
+     * @return mixed                              The element at the front of the queue.
      * @throws Exception\EmptyCollectionException if the collection is empty.
      */
     public function next()
@@ -116,6 +116,7 @@ class Queue implements QueuedAccessInterface, Countable
      * Fetch the element at the front of the queue.
      *
      * @param mixed &$element Assigned the element at the front of the queue.
+     *
      * @return boolean True is the element exists and was assigned to $element; otherwise, false.
      */
     public function tryNext(&$element)
@@ -146,7 +147,7 @@ class Queue implements QueuedAccessInterface, Countable
     /**
      * Remove and return the element at the front of the queue.
      *
-     * @return mixed The element at the front of the sequence.
+     * @return mixed                              The element at the front of the sequence.
      * @throws Exception\EmptyCollectionException if the collection is empty.
      */
     public function pop()

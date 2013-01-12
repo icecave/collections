@@ -98,7 +98,7 @@ class Stack implements QueuedAccessInterface, Countable
     /**
      * Fetch the element at the top of the stack.
      *
-     * @return mixed The element at the top of the stack.
+     * @return mixed                              The element at the top of the stack.
      * @throws Exception\EmptyCollectionException if the collection is empty.
      */
     public function next()
@@ -116,6 +116,7 @@ class Stack implements QueuedAccessInterface, Countable
      * Fetch the element at the top of the stack.
      *
      * @param mixed &$element Assigned the element at the top of the stack.
+     *
      * @return boolean True is the element exists and was assigned to $element; otherwise, false.
      */
     public function tryNext(&$element)
@@ -146,7 +147,7 @@ class Stack implements QueuedAccessInterface, Countable
     /**
      * Remove and return the element at the top of the stack.
      *
-     * @return mixed The element at the top of the sequence.
+     * @return mixed                              The element at the top of the sequence.
      * @throws Exception\EmptyCollectionException if the collection is empty.
      */
     public function pop()

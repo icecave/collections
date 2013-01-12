@@ -3,7 +3,6 @@ namespace Icecave\Collections;
 
 use ArrayAccess;
 use Countable;
-use Icecave\Collections\Iterator\RandomAccessIterator;
 use Icecave\Collections\TypeCheck\TypeCheck;
 use Iterator;
 use SplFixedArray;
@@ -127,6 +126,7 @@ class Vector implements MutableRandomAccessInterface, Countable, Iterator, Array
                 $elements[] = $element;
             }
         }
+
         return $elements;
     }
 
@@ -261,7 +261,7 @@ class Vector implements MutableRandomAccessInterface, Countable, Iterator, Array
     /**
      * Fetch the first element in the sequence.
      *
-     * @return mixed The first element in the sequence.
+     * @return mixed                              The first element in the sequence.
      * @throws Exception\EmptyCollectionException if the collection is empty.
      */
     public function front()
@@ -271,6 +271,7 @@ class Vector implements MutableRandomAccessInterface, Countable, Iterator, Array
         if ($this->isEmpty()) {
             throw new Exception\EmptyCollectionException;
         }
+
         return $this->elements[0];
     }
 
@@ -278,6 +279,7 @@ class Vector implements MutableRandomAccessInterface, Countable, Iterator, Array
      * Fetch the first element in the sequence.
      *
      * @param mixed &$element Assigned the element at the front of collection.
+     *
      * @return boolean True is the element exists and was assigned to $element; otherwise, false.
      */
     public function tryFront(&$element)
@@ -288,13 +290,14 @@ class Vector implements MutableRandomAccessInterface, Countable, Iterator, Array
             return false;
         }
         $element = $this->front();
+
         return true;
     }
 
     /**
      * Fetch the last element in the sequence.
      *
-     * @return mixed The first element in the sequence.
+     * @return mixed                              The first element in the sequence.
      * @throws Exception\EmptyCollectionException if the collection is empty.
      */
     public function back()
@@ -304,6 +307,7 @@ class Vector implements MutableRandomAccessInterface, Countable, Iterator, Array
         if ($this->isEmpty()) {
             throw new Exception\EmptyCollectionException;
         }
+
         return $this->elements[$this->size - 1];
     }
 
@@ -311,6 +315,7 @@ class Vector implements MutableRandomAccessInterface, Countable, Iterator, Array
      * Fetch the last element in the sequence.
      *
      * @param mixed &$element Assigned the element at the front of collection.
+     *
      * @return boolean True is the element exists and was assigned to $element; otherwise, false.
      */
     public function tryBack(&$element)
@@ -321,6 +326,7 @@ class Vector implements MutableRandomAccessInterface, Countable, Iterator, Array
             return false;
         }
         $element = $this->back();
+
         return true;
     }
 
@@ -375,7 +381,7 @@ class Vector implements MutableRandomAccessInterface, Countable, Iterator, Array
     /**
      * Create a new sequence by appending the elements in the given sequence to this sequence.
      *
-     * @param mixed<mixed> $sequence The sequence to append.
+     * @param mixed<mixed> $sequence       The sequence to append.
      * @param mixed<mixed> $additional,... Additional sequences to append.
      *
      * @return SequenceInterface A new sequence containing all elements from this sequence and $sequence.
@@ -388,6 +394,7 @@ class Vector implements MutableRandomAccessInterface, Countable, Iterator, Array
         foreach (func_get_args() as $sequence) {
             $result->insertMany($result->size(), $sequence);
         }
+
         return $result;
     }
 
@@ -433,7 +440,7 @@ class Vector implements MutableRandomAccessInterface, Countable, Iterator, Array
     /**
      * Appending elements in the given sequence to this sequence.
      *
-     * @param mixed<mixed> $sequence The sequence to append.
+     * @param mixed<mixed> $sequence       The sequence to append.
      * @param mixed<mixed> $additional,... Additional sequences to append.
      */
     public function append($sequence)
@@ -462,7 +469,7 @@ class Vector implements MutableRandomAccessInterface, Countable, Iterator, Array
     /**
      * Remove and return the element at the front of the sequence.
      *
-     * @return mixed The element at the front of the sequence.
+     * @return mixed                              The element at the front of the sequence.
      * @throws Exception\EmptyCollectionException if the collection is empty.
      */
     public function popFront()
@@ -472,6 +479,7 @@ class Vector implements MutableRandomAccessInterface, Countable, Iterator, Array
         $element = $this->front();
         $this->shiftLeft(1, 1);
         --$this->size;
+
         return $element;
     }
 
@@ -490,6 +498,7 @@ class Vector implements MutableRandomAccessInterface, Countable, Iterator, Array
             return false;
         }
         $element = $this->popFront();
+
         return true;
     }
 
@@ -509,7 +518,7 @@ class Vector implements MutableRandomAccessInterface, Countable, Iterator, Array
     /**
      * Remove and return the element at the back of the sequence.
      *
-     * @return mixed The element at the back of the sequence.
+     * @return mixed                              The element at the back of the sequence.
      * @throws Exception\EmptyCollectionException if the collection is empty.
      */
     public function popBack()
@@ -518,6 +527,7 @@ class Vector implements MutableRandomAccessInterface, Countable, Iterator, Array
 
         $element = $this->back();
         $this->elements[--$this->size] = null;
+
         return $element;
     }
 
@@ -536,14 +546,15 @@ class Vector implements MutableRandomAccessInterface, Countable, Iterator, Array
             return false;
         }
         $element = $this->popBack();
+
         return true;
     }
 
     /**
      * Resize the sequence.
      *
-     * @param integer $size The new size of the collection.
-     * @param mixed $element The value to use for populating new elements when $size > $this->size().
+     * @param integer $size    The new size of the collection.
+     * @param mixed   $element The value to use for populating new elements when $size > $this->size().
      */
     public function resize($size, $element = null)
     {
@@ -572,7 +583,7 @@ class Vector implements MutableRandomAccessInterface, Countable, Iterator, Array
      *
      * @param mixed $index The index of the element to fetch, if index is a negative number the element that far from the end of the sequence is returned.
      *
-     * @return mixed The element at $index.
+     * @return mixed                    The element at $index.
      * @throws Exception\IndexException if no such index exists.
      */
     public function get($index)
@@ -580,6 +591,7 @@ class Vector implements MutableRandomAccessInterface, Countable, Iterator, Array
         $this->typeCheck->get(func_get_args());
 
         $this->validateIndex($index);
+
         return $this->elements[$index];
     }
 
@@ -588,10 +600,10 @@ class Vector implements MutableRandomAccessInterface, Countable, Iterator, Array
      *
      * It is not guaranteed that the concrete type of the slice collection will match this collection.
      *
-     * @param integer $index The index from which the slice will start. If index is a negative number the slice will begin that far from the end of the sequence.
+     * @param integer      $index The index from which the slice will start. If index is a negative number the slice will begin that far from the end of the sequence.
      * @param integer|null $count The maximum number of elements to include in the slice, or null to include all elements from $index to the end of the sequence.
      *
-     * @return SequenceInterface The sliced sequence.
+     * @return SequenceInterface        The sliced sequence.
      * @throws Exception\IndexException if $index is out of range.
      */
     public function slice($index, $count = null)
@@ -621,9 +633,9 @@ class Vector implements MutableRandomAccessInterface, Countable, Iterator, Array
      * Extracts all elements in the range [$begin, $end), i.e. $begin is inclusive, $end is exclusive.
      *
      * @param integer $begin The index from which the slice will start. If begin is a negative number the slice will begin that far from the end of the sequence.
-     * @param integer $end The index at which the slice will end. If end is a negative number the slice will end that far from the end of the sequence.
+     * @param integer $end   The index at which the slice will end. If end is a negative number the slice will end that far from the end of the sequence.
      *
-     * @return SequenceInterface The sliced sequence.
+     * @return SequenceInterface        The sliced sequence.
      * @throws Exception\IndexException if $index is out of range.
      */
     public function range($begin, $end)
@@ -665,6 +677,7 @@ class Vector implements MutableRandomAccessInterface, Countable, Iterator, Array
                 return $index;
             }
         }
+
         return null;
     }
 
@@ -675,8 +688,8 @@ class Vector implements MutableRandomAccessInterface, Countable, Iterator, Array
     /**
      * Replace the element at a particular position in the sequence.
      *
-     * @param integer $index The index of the element to set, if index is a negative number the element that far from the end of the sequence is set.
-     * @param mixed $element The element to set.
+     * @param integer $index   The index of the element to set, if index is a negative number the element that far from the end of the sequence is set.
+     * @param mixed   $element The element to set.
      *
      * @throws Exception\IndexException if $index is out of range.
      */
@@ -691,8 +704,8 @@ class Vector implements MutableRandomAccessInterface, Countable, Iterator, Array
     /**
      * Insert an element at a particular index.
      *
-     * @param integer $index The index at which the element is inserted, if index is a negative number the element is inserted that far from the end of the sequence.
-     * @param mixed $element The element to insert.
+     * @param integer $index   The index at which the element is inserted, if index is a negative number the element is inserted that far from the end of the sequence.
+     * @param mixed   $element The element to insert.
      *
      * @throws Exception\IndexException if $index is out of range.
      */
@@ -706,7 +719,7 @@ class Vector implements MutableRandomAccessInterface, Countable, Iterator, Array
     /**
      * Insert a range of elements at a particular index.
      *
-     * @param integer $index The index at which the elements are inserted, if index is a negative number the elements are inserted that far from the end of the sequence.
+     * @param integer      $index    The index at which the elements are inserted, if index is a negative number the elements are inserted that far from the end of the sequence.
      * @param mixed<mixed> $elements The elements to insert.
      */
     public function insertMany($index, $elements)
@@ -748,7 +761,7 @@ class Vector implements MutableRandomAccessInterface, Countable, Iterator, Array
     /**
      * Remove a range of elements at a given index.
      *
-     * @param integer $index The index of the first element to remove, if index is a negative number the removal begins that far from the end of the sequence.
+     * @param integer      $index The index of the first element to remove, if index is a negative number the removal begins that far from the end of the sequence.
      * @param integer|null $count The number of elements to remove, or null to remove all elements up to the end of the sequence.
      *
      * @throws Exception\IndexException if $index is out of range.
@@ -770,7 +783,7 @@ class Vector implements MutableRandomAccessInterface, Countable, Iterator, Array
      * Removes all elements in the range [$begin, $end), i.e. $begin is inclusive, $end is exclusive.
      *
      * @param integer $begin The index of the first element to remove, if $begin is a negative number the removal begins that far from the end of the sequence.
-     * @param integer $end The index of the last element to remove, if $end is a negative number the removal ends that far from the end of the sequence.
+     * @param integer $end   The index of the last element to remove, if $end is a negative number the removal ends that far from the end of the sequence.
      *
      * @throws Exception\IndexException if $index is out of range.
      */
@@ -788,9 +801,9 @@ class Vector implements MutableRandomAccessInterface, Countable, Iterator, Array
      *
      * Replaces all elements in the range [$begin, $end), i.e. $begin is inclusive, $end is exclusive.
      *
-     * @param integer $index The index of the first element to replace, if index is a negative number the replace begins that far from the end of the sequence.
+     * @param integer      $index    The index of the first element to replace, if index is a negative number the replace begins that far from the end of the sequence.
      * @param mixed<mixed> $elements The elements to insert.
-     * @param integer|null $count The number of elements to replace, or null to replace all elements up to the end of the sequence.
+     * @param integer|null $count    The number of elements to replace, or null to replace all elements up to the end of the sequence.
      */
     public function replace($index, $elements, $count = null)
     {
@@ -817,8 +830,8 @@ class Vector implements MutableRandomAccessInterface, Countable, Iterator, Array
     /**
      * Replace a range of elements with a second set of elements.
      *
-     * @param integer $begin The index of the first element to replace, if begin is a negative number the replace begins that far from the end of the sequence.
-     * @param integer $end  The index of the last element to replace, if end is a negativ enumber the replace ends that far from the end of the sequence.
+     * @param integer      $begin    The index of the first element to replace, if begin is a negative number the replace begins that far from the end of the sequence.
+     * @param integer      $end      The index of the last element to replace, if end is a negativ enumber the replace ends that far from the end of the sequence.
      * @param mixed<mixed> $elements The elements to insert.
      */
     public function replaceRange($begin, $end, $elements)
@@ -970,7 +983,7 @@ class Vector implements MutableRandomAccessInterface, Countable, Iterator, Array
 
     /**
      * @param integer|null $offset
-     * @param mixed $value
+     * @param mixed        $value
      */
     public function offsetSet($offset, $value)
     {
@@ -1034,7 +1047,7 @@ class Vector implements MutableRandomAccessInterface, Countable, Iterator, Array
     }
 
     /**
-     * @param integer &$index
+     * @param integer      &$index
      * @param integer|null $max
      */
     protected function validateIndex(&$index, $max = null)
@@ -1088,8 +1101,8 @@ class Vector implements MutableRandomAccessInterface, Countable, Iterator, Array
 
     /**
      * @param integer|null $value
-     * @param integer $min
-     * @param integer $max
+     * @param integer      $min
+     * @param integer      $max
      */
     protected function clamp($value, $min, $max)
     {

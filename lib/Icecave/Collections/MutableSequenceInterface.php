@@ -23,7 +23,7 @@ interface MutableSequenceInterface extends SequenceInterface, MutableIterableInt
     /**
      * Appending elements in the given sequence to this sequence.
      *
-     * @param mixed<mixed> $sequence The sequence to append.
+     * @param mixed<mixed> $sequence       The sequence to append.
      * @param mixed<mixed> $additional,... Additional sequences to append.
      */
     public function append($sequence);
@@ -38,7 +38,7 @@ interface MutableSequenceInterface extends SequenceInterface, MutableIterableInt
     /**
      * Remove and return the element at the front of the sequence.
      *
-     * @return mixed The element at the front of the sequence.
+     * @return mixed                              The element at the front of the sequence.
      * @throws Exception\EmptyCollectionException if the collection is empty.
      */
     public function popFront();
@@ -62,7 +62,7 @@ interface MutableSequenceInterface extends SequenceInterface, MutableIterableInt
     /**
      * Remove and return the element at the back of the sequence.
      *
-     * @return mixed The element at the back of the sequence.
+     * @return mixed                              The element at the back of the sequence.
      * @throws Exception\EmptyCollectionException if the collection is empty.
      */
     public function popBack();
@@ -79,8 +79,8 @@ interface MutableSequenceInterface extends SequenceInterface, MutableIterableInt
     /**
      * Resize the sequence.
      *
-     * @param integer $size The new size of the collection.
-     * @param mixed $element The value to use for populating new elements when $size > $this->size().
+     * @param integer $size    The new size of the collection.
+     * @param mixed   $element The value to use for populating new elements when $size > $this->size().
      */
     public function resize($size, $element = null);
 }

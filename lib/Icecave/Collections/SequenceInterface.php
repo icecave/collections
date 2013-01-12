@@ -9,7 +9,7 @@ interface SequenceInterface extends CollectionInterface
     /**
      * Fetch the first element in the sequence.
      *
-     * @return mixed The first element in the sequence.
+     * @return mixed                              The first element in the sequence.
      * @throws Exception\EmptyCollectionException if the collection is empty.
      */
     public function front();
@@ -18,6 +18,7 @@ interface SequenceInterface extends CollectionInterface
      * Fetch the first element in the sequence.
      *
      * @param mixed &$element Assigned the element at the front of collection.
+     *
      * @return boolean True is the element exists and was assigned to $element; otherwise, false.
      */
     public function tryFront(&$element);
@@ -25,7 +26,7 @@ interface SequenceInterface extends CollectionInterface
     /**
      * Fetch the last element in the sequence.
      *
-     * @return mixed The first element in the sequence.
+     * @return mixed                              The first element in the sequence.
      * @throws Exception\EmptyCollectionException if the collection is empty.
      */
     public function back();
@@ -34,6 +35,7 @@ interface SequenceInterface extends CollectionInterface
      * Fetch the last element in the sequence.
      *
      * @param mixed &$element Assigned the element at the front of collection.
+     *
      * @return boolean True is the element exists and was assigned to $element; otherwise, false.
      */
     public function tryBack(&$element);
@@ -61,7 +63,7 @@ interface SequenceInterface extends CollectionInterface
     /**
      * Create a new sequence by appending the elements in the given sequence to this sequence.
      *
-     * @param mixed<mixed> $sequence The sequence to append.
+     * @param mixed<mixed> $sequence       The sequence to append.
      * @param mixed<mixed> $additional,... Additional sequences to append.
      *
      * @return SequenceInterface A new sequence containing all elements from this sequence and $sequence.

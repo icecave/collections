@@ -19,7 +19,7 @@ interface MutableAssociativeInterface extends AssociativeInterface, MutableItera
      * @see MutableAssociativeInterface::add()
      * @see MutableAssociativeInterface::replace()
      *
-     * @param mixed $key The element's key.
+     * @param mixed $key   The element's key.
      * @param mixed $value The element's value.
      */
     public function set($key, $value);
@@ -33,7 +33,7 @@ interface MutableAssociativeInterface extends AssociativeInterface, MutableItera
      * @see MutableAssociativeInterface::replace()
      * @see MutableAssociativeInterface::tryAdd()
      *
-     * @param mixed $key The element's key.
+     * @param mixed $key   The element's key.
      * @param mixed $value The element's value.
      *
      * @throws Exception\DuplicateKeyException if $key already exists.
@@ -47,7 +47,7 @@ interface MutableAssociativeInterface extends AssociativeInterface, MutableItera
      *
      * @see MutableAssociativeInterface::add()
      *
-     * @param mixed $key The element's key.
+     * @param mixed $key   The element's key.
      * @param mixed $value The element's value.
      *
      * @return boolean True if $key did not already exist and the value has been set; otherwise, false.
@@ -63,10 +63,10 @@ interface MutableAssociativeInterface extends AssociativeInterface, MutableItera
      * @see MutableAssociativeInterface::set()
      * @see MutableAssociativeInterface::tryReplace()
      *
-     * @param mixed $key The element's key.
+     * @param mixed $key   The element's key.
      * @param mixed $value The element's value.
      *
-     * @return mixed The value previously associated with this key.
+     * @return mixed                         The value previously associated with this key.
      * @throws Exception\UnknownKeyException if $key does not already exist.
      */
     public function replace($key, $value);
@@ -78,8 +78,8 @@ interface MutableAssociativeInterface extends AssociativeInterface, MutableItera
      *
      * @see MutableAssociativeInterface::replace()
      *
-     * @param mixed $key The element's key.
-     * @param mixed $value The element's value.
+     * @param mixed $key       The element's key.
+     * @param mixed $value     The element's value.
      * @param mixed &$previous Assigned the value previously associated with $key.
      *
      * @return boolean True if $key already exists and the new value has been set; otherwise, false.
@@ -91,7 +91,7 @@ interface MutableAssociativeInterface extends AssociativeInterface, MutableItera
      *
      * @param mixed $key The key of the element to remove.
      *
-     * @return mixed The value associated with this key.
+     * @return mixed                         The value associated with this key.
      * @throws Exception\UnknownKeyException if $key does not exist.
      */
     public function remove($key);
@@ -99,7 +99,7 @@ interface MutableAssociativeInterface extends AssociativeInterface, MutableItera
     /**
      * Remove an element from the collection.
      *
-     * @param mixed $key The key of the element to remove.
+     * @param mixed $key    The key of the element to remove.
      * @param mixed &$value Assigned the value associated with $key if it exists.
      *
      * @return boolean True if the key exists and has been removed; otherwise, false.
@@ -111,7 +111,7 @@ interface MutableAssociativeInterface extends AssociativeInterface, MutableItera
      *
      * Any existing keys are overwritten from left to right.
      *
-     * @param AssociativeInterface $collection The collection to merge.
+     * @param AssociativeInterface $collection     The collection to merge.
      * @param AssociativeInterface $additional,... Additional collections to merge.
      */
     public function merge(AssociativeInterface $collection);
@@ -176,7 +176,7 @@ interface MutableAssociativeInterface extends AssociativeInterface, MutableItera
      * @param mixed $source The existing key.
      * @param mixed $target The new key.
      *
-     * @throws Exception\UnknownKeyException if $source does not already exist.
+     * @throws Exception\UnknownKeyException   if $source does not already exist.
      * @throws Exception\DuplicateKeyException if $target already exists.
      */
     public function rename($source, $target);

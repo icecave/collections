@@ -3,7 +3,6 @@ namespace Icecave\Collections;
 
 use ArrayAccess;
 use Countable;
-use Icecave\Collections\Iterator\AssociativeIterator;
 use Icecave\Collections\TypeCheck\TypeCheck;
 use Icecave\Repr\Repr;
 use Iterator;
@@ -11,8 +10,8 @@ use Iterator;
 class Map implements MutableAssociativeInterface, Countable, Iterator, ArrayAccess
 {
     /**
-     * @param mixed<mixed>|null $collection An iterable type containing the elements to include in this map, or null to create an empty map.
-     * @param callable|null $hashFunction The function to use for generating hashes of element values, or null to use the default.
+     * @param mixed<mixed>|null $collection   An iterable type containing the elements to include in this map, or null to create an empty map.
+     * @param callable|null     $hashFunction The function to use for generating hashes of element values, or null to use the default.
      */
     public function __construct($collection = null, $hashFunction = null)
     {
@@ -288,7 +287,7 @@ class Map implements MutableAssociativeInterface, Countable, Iterator, ArrayAcce
      *
      * @param mixed $key The key to fetch.
      *
-     * @return mixed The associated value.
+     * @return mixed                         The associated value.
      * @throws Exception\UnknownKeyException if no such key exists.
      */
     public function get($key)
@@ -306,7 +305,7 @@ class Map implements MutableAssociativeInterface, Countable, Iterator, ArrayAcce
     /**
      * Fetch the value associated with the given key if it exists.
      *
-     * @param mixed $key The key to fetch.
+     * @param mixed $key    The key to fetch.
      * @param mixed &$value Assigned the value associated with $key if it exists.
      *
      * @return boolean True if $key exists and $value was populated; otherwise, false.
@@ -320,6 +319,7 @@ class Map implements MutableAssociativeInterface, Countable, Iterator, ArrayAcce
         if (array_key_exists($hash, $this->elements)) {
             $element = $this->elements[$hash];
             list($key, $value) = $element;
+
             return true;
         }
 
@@ -329,7 +329,7 @@ class Map implements MutableAssociativeInterface, Countable, Iterator, ArrayAcce
     /**
      * Fetch the value associated with the given key, or a default value if it does not exist.
      *
-     * @param mixed $key The key to fetch.
+     * @param mixed $key     The key to fetch.
      * @param mixed $default The default value to return if $key does not exist.
      *
      * @return mixed The value associated with $key, or the $default if nos such key exists.
@@ -352,10 +352,10 @@ class Map implements MutableAssociativeInterface, Countable, Iterator, ArrayAcce
      * Takes a variable number of keys and searches for each one in order,
      * returns the value associated with the first key that exists.
      *
-     * @param mixed $key The key to search for.
+     * @param mixed $key            The key to search for.
      * @param mixed $additional,... Additional keys to search for.
      *
-     * @return mixed The value associated with the first key that exists.
+     * @return mixed                         The value associated with the first key that exists.
      * @throws Exception\UnknownKeyException if none of the keys exist.
      */
     public function cascade($key)
@@ -368,8 +368,8 @@ class Map implements MutableAssociativeInterface, Countable, Iterator, ArrayAcce
     /**
      * Return the value associated with the first key that exists, or a default value if none of the provided keys exist.
      *
-     * @param mixed $default The default value to return if no such keys exist.
-     * @param mixed $key The key to search for.
+     * @param mixed $default        The default value to return if no such keys exist.
+     * @param mixed $key            The key to search for.
      * @param mixed $additional,... Additional keys to search for.
      *
      * @return mixed The value associated with the first key that exists, or $default if none of the keys exist.
@@ -392,7 +392,7 @@ class Map implements MutableAssociativeInterface, Countable, Iterator, ArrayAcce
      *
      * @param mixed<mixed> $keys The list of keys.
      *
-     * @return mixed The value associated with the first key that exists.
+     * @return mixed                         The value associated with the first key that exists.
      * @throws Exception\UnknownKeyException if none of the keys exist.
      */
     public function cascadeIterable($keys)
@@ -415,8 +415,8 @@ class Map implements MutableAssociativeInterface, Countable, Iterator, ArrayAcce
      * Behaves as per {@see Map::cascadeDefault()} except that the keys are provided as
      * a traversable (eg, array) instead of via a variable argument list.
      *
-     * @param mixed $default The default value to return if no such keys exist.
-     * @param mixed<mixed> $keys The list of keys.
+     * @param mixed        $default The default value to return if no such keys exist.
+     * @param mixed<mixed> $keys    The list of keys.
      *
      * @return mixed The value associated with the first key that exists, or $default if none of the keys exist.
      */
@@ -450,6 +450,7 @@ class Map implements MutableAssociativeInterface, Countable, Iterator, ArrayAcce
             list($key, $value) = $element;
             $keys[] = $key;
         }
+
         return $keys;
     }
 
@@ -469,6 +470,7 @@ class Map implements MutableAssociativeInterface, Countable, Iterator, ArrayAcce
             list($key, $value) = $element;
             $values[] = $value;
         }
+
         return $values;
     }
 
@@ -478,7 +480,7 @@ class Map implements MutableAssociativeInterface, Countable, Iterator, ArrayAcce
      * Any existing keys are overwritten from left to right.
      * It is not guaranteed that the concrete type of the merged collection will match this collection.
      *
-     * @param AssociativeInterface $collection The collection to combine.
+     * @param AssociativeInterface $collection     The collection to combine.
      * @param AssociativeInterface $additional,... Additional collections to combine.
      *
      * @return AssociativeInterface The merged collection.
@@ -504,7 +506,7 @@ class Map implements MutableAssociativeInterface, Countable, Iterator, ArrayAcce
      *
      * It is not guaranteed that the concrete type of the projected collection will match this collection.
      *
-     * @param mixed $key The key to include in the new collection.
+     * @param mixed $key            The key to include in the new collection.
      * @param mixed $additional,... Ådditional keys to include in the new collection.
      *
      * @return AssociativeInterface The projection of the collection.
@@ -553,7 +555,7 @@ class Map implements MutableAssociativeInterface, Countable, Iterator, ArrayAcce
      * @see Map::add()
      * @see Map::replace()
      *
-     * @param mixed $key The element's key.
+     * @param mixed $key   The element's key.
      * @param mixed $value The element's value.
      */
     public function set($key, $value)
@@ -573,7 +575,7 @@ class Map implements MutableAssociativeInterface, Countable, Iterator, ArrayAcce
      * @see Map::replace()
      * @see Map::tryAdd()
      *
-     * @param mixed $key The element's key.
+     * @param mixed $key   The element's key.
      * @param mixed $value The element's value.
      *
      * @throws Exception\DuplicateKeyException if $key already exists.
@@ -594,7 +596,7 @@ class Map implements MutableAssociativeInterface, Countable, Iterator, ArrayAcce
      *
      * @see Map::add()
      *
-     * @param mixed $key The element's key.
+     * @param mixed $key   The element's key.
      * @param mixed $value The element's value.
      *
      * @return boolean True if $key did not already exist and the value has been set; otherwise, false.
@@ -609,6 +611,7 @@ class Map implements MutableAssociativeInterface, Countable, Iterator, ArrayAcce
         }
 
         $this->elements[$hash] = array($key, $value);
+
         return true;
     }
 
@@ -621,10 +624,10 @@ class Map implements MutableAssociativeInterface, Countable, Iterator, ArrayAcce
      * @see Map::set()
      * @see Map::tryReplace()
      *
-     * @param mixed $key The element's key.
+     * @param mixed $key   The element's key.
      * @param mixed $value The element's value.
      *
-     * @return mixed The value previously associated with this key.
+     * @return mixed                         The value previously associated with this key.
      * @throws Exception\UnknownKeyException if $key does not already exist.
      */
     public function replace($key, $value)
@@ -643,8 +646,8 @@ class Map implements MutableAssociativeInterface, Countable, Iterator, ArrayAcce
      *
      * @see Map::replace()
      *
-     * @param mixed $key The element's key.
-     * @param mixed $value The element's value.
+     * @param mixed $key       The element's key.
+     * @param mixed $value     The element's value.
      * @param mixed &$previous Assigned the value previously associated with $key.
      *
      * @return boolean True if $key already exists and the new value has been set; otherwise, false.
@@ -659,6 +662,7 @@ class Map implements MutableAssociativeInterface, Countable, Iterator, ArrayAcce
         }
 
         $this->elements[$hash] = array($key, $value);
+
         return true;
     }
 
@@ -667,7 +671,7 @@ class Map implements MutableAssociativeInterface, Countable, Iterator, ArrayAcce
      *
      * @param mixed $key The key of the element to remove.
      *
-     * @return mixed The value associated with this key.
+     * @return mixed                         The value associated with this key.
      * @throws Exception\UnknownKeyException if $key does not exist.
      */
     public function remove($key)
@@ -685,7 +689,7 @@ class Map implements MutableAssociativeInterface, Countable, Iterator, ArrayAcce
     /**
      * Remove an element from the collection.
      *
-     * @param mixed $key The key of the element to remove.
+     * @param mixed $key    The key of the element to remove.
      * @param mixed &$value Assigned the value associated with $key if it exists.
      *
      * @return boolean True if the key exists and has been removed; otherwise, false.
@@ -702,6 +706,7 @@ class Map implements MutableAssociativeInterface, Countable, Iterator, ArrayAcce
         $element = $this->elements[$hash];
         list($key, $value) = $element;
         unset($this->elements[$hash]);
+
         return true;
     }
 
@@ -710,7 +715,7 @@ class Map implements MutableAssociativeInterface, Countable, Iterator, ArrayAcce
      *
      * Any existing keys are overwritten from left to right.
      *
-     * @param AssociativeInterface $collection The collection to merge.
+     * @param AssociativeInterface $collection     The collection to merge.
      * @param AssociativeInterface $additional,... Additional collections to merge.
      */
     public function merge(AssociativeInterface $collection)
@@ -818,8 +823,10 @@ class Map implements MutableAssociativeInterface, Countable, Iterator, ArrayAcce
         $value = null;
         if ($this->tryRemove($source, $value)) {
             $this->set($target, $value);
+
             return true;
         }
+
         return false;
     }
 
@@ -835,7 +842,7 @@ class Map implements MutableAssociativeInterface, Countable, Iterator, ArrayAcce
      * @param mixed $source The existing key.
      * @param mixed $target The new key.
      *
-     * @throws Exception\UnknownKeyException if $source does not already exist.
+     * @throws Exception\UnknownKeyException   if $source does not already exist.
      * @throws Exception\DuplicateKeyException if $target already exists.
      */
     public function rename($source, $target)
@@ -892,6 +899,7 @@ class Map implements MutableAssociativeInterface, Countable, Iterator, ArrayAcce
         );
 
         unset($this->elements[$hash1]);
+
         return true;
     }
 
@@ -916,6 +924,7 @@ class Map implements MutableAssociativeInterface, Countable, Iterator, ArrayAcce
 
         $element = current($this->elements);
         list($key, $value) = $element;
+
         return $value;
     }
 
@@ -925,6 +934,7 @@ class Map implements MutableAssociativeInterface, Countable, Iterator, ArrayAcce
 
         $element = current($this->elements);
         list($key, $value) = $element;
+
         return $key;
     }
 
@@ -972,7 +982,7 @@ class Map implements MutableAssociativeInterface, Countable, Iterator, ArrayAcce
      *
      * @param mixed $offset The key to fetch.
      *
-     * @return mixed The associated value.
+     * @return mixed                         The associated value.
      * @throws Exception\UnknownKeyException if no such key exists.
      */
     public function offsetGet($offset)
@@ -988,7 +998,7 @@ class Map implements MutableAssociativeInterface, Countable, Iterator, ArrayAcce
      * Associates $value with $offset regardless of whether or not $key already exists.
      *
      * @param mixed $offset The element's key.
-     * @param mixed $value The element's value.
+     * @param mixed $value  The element's value.
      */
     public function offsetSet($offset, $value)
     {
