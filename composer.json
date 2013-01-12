@@ -17,6 +17,7 @@
     },
     "require-dev": {
         "eloquent/liberator": "1.*",
+        "eloquent/asplode": "*",
         "eloquent/typhoon": "*"
     },
     "autoload": {
