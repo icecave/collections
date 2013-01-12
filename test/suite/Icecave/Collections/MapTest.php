@@ -27,6 +27,20 @@ class MapTest extends PHPUnit_Framework_TestCase
         $this->assertSame(array(array('a', 1), array('b', 2), array('c', 3)), $collection->elements());
     }
 
+    public function testClone()
+    {
+        $this->_collection->set('a', 1);
+        $this->_collection->set('b', 2);
+        $this->_collection->set('c', 3);
+
+        $collection = clone $this->_collection;
+
+        $collection->remove('a');
+
+        $this->assertSame(array(array('b', 2), array('c', 3)), $collection->elements());
+        $this->assertSame(array(array('a', 1), array('b', 2), array('c', 3)), $this->_collection->elements());
+    }
+
     ///////////////////////////////////////////
     // Implementation of CollectionInterface //
     ///////////////////////////////////////////

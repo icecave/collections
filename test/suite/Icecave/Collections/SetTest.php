@@ -21,6 +21,20 @@ class SetTest extends PHPUnit_Framework_TestCase
         $this->assertSame(array(1, 2, 3, 4, 5), $collection->elements());
     }
 
+    public function testClone()
+    {
+        $this->_collection->add(1);
+        $this->_collection->add(2);
+        $this->_collection->add(3);
+
+        $collection = clone $this->_collection;
+
+        $collection->remove(2);
+
+        $this->assertSame(array(1, 3), $collection->elements());
+        $this->assertSame(array(1, 2, 3), $this->_collection->elements());
+    }
+
     ///////////////////////////////////////////
     // Implementation of CollectionInterface //
     ///////////////////////////////////////////

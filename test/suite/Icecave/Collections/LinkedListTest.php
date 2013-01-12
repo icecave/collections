@@ -31,6 +31,12 @@ class LinkedListTest extends PHPUnit_Framework_TestCase
         $this->assertSame(0, $this->_collection->size());
     }
 
+    public function testConstructorWithArray()
+    {
+        $collection = new LinkedList(array(1, 2, 3));
+        $this->assertSame(array(1, 2, 3), $collection->elements());
+    }
+
     public function testClone()
     {
         $this->_collection->pushBack(1);
@@ -43,12 +49,6 @@ class LinkedListTest extends PHPUnit_Framework_TestCase
 
         $this->assertSame(array(1, 2), $collection->elements());
         $this->assertSame(array(1, 2, 3), $this->_collection->elements());
-    }
-
-    public function testConstructorWithArray()
-    {
-        $collection = new LinkedList(array(1, 2, 3));
-        $this->assertSame(array(1, 2, 3), $collection->elements());
     }
 
     ///////////////////////////////////////////

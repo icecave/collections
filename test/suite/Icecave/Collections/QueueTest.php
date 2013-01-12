@@ -25,6 +25,20 @@ class QueueTest extends PHPUnit_Framework_TestCase
         $this->assertSame(0, $collection->size());
     }
 
+    public function testClone()
+    {
+        $this->_collection->push(1);
+        $this->_collection->push(2);
+        $this->_collection->push(3);
+
+        $collection = clone $this->_collection;
+
+        $collection->pop();
+
+        $this->assertSame(2, $collection->next());
+        $this->assertSame(1, $this->_collection->next());
+    }
+
     ///////////////////////////////////////////
     // Implementation of CollectionInterface //
     ///////////////////////////////////////////

@@ -21,6 +21,20 @@ class VectorTest extends PHPUnit_Framework_TestCase
         $this->assertSame(array(1, 2, 3), $collection->elements());
     }
 
+    public function testClone()
+    {
+        $this->_collection->pushBack(1);
+        $this->_collection->pushBack(2);
+        $this->_collection->pushBack(3);
+
+        $collection = clone $this->_collection;
+
+        $collection->popBack();
+
+        $this->assertSame(array(1, 2), $collection->elements());
+        $this->assertSame(array(1, 2, 3), $this->_collection->elements());
+    }
+
     ///////////////////////////////////////////
     // Implementation of CollectionInterface //
     ///////////////////////////////////////////

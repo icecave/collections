@@ -27,6 +27,11 @@ class Vector implements MutableRandomAccessInterface, Countable, Iterator, Array
         }
     }
 
+    public function __clone()
+    {
+        $this->elements = clone $this->elements;
+    }
+
     ///////////////////////////////////////////
     // Implementation of CollectionInterface //
     ///////////////////////////////////////////

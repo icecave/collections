@@ -24,6 +24,11 @@ class Queue implements QueuedAccessInterface, Countable
         }
     }
 
+    public function __clone()
+    {
+        $this->elements = clone $this->elements;
+    }
+
     ///////////////////////////////////////////
     // Implementation of CollectionInterface //
     ///////////////////////////////////////////

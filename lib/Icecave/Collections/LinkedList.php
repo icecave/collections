@@ -25,9 +25,6 @@ class LinkedList implements MutableRandomAccessInterface, Countable, Iterator
         }
     }
 
-    /**
-     * @return LinkedList A cloned copy of this linked list.
-     */
     public function __clone()
     {
         $node = $this->head;
