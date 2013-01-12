@@ -340,16 +340,16 @@ class LinkedListTest extends PHPUnit_Framework_TestCase
 
     public function testSort()
     {
-        $this->_collection->append(array(3, 2, 1, 5, 4));
+        $this->_collection->append(array(4, 3, 2, 1, 5, 4));
 
         $this->_collection->sort();
 
-        $this->assertSame(array(1, 2, 3, 4, 5), $this->_collection->elements());
+        $this->assertSame(array(1, 2, 3, 4, 4, 5), $this->_collection->elements());
     }
 
     public function testSortWithComparator()
     {
-        $this->_collection->append(array(3, 2, 1, 5, 4));
+        $this->_collection->append(array(4, 3, 2, 1, 5, 4));
 
         $this->_collection->sort(
             function ($a, $b) {
@@ -357,7 +357,23 @@ class LinkedListTest extends PHPUnit_Framework_TestCase
             }
         );
 
-        $this->assertSame(array(5, 4, 3, 2, 1), $this->_collection->elements());
+        $this->assertSame(array(5, 4, 4, 3, 2, 1), $this->_collection->elements());
+    }
+
+    public function testSortWithEmptyCollection()
+    {
+        $this->_collection->sort();
+
+        $this->assertSame(array(), $this->_collection->elements());
+    }
+
+    public function testSortWithSingleElement()
+    {
+        $this->_collection->pushBack(1);
+
+        $this->_collection->sort();
+
+        $this->assertSame(array(1), $this->_collection->elements());
     }
 
     public function testReverse()
