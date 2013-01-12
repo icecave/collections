@@ -31,6 +31,20 @@ class LinkedListTest extends PHPUnit_Framework_TestCase
         $this->assertSame(0, $this->_collection->size());
     }
 
+    public function testClone()
+    {
+        $this->_collection->pushBack(1);
+        $this->_collection->pushBack(2);
+        $this->_collection->pushBack(3);
+
+        $collection = clone $this->_collection;
+
+        $collection->popBack();
+
+        $this->assertSame(array(1, 2), $collection->elements());
+        $this->assertSame(array(1, 2, 3), $this->_collection->elements());
+    }
+
     public function testConstructorWithArray()
     {
         $collection = new LinkedList(array(1, 2, 3));
@@ -268,6 +282,9 @@ class LinkedListTest extends PHPUnit_Framework_TestCase
 
         $this->assertInstanceOf(__NAMESPACE__ . '\LinkedList', $result);
         $this->assertSame(array(1, 2, 3, 4, 5), $result->elements());
+
+        // Original should be unchanged.
+        $this->assertSame(array(3, 2, 1, 5, 4), $this->_collection->elements());
     }
 
     public function testSortedWithComparator()
@@ -282,6 +299,9 @@ class LinkedListTest extends PHPUnit_Framework_TestCase
 
         $this->assertInstanceOf(__NAMESPACE__ . '\LinkedList', $result);
         $this->assertSame(array(5, 4, 3, 2, 1), $result->elements());
+
+        // Original should be unchanged.
+        $this->assertSame(array(3, 2, 1, 5, 4), $this->_collection->elements());
     }
 
     public function testReversed()

@@ -25,6 +25,40 @@ class LinkedList implements MutableRandomAccessInterface, Countable, Iterator
         }
     }
 
+    /**
+     * @return LinkedList A cloned copy of this linked list.
+     */
+    public function __clone()
+    {
+        $node = $this->head;
+        $prev = null;
+
+        while ($node) {
+
+            // Clone the node ...
+            $newNode = clone $node;
+
+            // If there was a previous node, create the link ...
+            if ($prev) {
+                $prev->next = $newNode;
+
+            // Otherwise this must be the head ...
+            } else {
+                $this->head = $newNode;
+            }
+
+            // This node is the current node of iteration ...
+            if ($node === $this->currentNode) {
+                $this->currentNode = $newNode;
+            }
+
+            $prev = $node;
+            $node = $node->next;
+        }
+
+        $this->tail = $prev;
+    }
+
     ///////////////////////////////////////////
     // Implementation of CollectionInterface //
     ///////////////////////////////////////////
@@ -348,17 +382,8 @@ class LinkedList implements MutableRandomAccessInterface, Countable, Iterator
     {
         $this->typeCheck->sorted(func_get_args());
 
-        $elements = $this->elements();
-
-        if (null === $comparator) {
-            sort($elements);
-        } else {
-            usort($elements, $comparator);
-        }
-
-        $result = new static;
-        list($result->head, $result->tail, $result->size) = $this->createNodes($elements);
-
+        $result = clone $this;
+        $result->sort($comparator);
         return $result;
     }
 
@@ -411,21 +436,93 @@ class LinkedList implements MutableRandomAccessInterface, Countable, Iterator
     /**
      * Sort this sequence in-place.
      *
+     * @link http://www.chiark.greenend.org.uk/~sgtatham/algorithms/listsort.html
+     *
      * @param callable|null $comparator A strcmp style comparator function.
      */
     public function sort($comparator = null)
     {
         $this->typeCheck->sort(func_get_args());
 
-        $elements = $this->elements();
-
-        if (null === $comparator) {
-            sort($elements);
-        } else {
-            usort($elements, $comparator);
+        if ($this->size <= 1) {
+            return;
         }
 
-        list($this->head, $this->tail, $this->size) = $this->createNodes($elements);
+        if (null === $comparator) {
+            $comparator = function ($a, $b) {
+                if ($a < $b) {
+                    return -1;
+                } elseif ($a > $b) {
+                    return 1;
+                } else {
+                    return 0;
+                }
+            };
+        }
+
+        $chunkSize = 1;
+
+        $left = null;
+        $head = $this->head;
+        $tail = null;
+
+        do {
+            $left = $head;
+            $head = null;
+            $tail = null;
+
+            $mergeCount = 0;
+
+            while ($left) {
+                ++$mergeCount;
+
+                $right = $left;
+
+                for ($leftSize = 0; $right && $leftSize < $chunkSize; ++$leftSize) {
+                    $right = $right->next;
+                }
+
+                $rightSize = $chunkSize;
+
+                while ($leftSize || ($right && $rightSize)) {
+                    if (0 === $leftSize) {
+                        $node = $right;
+                        $right = $right->next;
+                        --$rightSize;
+                    } elseif (!$right || 0 === $rightSize) {
+                        $node = $left;
+                        $left = $left->next;
+                        --$leftSize;
+                    } elseif (call_user_func($comparator, $left->element, $right->element) <= 0) {
+                        $node = $left;
+                        $left = $left->next;
+                        --$leftSize;
+                    } else {
+                        $node = $right;
+                        $right = $right->next;
+                        --$rightSize;
+                    }
+
+                    if ($tail) {
+                        $tail->next = $node;
+                    } else {
+                        $head = $node;
+                    }
+
+                    $tail = $node;
+                }
+
+                $left = $right;
+            }
+
+            $tail->next = null;
+            $chunkSize *= 2;
+
+        } while ($mergeCount > 1);
+
+        $this->head = $head;
+        $this->tail = $tail;
+        $this->rewind();
     }
 
     /**
