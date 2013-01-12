@@ -4,8 +4,8 @@ namespace Icecave\Collections;
 use Countable;
 use Icecave\Collections\TypeCheck\TypeCheck;
 use Icecave\Repr\Repr;
-use SplStack;
 use Serializable;
+use SplStack;
 
 class Stack implements QueuedAccessInterface, Countable, Serializable
 {

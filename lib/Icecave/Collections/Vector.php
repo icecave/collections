@@ -5,8 +5,8 @@ use ArrayAccess;
 use Countable;
 use Icecave\Collections\TypeCheck\TypeCheck;
 use Iterator;
-use SplFixedArray;
 use Serializable;
+use SplFixedArray;
 
 class Vector implements MutableRandomAccessInterface, Countable, Iterator, ArrayAccess, Serializable
 {

@@ -3,8 +3,8 @@ namespace Icecave\Collections;
 
 use Icecave\Collections\TypeCheck\TypeCheck;
 use Icecave\Repr\Repr;
-use SplPriorityQueue;
 use Serializable;
+use SplPriorityQueue;
 
 /**
  * A prioritized queue.

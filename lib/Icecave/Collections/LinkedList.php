@@ -4,8 +4,8 @@ namespace Icecave\Collections;
 use Countable;
 use Icecave\Collections\TypeCheck\TypeCheck;
 use Iterator;
-use stdClass;
 use Serializable;
+use stdClass;
 
 /**
  * A singly-linked list.
