@@ -633,6 +633,26 @@ class VectorTest extends PHPUnit_Framework_TestCase
         $this->assertNull($this->_collection->indexOfLast('foo'));
     }
 
+    public function testFind()
+    {
+        $comparator = function ($element) {
+            return $element === 'bar';
+        };
+
+        $this->_collection->append(array('foo', 'bar', 'spam', 'bar', 'doom'));
+        $this->assertSame(1, $this->_collection->find($comparator));
+    }
+
+    public function testFindLast()
+    {
+        $comparator = function ($element) {
+            return $element === 'bar';
+        };
+
+        $this->_collection->append(array('foo', 'bar', 'spam', 'bar', 'doom'));
+        $this->assertSame(3, $this->_collection->findLast($comparator));
+    }
+
     ////////////////////////////////////////////////////
     // Implementation of MutableRandomAccessInterface //
     ////////////////////////////////////////////////////

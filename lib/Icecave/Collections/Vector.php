@@ -676,13 +676,11 @@ class Vector implements MutableRandomAccessInterface, Countable, Iterator, Array
     {
         $this->typeCheck->indexOf(func_get_args());
 
-        for ($index = $startIndex; $index < $this->size; ++$index) {
-            if ($this->elements[$index] === $element) {
-                return $index;
-            }
-        }
+        $predicate = function ($e) use ($element) {
+            return $element === $e;
+        };
 
-        return null;
+        return $this->find($predicate, $startIndex);
     }
 
     /**
@@ -697,6 +695,46 @@ class Vector implements MutableRandomAccessInterface, Countable, Iterator, Array
     {
         $this->typeCheck->indexOfLast(func_get_args());
 
+        $predicate = function ($e) use ($element) {
+            return $element === $e;
+        };
+
+        return $this->findLast($predicate, $startIndex);
+    }
+
+    /**
+     * Find the index of the first instance of an element matching given criteria.
+     *
+     * @param callable $predicate  A predicate function used to determine which element constitutes a match.
+     * @param integer  $startIndex The index to start searching from.
+     *
+     * @return integer|null The index of the element, or null if is not present in the sequence.
+     */
+    public function find($predicate, $startIndex = 0)
+    {
+        $this->typeCheck->find(func_get_args());
+
+        for ($index = $startIndex; $index < $this->size; ++$index) {
+            if (call_user_func($predicate, $this->elements[$index])) {
+                return $index;
+            }
+        }
+
+        return null;
+    }
+
+    /**
+     * Find the index of the last instance of an element matching given criteria.
+     *
+     * @param callable     $predicate  A predicate function used to determine which element constitutes a match.
+     * @param integer|null $startIndex The index to start searching from, or null to use the last index.
+     *
+     * @return integer|null The index of the element, or null if is not present in the sequence.
+     */
+    public function findLast($predicate, $startIndex = null)
+    {
+        $this->typeCheck->findLast(func_get_args());
+
         if ($startIndex === null) {
             $startIndex = $this->size - 1;
         } elseif ($startIndex > $this->size - 1) {
@@ -704,7 +742,7 @@ class Vector implements MutableRandomAccessInterface, Countable, Iterator, Array
         }
 
         for ($index = $startIndex; $index >= 0; --$index) {
-            if ($this->elements[$index] === $element) {
+            if (call_user_func($predicate, $this->elements[$index])) {
                 return $index;
             }
         }

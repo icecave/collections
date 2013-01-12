@@ -63,4 +63,24 @@ interface RandomAccessInterface extends SequenceInterface
      * @return integer|null The index of the element, or null if is not present in the sequence.
      */
     public function indexOfLast($element, $startIndex = null);
+
+    /**
+     * Find the index of the first instance of an element matching given criteria.
+     *
+     * @param callable $predicate  A predicate function used to determine which element constitutes a match.
+     * @param integer  $startIndex The index to start searching from.
+     *
+     * @return integer|null The index of the element, or null if is not present in the sequence.
+     */
+    public function find($predicate, $startIndex = 0);
+
+    /**
+     * Find the index of the last instance of an element matching given criteria.
+     *
+     * @param callable     $predicate  A predicate function used to determine which element constitutes a match.
+     * @param integer|null $startIndex The index to start searching from, or null to use the last index.
+     *
+     * @return integer|null The index of the element, or null if is not present in the sequence.
+     */
+    public function findLast($predicate, $startIndex = null);
 }

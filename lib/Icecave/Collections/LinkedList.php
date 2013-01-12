@@ -794,13 +794,11 @@ class LinkedList implements MutableRandomAccessInterface, Countable, Iterator
     {
         $this->typeCheck->indexOf(func_get_args());
 
-        for ($index = 0, $node = $this->head; null !== $node; ++$index, $node = $node->next) {
-            if ($index >= $startIndex && $element === $node->element) {
-                return $index;
-            }
-        }
+        $predicate = function ($e) use ($element) {
+            return $element === $e;
+        };
 
-        return null;
+        return $this->find($predicate, $startIndex);
     }
 
     /**
@@ -815,6 +813,46 @@ class LinkedList implements MutableRandomAccessInterface, Countable, Iterator
     {
         $this->typeCheck->indexOfLast(func_get_args());
 
+        $predicate = function ($e) use ($element) {
+            return $element === $e;
+        };
+
+        return $this->findLast($predicate, $startIndex);
+    }
+
+    /**
+     * Find the index of the first instance of an element matching given criteria.
+     *
+     * @param callable $predicate  A predicate function used to determine which element constitutes a match.
+     * @param integer  $startIndex The index to start searching from.
+     *
+     * @return integer|null The index of the element, or null if is not present in the sequence.
+     */
+    public function find($predicate, $startIndex = 0)
+    {
+        $this->typeCheck->find(func_get_args());
+
+        for ($index = 0, $node = $this->head; null !== $node; ++$index, $node = $node->next) {
+            if ($index >= $startIndex && call_user_func($predicate, $node->element)) {
+                return $index;
+            }
+        }
+
+        return null;
+    }
+
+    /**
+     * Find the index of the last instance of an element matching given criteria.
+     *
+     * @param callable     $predicate  A predicate function used to determine which element constitutes a match.
+     * @param integer|null $startIndex The index to start searching from, or null to use the last index.
+     *
+     * @return integer|null The index of the element, or null if is not present in the sequence.
+     */
+    public function findLast($predicate, $startIndex = null)
+    {
+        $this->typeCheck->findLast(func_get_args());
+
         if (null === $startIndex) {
             $startIndex = $this->size;
         }
@@ -822,7 +860,7 @@ class LinkedList implements MutableRandomAccessInterface, Countable, Iterator
         $lastIndex = null;
 
         for ($index = 0, $node = $this->head; null !== $node && $index <= $startIndex; ++$index, $node = $node->next) {
-            if ($element === $node->element) {
+            if (call_user_func($predicate, $node->element)) {
                 $lastIndex = $index;
             }
         }

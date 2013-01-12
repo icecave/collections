@@ -626,6 +626,76 @@ class VectorTypeCheck extends \Icecave\Collections\TypeCheck\AbstractValidator
             }
         }
     }
+    public function find(array $arguments)
+    {
+        ($argumentCount = \count($arguments));
+        if (($argumentCount < 1))
+        {
+            throw (new \Icecave\Collections\TypeCheck\Exception\MissingArgumentException('predicate', 0, 'callable'));
+        }
+        elseif (($argumentCount > 2))
+        {
+            throw (new \Icecave\Collections\TypeCheck\Exception\UnexpectedArgumentException(2, $arguments[2]));
+        }
+        ($value = $arguments[0]);
+        if ((!\is_callable($value)))
+        {
+            throw (new \Icecave\Collections\TypeCheck\Exception\UnexpectedArgumentValueException(
+                'predicate',
+                0,
+                $arguments[0],
+                'callable'
+            ));
+        }
+        if (($argumentCount > 1))
+        {
+            ($value = $arguments[1]);
+            if ((!\is_int($value)))
+            {
+                throw (new \Icecave\Collections\TypeCheck\Exception\UnexpectedArgumentValueException(
+                    'startIndex',
+                    1,
+                    $arguments[1],
+                    'integer'
+                ));
+            }
+        }
+    }
+    public function findLast(array $arguments)
+    {
+        ($argumentCount = \count($arguments));
+        if (($argumentCount < 1))
+        {
+            throw (new \Icecave\Collections\TypeCheck\Exception\MissingArgumentException('predicate', 0, 'callable'));
+        }
+        elseif (($argumentCount > 2))
+        {
+            throw (new \Icecave\Collections\TypeCheck\Exception\UnexpectedArgumentException(2, $arguments[2]));
+        }
+        ($value = $arguments[0]);
+        if ((!\is_callable($value)))
+        {
+            throw (new \Icecave\Collections\TypeCheck\Exception\UnexpectedArgumentValueException(
+                'predicate',
+                0,
+                $arguments[0],
+                'callable'
+            ));
+        }
+        if (($argumentCount > 1))
+        {
+            ($value = $arguments[1]);
+            if ((!(\is_int($value) || ($value === null))))
+            {
+                throw (new \Icecave\Collections\TypeCheck\Exception\UnexpectedArgumentValueException(
+                    'startIndex',
+                    1,
+                    $arguments[1],
+                    'integer|null'
+                ));
+            }
+        }
+    }
     public function set(array $arguments)
     {
         ($argumentCount = \count($arguments));
