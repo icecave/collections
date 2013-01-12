@@ -57,6 +57,13 @@ class VectorTypeCheck extends \Icecave\Collections\TypeCheck\AbstractValidator
             }
         }
     }
+    public function validateClone(array $arguments)
+    {
+        if ((\count($arguments) > 0))
+        {
+            throw (new \Icecave\Collections\TypeCheck\Exception\UnexpectedArgumentException(0, $arguments[0]));
+        }
+    }
     public function size(array $arguments)
     {
         if ((\count($arguments) > 0))
@@ -576,9 +583,47 @@ class VectorTypeCheck extends \Icecave\Collections\TypeCheck\AbstractValidator
         {
             throw (new \Icecave\Collections\TypeCheck\Exception\MissingArgumentException('element', 0, 'mixed'));
         }
-        elseif (($argumentCount > 1))
+        elseif (($argumentCount > 2))
         {
-            throw (new \Icecave\Collections\TypeCheck\Exception\UnexpectedArgumentException(1, $arguments[1]));
+            throw (new \Icecave\Collections\TypeCheck\Exception\UnexpectedArgumentException(2, $arguments[2]));
+        }
+        if (($argumentCount > 1))
+        {
+            ($value = $arguments[1]);
+            if ((!\is_int($value)))
+            {
+                throw (new \Icecave\Collections\TypeCheck\Exception\UnexpectedArgumentValueException(
+                    'startIndex',
+                    1,
+                    $arguments[1],
+                    'integer'
+                ));
+            }
+        }
+    }
+    public function indexOfLast(array $arguments)
+    {
+        ($argumentCount = \count($arguments));
+        if (($argumentCount < 1))
+        {
+            throw (new \Icecave\Collections\TypeCheck\Exception\MissingArgumentException('element', 0, 'mixed'));
+        }
+        elseif (($argumentCount > 2))
+        {
+            throw (new \Icecave\Collections\TypeCheck\Exception\UnexpectedArgumentException(2, $arguments[2]));
+        }
+        if (($argumentCount > 1))
+        {
+            ($value = $arguments[1]);
+            if ((!(\is_int($value) || ($value === null))))
+            {
+                throw (new \Icecave\Collections\TypeCheck\Exception\UnexpectedArgumentValueException(
+                    'startIndex',
+                    1,
+                    $arguments[1],
+                    'integer|null'
+                ));
+            }
         }
     }
     public function set(array $arguments)

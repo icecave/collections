@@ -381,6 +381,7 @@ class LinkedList implements MutableRandomAccessInterface, Countable, Iterator
 
         $result = clone $this;
         $result->sort($comparator);
+
         return $result;
     }
 
@@ -784,21 +785,49 @@ class LinkedList implements MutableRandomAccessInterface, Countable, Iterator
     /**
      * Find the index of the first instance of a particular element in the sequence.
      *
-     * @param mixed $element The element to search for.
+     * @param mixed   $element    The element to search for.
+     * @param integer $startIndex The index to start searching from.
      *
      * @return integer|null The index of the element, or null if is not present in the sequence.
      */
-    public function indexOf($element)
+    public function indexOf($element, $startIndex = 0)
     {
         $this->typeCheck->indexOf(func_get_args());
 
         for ($index = 0, $node = $this->head; null !== $node; ++$index, $node = $node->next) {
-            if ($element === $node->element) {
+            if ($index >= $startIndex && $element === $node->element) {
                 return $index;
             }
         }
 
         return null;
+    }
+
+    /**
+     * Find the index of the last instance of a particular element in the sequence.
+     *
+     * @param mixed        $element    The element to search for.
+     * @param integer|null $startIndex The index to start searching from, or null to use the last index.
+     *
+     * @return integer|null The index of the element, or null if is not present in the sequence.
+     */
+    public function indexOfLast($element, $startIndex = null)
+    {
+        $this->typeCheck->indexOfLast(func_get_args());
+
+        if (null === $startIndex) {
+            $startIndex = $this->size;
+        }
+
+        $lastIndex = null;
+
+        for ($index = 0, $node = $this->head; null !== $node && $index <= $startIndex; ++$index, $node = $node->next) {
+            if ($element === $node->element) {
+                $lastIndex = $index;
+            }
+        }
+
+        return $lastIndex;
     }
 
     ////////////////////////////////////////////////////

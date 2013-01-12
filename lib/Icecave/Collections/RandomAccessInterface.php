@@ -47,9 +47,20 @@ interface RandomAccessInterface extends SequenceInterface
     /**
      * Find the index of the first instance of a particular element in the sequence.
      *
-     * @param mixed $element The element to search for.
+     * @param mixed   $element    The element to search for.
+     * @param integer $startIndex The index to start searching from.
      *
      * @return integer|null The index of the element, or null if is not present in the sequence.
      */
-    public function indexOf($element);
+    public function indexOf($element, $startIndex = 0);
+
+    /**
+     * Find the index of the last instance of a particular element in the sequence.
+     *
+     * @param mixed        $element    The element to search for.
+     * @param integer|null $startIndex The index to start searching from, or null to use the last index.
+     *
+     * @return integer|null The index of the element, or null if is not present in the sequence.
+     */
+    public function indexOfLast($element, $startIndex = null);
 }

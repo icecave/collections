@@ -57,6 +57,13 @@ class StackTypeCheck extends \Icecave\Collections\TypeCheck\AbstractValidator
             }
         }
     }
+    public function validateClone(array $arguments)
+    {
+        if ((\count($arguments) > 0))
+        {
+            throw (new \Icecave\Collections\TypeCheck\Exception\UnexpectedArgumentException(0, $arguments[0]));
+        }
+    }
     public function size(array $arguments)
     {
         if ((\count($arguments) > 0))

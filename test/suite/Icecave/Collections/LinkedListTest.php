@@ -601,9 +601,38 @@ class LinkedListTest extends PHPUnit_Framework_TestCase
         $this->assertSame(1, $this->_collection->indexOf('bar'));
     }
 
+    public function testIndexOfWithStartIndex()
+    {
+        $this->_collection->append(array('foo', 'bar', 'spam', 'bar', 'doom'));
+        $this->assertSame(1, $this->_collection->indexOf('bar', 1));
+
+        $this->_collection->append(array('foo', 'bar', 'spam', 'bar', 'doom'));
+        $this->assertSame(3, $this->_collection->indexOf('bar', 2));
+    }
+
     public function testIndexOfWithNoMatch()
     {
         $this->assertNull($this->_collection->indexOf('foo'));
+    }
+
+    public function testIndexOfLast()
+    {
+        $this->_collection->append(array('foo', 'bar', 'spam', 'bar', 'doom'));
+        $this->assertSame(3, $this->_collection->indexOfLast('bar'));
+    }
+
+    public function testIndexOfLastWithStartIndex()
+    {
+        $this->_collection->append(array('foo', 'bar', 'spam', 'bar', 'doom'));
+        $this->assertSame(3, $this->_collection->indexOfLast('bar', 3));
+
+        $this->_collection->append(array('foo', 'bar', 'spam', 'bar', 'doom'));
+        $this->assertSame(1, $this->_collection->indexOfLast('bar', 2));
+    }
+
+    public function testIndexOfLastWithNoMatch()
+    {
+        $this->assertNull($this->_collection->indexOfLast('foo'));
     }
 
     ////////////////////////////////////////////////////

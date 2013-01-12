@@ -667,18 +667,44 @@ class Vector implements MutableRandomAccessInterface, Countable, Iterator, Array
     /**
      * Find the index of the first instance of a particular element in the sequence.
      *
-     * @param mixed $element The element to search for.
+     * @param mixed   $element    The element to search for.
+     * @param integer $startIndex The index to start searching from.
      *
      * @return integer|null The index of the element, or null if is not present in the sequence.
      */
-    public function indexOf($element)
+    public function indexOf($element, $startIndex = 0)
     {
         $this->typeCheck->indexOf(func_get_args());
 
-        foreach ($this->elements as $index => $e) {
-            if ($index >= $this->size) {
-                break;
-            } elseif ($element === $e) {
+        for ($index = $startIndex; $index < $this->size; ++$index) {
+            if ($this->elements[$index] === $element) {
+                return $index;
+            }
+        }
+
+        return null;
+    }
+
+    /**
+     * Find the index of the last instance of a particular element in the sequence.
+     *
+     * @param mixed        $element    The element to search for.
+     * @param integer|null $startIndex The index to start searching from, or null to use the last index.
+     *
+     * @return integer|null The index of the element, or null if is not present in the sequence.
+     */
+    public function indexOfLast($element, $startIndex = null)
+    {
+        $this->typeCheck->indexOfLast(func_get_args());
+
+        if ($startIndex === null) {
+            $startIndex = $this->size - 1;
+        } elseif ($startIndex > $this->size - 1) {
+            $startIndex = $size - 1;
+        }
+
+        for ($index = $startIndex; $index >= 0; --$index) {
+            if ($this->elements[$index] === $element) {
                 return $index;
             }
         }
