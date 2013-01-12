@@ -50,7 +50,8 @@ interface RandomAccessInterface extends SequenceInterface
      * @param mixed   $element    The element to search for.
      * @param integer $startIndex The index to start searching from.
      *
-     * @return integer|null The index of the element, or null if is not present in the sequence.
+     * @return integer|null             The index of the element, or null if is not present in the sequence.
+     * @throws Exception\IndexException if $startIndex is out of range.
      */
     public function indexOf($element, $startIndex = 0);
 
@@ -60,7 +61,8 @@ interface RandomAccessInterface extends SequenceInterface
      * @param mixed        $element    The element to search for.
      * @param integer|null $startIndex The index to start searching from, or null to use the last index.
      *
-     * @return integer|null The index of the element, or null if is not present in the sequence.
+     * @return integer|null             The index of the element, or null if is not present in the sequence.
+     * @throws Exception\IndexException if $startIndex is out of range.
      */
     public function indexOfLast($element, $startIndex = null);
 
@@ -70,7 +72,8 @@ interface RandomAccessInterface extends SequenceInterface
      * @param callable $predicate  A predicate function used to determine which element constitutes a match.
      * @param integer  $startIndex The index to start searching from.
      *
-     * @return integer|null The index of the element, or null if is not present in the sequence.
+     * @return integer|null             The index of the element, or null if is not present in the sequence.
+     * @throws Exception\IndexException if $startIndex is out of range.
      */
     public function find($predicate, $startIndex = 0);
 
@@ -80,7 +83,8 @@ interface RandomAccessInterface extends SequenceInterface
      * @param callable     $predicate  A predicate function used to determine which element constitutes a match.
      * @param integer|null $startIndex The index to start searching from, or null to use the last index.
      *
-     * @return integer|null The index of the element, or null if is not present in the sequence.
+     * @return integer|null             The index of the element, or null if is not present in the sequence.
+     * @throws Exception\IndexException if $startIndex is out of range.
      */
     public function findLast($predicate, $startIndex = null);
 }

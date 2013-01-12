@@ -613,6 +613,9 @@ class LinkedListTest extends PHPUnit_Framework_TestCase
     public function testIndexOfWithNoMatch()
     {
         $this->assertNull($this->_collection->indexOf('foo'));
+
+        $this->_collection->pushBack('bar');
+        $this->assertNull($this->_collection->indexOf('foo'));
     }
 
     public function testIndexOfLast()
@@ -632,6 +635,9 @@ class LinkedListTest extends PHPUnit_Framework_TestCase
 
     public function testIndexOfLastWithNoMatch()
     {
+        $this->assertNull($this->_collection->indexOfLast('foo'));
+
+        $this->_collection->pushBack('bar');
         $this->assertNull($this->_collection->indexOfLast('foo'));
     }
 

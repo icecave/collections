@@ -610,6 +610,9 @@ class VectorTest extends PHPUnit_Framework_TestCase
     {
         $this->_collection->reserve(16); // Inflate capacity to test that iteration stops at size().
         $this->assertNull($this->_collection->indexOf('foo'));
+
+        $this->_collection->pushBack('bar');
+        $this->assertNull($this->_collection->indexOf('foo'));
     }
 
     public function testIndexOfLast()
@@ -630,6 +633,9 @@ class VectorTest extends PHPUnit_Framework_TestCase
     public function testIndexOfLastWithNoMatch()
     {
         $this->_collection->reserve(16); // Inflate capacity to test that iteration stops at size().
+        $this->assertNull($this->_collection->indexOfLast('foo'));
+
+        $this->_collection->pushBack('bar');
         $this->assertNull($this->_collection->indexOfLast('foo'));
     }
 

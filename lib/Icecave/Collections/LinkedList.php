@@ -788,7 +788,8 @@ class LinkedList implements MutableRandomAccessInterface, Countable, Iterator
      * @param mixed   $element    The element to search for.
      * @param integer $startIndex The index to start searching from.
      *
-     * @return integer|null The index of the element, or null if is not present in the sequence.
+     * @return integer|null             The index of the element, or null if is not present in the sequence.
+     * @throws Exception\IndexException if $startIndex is out of range.
      */
     public function indexOf($element, $startIndex = 0)
     {
@@ -807,7 +808,8 @@ class LinkedList implements MutableRandomAccessInterface, Countable, Iterator
      * @param mixed        $element    The element to search for.
      * @param integer|null $startIndex The index to start searching from, or null to use the last index.
      *
-     * @return integer|null The index of the element, or null if is not present in the sequence.
+     * @return integer|null             The index of the element, or null if is not present in the sequence.
+     * @throws Exception\IndexException if $startIndex is out of range.
      */
     public function indexOfLast($element, $startIndex = null)
     {
@@ -826,11 +828,18 @@ class LinkedList implements MutableRandomAccessInterface, Countable, Iterator
      * @param callable $predicate  A predicate function used to determine which element constitutes a match.
      * @param integer  $startIndex The index to start searching from.
      *
-     * @return integer|null The index of the element, or null if is not present in the sequence.
+     * @return integer|null             The index of the element, or null if is not present in the sequence.
+     * @throws Exception\IndexException if $startIndex is out of range.
      */
     public function find($predicate, $startIndex = 0)
     {
         $this->typeCheck->find(func_get_args());
+
+        if ($this->isEmpty()) {
+            return null;
+        }
+
+        $this->validateIndex($startIndex);
 
         for ($index = 0, $node = $this->head; null !== $node; ++$index, $node = $node->next) {
             if ($index >= $startIndex && call_user_func($predicate, $node->element)) {
@@ -847,15 +856,20 @@ class LinkedList implements MutableRandomAccessInterface, Countable, Iterator
      * @param callable     $predicate  A predicate function used to determine which element constitutes a match.
      * @param integer|null $startIndex The index to start searching from, or null to use the last index.
      *
-     * @return integer|null The index of the element, or null if is not present in the sequence.
+     * @return integer|null             The index of the element, or null if is not present in the sequence.
+     * @throws Exception\IndexException if $startIndex is out of range.
      */
     public function findLast($predicate, $startIndex = null)
     {
         $this->typeCheck->findLast(func_get_args());
 
-        if (null === $startIndex) {
-            $startIndex = $this->size;
+        if ($this->isEmpty()) {
+            return null;
+        } elseif (null === $startIndex) {
+            $startIndex = $this->size - 1;
         }
+
+        $this->validateIndex($startIndex);
 
         $lastIndex = null;
 
