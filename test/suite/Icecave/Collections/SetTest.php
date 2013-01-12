@@ -330,7 +330,7 @@ class SetTest extends PHPUnit_Framework_TestCase
         $this->_collection->add('a');
         $this->_collection->add('b');
         $this->_collection->add('c');
-        
+
         $collection = new Set;
         $collection->add('c');
         $collection->add('b');
