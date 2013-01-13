@@ -51,3 +51,11 @@ PHP has long been lacking formal, performant collection types. The addition of t
 
 * [AssociativeIterator](/IcecaveStudios/collections/blob/master/lib/Icecave/Collections/Iterator/AssociativeIterator.php): An iterator for iterating any associative collection.
 * [RandomAccessIterator](/IcecaveStudios/collections/blob/master/lib/Icecave/Collections/Iterator/RandomAccessIterator.php): An iterator for iterating any random access collection.
+
+## Serialization
+
+The provided collection types support [serialization](http://au1.php.net/manual/en/function.serialize.php), so long as the elements contained within the collection are also serializable.
+
+## Cloning
+
+The provided collection implementations support [cloning](http://php.net/manual/en/language.oop5.cloning.php). Cloning a collection produces a copy of the collection containing the same elements. The elements themselves are not cloned.
