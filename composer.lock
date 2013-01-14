@@ -1,5 +1,5 @@
 {
-    "hash": "224eec4c96a3cf9493c67edb018c435e",
+    "hash": "0f6f6c7c3544b991619dfa6d949da91c",
     "packages": [
         {
             "name": "icecave/repr",
@@ -597,16 +597,16 @@
         },
         {
             "name": "icecave/testing",
-            "version": "1.0.2",
+            "version": "dev-master",
             "source": {
                 "type": "git",
                 "url": "https://github.com/IcecaveStudios/testing.git",
-                "reference": "1.0.2"
+                "reference": "a196a6735c0c494b022169edb4fe6c6bc250351f"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://github.com/IcecaveStudios/testing/archive/1.0.2.zip",
-                "reference": "1.0.2",
+                "url": "https://github.com/IcecaveStudios/testing/archive/a196a6735c0c494b022169edb4fe6c6bc250351f.zip",
+                "reference": "a196a6735c0c494b022169edb4fe6c6bc250351f",
                 "shasum": ""
             },
             "require": {
@@ -615,7 +615,7 @@
                 "eloquent/asplode": "1.*",
                 "eloquent/liberator": "1.*"
             },
-            "time": "2013-01-14 01:27:35",
+            "time": "2013-01-14 01:33:57",
             "bin": [
                 "bin/phpunit",
                 "bin/phpunit-coverage",
@@ -821,7 +821,7 @@
 
     ],
     "minimum-stability": "stable",
-    "stability-flags": [
-
-    ]
+    "stability-flags": {
+        "icecave/testing": 20
+    }
 }
