@@ -1,5 +1,5 @@
 {
-    "hash": "75b676e4575b384ccfe7c1742e654491",
+    "hash": "224eec4c96a3cf9493c67edb018c435e",
     "packages": [
         {
             "name": "icecave/repr",
@@ -23,7 +23,6 @@
             },
             "time": "2013-01-11 00:04:43",
             "type": "library",
-            "installation-source": "dist",
             "autoload": {
                 "psr-0": {
                     "Icecave\\Repr": "lib"
@@ -72,7 +71,6 @@
             },
             "time": "2012-08-05 18:24:33",
             "type": "library",
-            "installation-source": "dist",
             "autoload": {
                 "psr-0": {
                     "Eloquent\\Asplode": "src"
@@ -123,7 +121,6 @@
             },
             "time": "2012-08-04 23:40:35",
             "type": "library",
-            "installation-source": "dist",
             "autoload": {
                 "psr-0": {
                     "Eloquent\\Blox": "src"
@@ -173,7 +170,6 @@
             },
             "time": "2012-08-05 08:53:24",
             "type": "library",
-            "installation-source": "dist",
             "autoload": {
                 "psr-0": {
                     "Eloquent\\Cosmos": "src"
@@ -224,7 +220,6 @@
             },
             "time": "2012-08-21 01:21:14",
             "type": "library",
-            "installation-source": "dist",
             "autoload": {
                 "psr-0": {
                     "Eloquent\\Enumeration": "src"
@@ -270,7 +265,6 @@
             },
             "time": "2012-08-02 06:30:51",
             "type": "library",
-            "installation-source": "dist",
             "autoload": {
                 "psr-0": {
                     "Eloquent\\Liberator": "src"
@@ -318,7 +312,6 @@
             },
             "time": "2012-08-02 06:17:58",
             "type": "library",
-            "installation-source": "dist",
             "autoload": {
                 "psr-0": {
                     "Eloquent\\Pops": "src"
@@ -368,7 +361,6 @@
             },
             "time": "2013-01-11 01:05:28",
             "type": "library",
-            "installation-source": "dist",
             "autoload": {
                 "psr-0": {
                     "Eloquent\\Typhax": "src"
@@ -435,7 +427,6 @@
                 "bin/typhoon"
             ],
             "type": "library",
-            "installation-source": "dist",
             "autoload": {
                 "psr-0": {
                     "Eloquent\\Typhoon\\TypeCheck": "src-typhoon",
@@ -485,7 +476,6 @@
             },
             "time": "2012-08-12 03:37:39",
             "type": "library",
-            "installation-source": "dist",
             "autoload": {
                 "psr-0": {
                     "Icecave\\Isolator": "lib"
@@ -535,7 +525,6 @@
             },
             "time": "2012-11-28 12:00:39",
             "type": "library",
-            "installation-source": "dist",
             "autoload": {
                 "psr-0": {
                     "Icecave\\Pasta\\AST": "lib"
@@ -584,7 +573,6 @@
             },
             "time": "2012-12-03 10:58:07",
             "type": "library",
-            "installation-source": "dist",
             "autoload": {
                 "psr-0": {
                     "Icecave\\Rasta": "lib"
@@ -605,6 +593,54 @@
             "keywords": [
                 "parser",
                 "ast"
+            ]
+        },
+        {
+            "name": "icecave/testing",
+            "version": "1.0.0",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/IcecaveStudios/testing.git",
+                "reference": "1.0.0"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://github.com/IcecaveStudios/testing/archive/1.0.0.zip",
+                "reference": "1.0.0",
+                "shasum": ""
+            },
+            "require": {
+                "php": ">=5.3.0",
+                "phake/phake": "1.*",
+                "eloquent/asplode": "1.*",
+                "eloquent/liberator": "1.*"
+            },
+            "time": "2013-01-14 01:04:38",
+            "bin": [
+                "bin/phpunit",
+                "bin/phpunit-coverage",
+                "bin/update-dotfiles"
+            ],
+            "type": "library",
+            "notification-url": "http://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "James Harris",
+                    "email": "james.harris@icecave.com.au"
+                }
+            ],
+            "description": "Helper package for testing Icecave projects in a uniform way.",
+            "homepage": "https://github.com/IcecaveStudios/testing",
+            "keywords": [
+                "testing",
+                "phpunit",
+                "test",
+                "unit",
+                "phake",
+                "coverage"
             ]
         },
         {
@@ -629,7 +665,6 @@
             },
             "time": "2012-08-04 23:35:23",
             "type": "library",
-            "installation-source": "dist",
             "autoload": {
                 "psr-0": {
                     "Icecave\\Visita": "lib"
@@ -654,6 +689,50 @@
             ]
         },
         {
+            "name": "phake/phake",
+            "version": "v1.0.3",
+            "source": {
+                "type": "git",
+                "url": "git://github.com/mlively/Phake.git",
+                "reference": "v1.0.3"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://github.com/mlively/Phake/zipball/v1.0.3",
+                "reference": "v1.0.3",
+                "shasum": ""
+            },
+            "require": {
+                "php": ">=5.2.0"
+            },
+            "time": "2012-05-14 08:06:51",
+            "type": "library",
+            "autoload": {
+                "classmap": [
+                    "src"
+                ]
+            },
+            "notification-url": "http://packagist.org/downloads/",
+            "include-path": [
+                "src"
+            ],
+            "license": [
+                "BSD"
+            ],
+            "authors": [
+                {
+                    "name": "Mike Lively",
+                    "email": "m@digitalsandwich.com"
+                }
+            ],
+            "description": "The Phake mock testing library",
+            "homepage": "https://github.com/mlively/Phake",
+            "keywords": [
+                "testing",
+                "mock"
+            ]
+        },
+        {
             "name": "symfony/console",
             "version": "v2.1.6",
             "target-dir": "Symfony/Component/Console",
@@ -673,7 +752,6 @@
             },
             "time": "2012-12-13 17:42:00",
             "type": "library",
-            "installation-source": "dist",
             "autoload": {
                 "psr-0": {
                     "Symfony\\Component\\Console": ""
@@ -716,7 +794,6 @@
             },
             "time": "2012-12-11 10:40:22",
             "type": "library",
-            "installation-source": "dist",
             "autoload": {
                 "psr-0": {
                     "Symfony\\Component\\Filesystem": ""

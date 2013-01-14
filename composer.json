@@ -16,9 +16,8 @@
         "icecave/repr": "1.*"
     },
     "require-dev": {
-        "eloquent/liberator": "1.*",
-        "eloquent/asplode": "*",
-        "eloquent/typhoon": "*"
+        "icecave/testing": "1.*",
+        "eloquent/typhoon": "0.6.*"
     },
     "autoload": {
         "psr-0": {
