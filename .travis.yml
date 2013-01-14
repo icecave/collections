@@ -1,5 +1,6 @@
 language: php
 before_script:
+    - ./travis-info.sh
     - composer install --dev
 script: ./vendor/bin/phpunit
 php:
