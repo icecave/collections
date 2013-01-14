@@ -16,7 +16,7 @@
         "icecave/repr": "1.*"
     },
     "require-dev": {
-        "icecave/testing": "dev-master",
+        "icecave/testing": "1.*",
         "eloquent/typhoon": "0.6.*"
     },
     "autoload": {

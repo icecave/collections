@@ -1,5 +1,5 @@
 {
-    "hash": "0f6f6c7c3544b991619dfa6d949da91c",
+    "hash": "224eec4c96a3cf9493c67edb018c435e",
     "packages": [
         {
             "name": "icecave/repr",
@@ -597,16 +597,16 @@
         },
         {
             "name": "icecave/testing",
-            "version": "dev-master",
+            "version": "1.0.3",
             "source": {
                 "type": "git",
                 "url": "https://github.com/IcecaveStudios/testing.git",
-                "reference": "197455400df8602ba7f7f898eb71c189a107e223"
+                "reference": "1.0.3"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://github.com/IcecaveStudios/testing/archive/197455400df8602ba7f7f898eb71c189a107e223.zip",
-                "reference": "197455400df8602ba7f7f898eb71c189a107e223",
+                "url": "https://github.com/IcecaveStudios/testing/archive/1.0.3.zip",
+                "reference": "1.0.3",
                 "shasum": ""
             },
             "require": {
@@ -820,7 +820,7 @@
 
     ],
     "minimum-stability": "stable",
-    "stability-flags": {
-        "icecave/testing": 20
-    }
+    "stability-flags": [
+
+    ]
 }
