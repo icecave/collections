@@ -601,12 +601,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/IcecaveStudios/testing.git",
-                "reference": "bc0d6efdcd36b297c8b58a7120091a90e0ea9af2"
+                "reference": "aa2878c53125297f2008dbf0a4e27552a230f055"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://github.com/IcecaveStudios/testing/archive/bc0d6efdcd36b297c8b58a7120091a90e0ea9af2.zip",
-                "reference": "bc0d6efdcd36b297c8b58a7120091a90e0ea9af2",
+                "url": "https://github.com/IcecaveStudios/testing/archive/aa2878c53125297f2008dbf0a4e27552a230f055.zip",
+                "reference": "aa2878c53125297f2008dbf0a4e27552a230f055",
                 "shasum": ""
             },
             "require": {
@@ -614,11 +614,10 @@
                 "eloquent/asplode": "1.*",
                 "eloquent/liberator": "1.*"
             },
-            "time": "2013-01-14 02:36:21",
+            "time": "2013-01-14 02:58:58",
             "bin": [
                 "bin/phpunit",
                 "bin/phpunit-coverage",
-                "bin/phpunit-travis",
                 "bin/update-dotfiles"
             ],
             "type": "library",
