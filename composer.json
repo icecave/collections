@@ -17,6 +17,7 @@
     },
     "require-dev": {
         "icecave/testing": "1.*",
+        "eloquent/liberator": "1.*",
         "eloquent/typhoon": "0.6.*"
     },
     "autoload": {
