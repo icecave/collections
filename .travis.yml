@@ -12,4 +12,4 @@ matrix:
 
 before_script: composer install --dev
 
-script: phpunit -c tests/complete.phpunit.xml
+script: ./vendor/bin/phpunit
