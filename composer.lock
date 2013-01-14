@@ -456,25 +456,25 @@
         },
         {
             "name": "icecave/isolator",
-            "version": "2.1.0",
+            "version": "2.1.1",
             "source": {
                 "type": "git",
                 "url": "https://github.com/IcecaveStudios/isolator.git",
-                "reference": "2.1.0"
+                "reference": "2.1.1"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://github.com/IcecaveStudios/isolator/zipball/2.1.0",
-                "reference": "2.1.0",
+                "url": "https://github.com/IcecaveStudios/isolator/archive/2.1.1.zip",
+                "reference": "2.1.1",
                 "shasum": ""
             },
             "require": {
                 "php": ">=5.3.0"
             },
             "require-dev": {
-                "phake/phake": "1.*"
+                "icecave/testing": "1.*"
             },
-            "time": "2012-08-12 03:37:39",
+            "time": "2013-01-14 04:17:36",
             "type": "library",
             "autoload": {
                 "psr-0": {
@@ -597,16 +597,16 @@
         },
         {
             "name": "icecave/testing",
-            "version": "1.0.5",
+            "version": "1.0.6",
             "source": {
                 "type": "git",
                 "url": "https://github.com/IcecaveStudios/testing.git",
-                "reference": "1.0.5"
+                "reference": "1.0.6"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://github.com/IcecaveStudios/testing/archive/1.0.5.zip",
-                "reference": "1.0.5",
+                "url": "https://github.com/IcecaveStudios/testing/archive/1.0.6.zip",
+                "reference": "1.0.6",
                 "shasum": ""
             },
             "require": {
@@ -616,7 +616,7 @@
                 "eloquent/asplode": "Use the asplode error handler instead of PHPUnit's internal error handler.",
                 "eloquent/liberator": "Use liberator for circumventing PHP access modifier restrictions inside tests."
             },
-            "time": "2013-01-14 04:19:45",
+            "time": "2013-01-14 05:53:31",
             "bin": [
                 "bin/phpunit",
                 "bin/phpunit-coverage",
