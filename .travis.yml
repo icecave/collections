@@ -1,7 +1,7 @@
 language: php
 before_script:
     - composer install --dev
-script: /bin/sh vendor/bin/phpunit
+script: ./vendor/bin/phpunit
 php:
     - 5.3.3
     - 5.3
