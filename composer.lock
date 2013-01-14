@@ -597,16 +597,16 @@
         },
         {
             "name": "icecave/testing",
-            "version": "1.0.1",
+            "version": "1.0.2",
             "source": {
                 "type": "git",
                 "url": "https://github.com/IcecaveStudios/testing.git",
-                "reference": "1.0.1"
+                "reference": "1.0.2"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://github.com/IcecaveStudios/testing/archive/1.0.1.zip",
-                "reference": "1.0.1",
+                "url": "https://github.com/IcecaveStudios/testing/archive/1.0.2.zip",
+                "reference": "1.0.2",
                 "shasum": ""
             },
             "require": {
@@ -615,7 +615,7 @@
                 "eloquent/asplode": "1.*",
                 "eloquent/liberator": "1.*"
             },
-            "time": "2013-01-14 01:21:05",
+            "time": "2013-01-14 01:27:35",
             "bin": [
                 "bin/phpunit",
                 "bin/phpunit-coverage",
