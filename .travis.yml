@@ -1,8 +1,7 @@
 language: php
 before_script:
-    - ./travis-info.sh
     - composer install --dev
-script: ./vendor/bin/phpunit
+script: ./vendor/bin/phpunit-travis
 php:
     - 5.3.3
     - 5.3
