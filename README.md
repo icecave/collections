@@ -1,6 +1,7 @@
 # Collections
 
 [![Build Status](https://secure.travis-ci.org/IcecaveStudios/collections.png)](http://travis-ci.org/IcecaveStudios/collections)
+[![Test Coverage](http://icecavestudios.github.com/collections/coverage-report/coverage.png)](http://icecavestudios.github.com/collections/coverage-report/index.html)
 
 **Collections** provides a set of PHP collection types loosely inspired by the .NET runtime and the C++ standard template library.
 
