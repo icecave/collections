@@ -1,18 +1,18 @@
 # Collections
 
-[![Build Status](https://secure.travis-ci.org/IcecaveStudios/collections.png)](http://travis-ci.org/IcecaveStudios/collections)
-[![Test Coverage](http://icecavestudios.github.com/collections/coverage-report/coverage.png)](http://icecavestudios.github.com/collections/coverage-report/index.html)
+[![Build Status](https://api.travis-ci.org/IcecaveStudios/collections.png)](http://travis-ci.org/IcecaveStudios/collections)
+[![Test Coverage](http://icecave.com.au/collections/coverage-report/coverage.png)](http://icecave.com.au/collections/coverage-report/index.html)
 
 **Collections** provides a set of PHP collection types loosely inspired by the .NET runtime and the C++ standard template library.
 
 ## Installation
 
-**Collections** requires PHP 5.3.3 or newer.
+**Collections** requires PHP 5.3.3 or later.
 
 ### With [Composer](http://getcomposer.org/)
 
 * Add 'icecave/collections' to the project's composer.json dependencies
-* Run `php composer.phar install`
+* Run `composer install`
 
 ### Bare installation
 
