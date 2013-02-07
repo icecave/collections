@@ -7,18 +7,7 @@
 
 ## Installation
 
-**Collections** requires PHP 5.3.3 or later.
-
-### With [Composer](http://getcomposer.org/)
-
-* Add 'icecave/collections' to the project's composer.json dependencies
-* Run `composer install`
-
-### Bare installation
-
-* Clone from GitHub: `git clone git://github.com/IcecaveStudios/collections.git`
-* Use a [PSR-0](https://github.com/php-fig/fig-standards/blob/master/accepted/PSR-0.md)
-  compatible autoloader (namespace 'Icecave\Collections' in the 'lib' directory)
+* [Composer](http://getcomposer.org) package [icecave/collections](https://packagist.org/packages/icecave/collections)
 
 ## Rationale
 
