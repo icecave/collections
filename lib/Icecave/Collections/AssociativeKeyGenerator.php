@@ -29,7 +29,7 @@ class AssociativeKeyGenerator
      */
     public function __invoke($value)
     {
-        $this->typeCheck->__invoke(func_get_args());
+        $this->typeCheck->validateInvoke(func_get_args());
 
         return $this->generate($value);
     }

@@ -1,6 +1,7 @@
 <?php
 namespace Icecave\Collections;
 
+use Eloquent\Liberator\Liberator;
 use PHPUnit_Framework_TestCase;
 
 class SetTest extends PHPUnit_Framework_TestCase
@@ -45,6 +46,20 @@ class SetTest extends PHPUnit_Framework_TestCase
         $collection = unserialize($packet);
 
         $this->assertSame($this->_collection->elements(), $collection->elements());
+    }
+
+    /**
+     * @group regression
+     * @link https://github.com/IcecaveStudios/collections/issues/23
+     */
+    public function testSerializationOfHashFunction()
+    {
+        $collection = new Set(null, 'sha1');
+
+        $packet = serialize($collection);
+        $collection = unserialize($packet);
+
+        $this->assertSame('sha1', Liberator::liberate($collection)->hashFunction);
     }
 
     ///////////////////////////////////////////

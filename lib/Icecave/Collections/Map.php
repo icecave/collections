@@ -72,7 +72,7 @@ class Map implements MutableAssociativeInterface, Countable, Iterator, ArrayAcce
      */
     public function __toString()
     {
-        $this->typeCheck->__toString(func_get_args());
+        $this->typeCheck->validateToString(func_get_args());
 
         if ($this->isEmpty()) {
             return '<Map 0>';
@@ -1031,7 +1031,12 @@ class Map implements MutableAssociativeInterface, Countable, Iterator, ArrayAcce
     {
         $this->typeCheck->serialize(func_get_args());
 
-        return serialize($this->elements());
+        return serialize(
+            array(
+                $this->elements(),
+                $this->hashFunction
+            )
+        );
     }
 
     /**
@@ -1041,9 +1046,9 @@ class Map implements MutableAssociativeInterface, Countable, Iterator, ArrayAcce
     {
         TypeCheck::get(__CLASS__)->unserialize(func_get_args());
 
-        $elements = unserialize($packet);
+        list($elements, $hashFunction) = unserialize($packet);
 
-        $this->__construct();
+        $this->__construct(null, $hashFunction);
 
         foreach ($elements as $element) {
             list($key, $value) = $element;
