@@ -1,15 +1,14 @@
 <?php
 namespace Icecave\Collections\TypeCheck\Validator\Icecave\Collections\Exception;
 
-
 class EmptyCollectionExceptionTypeCheck extends \Icecave\Collections\TypeCheck\AbstractValidator
 {
     public function validateConstruct(array $arguments)
     {
-        ($argumentCount = \count($arguments));
-        if (($argumentCount > 1))
-        {
-            throw (new \Icecave\Collections\TypeCheck\Exception\UnexpectedArgumentException(1, $arguments[1]));
+        $argumentCount = \count($arguments);
+        if ($argumentCount > 1) {
+            throw new \Icecave\Collections\TypeCheck\Exception\UnexpectedArgumentException(1, $arguments[1]);
         }
     }
+
 }
