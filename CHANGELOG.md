@@ -1,5 +1,9 @@
 # Collections Changelog
 
+### 0.5.1
+
+* Map and Set collections now retain custom hash function when serializing
+
 ### 0.5.0
 
 * All collection types are now serializable
