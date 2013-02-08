@@ -1,7 +1,6 @@
 {
     "name": "icecave/collections",
-    "type": "library",
-    "description": "PHP collections without leaky abstractions.",
+    "description": "A set of PHP collection types loosely inspired by the .NET runtime and the C++ STL.",
     "keywords": ["collection", "container", "array", "sequence", "map", "hash", "stack", "queue"],
     "homepage": "https://github.com/IcecaveStudios/collections",
     "license": "MIT",
@@ -13,12 +12,13 @@
     ],
     "require": {
         "php": ">=5.3.3",
-        "icecave/repr": "1.*"
+        "icecave/repr": "~1"
     },
     "require-dev": {
-        "icecave/testing": "1.*",
-        "eloquent/liberator": "1.*",
-        "eloquent/typhoon": "0.6.*"
+        "icecave/testing": "~2",
+        "eloquent/liberator": "~1",
+        "eloquent/typhoon": "~0.8",
+        "icecave/woodhouse": "*"
     },
     "autoload": {
         "psr-0": {

@@ -97,7 +97,7 @@ class LinkedList implements MutableRandomAccessInterface, Countable, Iterator, S
      */
     public function __toString()
     {
-        $this->typeCheck->__toString(func_get_args());
+        $this->typeCheck->validateToString(func_get_args());
 
         if ($this->isEmpty()) {
             return '<LinkedList 0>';

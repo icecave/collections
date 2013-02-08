@@ -1,5 +1,5 @@
 {
-    "hash": "d1f3591485b7640f0aea887e59661774",
+    "hash": "929a84e2096238eacd02eb68a16db2d7",
     "packages": [
         {
             "name": "icecave/repr",
@@ -153,29 +153,34 @@
         },
         {
             "name": "eloquent/cosmos",
-            "version": "1.0.1",
+            "version": "2.3.0",
             "source": {
                 "type": "git",
                 "url": "git://github.com/eloquent/cosmos.git",
-                "reference": "1.0.1"
+                "reference": "2.3.0"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://github.com/eloquent/cosmos/zipball/1.0.1",
-                "reference": "1.0.1",
+                "url": "https://github.com/eloquent/cosmos/archive/2.3.0.zip",
+                "reference": "2.3.0",
                 "shasum": ""
             },
             "require": {
-                "php": ">=5.3.0"
+                "php": ">=5.3.0",
+                "eloquent/equality": ">=2.0,<3.0",
+                "icecave/isolator": ">=2.0,<3.0"
             },
-            "time": "2012-08-05 08:53:24",
+            "require-dev": {
+                "icecave/testing": ">=1.0,<2.0"
+            },
+            "time": "2013-01-19 11:33:04",
             "type": "library",
             "autoload": {
                 "psr-0": {
                     "Eloquent\\Cosmos": "src"
                 }
             },
-            "notification-url": "http://packagist.org/downloads/",
+            "notification-url": "https://packagist.org/downloads/",
             "license": [
                 "MIT"
             ],
@@ -186,7 +191,7 @@
                     "homepage": "http://ezzatron.com/"
                 }
             ],
-            "description": "A class name resolver for PHP namespaces.",
+            "description": "A library for representing and manipulating PHP class names.",
             "homepage": "https://github.com/eloquent/cosmos",
             "keywords": [
                 "php",
@@ -243,6 +248,54 @@
                 "enumeration",
                 "set",
                 "class"
+            ]
+        },
+        {
+            "name": "eloquent/equality",
+            "version": "2.1.0",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/eloquent/equality.git",
+                "reference": "2.1.0"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://github.com/eloquent/equality/archive/2.1.0.zip",
+                "reference": "2.1.0",
+                "shasum": ""
+            },
+            "require": {
+                "php": ">=5.3.0"
+            },
+            "require-dev": {
+                "icecave/testing": ">=1.0,<2.0"
+            },
+            "time": "2013-01-18 02:56:20",
+            "type": "library",
+            "autoload": {
+                "psr-0": {
+                    "Eloquent\\Equality": "src"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Erin Millard",
+                    "email": "ezzatron@gmail.com",
+                    "homepage": "http://ezzatron.com/"
+                }
+            ],
+            "description": "A better strict comparison for PHP.",
+            "homepage": "https://github.com/eloquent/equality",
+            "keywords": [
+                "object",
+                "equality",
+                "comparison",
+                "strict",
+                "deep"
             ]
         },
         {
@@ -338,35 +391,34 @@
         },
         {
             "name": "eloquent/typhax",
-            "version": "0.7.1",
+            "version": "0.9.0",
             "source": {
                 "type": "git",
                 "url": "git://github.com/eloquent/typhax.git",
-                "reference": "0.7.1"
+                "reference": "0.9.0"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://github.com/eloquent/typhax/archive/0.7.1.zip",
-                "reference": "0.7.1",
+                "url": "https://github.com/eloquent/typhax/archive/0.9.0.zip",
+                "reference": "0.9.0",
                 "shasum": ""
             },
             "require": {
                 "php": ">=5.3.0",
-                "eloquent/cosmos": ">=1,<2",
-                "icecave/visita": "0.1.*",
-                "ext-mbstring": "*"
+                "ext-mbstring": "*",
+                "eloquent/cosmos": ">=2.0,<3.0"
             },
             "require-dev": {
-                "phake/phake": "1.*"
+                "icecave/testing": ">=1.0,<2.0"
             },
-            "time": "2013-01-11 01:05:28",
+            "time": "2013-01-24 05:03:32",
             "type": "library",
             "autoload": {
                 "psr-0": {
                     "Eloquent\\Typhax": "src"
                 }
             },
-            "notification-url": "http://packagist.org/downloads/",
+            "notification-url": "https://packagist.org/downloads/",
             "license": [
                 "MIT"
             ],
@@ -391,38 +443,38 @@
         },
         {
             "name": "eloquent/typhoon",
-            "version": "0.6.0",
+            "version": "0.8.0",
             "source": {
                 "type": "git",
                 "url": "git://github.com/eloquent/typhoon.git",
-                "reference": "0.6.0"
+                "reference": "0.8.0"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://github.com/eloquent/typhoon/archive/0.6.0.zip",
-                "reference": "0.6.0",
+                "url": "https://github.com/eloquent/typhoon/archive/0.8.0.zip",
+                "reference": "0.8.0",
                 "shasum": ""
             },
             "require": {
                 "php": ">=5.3.0",
                 "eloquent/asplode": ">=1.0,<2.0",
                 "eloquent/blox": ">=1.0,<2.0",
-                "eloquent/cosmos": ">=1.0,<2.0",
+                "eloquent/cosmos": ">=2.0,<3.0",
                 "eloquent/enumeration": ">=3.0,<4.0",
-                "eloquent/typhax": ">=0.7,<1.0",
+                "eloquent/typhax": ">=0.9,<1.0",
                 "icecave/isolator": ">=2.0,<3.0",
                 "icecave/pasta-ast": ">=0.1,<1.0",
                 "icecave/rasta": ">=0.1,<1.0",
-                "icecave/visita": ">=0.1,<1.0",
                 "symfony/console": ">=2.0,<3.0",
                 "symfony/filesystem": ">=2.0,<3.0"
             },
             "require-dev": {
-                "phake/phake": ">=1.0,<2.0",
                 "eloquent/liberator": ">=1.0,<2.0",
-                "ezzatron/phpunit-extensions": ">=1.0,<2.0"
+                "ezzatron/phpunit-extensions": ">=1.0,<2.0",
+                "icecave/testing": ">=2.0,<3.0",
+                "icecave/woodhouse": "*"
             },
-            "time": "2013-01-11 01:17:04",
+            "time": "2013-01-25 01:58:12",
             "bin": [
                 "bin/typhoon"
             ],
@@ -433,7 +485,7 @@
                     "Eloquent\\Typhoon": "src"
                 }
             },
-            "notification-url": "http://packagist.org/downloads/",
+            "notification-url": "https://packagist.org/downloads/",
             "license": [
                 "MIT"
             ],
@@ -452,6 +504,52 @@
                 "hinting",
                 "check",
                 "checking"
+            ]
+        },
+        {
+            "name": "ezzatron/ci-status-images",
+            "version": "3.0.1",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/ezzatron/ci-status-images.git",
+                "reference": "3.0.1"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/ezzatron/ci-status-images/zipball/3.0.1",
+                "reference": "3.0.1",
+                "shasum": ""
+            },
+            "time": "2013-02-01 01:04:18",
+            "type": "library",
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Erin Millard",
+                    "email": "ezzatron@gmail.com",
+                    "homepage": "http://ezzatron.com/"
+                },
+                {
+                    "name": "James Harris",
+                    "email": "james.harris@icecave.com.au"
+                }
+            ],
+            "description": "Test coverage percentage and other useful status images for continuous integration systems.",
+            "homepage": "https://github.com/ezzatron/ci-status-images",
+            "keywords": [
+                "image",
+                "github",
+                "ci",
+                "travis",
+                "integration",
+                "continuous",
+                "status",
+                "icon",
+                "button",
+                "label"
             ]
         },
         {
@@ -598,16 +696,16 @@
         },
         {
             "name": "icecave/testing",
-            "version": "1.1.4",
+            "version": "2.1.1",
             "source": {
                 "type": "git",
                 "url": "https://github.com/IcecaveStudios/testing.git",
-                "reference": "1.1.4"
+                "reference": "2.1.1"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://github.com/IcecaveStudios/testing/archive/1.1.4.zip",
-                "reference": "1.1.4",
+                "url": "https://api.github.com/repos/IcecaveStudios/testing/zipball/2.1.1",
+                "reference": "2.1.1",
                 "shasum": ""
             },
             "require": {
@@ -615,9 +713,10 @@
             },
             "suggest": {
                 "eloquent/asplode": "Use the asplode error handler instead of PHPUnit's internal error handler.",
-                "eloquent/liberator": "Use liberator for circumventing PHP access modifier restrictions inside tests."
+                "eloquent/liberator": "Use liberator for circumventing PHP access modifier restrictions inside tests.",
+                "icecave/woodhouse": "Publish your code coverage information to GitHub pages."
             },
-            "time": "2013-01-18 02:42:39",
+            "time": "2013-02-01 08:39:58",
             "bin": [
                 "bin/phpunit",
                 "bin/phpunit-coverage",
@@ -625,7 +724,7 @@
                 "bin/travis-build"
             ],
             "type": "library",
-            "notification-url": "http://packagist.org/downloads/",
+            "notification-url": "https://packagist.org/downloads/",
             "license": [
                 "MIT"
             ],
@@ -647,33 +746,51 @@
             ]
         },
         {
-            "name": "icecave/visita",
-            "version": "0.1.0",
+            "name": "icecave/woodhouse",
+            "version": "0.3.1",
             "source": {
                 "type": "git",
-                "url": "https://github.com/IcecaveStudios/visita.git",
-                "reference": "0.1.0"
+                "url": "https://github.com/IcecaveStudios/woodhouse.git",
+                "reference": "0.3.1"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://github.com/IcecaveStudios/visita/zipball/0.1.0",
-                "reference": "0.1.0",
+                "url": "https://api.github.com/repos/IcecaveStudios/woodhouse/zipball/0.3.1",
+                "reference": "0.3.1",
                 "shasum": ""
             },
             "require": {
-                "php": ">=5.3.0"
+                "php": ">=5.3.3",
+                "eloquent/asplode": "1.*",
+                "eloquent/enumeration": ">=3.0,<4.0",
+                "ezzatron/ci-status-images": ">=3.0,<4.0",
+                "icecave/isolator": "2.*",
+                "symfony/console": "2.*"
             },
             "require-dev": {
-                "phake/phake": "1.*"
+                "eloquent/liberator": "1.*",
+                "eloquent/typhoon": "0.8.*",
+                "icecave/testing": "1.*"
             },
-            "time": "2012-08-04 23:35:23",
+            "time": "2013-02-01 06:52:40",
+            "bin": [
+                "bin/woodhouse"
+            ],
             "type": "library",
-            "autoload": {
-                "psr-0": {
-                    "Icecave\\Visita": "lib"
+            "extra": {
+                "typhoon": {
+                    "output-path": "lib-typhoon",
+                    "validator-namespace": "Icecave\\Woodhouse\\TypeCheck",
+                    "use-native-callable": false
                 }
             },
-            "notification-url": "http://packagist.org/downloads/",
+            "autoload": {
+                "psr-0": {
+                    "Icecave\\Woodhouse": "lib",
+                    "Icecave\\Woodhouse\\TypeCheck": "lib-typhoon"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
             "license": [
                 "MIT"
             ],
@@ -683,12 +800,16 @@
                     "email": "james.harris@icecave.com.au"
                 }
             ],
-            "description": "A PHP library for assisting with visitor pattern implementations.",
-            "homepage": "https://github.com/IcecaveStudios/visita",
+            "description": "Publish build artifacts and status images to your GitHub pages.",
+            "homepage": "https://github.com/IcecaveStudios/collections",
             "keywords": [
-                "pattern",
-                "design",
-                "visitor"
+                "phpunit",
+                "code",
+                "github",
+                "Xdebug",
+                "publish",
+                "pages",
+                "coverage"
             ]
         },
         {
@@ -746,7 +867,7 @@
             },
             "dist": {
                 "type": "zip",
-                "url": "https://github.com/symfony/Console/archive/v2.1.7.zip",
+                "url": "https://api.github.com/repos/symfony/Console/zipball/v2.1.7",
                 "reference": "v2.1.7",
                 "shasum": ""
             },
@@ -760,7 +881,7 @@
                     "Symfony\\Component\\Console": ""
                 }
             },
-            "notification-url": "http://packagist.org/downloads/",
+            "notification-url": "https://packagist.org/downloads/",
             "license": [
                 "MIT"
             ],
@@ -802,7 +923,7 @@
                     "Symfony\\Component\\Filesystem": ""
                 }
             },
-            "notification-url": "http://packagist.org/downloads/",
+            "notification-url": "https://packagist.org/downloads/",
             "license": [
                 "MIT"
             ],
