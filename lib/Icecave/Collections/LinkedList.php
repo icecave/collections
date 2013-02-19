@@ -28,6 +28,8 @@ class LinkedList implements MutableRandomAccessInterface, Countable, Iterator, S
 
     public function __clone()
     {
+        $this->typeCheck->validateClone(func_get_args());
+
         $node = $this->head;
         $prev = null;
 
@@ -97,8 +99,6 @@ class LinkedList implements MutableRandomAccessInterface, Countable, Iterator, S
      */
     public function __toString()
     {
-        $this->typeCheck->validateToString(func_get_args());
-
         if ($this->isEmpty()) {
             return '<LinkedList 0>';
         }
@@ -1203,6 +1203,8 @@ class LinkedList implements MutableRandomAccessInterface, Countable, Iterator, S
      */
     protected function doSwap($index1, $index2)
     {
+        $this->typeCheck->doSwap(func_get_args());
+
         $a = min($index1, $index2);
         $b = max($index1, $index2);
 
@@ -1220,6 +1222,8 @@ class LinkedList implements MutableRandomAccessInterface, Countable, Iterator, S
      */
     protected function validateIndex(&$index, $max = null)
     {
+        $this->typeCheck->validateIndex(func_get_args());
+
         if (null === $max) {
             $max = $this->size - 1;
         }
@@ -1239,6 +1243,8 @@ class LinkedList implements MutableRandomAccessInterface, Countable, Iterator, S
      */
     protected function createNode($element = null, stdClass $next = null)
     {
+        $this->typeCheck->createNode(func_get_args());
+
         $node = new stdClass;
         $node->next = $next;
         $node->element = $element;
@@ -1251,6 +1257,8 @@ class LinkedList implements MutableRandomAccessInterface, Countable, Iterator, S
      */
     protected function nodeAt($index)
     {
+        $this->typeCheck->nodeAt(func_get_args());
+
         return $this->nodeFrom($this->head, $index);
     }
 
@@ -1260,6 +1268,8 @@ class LinkedList implements MutableRandomAccessInterface, Countable, Iterator, S
      */
     protected function nodeFrom(stdClass $node, $count)
     {
+        $this->typeCheck->nodeFrom(func_get_args());
+
         while ($node && $count--) {
             $node = $node->next;
         }
@@ -1273,6 +1283,8 @@ class LinkedList implements MutableRandomAccessInterface, Countable, Iterator, S
      */
     protected function cloneNodes(stdClass $start, stdClass $stop = null)
     {
+        $this->typeCheck->cloneNodes(func_get_args());
+
         $head = null;
         $tail = null;
         $size = 0;
@@ -1296,6 +1308,8 @@ class LinkedList implements MutableRandomAccessInterface, Countable, Iterator, S
      */
     protected function createNodes($elements)
     {
+        $this->typeCheck->createNodes(func_get_args());
+
         $head = null;
         $tail = null;
         $size = 0;

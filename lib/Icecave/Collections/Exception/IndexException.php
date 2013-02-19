@@ -2,6 +2,7 @@
 namespace Icecave\Collections\Exception;
 
 use Exception;
+use Icecave\Collections\TypeCheck\TypeCheck;
 use OutOfBoundsException;
 
 /**
@@ -15,6 +16,8 @@ class IndexException extends OutOfBoundsException implements CollectionException
      */
     public function __construct($index, Exception $previous = null)
     {
+        TypeCheck::get(__CLASS__, func_get_args());
+
         parent::__construct('Index ' . $index . ' is out of range.', 0, $previous);
     }
 }

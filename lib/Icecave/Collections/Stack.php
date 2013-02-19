@@ -27,6 +27,8 @@ class Stack implements QueuedAccessInterface, Countable, Serializable
 
     public function __clone()
     {
+        $this->typeCheck->validateClone(func_get_args());
+
         $this->elements = clone $this->elements;
     }
 
@@ -70,8 +72,6 @@ class Stack implements QueuedAccessInterface, Countable, Serializable
      */
     public function __toString()
     {
-        $this->typeCheck->validateToString(func_get_args());
-
         if ($this->isEmpty()) {
             return '<Stack 0>';
         }
