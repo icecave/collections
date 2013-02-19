@@ -42,8 +42,6 @@ class PriorityQueue extends Queue implements Serializable
      */
     public function __toString()
     {
-        $this->typeCheck->validateToString(func_get_args());
-
         if ($this->isEmpty()) {
             return '<PriorityQueue 0>';
         }

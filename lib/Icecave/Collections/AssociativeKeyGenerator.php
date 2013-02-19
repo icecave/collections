@@ -70,6 +70,8 @@ class AssociativeKeyGenerator
      */
     protected function generateForArray(array $value)
     {
+        $this->typeCheck->generateForArray(func_get_args());
+
         if (empty($value)) {
             return 'a';
         }

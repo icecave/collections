@@ -71,8 +71,6 @@ class Set implements MutableIterableInterface, Countable, Iterator, Serializable
      */
     public function __toString()
     {
-        $this->typeCheck->validateToString(func_get_args());
-
         if ($this->isEmpty()) {
             return '<Set 0>';
         }
@@ -690,6 +688,8 @@ class Set implements MutableIterableInterface, Countable, Iterator, Serializable
      */
     protected function generateHash($key)
     {
+        $this->typeCheck->generateHash(func_get_args());
+
         return call_user_func($this->hashFunction, $key);
     }
 

@@ -30,6 +30,8 @@ class Vector implements MutableRandomAccessInterface, Countable, Iterator, Array
 
     public function __clone()
     {
+        $this->typeCheck->validateClone(func_get_args());
+
         $this->elements = clone $this->elements;
     }
 
@@ -73,8 +75,6 @@ class Vector implements MutableRandomAccessInterface, Countable, Iterator, Array
      */
     public function __toString()
     {
-        $this->typeCheck->validateToString(func_get_args());
-
         if ($this->isEmpty()) {
             return '<Vector 0>';
         }
@@ -1157,6 +1157,8 @@ class Vector implements MutableRandomAccessInterface, Countable, Iterator, Array
      */
     protected function validateIndex(&$index, $max = null)
     {
+        $this->typeCheck->validateIndex(func_get_args());
+
         if (null === $max) {
             $max = $this->size - 1;
         }
@@ -1176,6 +1178,8 @@ class Vector implements MutableRandomAccessInterface, Countable, Iterator, Array
      */
     protected function shiftLeft($index, $count)
     {
+        $this->typeCheck->shiftLeft(func_get_args());
+
         $target = $index - $count;
         $source = $index;
 
@@ -1194,6 +1198,8 @@ class Vector implements MutableRandomAccessInterface, Countable, Iterator, Array
      */
     protected function shiftRight($index, $count)
     {
+        $this->typeCheck->shiftRight(func_get_args());
+
         $this->expand($count);
 
         $source = $this->size - 1;
@@ -1211,6 +1217,8 @@ class Vector implements MutableRandomAccessInterface, Countable, Iterator, Array
      */
     protected function clamp($value, $min, $max)
     {
+        $this->typeCheck->clamp(func_get_args());
+
         if (null === $value) {
             return $max;
         } elseif ($value > $max) {
@@ -1227,6 +1235,8 @@ class Vector implements MutableRandomAccessInterface, Countable, Iterator, Array
      */
     protected function expand($count)
     {
+        $this->typeCheck->expand(func_get_args());
+
         if ($this->capacity() >= $this->size + $count) {
             return;
         }

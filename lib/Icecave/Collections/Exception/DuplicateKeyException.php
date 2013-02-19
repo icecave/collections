@@ -2,6 +2,7 @@
 namespace Icecave\Collections\Exception;
 
 use Exception;
+use Icecave\Collections\TypeCheck\TypeCheck;
 use Icecave\Repr\Repr;
 use RuntimeException;
 
@@ -16,6 +17,8 @@ class DuplicateKeyException extends RuntimeException implements CollectionExcept
      */
     public function __construct($key, Exception $previous = null)
     {
+        TypeCheck::get(__CLASS__, func_get_args());
+
         parent::__construct('Key ' . Repr::repr($key) . ' already exists.', 0, $previous);
     }
 }
