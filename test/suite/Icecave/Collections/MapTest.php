@@ -430,8 +430,9 @@ class MapTest extends PHPUnit_Framework_TestCase
     public function testReplace()
     {
         $this->_collection->set('a', 1);
-        $this->_collection->replace('a', 2);
+        $previous = $this->_collection->replace('a', 2);
 
+        $this->assertSame(1, $previous);
         $this->assertSame(2, $this->_collection->get('a'));
     }
 
@@ -443,11 +444,16 @@ class MapTest extends PHPUnit_Framework_TestCase
 
     public function testTryReplace()
     {
+        $previous = null;
         $this->_collection->set('a', 1);
-        $this->assertTrue($this->_collection->tryReplace('a', 2));
+        $this->assertTrue($this->_collection->tryReplace('a', 2, $previous));
 
+        $this->assertSame(1, $previous);
         $this->assertSame(2, $this->_collection->get('a'));
+    }
 
+    public function testTryReplaceFailure()
+    {
         $this->assertFalse($this->_collection->tryReplace('b', 2));
         $this->assertFalse($this->_collection->hasKey('b'));
     }

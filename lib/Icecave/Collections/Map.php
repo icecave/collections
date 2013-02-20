@@ -633,9 +633,12 @@ class Map implements MutableAssociativeInterface, Countable, Iterator, ArrayAcce
     {
         $this->typeCheck->replace(func_get_args());
 
-        if (!$this->tryReplace($key, $value)) {
+        $previous = null;
+        if (!$this->tryReplace($key, $value, $previous)) {
             throw new Exception\UnknownKeyException($key);
         }
+
+        return $previous;
     }
 
     /**
@@ -660,6 +663,7 @@ class Map implements MutableAssociativeInterface, Countable, Iterator, ArrayAcce
             return false;
         }
 
+        list(, $previous) = $this->elements[$hash];
         $this->elements[$hash] = array($key, $value);
 
         return true;
