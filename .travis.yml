@@ -19,10 +19,8 @@ env:
     - ARCHER_PUBLISH_VERSION=5.4
     - secure: "Glf117MKeKfjov0luonlzgmJBh9dwygo6QoKBacHPOwLqWtEj/mE4EJ65dEtEdCoRq0u3NBYhtcR9tlg9NaOw/kld4mEqCN1OyBE1ElgI7/twygrq0MEHLen3xbd9xJOLMbnhXGg7TTyhRaLkrT0DXoOgYY/2gXBcO3rSC6QgWs="
 
-before_install:
-  - ./.travis.before-install
 install:
-  - composer install --dev --prefer-dist --no-progress --no-interaction
+  - ./.travis.install
 script:
   - ./vendor/bin/archer travis:build
 
