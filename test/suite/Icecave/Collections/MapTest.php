@@ -3,6 +3,7 @@ namespace Icecave\Collections;
 
 use Eloquent\Liberator\Liberator;
 use PHPUnit_Framework_TestCase;
+use stdClass;
 
 class MapTest extends PHPUnit_Framework_TestCase
 {
@@ -676,6 +677,29 @@ class MapTest extends PHPUnit_Framework_TestCase
         $result = iterator_to_array($this->_collection);
 
         $this->assertSame(array('a' => 1, 'b' => 2, 'c' => 3), $result);
+    }
+
+    /**
+     * @link https://github.com/IcecaveStudios/collections/issues/34
+     */
+    public function testIteratorKeyLimitationWorkaround()
+    {
+        $key1 = new stdClass;
+        $this->_collection->set($key1, 'a');
+
+        $key2 = new stdClass;
+        $this->_collection->set($key2, 'b');
+
+        $keys = array();
+        $values = array();
+
+        foreach ($this->_collection as $value) {
+            $keys[] = $this->_collection->key();
+            $values[] = $value;
+        }
+
+        $this->assertSame(array($key1, $key2), $keys);
+        $this->assertSame(array('a', 'b'), $values);
     }
 
     ///////////////////////////////////
