@@ -2,12 +2,42 @@
 namespace Icecave\Collections;
 
 use PHPUnit_Framework_TestCase;
+use Phake;
 
 class VectorTest extends PHPUnit_Framework_TestCase
 {
     public function setUp()
     {
-        $this->_collection = new Vector;
+        $this->_validatedElements = array();
+        $this->_remainingPassingValidations = PHP_INT_MAX;
+
+        $self = $this;
+        $this->_validator = function ($element) use ($self) {
+            $self->_validatedElements[] = $element;
+            return $self->_remainingPassingValidations-- > 0;
+        };
+
+        $this->_collection = new Vector(null, $this->_validator);
+    }
+
+    /**
+     * A helper method to ensure that the vector's element state is not change after an operation
+     * that produces an element validation exception.
+     */
+    public function checkValidationFailureAtomicity($expectedExceptionMessage, $operation, $allowedValidationCount = 0)
+    {
+        $before = $this->_collection->elements();
+
+        $this->_remainingPassingValidations = $allowedValidationCount;
+
+        try {
+            call_user_func($operation, $this->_collection);
+            $this->fail('Expected exception was not thrown.');
+        } catch (Exception\InvalidElementException $e) {
+            $this->assertSame($expectedExceptionMessage, $e->getMessage());
+        }
+
+        $this->assertSame($before, $this->_collection->elements());
     }
 
     public function testConstructor()
@@ -16,6 +46,13 @@ class VectorTest extends PHPUnit_Framework_TestCase
     }
 
     public function testConstructorWithArray()
+    {
+        $collection = new Vector(array(1, 2, 3), $this->_validator);
+        $this->assertSame(array(1, 2, 3), $collection->elements());
+        $this->assertSame(array(1, 2, 3), $this->_validatedElements);
+    }
+
+    public function testConstructorWithArrayOptimisation()
     {
         $collection = new Vector(array(1, 2, 3));
         $this->assertSame(array(1, 2, 3), $collection->elements());
@@ -37,6 +74,8 @@ class VectorTest extends PHPUnit_Framework_TestCase
 
     public function testSerialization()
     {
+        $this->_collection = new Vector(null, 'is_int');
+
         $this->_collection->pushBack(1);
         $this->_collection->pushBack(2);
         $this->_collection->pushBack(3);
@@ -45,6 +84,7 @@ class VectorTest extends PHPUnit_Framework_TestCase
         $collection = unserialize($packet);
 
         $this->assertSame($this->_collection->elements(), $collection->elements());
+        $this->assertSame($this->_collection->elementValidator(), $collection->elementValidator());
     }
 
     ///////////////////////////////////////////
@@ -139,6 +179,7 @@ class VectorTest extends PHPUnit_Framework_TestCase
         $result = $this->_collection->filtered();
 
         $this->assertInstanceOf(__NAMESPACE__ . '\Vector', $result);
+        $this->assertSame($this->_validator, $result->elementValidator());
         $this->assertSame(array(1, 2, 3), $result->elements());
     }
 
@@ -168,7 +209,25 @@ class VectorTest extends PHPUnit_Framework_TestCase
         );
 
         $this->assertInstanceOf(__NAMESPACE__ . '\Vector', $result);
+        $this->assertSame($this->_validator, $result->elementValidator());
         $this->assertSame(array(2, 3, 4), $result->elements());
+        $this->assertSame(array(1, 2, 3, 2, 3, 4), $this->_validatedElements);
+    }
+
+    public function testMapValidationFailure()
+    {
+        $this->_collection->append(array(1, 2, 3));
+
+        $this->checkValidationFailureAtomicity(
+            'Invalid element: 2.',
+            function ($vector) {
+                $vector->map(
+                    function ($element) {
+                        return $element + 1;
+                    }
+                );
+            }
+        );
     }
 
     ////////////////////////////////////////////////
@@ -210,6 +269,23 @@ class VectorTest extends PHPUnit_Framework_TestCase
         );
 
         $this->assertSame(array(2, 3, 4), $this->_collection->elements());
+        $this->assertSame(array(1, 2, 3, 2, 3, 4), $this->_validatedElements);
+    }
+
+    public function testApplyValidationFailure()
+    {
+        $this->_collection->append(array(1, 2, 3));
+
+        $this->checkValidationFailureAtomicity(
+            'Invalid element: 2.',
+            function ($vector) {
+                $vector->apply(
+                    function ($element) {
+                        return $element + 1;
+                    }
+                );
+            }
+        );
     }
 
     /////////////////////////////////////////
@@ -280,6 +356,7 @@ class VectorTest extends PHPUnit_Framework_TestCase
         $result = $this->_collection->sorted();
 
         $this->assertInstanceOf(__NAMESPACE__ . '\Vector', $result);
+        $this->assertSame($this->_validator, $result->elementValidator());
         $this->assertSame(array(1, 2, 3, 4, 5), $result->elements());
     }
 
@@ -294,6 +371,7 @@ class VectorTest extends PHPUnit_Framework_TestCase
         );
 
         $this->assertInstanceOf(__NAMESPACE__ . '\Vector', $result);
+        $this->assertSame($this->_validator, $result->elementValidator());
         $this->assertSame(array(5, 4, 3, 2, 1), $result->elements());
     }
 
@@ -305,6 +383,7 @@ class VectorTest extends PHPUnit_Framework_TestCase
         $result = $this->_collection->reversed();
 
         $this->assertInstanceOf(__NAMESPACE__ . '\Vector', $result);
+        $this->assertSame($this->_validator, $result->elementValidator());
         $this->assertSame(array(5, 4, 3, 2, 1), $result->elements());
     }
 
@@ -318,7 +397,9 @@ class VectorTest extends PHPUnit_Framework_TestCase
         );
 
         $this->assertInstanceOf(__NAMESPACE__ . '\Vector', $result);
+        $this->assertSame($this->_validator, $result->elementValidator());
         $this->assertSame(array(1, 2, 3, 4, 5, 6, 7, 8, 9), $result->elements());
+        $this->assertSame(array(1, 2, 3, 4, 5, 6, 7, 8, 9), $this->_validatedElements);
     }
 
     ////////////////////////////////////////////////
@@ -380,6 +461,7 @@ class VectorTest extends PHPUnit_Framework_TestCase
         );
 
         $this->assertSame(array(1, 2, 3, 4, 5, 6), $this->_collection->elements());
+        $this->assertSame(array(1, 2, 3, 4, 5, 6), $this->_validatedElements);
     }
 
     public function testPushFront()
@@ -389,6 +471,17 @@ class VectorTest extends PHPUnit_Framework_TestCase
         $this->_collection->pushFront(3);
 
         $this->assertSame(array(3, 2, 1), $this->_collection->elements());
+        $this->assertSame(array(1, 2, 3), $this->_validatedElements);
+    }
+
+    public function testPushFrontValidationFailure()
+    {
+        $this->checkValidationFailureAtomicity(
+            'Invalid element: 0.',
+            function ($vector) {
+                $vector->pushFront(0);
+            }
+        );
     }
 
     public function testPopFront()
@@ -429,6 +522,17 @@ class VectorTest extends PHPUnit_Framework_TestCase
         $this->_collection->pushBack(3);
 
         $this->assertSame(array(1, 2, 3), $this->_collection->elements());
+        $this->assertSame(array(1, 2, 3), $this->_validatedElements);
+    }
+
+    public function testPushBackValidationFailure()
+    {
+        $this->checkValidationFailureAtomicity(
+            'Invalid element: 0.',
+            function ($vector) {
+                $vector->pushBack(0);
+            }
+        );
     }
 
     public function testPopBack()
@@ -467,6 +571,7 @@ class VectorTest extends PHPUnit_Framework_TestCase
         $this->_collection->resize(3);
 
         $this->assertSame(array(null, null, null), $this->_collection->elements());
+        $this->assertSame(array(null), $this->_validatedElements);
     }
 
     public function testResizeWithValue()
@@ -474,6 +579,7 @@ class VectorTest extends PHPUnit_Framework_TestCase
         $this->_collection->resize(3, 'foo');
 
         $this->assertSame(array('foo', 'foo', 'foo'), $this->_collection->elements());
+        $this->assertSame(array('foo'), $this->_validatedElements);
     }
 
     public function testResizeToSmallerSize()
@@ -483,6 +589,17 @@ class VectorTest extends PHPUnit_Framework_TestCase
         $this->_collection->resize(2);
 
         $this->assertSame(array(1, 2), $this->_collection->elements());
+        $this->assertSame(array(1, 2, 3), $this->_validatedElements);
+    }
+
+    public function testResizeValidationFailure()
+    {
+        $this->checkValidationFailureAtomicity(
+            'Invalid element: null.',
+            function ($vector) {
+                $vector->resize(2);
+            }
+        );
     }
 
     //////////////////////////////////////////////
@@ -582,6 +699,7 @@ class VectorTest extends PHPUnit_Framework_TestCase
         $result = $this->_collection->range(1, 3);
 
         $this->assertInstanceOf(__NAMESPACE__ . '\SequenceInterface', $result);
+        $this->assertSame($this->_validator, $result->elementValidator());
         $this->assertSame(array(2, 3), $result->elements());
     }
 
@@ -592,6 +710,7 @@ class VectorTest extends PHPUnit_Framework_TestCase
         $result = $this->_collection->range(-3, -1);
 
         $this->assertInstanceOf(__NAMESPACE__ . '\SequenceInterface', $result);
+        $this->assertSame($this->_validator, $result->elementValidator());
         $this->assertSame(array(3, 4), $result->elements());
     }
 
@@ -602,6 +721,7 @@ class VectorTest extends PHPUnit_Framework_TestCase
         $result = $this->_collection->range(3, 1);
 
         $this->assertInstanceOf(__NAMESPACE__ . '\SequenceInterface', $result);
+        $this->assertSame($this->_validator, $result->elementValidator());
         $this->assertSame(array(), $result->elements());
     }
 
@@ -698,6 +818,7 @@ class VectorTest extends PHPUnit_Framework_TestCase
         $this->_collection->set(1, 'goose');
 
         $this->assertSame(array('foo', 'goose', 'spam'), $this->_collection->elements());
+        $this->assertSame(array('foo', 'bar', 'spam', 'goose'), $this->_validatedElements);
     }
 
     public function testSetWithNegativeIndex()
@@ -707,12 +828,25 @@ class VectorTest extends PHPUnit_Framework_TestCase
         $this->_collection->set(-2, 'goose');
 
         $this->assertSame(array('foo', 'goose', 'spam'), $this->_collection->elements());
+        $this->assertSame(array('foo', 'bar', 'spam', 'goose'), $this->_validatedElements);
     }
 
     public function testSetWithInvalidIndex()
     {
         $this->setExpectedException(__NAMESPACE__ . '\Exception\IndexException', 'Index 0 is out of range.');
         $this->_collection->set(0, 'bar');
+    }
+
+    public function testSetValidationFailure()
+    {
+        $this->_collection->append(array(1, 2, 3));
+
+        $this->checkValidationFailureAtomicity(
+            'Invalid element: 4.',
+            function ($vector) {
+                $vector->set(0, 4);
+            }
+        );
     }
 
     public function testInsert()
@@ -722,6 +856,7 @@ class VectorTest extends PHPUnit_Framework_TestCase
         $this->_collection->insert(1, 'bar');
 
         $this->assertSame(array('foo', 'bar', 'spam'), $this->_collection->elements());
+        $this->assertSame(array('foo', 'spam', 'bar'), $this->_validatedElements);
     }
 
     public function testInsertWithNegativeIndex()
@@ -731,6 +866,7 @@ class VectorTest extends PHPUnit_Framework_TestCase
         $this->_collection->insert(-1, 'bar');
 
         $this->assertSame(array('foo', 'bar', 'spam'), $this->_collection->elements());
+        $this->assertSame(array('foo', 'spam', 'bar'), $this->_validatedElements);
     }
 
     public function testInsertAtEnd()
@@ -740,6 +876,7 @@ class VectorTest extends PHPUnit_Framework_TestCase
         $this->_collection->insert($this->_collection->size(), 'bar');
 
         $this->assertSame(array('foo', 'spam', 'bar'), $this->_collection->elements());
+        $this->assertSame(array('foo', 'spam', 'bar'), $this->_validatedElements);
     }
 
     public function testInsertWithInvalidIndex()
@@ -755,6 +892,7 @@ class VectorTest extends PHPUnit_Framework_TestCase
         $this->_collection->insertMany(1, array('bar', 'frob'));
 
         $this->assertSame(array('foo', 'bar', 'frob', 'spam'), $this->_collection->elements());
+        $this->assertSame(array('foo', 'spam', 'bar', 'frob'), $this->_validatedElements);
     }
 
     public function testInsertManyAtEnd()
@@ -764,6 +902,7 @@ class VectorTest extends PHPUnit_Framework_TestCase
         $this->_collection->insertMany($this->_collection->size(), array('bar', 'frob'));
 
         $this->assertSame(array('foo', 'spam', 'bar', 'frob'), $this->_collection->elements());
+        $this->assertSame(array('foo', 'spam', 'bar', 'frob'), $this->_validatedElements);
     }
 
     public function testInsertManyWithEmptyElements()
@@ -773,6 +912,7 @@ class VectorTest extends PHPUnit_Framework_TestCase
         $this->_collection->insertMany(1, array());
 
         $this->assertSame(array('foo', 'spam'), $this->_collection->elements());
+        $this->assertSame(array('foo', 'spam'), $this->_validatedElements);
     }
 
     public function testInsertManyWithNegativeIndex()
@@ -782,12 +922,26 @@ class VectorTest extends PHPUnit_Framework_TestCase
         $this->_collection->insertMany(-1, array('bar', 'frob'));
 
         $this->assertSame(array('foo', 'bar', 'frob', 'spam'), $this->_collection->elements());
+        $this->assertSame(array('foo', 'spam', 'bar', 'frob'), $this->_validatedElements);
     }
 
     public function testInsertManyWithInvalidIndex()
     {
         $this->setExpectedException(__NAMESPACE__ . '\Exception\IndexException', 'Index 1 is out of range.');
         $this->_collection->insertMany(1, array('bar', 'frob'));
+    }
+
+    public function testInsertManyValidationFailure()
+    {
+        $this->_collection->append(array(1, 2, 3));
+
+        $this->checkValidationFailureAtomicity(
+            'Invalid element: 6.',
+            function ($vector) {
+                $vector->insertMany(0, array(4, 5, 6));
+            },
+            2
+        );
     }
 
     public function testRemove()
@@ -913,6 +1067,7 @@ class VectorTest extends PHPUnit_Framework_TestCase
         $this->_collection->replace(1, array('a', 'b'));
 
         $this->assertSame(array('foo', 'a', 'b'), $this->_collection->elements());
+        $this->assertSame(array('foo', 'bar', 'spam', 'doom', 'a', 'b'), $this->_validatedElements);
     }
 
     public function testReplaceWithCount()
@@ -922,6 +1077,7 @@ class VectorTest extends PHPUnit_Framework_TestCase
         $this->_collection->replace(1, array('a', 'b'), 2);
 
         $this->assertSame(array('foo', 'a', 'b', 'doom'), $this->_collection->elements());
+        $this->assertSame(array('foo', 'bar', 'spam', 'doom', 'a', 'b'), $this->_validatedElements);
     }
 
     public function testReplaceWithCountOverflow()
@@ -931,10 +1087,62 @@ class VectorTest extends PHPUnit_Framework_TestCase
         $this->_collection->replace(1, array('a', 'b'), 100);
 
         $this->assertSame(array('foo', 'a', 'b'), $this->_collection->elements());
+        $this->assertSame(array('foo', 'bar', 'spam', 'doom', 'a', 'b'), $this->_validatedElements);
     }
 
     public function testReplaceWithNegativeIndex()
     {
+        $this->_collection->append(array('foo', 'bar', 'spam', 'doom'));
+
+        $this->_collection->replace(-3, array('a', 'b'), 2);
+
+        $this->assertSame(array('foo', 'a', 'b', 'doom'), $this->_collection->elements());
+        $this->assertSame(array('foo', 'bar', 'spam', 'doom', 'a', 'b'), $this->_validatedElements);
+    }
+
+    public function testReplaceNoThrowOptimisation()
+    {
+        $this->_collection = new Vector;
+        $this->_collection->append(array('foo', 'bar', 'spam', 'doom'));
+
+        $this->_collection->replace(1, array('a', 'b'));
+
+        $this->assertSame(array('foo', 'a', 'b'), $this->_collection->elements());
+    }
+
+    public function testReplaceNoThrowOptimisationInsertMoreThanRemoved()
+    {
+        $this->_collection = new Vector;
+        $this->_collection->append(array('foo', 'bar', 'spam', 'doom'));
+
+        $this->_collection->replace(1, array('a', 'b'), 1);
+
+        $this->assertSame(array('foo', 'a', 'b', 'spam', 'doom'), $this->_collection->elements());
+    }
+
+    public function testReplaceNoThrowOptimisationWithCount()
+    {
+        $this->_collection = new Vector;
+        $this->_collection->append(array('foo', 'bar', 'spam', 'doom'));
+
+        $this->_collection->replace(1, array('a', 'b'), 2);
+
+        $this->assertSame(array('foo', 'a', 'b', 'doom'), $this->_collection->elements());
+    }
+
+    public function testReplaceNoThrowOptimisationWithCountOverflow()
+    {
+        $this->_collection = new Vector;
+        $this->_collection->append(array('foo', 'bar', 'spam', 'doom'));
+
+        $this->_collection->replace(1, array('a', 'b'), 100);
+
+        $this->assertSame(array('foo', 'a', 'b'), $this->_collection->elements());
+    }
+
+    public function testReplaceNoThrowOptimisationWithNegativeIndex()
+    {
+        $this->_collection = new Vector;
         $this->_collection->append(array('foo', 'bar', 'spam', 'doom'));
 
         $this->_collection->replace(-3, array('a', 'b'), 2);
@@ -948,6 +1156,19 @@ class VectorTest extends PHPUnit_Framework_TestCase
         $this->_collection->replace(1, array());
     }
 
+    public function testReplaceValidationFailure()
+    {
+        $this->_collection->append(array(1, 2, 3));
+
+        $this->checkValidationFailureAtomicity(
+            'Invalid element: 6.',
+            function ($vector) {
+                $vector->replace(0, array(4, 5, 6), 2);
+            },
+            2
+        );
+    }
+
     public function testReplaceRange()
     {
         $this->_collection->append(array('foo', 'bar', 'spam', 'doom'));
@@ -955,6 +1176,7 @@ class VectorTest extends PHPUnit_Framework_TestCase
         $this->_collection->replaceRange(1, 3, array('a', 'b'));
 
         $this->assertSame(array('foo', 'a', 'b', 'doom'), $this->_collection->elements());
+        $this->assertSame(array('foo', 'bar', 'spam', 'doom', 'a', 'b'), $this->_validatedElements);
     }
 
     public function testReplaceRangeWithNegativeIndices()
@@ -964,6 +1186,7 @@ class VectorTest extends PHPUnit_Framework_TestCase
         $this->_collection->replaceRange(-3, -1, array('a', 'b'));
 
         $this->assertSame(array('foo', 'a', 'b', 'doom'), $this->_collection->elements());
+        $this->assertSame(array('foo', 'bar', 'spam', 'doom', 'a', 'b'), $this->_validatedElements);
     }
 
     public function testReplaceRangeWithZeroLength()
@@ -973,6 +1196,7 @@ class VectorTest extends PHPUnit_Framework_TestCase
         $this->_collection->replaceRange(1, 1, array('a', 'b'));
 
         $this->assertSame(array('foo', 'a', 'b', 'bar', 'spam', 'doom'), $this->_collection->elements());
+        $this->assertSame(array('foo', 'bar', 'spam', 'doom', 'a', 'b'), $this->_validatedElements);
     }
 
     public function testReplaceRangeWithEndBeforeBegin()
@@ -982,6 +1206,7 @@ class VectorTest extends PHPUnit_Framework_TestCase
         $this->_collection->replaceRange(1, 0, array('a', 'b'));
 
         $this->assertSame(array('foo', 'a', 'b', 'bar', 'spam', 'doom'), $this->_collection->elements());
+        $this->assertSame(array('foo', 'bar', 'spam', 'doom', 'a', 'b'), $this->_validatedElements);
     }
 
     public function testReplaceRangeWithInvalidBegin()
@@ -1130,6 +1355,8 @@ class VectorTest extends PHPUnit_Framework_TestCase
         $this->_collection[0] = 'bar';
 
         $this->assertSame(array('bar'), $this->_collection->elements());
+
+        $this->assertSame(array('foo', 'bar'), $this->_validatedElements);
     }
 
     public function testOffsetUnset()

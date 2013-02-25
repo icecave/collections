@@ -21,7 +21,6 @@
             "require-dev": {
                 "phake/phake": "1.*"
             },
-            "time": "2013-01-11 00:04:43",
             "type": "library",
             "autoload": {
                 "psr-0": {
@@ -44,7 +43,8 @@
                 "repr",
                 "representation",
                 "string"
-            ]
+            ],
+            "time": "2013-01-11 00:04:43"
         }
     ],
     "packages-dev": [
@@ -69,7 +69,6 @@
             "require-dev": {
                 "phake/phake": "1.*"
             },
-            "time": "2012-08-05 18:24:33",
             "type": "library",
             "autoload": {
                 "psr-0": {
@@ -97,7 +96,8 @@
                 "fault",
                 "handler",
                 "handling"
-            ]
+            ],
+            "time": "2012-08-05 18:24:33"
         },
         {
             "name": "eloquent/blox",
@@ -119,7 +119,6 @@
             "require-dev": {
                 "phake/phake": "1.*"
             },
-            "time": "2012-08-04 23:40:35",
             "type": "library",
             "autoload": {
                 "psr-0": {
@@ -149,7 +148,8 @@
                 "phpDocumentor",
                 "phpdoc",
                 "tag"
-            ]
+            ],
+            "time": "2012-08-04 23:40:35"
         },
         {
             "name": "eloquent/cosmos",
@@ -173,7 +173,6 @@
             "require-dev": {
                 "icecave/testing": ">=1.0,<2.0"
             },
-            "time": "2013-01-19 11:33:04",
             "type": "library",
             "autoload": {
                 "psr-0": {
@@ -201,7 +200,8 @@
                 "php",
                 "resolver",
                 "solver"
-            ]
+            ],
+            "time": "2013-01-19 11:33:04"
         },
         {
             "name": "eloquent/enumeration",
@@ -223,7 +223,6 @@
             "require-dev": {
                 "phake/phake": "1.*"
             },
-            "time": "2012-08-21 01:21:14",
             "type": "library",
             "autoload": {
                 "psr-0": {
@@ -248,7 +247,8 @@
                 "enum",
                 "enumeration",
                 "set"
-            ]
+            ],
+            "time": "2012-08-21 01:21:14"
         },
         {
             "name": "eloquent/equality",
@@ -270,7 +270,6 @@
             "require-dev": {
                 "icecave/testing": ">=1.0,<2.0"
             },
-            "time": "2013-01-18 02:56:20",
             "type": "library",
             "autoload": {
                 "psr-0": {
@@ -296,7 +295,8 @@
                 "equality",
                 "object",
                 "strict"
-            ]
+            ],
+            "time": "2013-01-18 02:56:20"
         },
         {
             "name": "eloquent/liberator",
@@ -316,7 +316,6 @@
                 "eloquent/pops": "3.*",
                 "php": ">=5.3.0"
             },
-            "time": "2012-08-02 06:30:51",
             "type": "library",
             "autoload": {
                 "psr-0": {
@@ -344,7 +343,8 @@
                 "protected",
                 "proxy",
                 "reflection"
-            ]
+            ],
+            "time": "2012-08-02 06:30:51"
         },
         {
             "name": "eloquent/pops",
@@ -363,7 +363,6 @@
             "require": {
                 "php": ">=5.3.0"
             },
-            "time": "2012-08-02 06:17:58",
             "type": "library",
             "autoload": {
                 "psr-0": {
@@ -387,7 +386,8 @@
                 "escaping",
                 "object",
                 "proxy"
-            ]
+            ],
+            "time": "2012-08-02 06:17:58"
         },
         {
             "name": "eloquent/typhax",
@@ -411,7 +411,6 @@
             "require-dev": {
                 "icecave/testing": ">=1.0,<2.0"
             },
-            "time": "2013-01-24 05:03:32",
             "type": "library",
             "autoload": {
                 "psr-0": {
@@ -439,7 +438,8 @@
                 "parser",
                 "syntax",
                 "type"
-            ]
+            ],
+            "time": "2013-01-24 05:03:32"
         },
         {
             "name": "eloquent/typhoon",
@@ -473,7 +473,6 @@
                 "ezzatron/phpunit-extensions": ">=1.0,<2.0",
                 "icecave/archer": ">=0.1,<1.0"
             },
-            "time": "2013-02-18 23:16:04",
             "bin": [
                 "bin/typhoon"
             ],
@@ -503,7 +502,8 @@
                 "hint",
                 "hinting",
                 "type"
-            ]
+            ],
+            "time": "2013-02-18 23:16:04"
         },
         {
             "name": "icecave/archer",
@@ -527,7 +527,6 @@
             "suggest": {
                 "ext-openssl": "OpenSSL is required to encrypt GitHub OAuth tokens for artifact publication."
             },
-            "time": "2013-02-22 05:13:02",
             "bin": [
                 "bin/archer",
                 "bin/woodhouse"
@@ -563,7 +562,8 @@
                 "test",
                 "testing",
                 "unit"
-            ]
+            ],
+            "time": "2013-02-22 05:13:02"
         },
         {
             "name": "icecave/isolator",
@@ -585,7 +585,6 @@
             "require-dev": {
                 "icecave/testing": "1.*"
             },
-            "time": "2013-01-14 04:17:36",
             "type": "library",
             "autoload": {
                 "psr-0": {
@@ -611,7 +610,8 @@
                 "phpunit",
                 "test",
                 "unit"
-            ]
+            ],
+            "time": "2013-01-14 04:17:36"
         },
         {
             "name": "icecave/pasta-ast",
@@ -634,7 +634,6 @@
             "require-dev": {
                 "phake/phake": "1.*"
             },
-            "time": "2012-11-28 12:00:39",
             "type": "library",
             "autoload": {
                 "psr-0": {
@@ -659,7 +658,8 @@
                 "parser",
                 "syntax",
                 "tree"
-            ]
+            ],
+            "time": "2012-11-28 12:00:39"
         },
         {
             "name": "icecave/rasta",
@@ -683,7 +683,6 @@
             "require-dev": {
                 "icecave/testing": "1.*"
             },
-            "time": "2013-01-14 14:06:52",
             "type": "library",
             "autoload": {
                 "psr-0": {
@@ -705,7 +704,8 @@
             "keywords": [
                 "ast",
                 "parser"
-            ]
+            ],
+            "time": "2013-01-14 14:06:52"
         },
         {
             "name": "phake/phake",
@@ -724,7 +724,6 @@
             "require": {
                 "php": ">=5.2.0"
             },
-            "time": "2012-05-14 08:06:51",
             "type": "library",
             "autoload": {
                 "classmap": [
@@ -749,34 +748,34 @@
             "keywords": [
                 "mock",
                 "testing"
-            ]
+            ],
+            "time": "2012-05-14 08:06:51"
         },
         {
             "name": "symfony/console",
-            "version": "v2.1.7",
+            "version": "v2.1.8",
             "target-dir": "Symfony/Component/Console",
             "source": {
                 "type": "git",
-                "url": "https://github.com/symfony/Console",
-                "reference": "v2.1.7"
+                "url": "https://github.com/symfony/Console.git",
+                "reference": "v2.1.8"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/symfony/Console/zipball/v2.1.7",
-                "reference": "v2.1.7",
+                "url": "https://api.github.com/repos/symfony/Console/zipball/v2.1.8",
+                "reference": "v2.1.8",
                 "shasum": ""
             },
             "require": {
                 "php": ">=5.3.3"
             },
-            "time": "2013-01-17 15:20:05",
             "type": "library",
             "autoload": {
                 "psr-0": {
                     "Symfony\\Component\\Console": ""
                 }
             },
-            "notification-url": "https://packagist.org/downloads/",
+            "notification-url": "http://packagist.org/downloads/",
             "license": [
                 "MIT"
             ],
@@ -791,34 +790,34 @@
                 }
             ],
             "description": "Symfony Console Component",
-            "homepage": "http://symfony.com"
+            "homepage": "http://symfony.com",
+            "time": "2013-01-17 15:20:05"
         },
         {
             "name": "symfony/filesystem",
-            "version": "v2.1.7",
+            "version": "v2.1.8",
             "target-dir": "Symfony/Component/Filesystem",
             "source": {
                 "type": "git",
-                "url": "https://github.com/symfony/Filesystem",
-                "reference": "v2.1.7"
+                "url": "https://github.com/symfony/Filesystem.git",
+                "reference": "v2.1.8"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://github.com/symfony/Filesystem/archive/v2.1.7.zip",
-                "reference": "v2.1.7",
+                "url": "https://api.github.com/repos/symfony/Filesystem/zipball/v2.1.8",
+                "reference": "v2.1.8",
                 "shasum": ""
             },
             "require": {
                 "php": ">=5.3.3"
             },
-            "time": "2013-01-09 08:51:07",
             "type": "library",
             "autoload": {
                 "psr-0": {
                     "Symfony\\Component\\Filesystem": ""
                 }
             },
-            "notification-url": "https://packagist.org/downloads/",
+            "notification-url": "http://packagist.org/downloads/",
             "license": [
                 "MIT"
             ],
@@ -833,34 +832,34 @@
                 }
             ],
             "description": "Symfony Filesystem Component",
-            "homepage": "http://symfony.com"
+            "homepage": "http://symfony.com",
+            "time": "2013-01-09 08:51:07"
         },
         {
             "name": "symfony/process",
-            "version": "v2.1.7",
+            "version": "v2.1.8",
             "target-dir": "Symfony/Component/Process",
             "source": {
                 "type": "git",
-                "url": "https://github.com/symfony/Process",
-                "reference": "v2.1.7"
+                "url": "https://github.com/symfony/Process.git",
+                "reference": "v2.1.8"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/symfony/Process/zipball/v2.1.7",
-                "reference": "v2.1.7",
+                "url": "https://api.github.com/repos/symfony/Process/zipball/v2.1.8",
+                "reference": "v2.1.8",
                 "shasum": ""
             },
             "require": {
                 "php": ">=5.3.3"
             },
-            "time": "2013-01-16 09:27:54",
             "type": "library",
             "autoload": {
                 "psr-0": {
                     "Symfony\\Component\\Process": ""
                 }
             },
-            "notification-url": "https://packagist.org/downloads/",
+            "notification-url": "http://packagist.org/downloads/",
             "license": [
                 "MIT"
             ],
@@ -875,7 +874,8 @@
                 }
             ],
             "description": "Symfony Process Component",
-            "homepage": "http://symfony.com"
+            "homepage": "http://symfony.com",
+            "time": "2013-02-18 21:27:57"
         }
     ],
     "aliases": [

@@ -6,8 +6,8 @@ class VectorTypeCheck extends \Icecave\Collections\TypeCheck\AbstractValidator
     public function validateConstruct(array $arguments)
     {
         $argumentCount = \count($arguments);
-        if ($argumentCount > 1) {
-            throw new \Icecave\Collections\TypeCheck\Exception\UnexpectedArgumentException(1, $arguments[1]);
+        if ($argumentCount > 2) {
+            throw new \Icecave\Collections\TypeCheck\Exception\UnexpectedArgumentException(2, $arguments[2]);
         }
         if ($argumentCount > 0) {
             $value = $arguments[0];
@@ -31,6 +31,17 @@ class VectorTypeCheck extends \Icecave\Collections\TypeCheck\AbstractValidator
                     0,
                     $arguments[0],
                     'mixed<mixed>|null'
+                );
+            }
+        }
+        if ($argumentCount > 1) {
+            $value = $arguments[1];
+            if (!(\is_callable($value) || $value === null)) {
+                throw new \Icecave\Collections\TypeCheck\Exception\UnexpectedArgumentValueException(
+                    'elementValidator',
+                    1,
+                    $arguments[1],
+                    'callable|null'
                 );
             }
         }
@@ -1087,6 +1098,13 @@ class VectorTypeCheck extends \Icecave\Collections\TypeCheck\AbstractValidator
         }
     }
 
+    public function elementValidator(array $arguments)
+    {
+        if (\count($arguments) > 0) {
+            throw new \Icecave\Collections\TypeCheck\Exception\UnexpectedArgumentException(0, $arguments[0]);
+        }
+    }
+
     public function validateIndex(array $arguments)
     {
         $argumentCount = \count($arguments);
@@ -1238,6 +1256,16 @@ class VectorTypeCheck extends \Icecave\Collections\TypeCheck\AbstractValidator
                 $arguments[0],
                 'integer'
             );
+        }
+    }
+
+    public function validateElement(array $arguments)
+    {
+        $argumentCount = \count($arguments);
+        if ($argumentCount < 1) {
+            throw new \Icecave\Collections\TypeCheck\Exception\MissingArgumentException('element', 0, 'mixed');
+        } elseif ($argumentCount > 1) {
+            throw new \Icecave\Collections\TypeCheck\Exception\UnexpectedArgumentException(1, $arguments[1]);
         }
     }
 
