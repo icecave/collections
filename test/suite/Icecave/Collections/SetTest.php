@@ -258,9 +258,9 @@ class SetTest extends PHPUnit_Framework_TestCase
         $this->assertSame(0, count($this->_collection));
     }
 
-    ////////////////////////////////
-    // Implementation of Iterator //
-    ////////////////////////////////
+    /////////////////////////////////////////
+    // Implementation of IteratorAggregate //
+    /////////////////////////////////////////
 
     public function testIteration()
     {
@@ -270,7 +270,7 @@ class SetTest extends PHPUnit_Framework_TestCase
 
         $result = iterator_to_array($this->_collection);
 
-        $this->assertSame(array('a' => 'a', 'b' => 'b', 'c' => 'c'), $result);
+        $this->assertSame(array(0 => 'a', 1 => 'b', 2 => 'c'), $result);
     }
 
     ////////////////////////////

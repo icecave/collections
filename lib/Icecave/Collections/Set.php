@@ -1,13 +1,15 @@
 <?php
 namespace Icecave\Collections;
 
+use ArrayIterator;
 use Countable;
+use Icecave\Collections\Iterator\SequentialKeyIterator;
 use Icecave\Collections\TypeCheck\TypeCheck;
 use Icecave\Repr\Repr;
-use Iterator;
+use IteratorAggregate;
 use Serializable;
 
-class Set implements MutableIterableInterface, Countable, Iterator, Serializable
+class Set implements MutableIterableInterface, Countable, IteratorAggregate, Serializable
 {
     /**
      * @param mixed<mixed>|null $collection   An iterable type containing the elements to include in this set, or null to create an empty set.
@@ -259,43 +261,17 @@ class Set implements MutableIterableInterface, Countable, Iterator, Serializable
         return $this->size();
     }
 
-    ////////////////////////////////
-    // Implementation of Iterator //
-    ////////////////////////////////
+    /////////////////////////////////////////
+    // Implementation of IteratorAggregate //
+    /////////////////////////////////////////
 
-    public function current()
+    public function getIterator()
     {
-        $this->typeCheck->current(func_get_args());
+        $this->typeCheck->getIterator(func_get_args());
 
-        return current($this->elements);
-    }
-
-    public function key()
-    {
-        $this->typeCheck->key(func_get_args());
-
-        return $this->current();
-    }
-
-    public function next()
-    {
-        $this->typeCheck->next(func_get_args());
-
-        next($this->elements);
-    }
-
-    public function rewind()
-    {
-        $this->typeCheck->rewind(func_get_args());
-
-        reset($this->elements);
-    }
-
-    public function valid()
-    {
-        $this->typeCheck->valid(func_get_args());
-
-        return null !== key($this->elements);
+        return new SequentialKeyIterator(
+            new ArrayIterator($this->elements)
+        );
     }
 
     ////////////////////////////////////
@@ -696,4 +672,5 @@ class Set implements MutableIterableInterface, Countable, Iterator, Serializable
     private $typeCheck;
     private $hashFunction;
     private $elements;
+    private $index;
 }
