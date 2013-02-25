@@ -43,6 +43,7 @@ PHP has long been lacking formal, performant collection types. The addition of t
 
 * [AssociativeIterator](lib/Icecave/Collections/Iterator/AssociativeIterator.php): An iterator for iterating any associative collection.
 * [RandomAccessIterator](lib/Icecave/Collections/Iterator/RandomAccessIterator.php): An iterator for iterating any random access collection.
+* [SequentialKeyIterator](lib/Icecave/Collections/Iterator/SequentialKeyIterator.php): An iterator adaptor for producing sequential integer keys.
 
 ## Serialization
 
