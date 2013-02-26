@@ -213,6 +213,97 @@ class Map implements MutableAssociativeInterface, Countable, Iterator, ArrayAcce
         return $result;
     }
 
+    /**
+     * Partitions this collection into two collections according to a predicate.
+     *
+     * It is not guaranteed that the concrete type of the partitioned collections will match this collection.
+     *
+     * The predicate must be a callable with the following signature:
+     *  function (mixed $key, mixed $value) { return $result; }
+     *
+     * @param callable $predicate A predicate function used to determine which partitioned collection to place the elements in.
+     *
+     * @return tuple<IterableInterface, IterableInterface> A 2-tuple containing the partitioned collections. The first collection contains the element for which the predicate returned true.
+     */
+    public function partition($predicate)
+    {
+        $left = new static(null, $this->hashFunction);
+        $right = new static(null, $this->hashFunction);
+
+        foreach ($this->elements as $hash => $element) {
+            if (call_user_func_array($predicate, $element)) {
+                $left->elements[$hash] = $element;
+            } else {
+                $right->elements[$hash] = $element;
+            }
+        }
+
+        return array($left, $right);
+    }
+
+    /**
+     * Invokes the given callback on every element in the collection.
+     *
+     * This method behaves the same as {@see IterableInterface::map()} except that the return value of the callback is not retained.
+     *
+     * The callback must be a callable with the following signature:
+     *  function (mixed $key, mixed $value) { ... }
+     *
+     * @param callable $callback The callback to invoke with each element.
+     */
+    public function each($callback)
+    {
+        foreach ($this->elements as $element) {
+            call_user_func_array($callback, $element);
+        }
+    }
+
+    /**
+     * Returns true if the given predicate returns true for all elements.
+     *
+     * The loop is short-circuited, exiting after the first element for which the predicate returns false.
+     *
+     * The predicate must be a callable with the following signature:
+     *  function (mixed $key, mixed $value) { return $result; }
+     *
+     * @param callable $predicate
+     *
+     * @return boolean True if $predicate($element) returns true for all elements; otherwise, false.
+     */
+    public function all($predicate)
+    {
+        foreach ($this->elements as $element) {
+            if (!call_user_func_array($predicate, $element)) {
+                return false;
+            }
+        }
+
+        return true;
+    }
+
+    /**
+     * Returns true if the given predicate returns true for any element.
+     *
+     * The loop is short-circuited, exiting after the first element for which the predicate returns false.
+     *
+     * The predicate must be a callable with the following signature:
+     *  function (mixed $key, mixed $value) { return $result; }
+     *
+     * @param callable $predicate
+     *
+     * @return boolean True if $predicate($element) returns true for any element; otherwise, false.
+     */
+    public function any($predicate)
+    {
+        foreach ($this->elements as $element) {
+            if (call_user_func_array($predicate, $element)) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
     ////////////////////////////////////////////////
     // Implementation of MutableIterableInterface //
     ////////////////////////////////////////////////

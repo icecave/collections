@@ -199,6 +199,98 @@ class MapTest extends PHPUnit_Framework_TestCase
         $this->assertSame(array(array('a', 2), array('b', 3), array('c', 4)), $result->elements());
     }
 
+    public function testPartition()
+    {
+        $this->_collection->set('a', 1);
+        $this->_collection->set('b', 2);
+        $this->_collection->set('c', 3);
+
+        $result = $this->_collection->partition(
+            function ($key, $value) {
+                return $value < 3;
+            }
+        );
+
+        $this->assertTrue(is_array($result));
+        $this->assertSame(2, count($result));
+
+        list($left, $right) = $result;
+
+        $this->assertInstanceOf(__NAMESPACE__ . '\Map', $left);
+        $this->assertSame(array(array('a', 1), array('b', 2)), $left->elements());
+
+        $this->assertInstanceOf(__NAMESPACE__ . '\Map', $right);
+        $this->assertSame(array(array('c', 3)), $right->elements());
+    }
+
+    public function testEach()
+    {
+        $calls = array();
+        $callback = function ($key, $value) use (&$calls) {
+            $calls[] = func_get_args();
+        };
+
+        $this->_collection->set('a', 1);
+        $this->_collection->set('b', 2);
+        $this->_collection->set('c', 3);
+
+        $this->_collection->each($callback);
+
+        $expected = array(
+            array('a', 1),
+            array('b', 2),
+            array('c', 3),
+        );
+
+        $this->assertSame($expected, $calls);
+    }
+
+    public function testAll()
+    {
+        $this->_collection->set('a', 1);
+        $this->_collection->set('b', 2);
+        $this->_collection->set('c', 3);
+
+        $this->assertTrue(
+            $this->_collection->all(
+                function ($key, $value) {
+                    return is_int($value);
+                }
+            )
+        );
+
+        $this->assertFalse(
+            $this->_collection->all(
+                function ($key, $value) {
+                    return $value > 2;
+                }
+            )
+        );
+    }
+
+    public function testAny()
+    {
+        $this->_collection->set('a', 1);
+        $this->_collection->set('b', 2);
+        $this->_collection->set('c', 3);
+
+        $this->assertTrue(
+            $this->_collection->any(
+                function ($key, $value) {
+                    return $value > 2;
+                }
+            )
+        );
+
+        $this->assertFalse(
+            $this->_collection->any(
+                function ($key, $value) {
+                    return is_float($value);
+                }
+            )
+        );
+    }
+
     ////////////////////////////////////////////////
     // Implementation of MutableIterableInterface //
     ////////////////////////////////////////////////
