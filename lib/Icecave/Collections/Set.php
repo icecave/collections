@@ -749,10 +749,8 @@ class Set implements MutableIterableInterface, Countable, IteratorAggregate, Ser
      *
      * @return integer|string
      */
-    protected function generateHash($key)
+    private function generateHash($key)
     {
-        $this->typeCheck->generateHash(func_get_args());
-
         return call_user_func($this->hashFunction, $key);
     }
 

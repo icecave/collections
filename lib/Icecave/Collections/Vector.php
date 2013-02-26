@@ -1252,10 +1252,8 @@ class Vector implements MutableRandomAccessInterface, Countable, Iterator, Array
      * @param integer      &$index
      * @param integer|null $max
      */
-    protected function validateIndex(&$index, $max = null)
+    private function validateIndex(&$index, $max = null)
     {
-        $this->typeCheck->validateIndex(func_get_args());
-
         if (null === $max) {
             $max = $this->size - 1;
         }
@@ -1273,10 +1271,8 @@ class Vector implements MutableRandomAccessInterface, Countable, Iterator, Array
      * @param integer $index
      * @param integer $count
      */
-    protected function shiftLeft($index, $count)
+    private function shiftLeft($index, $count)
     {
-        $this->typeCheck->shiftLeft(func_get_args());
-
         $target = $index - $count;
         $source = $index;
 
@@ -1293,10 +1289,8 @@ class Vector implements MutableRandomAccessInterface, Countable, Iterator, Array
      * @param integer $index
      * @param integer $count
      */
-    protected function shiftRight($index, $count)
+    private function shiftRight($index, $count)
     {
-        $this->typeCheck->shiftRight(func_get_args());
-
         $this->expand($count);
 
         $source = $this->size - 1;
@@ -1312,10 +1306,8 @@ class Vector implements MutableRandomAccessInterface, Countable, Iterator, Array
      * @param integer      $min
      * @param integer      $max
      */
-    protected function clamp($value, $min, $max)
+    private function clamp($value, $min, $max)
     {
-        $this->typeCheck->clamp(func_get_args());
-
         if (null === $value) {
             return $max;
         } elseif ($value > $max) {
@@ -1330,10 +1322,8 @@ class Vector implements MutableRandomAccessInterface, Countable, Iterator, Array
     /**
      * @param integer $count
      */
-    protected function expand($count)
+    private function expand($count)
     {
-        $this->typeCheck->expand(func_get_args());
-
         if ($this->capacity() >= $this->size + $count) {
             return;
         }

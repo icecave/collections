@@ -1288,10 +1288,8 @@ class LinkedList implements MutableRandomAccessInterface, Countable, Iterator, S
      * @param integer $index1
      * @param integer $index2
      */
-    protected function doSwap($index1, $index2)
+    private function doSwap($index1, $index2)
     {
-        $this->typeCheck->doSwap(func_get_args());
-
         $a = min($index1, $index2);
         $b = max($index1, $index2);
 
@@ -1307,10 +1305,8 @@ class LinkedList implements MutableRandomAccessInterface, Countable, Iterator, S
      * @param integer      &$index
      * @param integer|null $max
      */
-    protected function validateIndex(&$index, $max = null)
+    private function validateIndex(&$index, $max = null)
     {
-        $this->typeCheck->validateIndex(func_get_args());
-
         if (null === $max) {
             $max = $this->size - 1;
         }
@@ -1328,10 +1324,8 @@ class LinkedList implements MutableRandomAccessInterface, Countable, Iterator, S
      * @param mixed         $element
      * @param stdClass|null $next
      */
-    protected function createNode($element = null, stdClass $next = null)
+    private function createNode($element = null, stdClass $next = null)
     {
-        $this->typeCheck->createNode(func_get_args());
-
         $node = new stdClass;
         $node->next = $next;
         $node->element = $element;
@@ -1342,10 +1336,8 @@ class LinkedList implements MutableRandomAccessInterface, Countable, Iterator, S
     /**
      * @param integer $index
      */
-    protected function nodeAt($index)
+    private function nodeAt($index)
     {
-        $this->typeCheck->nodeAt(func_get_args());
-
         return $this->nodeFrom($this->head, $index);
     }
 
@@ -1353,10 +1345,8 @@ class LinkedList implements MutableRandomAccessInterface, Countable, Iterator, S
      * @param stdClass $node
      * @param integer  $count
      */
-    protected function nodeFrom(stdClass $node, $count)
+    private function nodeFrom(stdClass $node, $count)
     {
-        $this->typeCheck->nodeFrom(func_get_args());
-
         while ($node && $count--) {
             $node = $node->next;
         }
@@ -1368,10 +1358,8 @@ class LinkedList implements MutableRandomAccessInterface, Countable, Iterator, S
      * @param stdClass      $start
      * @param stdClass|null $stop
      */
-    protected function cloneNodes(stdClass $start, stdClass $stop = null)
+    private function cloneNodes(stdClass $start, stdClass $stop = null)
     {
-        $this->typeCheck->cloneNodes(func_get_args());
-
         $head = null;
         $tail = null;
         $size = 0;
@@ -1393,10 +1381,8 @@ class LinkedList implements MutableRandomAccessInterface, Countable, Iterator, S
     /**
      * @param mixed<mixed> $elements
      */
-    protected function createNodes($elements)
+    private function createNodes($elements)
     {
-        $this->typeCheck->createNodes(func_get_args());
-
         $head = null;
         $tail = null;
         $size = 0;
