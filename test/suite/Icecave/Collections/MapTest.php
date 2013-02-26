@@ -3,6 +3,7 @@ namespace Icecave\Collections;
 
 use Eloquent\Liberator\Liberator;
 use PHPUnit_Framework_TestCase;
+use stdClass;
 
 class MapTest extends PHPUnit_Framework_TestCase
 {
@@ -196,6 +197,98 @@ class MapTest extends PHPUnit_Framework_TestCase
 
         $this->assertInstanceOf(__NAMESPACE__ . '\Map', $result);
         $this->assertSame(array(array('a', 2), array('b', 3), array('c', 4)), $result->elements());
+    }
+
+    public function testPartition()
+    {
+        $this->_collection->set('a', 1);
+        $this->_collection->set('b', 2);
+        $this->_collection->set('c', 3);
+
+        $result = $this->_collection->partition(
+            function ($key, $value) {
+                return $value < 3;
+            }
+        );
+
+        $this->assertTrue(is_array($result));
+        $this->assertSame(2, count($result));
+
+        list($left, $right) = $result;
+
+        $this->assertInstanceOf(__NAMESPACE__ . '\Map', $left);
+        $this->assertSame(array(array('a', 1), array('b', 2)), $left->elements());
+
+        $this->assertInstanceOf(__NAMESPACE__ . '\Map', $right);
+        $this->assertSame(array(array('c', 3)), $right->elements());
+    }
+
+    public function testEach()
+    {
+        $calls = array();
+        $callback = function ($key, $value) use (&$calls) {
+            $calls[] = func_get_args();
+        };
+
+        $this->_collection->set('a', 1);
+        $this->_collection->set('b', 2);
+        $this->_collection->set('c', 3);
+
+        $this->_collection->each($callback);
+
+        $expected = array(
+            array('a', 1),
+            array('b', 2),
+            array('c', 3),
+        );
+
+        $this->assertSame($expected, $calls);
+    }
+
+    public function testAll()
+    {
+        $this->_collection->set('a', 1);
+        $this->_collection->set('b', 2);
+        $this->_collection->set('c', 3);
+
+        $this->assertTrue(
+            $this->_collection->all(
+                function ($key, $value) {
+                    return is_int($value);
+                }
+            )
+        );
+
+        $this->assertFalse(
+            $this->_collection->all(
+                function ($key, $value) {
+                    return $value > 2;
+                }
+            )
+        );
+    }
+
+    public function testAny()
+    {
+        $this->_collection->set('a', 1);
+        $this->_collection->set('b', 2);
+        $this->_collection->set('c', 3);
+
+        $this->assertTrue(
+            $this->_collection->any(
+                function ($key, $value) {
+                    return $value > 2;
+                }
+            )
+        );
+
+        $this->assertFalse(
+            $this->_collection->any(
+                function ($key, $value) {
+                    return is_float($value);
+                }
+            )
+        );
     }
 
     ////////////////////////////////////////////////
@@ -430,8 +523,9 @@ class MapTest extends PHPUnit_Framework_TestCase
     public function testReplace()
     {
         $this->_collection->set('a', 1);
-        $this->_collection->replace('a', 2);
+        $previous = $this->_collection->replace('a', 2);
 
+        $this->assertSame(1, $previous);
         $this->assertSame(2, $this->_collection->get('a'));
     }
 
@@ -443,11 +537,16 @@ class MapTest extends PHPUnit_Framework_TestCase
 
     public function testTryReplace()
     {
+        $previous = null;
         $this->_collection->set('a', 1);
-        $this->assertTrue($this->_collection->tryReplace('a', 2));
+        $this->assertTrue($this->_collection->tryReplace('a', 2, $previous));
 
+        $this->assertSame(1, $previous);
         $this->assertSame(2, $this->_collection->get('a'));
+    }
 
+    public function testTryReplaceFailure()
+    {
         $this->assertFalse($this->_collection->tryReplace('b', 2));
         $this->assertFalse($this->_collection->hasKey('b'));
     }
@@ -670,6 +769,29 @@ class MapTest extends PHPUnit_Framework_TestCase
         $result = iterator_to_array($this->_collection);
 
         $this->assertSame(array('a' => 1, 'b' => 2, 'c' => 3), $result);
+    }
+
+    /**
+     * @link https://github.com/IcecaveStudios/collections/issues/34
+     */
+    public function testIteratorKeyLimitationWorkaround()
+    {
+        $key1 = new stdClass;
+        $this->_collection->set($key1, 'a');
+
+        $key2 = new stdClass;
+        $this->_collection->set($key2, 'b');
+
+        $keys = array();
+        $values = array();
+
+        foreach ($this->_collection as $value) {
+            $keys[] = $this->_collection->key();
+            $values[] = $value;
+        }
+
+        $this->assertSame(array($key1, $key2), $keys);
+        $this->assertSame(array('a', 'b'), $values);
     }
 
     ///////////////////////////////////

@@ -28,6 +28,8 @@ class LinkedList implements MutableRandomAccessInterface, Countable, Iterator, S
 
     public function __clone()
     {
+        $this->typeCheck->validateClone(func_get_args());
+
         $node = $this->head;
         $prev = null;
 
@@ -97,8 +99,6 @@ class LinkedList implements MutableRandomAccessInterface, Countable, Iterator, S
      */
     public function __toString()
     {
-        $this->typeCheck->validateToString(func_get_args());
-
         if ($this->isEmpty()) {
             return '<LinkedList 0>';
         }
@@ -230,6 +230,93 @@ class LinkedList implements MutableRandomAccessInterface, Countable, Iterator, S
         }
 
         return $result;
+    }
+
+    /**
+     * Partitions this collection into two collections according to a predicate.
+     *
+     * It is not guaranteed that the concrete type of the partitioned collections will match this collection.
+     *
+     * @param callable $predicate A predicate function used to determine which partitioned collection to place the elements in.
+     *
+     * @return tuple<IterableInterface, IterableInterface> A 2-tuple containing the partitioned collections. The first collection contains the element for which the predicate returned true.
+     */
+    public function partition($predicate)
+    {
+        $this->typeCheck->partition(func_get_args());
+
+        $left = new static;
+        $right = new static;
+
+        for ($node = $this->head; null !== $node; $node = $node->next) {
+            if (call_user_func($predicate, $node->element)) {
+                $left->pushBack($node->element);
+            } else {
+                $right->pushBack($node->element);
+            }
+        }
+
+        return array($left, $right);
+    }
+
+    /**
+     * Invokes the given callback on every element in the collection.
+     *
+     * This method behaves the same as {@see IterableInterface::map()} except that the return value of the callback is not retained.
+     *
+     * @param callable $callback The callback to invoke with each element.
+     */
+    public function each($callback)
+    {
+        $this->typeCheck->each(func_get_args());
+
+        for ($node = $this->head; null !== $node; $node = $node->next) {
+            call_user_func($callback, $node->element);
+        }
+    }
+
+    /**
+     * Returns true if the given predicate returns true for all elements.
+     *
+     * The loop is short-circuited, exiting after the first element for which the predicate returns false.
+     *
+     * @param callable $predicate
+     *
+     * @return boolean True if $predicate($element) returns true for all elements; otherwise, false.
+     */
+    public function all($predicate)
+    {
+        $this->typeCheck->all(func_get_args());
+
+        for ($node = $this->head; null !== $node; $node = $node->next) {
+            if (!call_user_func($predicate, $node->element)) {
+                return false;
+            }
+        }
+
+        return true;
+    }
+
+    /**
+     * Returns true if the given predicate returns true for any element.
+     *
+     * The loop is short-circuited, exiting after the first element for which the predicate returns false.
+     *
+     * @param callable $predicate
+     *
+     * @return boolean True if $predicate($element) returns true for any element; otherwise, false.
+     */
+    public function any($predicate)
+    {
+        $this->typeCheck->any(func_get_args());
+
+        for ($node = $this->head; null !== $node; $node = $node->next) {
+            if (call_user_func($predicate, $node->element)) {
+                return true;
+            }
+        }
+
+        return false;
     }
 
     ////////////////////////////////////////////////
@@ -1201,7 +1288,7 @@ class LinkedList implements MutableRandomAccessInterface, Countable, Iterator, S
      * @param integer $index1
      * @param integer $index2
      */
-    protected function doSwap($index1, $index2)
+    private function doSwap($index1, $index2)
     {
         $a = min($index1, $index2);
         $b = max($index1, $index2);
@@ -1218,7 +1305,7 @@ class LinkedList implements MutableRandomAccessInterface, Countable, Iterator, S
      * @param integer      &$index
      * @param integer|null $max
      */
-    protected function validateIndex(&$index, $max = null)
+    private function validateIndex(&$index, $max = null)
     {
         if (null === $max) {
             $max = $this->size - 1;
@@ -1237,7 +1324,7 @@ class LinkedList implements MutableRandomAccessInterface, Countable, Iterator, S
      * @param mixed         $element
      * @param stdClass|null $next
      */
-    protected function createNode($element = null, stdClass $next = null)
+    private function createNode($element = null, stdClass $next = null)
     {
         $node = new stdClass;
         $node->next = $next;
@@ -1249,7 +1336,7 @@ class LinkedList implements MutableRandomAccessInterface, Countable, Iterator, S
     /**
      * @param integer $index
      */
-    protected function nodeAt($index)
+    private function nodeAt($index)
     {
         return $this->nodeFrom($this->head, $index);
     }
@@ -1258,7 +1345,7 @@ class LinkedList implements MutableRandomAccessInterface, Countable, Iterator, S
      * @param stdClass $node
      * @param integer  $count
      */
-    protected function nodeFrom(stdClass $node, $count)
+    private function nodeFrom(stdClass $node, $count)
     {
         while ($node && $count--) {
             $node = $node->next;
@@ -1271,7 +1358,7 @@ class LinkedList implements MutableRandomAccessInterface, Countable, Iterator, S
      * @param stdClass      $start
      * @param stdClass|null $stop
      */
-    protected function cloneNodes(stdClass $start, stdClass $stop = null)
+    private function cloneNodes(stdClass $start, stdClass $stop = null)
     {
         $head = null;
         $tail = null;
@@ -1294,7 +1381,7 @@ class LinkedList implements MutableRandomAccessInterface, Countable, Iterator, S
     /**
      * @param mixed<mixed> $elements
      */
-    protected function createNodes($elements)
+    private function createNodes($elements)
     {
         $head = null;
         $tail = null;

@@ -15,10 +15,9 @@
         "icecave/repr": "~1"
     },
     "require-dev": {
-        "icecave/testing": "~2",
         "eloquent/liberator": "~1",
-        "eloquent/typhoon": "~0.8",
-        "icecave/woodhouse": "*"
+        "eloquent/typhoon": "~0.9",
+        "icecave/archer": "~0.2"
     },
     "autoload": {
         "psr-0": {

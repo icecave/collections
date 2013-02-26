@@ -192,6 +192,98 @@ class SetTest extends PHPUnit_Framework_TestCase
         $this->assertSame(array(2, 3, 4), $result->elements());
     }
 
+    public function testPartition()
+    {
+        $this->_collection->add(1);
+        $this->_collection->add(2);
+        $this->_collection->add(3);
+
+        $result = $this->_collection->partition(
+            function ($element) {
+                return $element < 3;
+            }
+        );
+
+        $this->assertTrue(is_array($result));
+        $this->assertSame(2, count($result));
+
+        list($left, $right) = $result;
+
+        $this->assertInstanceOf(__NAMESPACE__ . '\Set', $left);
+        $this->assertSame(array(1, 2), $left->elements());
+
+        $this->assertInstanceOf(__NAMESPACE__ . '\Set', $right);
+        $this->assertSame(array(3), $right->elements());
+    }
+
+    public function testEach()
+    {
+        $calls = array();
+        $callback = function ($element) use (&$calls) {
+            $calls[] = func_get_args();
+        };
+
+        $this->_collection->add(1);
+        $this->_collection->add(2);
+        $this->_collection->add(3);
+
+        $this->_collection->each($callback);
+
+        $expected = array(
+            array(1),
+            array(2),
+            array(3),
+        );
+
+        $this->assertSame($expected, $calls);
+    }
+
+    public function testAll()
+    {
+        $this->_collection->add(1);
+        $this->_collection->add(2);
+        $this->_collection->add(3);
+
+        $this->assertTrue(
+            $this->_collection->all(
+                function ($element) {
+                    return is_int($element);
+                }
+            )
+        );
+
+        $this->assertFalse(
+            $this->_collection->all(
+                function ($element) {
+                    return $element > 2;
+                }
+            )
+        );
+    }
+
+    public function testAny()
+    {
+        $this->_collection->add(1);
+        $this->_collection->add(2);
+        $this->_collection->add(3);
+
+        $this->assertTrue(
+            $this->_collection->any(
+                function ($element) {
+                    return $element > 2;
+                }
+            )
+        );
+
+        $this->assertFalse(
+            $this->_collection->any(
+                function ($element) {
+                    return is_float($element);
+                }
+            )
+        );
+    }
+
     ////////////////////////////////////////////////
     // Implementation of MutableIterableInterface //
     ////////////////////////////////////////////////
@@ -258,9 +350,9 @@ class SetTest extends PHPUnit_Framework_TestCase
         $this->assertSame(0, count($this->_collection));
     }
 
-    ////////////////////////////////
-    // Implementation of Iterator //
-    ////////////////////////////////
+    /////////////////////////////////////////
+    // Implementation of IteratorAggregate //
+    /////////////////////////////////////////
 
     public function testIteration()
     {
@@ -270,7 +362,7 @@ class SetTest extends PHPUnit_Framework_TestCase
 
         $result = iterator_to_array($this->_collection);
 
-        $this->assertSame(array('a' => 'a', 'b' => 'b', 'c' => 'c'), $result);
+        $this->assertSame(array(0 => 'a', 1 => 'b', 2 => 'c'), $result);
     }
 
     ////////////////////////////

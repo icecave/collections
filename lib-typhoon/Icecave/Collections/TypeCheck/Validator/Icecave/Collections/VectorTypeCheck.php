@@ -126,6 +126,82 @@ class VectorTypeCheck extends \Icecave\Collections\TypeCheck\AbstractValidator
         }
     }
 
+    public function partition(array $arguments)
+    {
+        $argumentCount = \count($arguments);
+        if ($argumentCount < 1) {
+            throw new \Icecave\Collections\TypeCheck\Exception\MissingArgumentException('predicate', 0, 'callable');
+        } elseif ($argumentCount > 1) {
+            throw new \Icecave\Collections\TypeCheck\Exception\UnexpectedArgumentException(1, $arguments[1]);
+        }
+        $value = $arguments[0];
+        if (!\is_callable($value)) {
+            throw new \Icecave\Collections\TypeCheck\Exception\UnexpectedArgumentValueException(
+                'predicate',
+                0,
+                $arguments[0],
+                'callable'
+            );
+        }
+    }
+
+    public function each(array $arguments)
+    {
+        $argumentCount = \count($arguments);
+        if ($argumentCount < 1) {
+            throw new \Icecave\Collections\TypeCheck\Exception\MissingArgumentException('callback', 0, 'callable');
+        } elseif ($argumentCount > 1) {
+            throw new \Icecave\Collections\TypeCheck\Exception\UnexpectedArgumentException(1, $arguments[1]);
+        }
+        $value = $arguments[0];
+        if (!\is_callable($value)) {
+            throw new \Icecave\Collections\TypeCheck\Exception\UnexpectedArgumentValueException(
+                'callback',
+                0,
+                $arguments[0],
+                'callable'
+            );
+        }
+    }
+
+    public function all(array $arguments)
+    {
+        $argumentCount = \count($arguments);
+        if ($argumentCount < 1) {
+            throw new \Icecave\Collections\TypeCheck\Exception\MissingArgumentException('predicate', 0, 'callable');
+        } elseif ($argumentCount > 1) {
+            throw new \Icecave\Collections\TypeCheck\Exception\UnexpectedArgumentException(1, $arguments[1]);
+        }
+        $value = $arguments[0];
+        if (!\is_callable($value)) {
+            throw new \Icecave\Collections\TypeCheck\Exception\UnexpectedArgumentValueException(
+                'predicate',
+                0,
+                $arguments[0],
+                'callable'
+            );
+        }
+    }
+
+    public function any(array $arguments)
+    {
+        $argumentCount = \count($arguments);
+        if ($argumentCount < 1) {
+            throw new \Icecave\Collections\TypeCheck\Exception\MissingArgumentException('predicate', 0, 'callable');
+        } elseif ($argumentCount > 1) {
+            throw new \Icecave\Collections\TypeCheck\Exception\UnexpectedArgumentException(1, $arguments[1]);
+        }
+        $value = $arguments[0];
+        if (!\is_callable($value)) {
+            throw new \Icecave\Collections\TypeCheck\Exception\UnexpectedArgumentValueException(
+                'predicate',
+                0,
+                $arguments[0],
+                'callable'
+            );
+        }
+    }
+
     public function filter(array $arguments)
     {
         $argumentCount = \count($arguments);

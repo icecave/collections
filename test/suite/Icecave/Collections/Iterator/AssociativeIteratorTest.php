@@ -20,7 +20,7 @@ class AssociativeIteratorTest extends PHPUnit_Framework_TestCase
             $result[$index] = $value;
         }
 
-        $this->assertsame(array('a' => 1, 'b' => 2, 'c' => 3), $result);
+        $this->assertSame(array('a' => 1, 'b' => 2, 'c' => 3), $result);
     }
 
     public function testCollection()
