@@ -12,10 +12,11 @@ use Serializable;
 class Set implements MutableIterableInterface, Countable, IteratorAggregate, Serializable
 {
     /**
-     * @param mixed<mixed>|null $collection   An iterable type containing the elements to include in this set, or null to create an empty set.
-     * @param callable|null     $hashFunction The function to use for generating hashes of elements, or null to use the default.
+     * @param mixed<mixed>|null $collection       An iterable type containing the elements to include in this set, or null to create an empty set.
+     * @param callable|null     $elementValidator The callback used to check the validity of an element; or null to allow any element.
+     * @param callable|null     $hashFunction     The function to use for generating hashes of elements, or null to use the default.
      */
-    public function __construct($collection = null, $hashFunction = null)
+    public function __construct($collection = null, $elementValidator = null, $hashFunction = null)
     {
         $this->typeCheck = TypeCheck::get(__CLASS__, func_get_args());
 
@@ -23,6 +24,7 @@ class Set implements MutableIterableInterface, Countable, IteratorAggregate, Ser
             $hashFunction = new AssociativeKeyGenerator;
         }
 
+        $this->elementValidator = $elementValidator;
         $this->hashFunction = $hashFunction;
         $this->elements = array();
 
@@ -166,7 +168,7 @@ class Set implements MutableIterableInterface, Countable, IteratorAggregate, Ser
             };
         }
 
-        $result = new static(null, $this->hashFunction);
+        $result = new static(null, $this->elementValidator, $this->hashFunction);
 
         foreach ($this->elements as $element) {
             if (call_user_func($predicate, $element)) {
@@ -194,7 +196,7 @@ class Set implements MutableIterableInterface, Countable, IteratorAggregate, Ser
     {
         $this->typeCheck->map(func_get_args());
 
-        $result = new static(null, $this->hashFunction);
+        $result = new static(null, $this->elementValidator, $this->hashFunction);
 
         foreach ($this->elements as $element) {
             $result->add(call_user_func($transform, $element));
@@ -288,6 +290,7 @@ class Set implements MutableIterableInterface, Countable, IteratorAggregate, Ser
         return serialize(
             array(
                 $this->elements(),
+                $this->elementValidator,
                 $this->hashFunction
             )
         );
@@ -300,8 +303,8 @@ class Set implements MutableIterableInterface, Countable, IteratorAggregate, Ser
     {
         TypeCheck::get(__CLASS__)->unserialize(func_get_args());
 
-        list($elements, $hashFunction) = unserialize($packet);
-        $this->__construct($elements, $hashFunction);
+        list($elements, $elementValidator, $hashFunction) = unserialize($packet);
+        $this->__construct($elements, $elementValidator, $hashFunction);
     }
 
     ////////////////////////////
@@ -409,7 +412,7 @@ class Set implements MutableIterableInterface, Countable, IteratorAggregate, Ser
             return false;
         }
 
-        $this->elements[$hash] = $element;
+        $this->elements[$hash] = $this->validateElement($element);
 
         return true;
     }
@@ -570,7 +573,19 @@ class Set implements MutableIterableInterface, Countable, IteratorAggregate, Ser
     {
         $this->typeCheck->unionInPlace(func_get_args());
 
-        if ($elements instanceof self && $this->hashFunction == $elements->hashFunction) {
+        if (null !== $this->elementValidator) {
+            $rollback = new self;
+            try {
+                foreach ($elements as $element) {
+                    if ($this->add($element)) {
+                        $rollback->add($element);
+                    }
+                }
+            } catch (\Exception $e) {
+                $this->complementInPlace($rollback);
+                throw $e;
+            }
+        } elseif ($elements instanceof self && $this->hashFunction == $elements->hashFunction) {
             $this->elements += $elements->elements;
         } else {
             foreach ($elements as $element) {
@@ -658,6 +673,30 @@ class Set implements MutableIterableInterface, Countable, IteratorAggregate, Ser
     }
 
     /**
+     * @return callable|null The callback used to check the validity of an element; or null is any element is allowed.
+     */
+    public function elementValidator()
+    {
+        $this->typeCheck->elementValidator(func_get_args());
+
+        return $this->elementValidator;
+    }
+
+    /**
+     * @param mixed $element
+     *
+     * @throws Exception\InvalidElementException
+     */
+    protected function validateElement($element)
+    {
+        if (null !== $this->elementValidator && !call_user_func($this->elementValidator, $element)) {
+            throw new Exception\InvalidElementException($element);
+        }
+
+        return $element;
+    }
+
+    /**
      * @param mixed $key
      *
      * @return integer|string
@@ -670,7 +709,8 @@ class Set implements MutableIterableInterface, Countable, IteratorAggregate, Ser
     }
 
     private $typeCheck;
-    private $hashFunction;
     private $elements;
     private $index;
+    private $elementValidator;
+    private $hashFunction;
 }

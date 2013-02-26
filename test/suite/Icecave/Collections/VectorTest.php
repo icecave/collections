@@ -2,7 +2,6 @@
 namespace Icecave\Collections;
 
 use PHPUnit_Framework_TestCase;
-use Phake;
 
 class VectorTest extends PHPUnit_Framework_TestCase
 {
@@ -14,6 +13,7 @@ class VectorTest extends PHPUnit_Framework_TestCase
         $self = $this;
         $this->_validator = function ($element) use ($self) {
             $self->_validatedElements[] = $element;
+
             return $self->_remainingPassingValidations-- > 0;
         };
 
@@ -21,7 +21,7 @@ class VectorTest extends PHPUnit_Framework_TestCase
     }
 
     /**
-     * A helper method to ensure that the vector's element state is not change after an operation
+     * A helper method to ensure that the collection's element state is not change after an operation
      * that produces an element validation exception.
      */
     public function checkValidationFailureAtomicity($expectedExceptionMessage, $operation, $allowedValidationCount = 0)

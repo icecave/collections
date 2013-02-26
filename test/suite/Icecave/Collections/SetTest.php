@@ -8,7 +8,37 @@ class SetTest extends PHPUnit_Framework_TestCase
 {
     public function setUp()
     {
-        $this->_collection = new Set;
+        $this->_validatedElements = array();
+        $this->_remainingPassingValidations = PHP_INT_MAX;
+
+        $self = $this;
+        $this->_validator = function ($element) use ($self) {
+            $self->_validatedElements[] = $element;
+
+            return $self->_remainingPassingValidations-- > 0;
+        };
+
+        $this->_collection = new Set(null, $this->_validator);
+    }
+
+    /**
+     * A helper method to ensure that the collection's element state is not change after an operation
+     * that produces an element validation exception.
+     */
+    public function checkValidationFailureAtomicity($expectedExceptionMessage, $operation, $allowedValidationCount = 0)
+    {
+        $before = $this->_collection->elements();
+
+        $this->_remainingPassingValidations = $allowedValidationCount;
+
+        try {
+            call_user_func($operation, $this->_collection);
+            $this->fail('Expected exception was not thrown.');
+        } catch (Exception\InvalidElementException $e) {
+            $this->assertSame($expectedExceptionMessage, $e->getMessage());
+        }
+
+        $this->assertSame($before, $this->_collection->elements());
     }
 
     public function testConstructor()
@@ -38,6 +68,7 @@ class SetTest extends PHPUnit_Framework_TestCase
 
     public function testSerialization()
     {
+        $this->_collection = new Set;
         $this->_collection->add(1);
         $this->_collection->add(2);
         $this->_collection->add(3);
@@ -48,13 +79,23 @@ class SetTest extends PHPUnit_Framework_TestCase
         $this->assertSame($this->_collection->elements(), $collection->elements());
     }
 
+    public function testSerializationOfElementValidator()
+    {
+        $collection = new Set(null, 'is_int');
+
+        $packet = serialize($collection);
+        $collection = unserialize($packet);
+
+        $this->assertSame('is_int', $collection->elementValidator());
+    }
+
     /**
      * @group regression
      * @link https://github.com/IcecaveStudios/collections/issues/23
      */
     public function testSerializationOfHashFunction()
     {
-        $collection = new Set(null, 'sha1');
+        $collection = new Set(null, null, 'sha1');
 
         $packet = serialize($collection);
         $collection = unserialize($packet);
@@ -155,6 +196,7 @@ class SetTest extends PHPUnit_Framework_TestCase
         $result = $this->_collection->filtered();
 
         $this->assertInstanceOf(__NAMESPACE__ . '\Set', $result);
+        $this->assertSame($this->_validator, $result->elementValidator());
         $this->assertSame(array('a', 'c'), $result->elements());
     }
 
@@ -173,6 +215,7 @@ class SetTest extends PHPUnit_Framework_TestCase
         );
 
         $this->assertInstanceOf(__NAMESPACE__ . '\Set', $result);
+        $this->assertSame($this->_validator, $result->elementValidator());
         $this->assertSame(array(1, 3, 5), $result->elements());
     }
 
@@ -189,7 +232,27 @@ class SetTest extends PHPUnit_Framework_TestCase
         );
 
         $this->assertInstanceOf(__NAMESPACE__ . '\Set', $result);
+        $this->assertSame($this->_validator, $result->elementValidator());
         $this->assertSame(array(2, 3, 4), $result->elements());
+        $this->assertSame(array(1, 2, 3, 2, 3, 4), $this->_validatedElements);
+    }
+
+    public function testMapValidationFailure()
+    {
+        $this->_collection->add(1);
+        $this->_collection->add(2);
+        $this->_collection->add(3);
+
+        $this->checkValidationFailureAtomicity(
+            'Invalid element: 2.',
+            function ($set) {
+                $set->map(
+                    function ($element) {
+                        return $element + 1;
+                    }
+                );
+            }
+        );
     }
 
     ////////////////////////////////////////////////
@@ -327,6 +390,18 @@ class SetTest extends PHPUnit_Framework_TestCase
         $this->assertFalse($this->_collection->add('a'));
 
         $this->assertTrue($this->_collection->contains('a'));
+
+        $this->assertSame(array('a'), $this->_validatedElements);
+    }
+
+    public function testAddValidationFailure()
+    {
+        $this->checkValidationFailureAtomicity(
+            'Invalid element: 0.',
+            function ($set) {
+                $set->add(0);
+            }
+        );
     }
 
     public function testRemove()
@@ -465,6 +540,24 @@ class SetTest extends PHPUnit_Framework_TestCase
         $result = $this->_collection->union($set);
 
         $this->assertSame(array('a', 'b', 'c', 'd', 'e'), $result->elements());
+        $this->assertSame(array('a', 'b', 'c', 'd', 'e'), $this->_validatedElements);
+    }
+
+    public function testUnionNoCheckOptimization()
+    {
+        $this->_collection->add('a');
+        $this->_collection->add('b');
+        $this->_collection->add('c');
+
+        $set = new Set;
+        $set->add('c');
+        $set->add('d');
+        $set->add('e');
+
+        $result = $set->union($this->_collection);
+
+        $this->assertSame(array('c', 'd', 'e', 'a', 'b'), $result->elements());
+        $this->assertSame(array('a', 'b', 'c'), $this->_validatedElements);
     }
 
     public function testUnionWithArray()
@@ -482,6 +575,43 @@ class SetTest extends PHPUnit_Framework_TestCase
         $result = $this->_collection->union($array);
 
         $this->assertSame(array('a', 'b', 'c', 'd', 'e'), $result->elements());
+        $this->assertSame(array('a', 'b', 'c', 'd', 'e'), $this->_validatedElements);
+    }
+
+    public function testUnionNoCheckOptimisationWithArray()
+    {
+        $this->_collection = new Set;
+        $this->_collection->add('a');
+        $this->_collection->add('b');
+        $this->_collection->add('c');
+
+        $array = array(
+            'c',
+            'd',
+            'e'
+        );
+
+        $result = $this->_collection->union($array);
+
+        $this->assertSame(array('a', 'b', 'c', 'd', 'e'), $result->elements());
+    }
+
+    public function testUnionInPlaceValidationFailure()
+    {
+        $this->_collection->add('a');
+
+        $this->checkValidationFailureAtomicity(
+            'Invalid element: "c".',
+            function ($set) {
+                $set->unionInPlace(
+                    array(
+                        'b',
+                        'c',
+                    )
+                );
+            },
+            1
+        );
     }
 
     public function testIntersect()

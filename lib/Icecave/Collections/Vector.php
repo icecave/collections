@@ -11,8 +11,8 @@ use SplFixedArray;
 class Vector implements MutableRandomAccessInterface, Countable, Iterator, ArrayAccess, Serializable
 {
     /**
-     * @param mixed<mixed>|null $collection An iterable type containing the elements to include in this vector, or null to create an empty vector.
-     * @param callable|null $elementValidator The callback used to check the validity of an element; or null to allow any element.
+     * @param mixed<mixed>|null $collection       An iterable type containing the elements to include in this vector, or null to create an empty vector.
+     * @param callable|null     $elementValidator The callback used to check the validity of an element; or null to allow any element.
      */
     public function __construct($collection = null, $elementValidator = null)
     {
@@ -579,6 +579,7 @@ class Vector implements MutableRandomAccessInterface, Countable, Iterator, Array
         if ($this->size > $size) {
             $this->elements->setSize($size);
             $this->size = $size;
+
             return;
         }
 
@@ -1308,11 +1309,7 @@ class Vector implements MutableRandomAccessInterface, Countable, Iterator, Array
      */
     protected function validateElement($element)
     {
-        if (null === $this->elementValidator) {
-            return $element;
-        }
-
-        if (!call_user_func($this->elementValidator, $element)) {
+        if (null !== $this->elementValidator && !call_user_func($this->elementValidator, $element)) {
             throw new Exception\InvalidElementException($element);
         }
 
