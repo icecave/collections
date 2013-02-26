@@ -214,6 +214,8 @@ class Set implements MutableIterableInterface, Countable, IteratorAggregate, Ser
      */
     public function partition($predicate)
     {
+        $this->typeCheck->partition(func_get_args());
+
         $left = new static;
         $right = new static;
 
@@ -237,6 +239,8 @@ class Set implements MutableIterableInterface, Countable, IteratorAggregate, Ser
      */
     public function each($callback)
     {
+        $this->typeCheck->each(func_get_args());
+
         foreach ($this->elements as $element) {
             call_user_func($callback, $element);
         }
@@ -253,6 +257,8 @@ class Set implements MutableIterableInterface, Countable, IteratorAggregate, Ser
      */
     public function all($predicate)
     {
+        $this->typeCheck->all(func_get_args());
+
         foreach ($this->elements as $element) {
             if (!call_user_func($predicate, $element)) {
                 return false;
@@ -273,6 +279,8 @@ class Set implements MutableIterableInterface, Countable, IteratorAggregate, Ser
      */
     public function any($predicate)
     {
+        $this->typeCheck->any(func_get_args());
+
         foreach ($this->elements as $element) {
             if (call_user_func($predicate, $element)) {
                 return true;

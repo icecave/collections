@@ -227,6 +227,8 @@ class Map implements MutableAssociativeInterface, Countable, Iterator, ArrayAcce
      */
     public function partition($predicate)
     {
+        $this->typeCheck->partition(func_get_args());
+
         $left = new static(null, $this->hashFunction);
         $right = new static(null, $this->hashFunction);
 
@@ -253,6 +255,8 @@ class Map implements MutableAssociativeInterface, Countable, Iterator, ArrayAcce
      */
     public function each($callback)
     {
+        $this->typeCheck->each(func_get_args());
+
         foreach ($this->elements as $element) {
             call_user_func_array($callback, $element);
         }
@@ -272,6 +276,8 @@ class Map implements MutableAssociativeInterface, Countable, Iterator, ArrayAcce
      */
     public function all($predicate)
     {
+        $this->typeCheck->all(func_get_args());
+
         foreach ($this->elements as $element) {
             if (!call_user_func_array($predicate, $element)) {
                 return false;
@@ -295,6 +301,8 @@ class Map implements MutableAssociativeInterface, Countable, Iterator, ArrayAcce
      */
     public function any($predicate)
     {
+        $this->typeCheck->any(func_get_args());
+
         foreach ($this->elements as $element) {
             if (call_user_func_array($predicate, $element)) {
                 return true;

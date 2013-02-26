@@ -220,6 +220,8 @@ class Vector implements MutableRandomAccessInterface, Countable, Iterator, Array
      */
     public function partition($predicate)
     {
+        $this->typeCheck->partition(func_get_args());
+
         $left = new static;
         $right = new static;
 
@@ -245,6 +247,8 @@ class Vector implements MutableRandomAccessInterface, Countable, Iterator, Array
      */
     public function each($callback)
     {
+        $this->typeCheck->each(func_get_args());
+
         foreach ($this->elements as $index => $element) {
             if ($index >= $this->size) {
                 break;
@@ -265,6 +269,8 @@ class Vector implements MutableRandomAccessInterface, Countable, Iterator, Array
      */
     public function all($predicate)
     {
+        $this->typeCheck->all(func_get_args());
+
         foreach ($this->elements as $index => $element) {
             if ($index >= $this->size) {
                 break;
@@ -287,6 +293,8 @@ class Vector implements MutableRandomAccessInterface, Countable, Iterator, Array
      */
     public function any($predicate)
     {
+        $this->typeCheck->any(func_get_args());
+
         foreach ($this->elements as $index => $element) {
             if ($index >= $this->size) {
                 break;

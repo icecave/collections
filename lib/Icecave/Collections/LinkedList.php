@@ -243,6 +243,8 @@ class LinkedList implements MutableRandomAccessInterface, Countable, Iterator, S
      */
     public function partition($predicate)
     {
+        $this->typeCheck->partition(func_get_args());
+
         $left = new static;
         $right = new static;
 
@@ -266,6 +268,8 @@ class LinkedList implements MutableRandomAccessInterface, Countable, Iterator, S
      */
     public function each($callback)
     {
+        $this->typeCheck->each(func_get_args());
+
         for ($node = $this->head; null !== $node; $node = $node->next) {
             call_user_func($callback, $node->element);
         }
@@ -282,6 +286,8 @@ class LinkedList implements MutableRandomAccessInterface, Countable, Iterator, S
      */
     public function all($predicate)
     {
+        $this->typeCheck->all(func_get_args());
+
         for ($node = $this->head; null !== $node; $node = $node->next) {
             if (!call_user_func($predicate, $node->element)) {
                 return false;
@@ -302,6 +308,8 @@ class LinkedList implements MutableRandomAccessInterface, Countable, Iterator, S
      */
     public function any($predicate)
     {
+        $this->typeCheck->any(func_get_args());
+
         for ($node = $this->head; null !== $node; $node = $node->next) {
             if (call_user_func($predicate, $node->element)) {
                 return true;
