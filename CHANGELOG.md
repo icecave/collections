@@ -1,5 +1,11 @@
 # Collections Changelog
 
+### 0.6.0
+
+* Added IterableInterface::partition(), each(), any() and all() - provided by Map, LinkedList, Set and Vector
+* Fixed issue setting/returning previous element in Map::replace() / tryReplace()
+* Set iteration now produces an sequential integer key
+
 ### 0.5.1
 
 * Map and Set collections now retain custom hash function when serializing
