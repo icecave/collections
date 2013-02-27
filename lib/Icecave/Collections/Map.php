@@ -3,6 +3,7 @@ namespace Icecave\Collections;
 
 use ArrayAccess;
 use Countable;
+use Icecave\Collections\Iterator\Traits;
 use Icecave\Collections\TypeCheck\TypeCheck;
 use Icecave\Repr\Repr;
 use Iterator;
@@ -113,6 +114,22 @@ class Map implements MutableAssociativeInterface, Countable, Iterator, ArrayAcce
         $this->typeCheck->clear(func_get_args());
 
         $this->elements = array();
+    }
+
+    //////////////////////////////////////////////
+    // Implementation of IteratorTraitsProvider //
+    //////////////////////////////////////////////
+
+    /**
+     * Return traits describing the collection's iteration capabilities.
+     *
+     * @return Traits
+     */
+    public function iteratorTraits()
+    {
+        $this->typeCheck->iteratorTraits(func_get_args());
+
+        return new Traits(true, true);
     }
 
     /////////////////////////////////////////
