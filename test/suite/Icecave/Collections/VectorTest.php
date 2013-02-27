@@ -1,6 +1,7 @@
 <?php
 namespace Icecave\Collections;
 
+use Icecave\Collections\Iterator\Traits;
 use PHPUnit_Framework_TestCase;
 
 class VectorTest extends PHPUnit_Framework_TestCase
@@ -105,6 +106,15 @@ class VectorTest extends PHPUnit_Framework_TestCase
         $this->_collection->clear();
 
         $this->assertTrue($this->_collection->isEmpty());
+    }
+
+    //////////////////////////////////////////////
+    // Implementation of IteratorTraitsProvider //
+    //////////////////////////////////////////////
+
+    public function testIteratorTraits()
+    {
+        $this->assertEquals(new Traits(true, true), $this->_collection->iteratorTraits());
     }
 
     /////////////////////////////////////////

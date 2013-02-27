@@ -3,6 +3,7 @@ namespace Icecave\Collections;
 
 use ArrayIterator;
 use Countable;
+use Icecave\Collections\Iterator\Traits;
 use Icecave\Collections\Iterator\SequentialKeyIterator;
 use Icecave\Collections\TypeCheck\TypeCheck;
 use Icecave\Repr\Repr;
@@ -112,6 +113,22 @@ class Set implements MutableIterableInterface, Countable, IteratorAggregate, Ser
         $this->typeCheck->clear(func_get_args());
 
         $this->elements = array();
+    }
+
+    //////////////////////////////////////////////
+    // Implementation of IteratorTraitsProvider //
+    //////////////////////////////////////////////
+
+    /**
+     * Return traits describing the collection's iteration capabilities.
+     *
+     * @return Traits
+     */
+    public function iteratorTraits()
+    {
+        $this->typeCheck->iteratorTraits(func_get_args());
+
+        return new Traits(true, true);
     }
 
     /////////////////////////////////////////

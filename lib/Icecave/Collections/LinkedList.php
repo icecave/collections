@@ -2,6 +2,7 @@
 namespace Icecave\Collections;
 
 use Countable;
+use Icecave\Collections\Iterator\Traits;
 use Icecave\Collections\TypeCheck\TypeCheck;
 use Iterator;
 use Serializable;
@@ -137,6 +138,22 @@ class LinkedList implements MutableRandomAccessInterface, Countable, Iterator, S
 
         $this->currentNode = null;
         $this->currentIndex = 0;
+    }
+
+    //////////////////////////////////////////////
+    // Implementation of IteratorTraitsProvider //
+    //////////////////////////////////////////////
+
+    /**
+     * Return traits describing the collection's iteration capabilities.
+     *
+     * @return Traits
+     */
+    public function iteratorTraits()
+    {
+        $this->typeCheck->iteratorTraits(func_get_args());
+
+        return new Traits(true, true);
     }
 
     /////////////////////////////////////////

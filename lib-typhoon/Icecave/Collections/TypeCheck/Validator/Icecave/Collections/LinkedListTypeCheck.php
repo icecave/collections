@@ -71,6 +71,13 @@ class LinkedListTypeCheck extends \Icecave\Collections\TypeCheck\AbstractValidat
         }
     }
 
+    public function iteratorTraits(array $arguments)
+    {
+        if (\count($arguments) > 0) {
+            throw new \Icecave\Collections\TypeCheck\Exception\UnexpectedArgumentException(0, $arguments[0]);
+        }
+    }
+
     public function elements(array $arguments)
     {
         if (\count($arguments) > 0) {

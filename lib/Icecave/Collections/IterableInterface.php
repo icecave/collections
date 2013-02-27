@@ -1,6 +1,8 @@
 <?php
 namespace Icecave\Collections;
 
+use Icecave\Collections\Iterator\TraitsProviderInterface;
+
 /**
  * Iterable collections allow (at the very least) sequential access to the elements without modifying the collection.
  *
@@ -8,7 +10,7 @@ namespace Icecave\Collections;
  * the order might, in fact, be different upon each iteration through the collection. However, some
  * specific collection types may provide such guarantees.
  */
-interface IterableInterface extends CollectionInterface
+interface IterableInterface extends CollectionInterface, TraitsProviderInterface
 {
     /**
      * Fetch a native array containing the elements in the collection.

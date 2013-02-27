@@ -3,6 +3,7 @@ namespace Icecave\Collections;
 
 use ArrayAccess;
 use Countable;
+use Icecave\Collections\Iterator\Traits;
 use Icecave\Collections\TypeCheck\TypeCheck;
 use Iterator;
 use Serializable;
@@ -109,6 +110,22 @@ class Vector implements MutableRandomAccessInterface, Countable, Iterator, Array
 
         $this->elements = new SplFixedArray;
         $this->size = 0;
+    }
+
+    //////////////////////////////////////////////
+    // Implementation of IteratorTraitsProvider //
+    //////////////////////////////////////////////
+
+    /**
+     * Return traits describing the collection's iteration capabilities.
+     *
+     * @return Traits
+     */
+    public function iteratorTraits()
+    {
+        $this->typeCheck->iteratorTraits(func_get_args());
+
+        return new Traits(true, true);
     }
 
     /////////////////////////////////////////
