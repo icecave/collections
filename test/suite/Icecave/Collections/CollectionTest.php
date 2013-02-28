@@ -65,6 +65,11 @@ class CollectionTest extends PHPUnit_Framework_TestCase
         $this->assertSame(3, Collection::size($collection));
     }
 
+    public function testSizeNoIterationOfNonCountable()
+    {
+        $this->assertNull(Collection::size($this->_traversable, false));
+    }
+
     /**
      * @dataProvider getCollections
      */

@@ -11,6 +11,7 @@ class ImplFactory
         $this->implementation = $implementation;
     }
 
+    // @codeCoverageIgnoreStart
     public static function instance()
     {
         if (null !== static::$instance) {
@@ -21,6 +22,7 @@ class ImplFactory
             return static::$instance = new static('Native');
         }
     }
+    // @codeCoverageIgnoreEnd
 
     /**
      * @param string $name
