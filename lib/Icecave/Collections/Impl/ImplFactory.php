@@ -3,6 +3,9 @@ namespace Icecave\Collections\Impl;
 
 class ImplFactory
 {
+    /**
+     * @param string $implementation
+     */
     public function __construct($implementation)
     {
         $this->implementation = $implementation;
@@ -19,11 +22,17 @@ class ImplFactory
         }
     }
 
+    /**
+     * @param string $name
+     */
     public function className($name)
     {
         return sprintf('%s\\%s\\%sImpl', __NAMESPACE__, $this->implementation, $name);
     }
 
+    /**
+     * @param string $name
+     */
     public function create($name)
     {
         $class = $this->className($name);

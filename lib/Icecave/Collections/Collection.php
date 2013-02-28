@@ -40,10 +40,11 @@ abstract class Collection
      * Get the number of elements in a collection.
      *
      * @param array|Traversable|Countable|CollectionInterface $collection
+     * @param boolean                                         $allowIteration
      *
-     * @return integer The number of elements in $collection
+     * @return integer|null The number of elements in $collection.
      */
-    public static function size($collection)
+    public static function size($collection, $allowIteration = true)
     {
         TypeCheck::get(__CLASS__)->size(func_get_args());
 
@@ -53,14 +54,11 @@ abstract class Collection
             return count($collection);
         } elseif (is_array($collection)) {
             return count($collection);
+        } elseif ($allowIteration) {
+            return iterator_count($collection);
+        } else {
+            return null;
         }
-
-        $count = 0;
-        foreach ($collection as $value) {
-            ++$count;
-        }
-
-        return $count;
     }
 
     /**

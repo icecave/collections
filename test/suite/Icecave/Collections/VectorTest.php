@@ -1,6 +1,8 @@
 <?php
 namespace Icecave\Collections;
 
+use ArrayIterator;
+use LimitIterator;
 use Icecave\Collections\Iterator\Traits;
 use PHPUnit_Framework_TestCase;
 
@@ -855,6 +857,15 @@ class VectorTest extends PHPUnit_Framework_TestCase
         $this->_collection->append(array('foo', 'spam'));
 
         $this->_collection->insertMany(1, array('bar', 'frob'));
+
+        $this->assertSame(array('foo', 'bar', 'frob', 'spam'), $this->_collection->elements());
+    }
+
+    public function testInsertManyNonCountable()
+    {
+        $this->_collection->append(array('foo', 'spam'));
+
+        $this->_collection->insertMany(1, new LimitIterator(new ArrayIterator(array('bar', 'frob'))));
 
         $this->assertSame(array('foo', 'bar', 'frob', 'spam'), $this->_collection->elements());
     }

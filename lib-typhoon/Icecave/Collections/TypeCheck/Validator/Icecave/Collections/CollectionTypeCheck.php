@@ -27,8 +27,8 @@ class CollectionTypeCheck extends \Icecave\Collections\TypeCheck\AbstractValidat
         $argumentCount = \count($arguments);
         if ($argumentCount < 1) {
             throw new \Icecave\Collections\TypeCheck\Exception\MissingArgumentException('collection', 0, 'array|Traversable|Countable|Icecave\\Collections\\CollectionInterface');
-        } elseif ($argumentCount > 1) {
-            throw new \Icecave\Collections\TypeCheck\Exception\UnexpectedArgumentException(1, $arguments[1]);
+        } elseif ($argumentCount > 2) {
+            throw new \Icecave\Collections\TypeCheck\Exception\UnexpectedArgumentException(2, $arguments[2]);
         }
         $value = $arguments[0];
         if (!(\is_array($value) || $value instanceof \Traversable || $value instanceof \Countable || $value instanceof \Icecave\Collections\CollectionInterface)) {
@@ -38,6 +38,17 @@ class CollectionTypeCheck extends \Icecave\Collections\TypeCheck\AbstractValidat
                 $arguments[0],
                 'array|Traversable|Countable|Icecave\\Collections\\CollectionInterface'
             );
+        }
+        if ($argumentCount > 1) {
+            $value = $arguments[1];
+            if (!\is_bool($value)) {
+                throw new \Icecave\Collections\TypeCheck\Exception\UnexpectedArgumentValueException(
+                    'allowIteration',
+                    1,
+                    $arguments[1],
+                    'boolean'
+                );
+            }
         }
     }
 

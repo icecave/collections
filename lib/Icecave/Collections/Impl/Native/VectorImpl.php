@@ -1,6 +1,7 @@
 <?php
 namespace Icecave\Collections\Impl\Native;
 
+use Icecave\Collections\Collection;
 use SplFixedArray;
 
 class VectorImpl
@@ -29,6 +30,8 @@ class VectorImpl
 
     /**
      * Fetch the element at the given index.
+     *
+     * @param integer $index
      */
     public function get($index)
     {
@@ -37,6 +40,9 @@ class VectorImpl
 
     /**
      * Replace the element at a particular position in the sequence.
+     *
+     * @param integer $index
+     * @param mixed   $element
      */
     public function set($index, $element)
     {
@@ -63,6 +69,10 @@ class VectorImpl
 
     /**
      * Fetch a new collection with a subset of the elements from this collection.
+     *
+     * @param callable   $predicate
+     * @param VectorImpl $input
+     * @param VectorImpl $output
      */
     public function filter($predicate, VectorImpl $input, VectorImpl $output)
     {
@@ -85,6 +95,10 @@ class VectorImpl
 
     /**
      * Produce a new collection by applying a transformation to each element.
+     *
+     * @param callable   $transform
+     * @param VectorImpl $input
+     * @param VectorImpl $output
      */
     public function map($transform, VectorImpl $input, VectorImpl $output)
     {
@@ -121,6 +135,10 @@ class VectorImpl
 
     /**
      * Create a new sequence with the elements from this sequence in sorted order.
+     *
+     * @param callable   $comparator
+     * @param VectorImpl $input
+     * @param VectorImpl $output
      */
     public function sort($comparator, VectorImpl $input, VectorImpl $output)
     {
@@ -154,6 +172,9 @@ class VectorImpl
         return true;
     }
 
+    /**
+     * @param VectorImpl $result
+     */
     public function reverse(VectorImpl $result)
     {
         $result->resize($this->size);
@@ -181,6 +202,11 @@ class VectorImpl
         }
     }
 
+    /**
+     * @param integer    $begin
+     * @param integer    $end
+     * @param VectorImpl $result
+     */
     public function range($begin, $end, VectorImpl $result)
     {
         if ($begin < $end) {
@@ -199,8 +225,7 @@ class VectorImpl
      * @param callable $predicate  A predicate function used to determine which element constitutes a match.
      * @param integer  $startIndex The index to start searching from.
      *
-     * @return integer|null             The index of the element, or null if is not present in the sequence.
-     * @throws Exception\IndexException if $startIndex is out of range.
+     * @return integer|null The index of the element, or null if is not present in the sequence.
      */
     public function find($predicate, $startIndex = 0)
     {
@@ -219,8 +244,7 @@ class VectorImpl
      * @param callable     $predicate  A predicate function used to determine which element constitutes a match.
      * @param integer|null $startIndex The index to start searching from, or null to use the last index.
      *
-     * @return integer|null             The index of the element, or null if is not present in the sequence.
-     * @throws Exception\IndexException if $startIndex is out of range.
+     * @return integer|null The index of the element, or null if is not present in the sequence.
      */
     public function findLast($predicate, $startIndex = null)
     {
@@ -238,38 +262,43 @@ class VectorImpl
      *
      * @param integer $index   The index at which the element is inserted, if index is a negative number the element is inserted that far from the end of the sequence.
      * @param mixed   $element The element to insert.
-     *
-     * @throws Exception\IndexException if $index is out of range.
      */
     public function insert($index, $element)
     {
-        $this->insertMany($index, array($element));
+        $this->shiftRight($index, 1);
+        ++$this->size;
+        $this->elements[$index] = $element;
     }
 
     /**
      * Insert a range of elements at a particular index.
      *
-     * @param integer      $index    The index at which the elements are inserted, if index is a negative number the elements are inserted that far from the end of the sequence.
-     * @param mixed<mixed> $elements The elements to insert.
+     * @param integer      $index
+     * @param mixed<mixed> $elements
      */
     public function insertMany($index, $elements)
     {
-        $count = count($elements);
+        $sizeHint = Collection::size($elements, false);
 
-        if (0 === $count) {
-            return;
-        }
+        if (null === $sizeHint) {
+            foreach ($elements as $element) {
+                $this->insert($index++, $element);
+            }
+        } elseif ($sizeHint) {
+            $this->shiftRight($index, $sizeHint);
+            $this->size += $sizeHint;
 
-        $this->shiftRight($index, $count);
-        $this->size += $count;
-
-        foreach ($elements as $element) {
-            $this->elements[$index++] = $element;
+            foreach ($elements as $element) {
+                $this->elements[$index++] = $element;
+            }
         }
     }
 
     /**
      * Remove a range of elements at a given index.
+     *
+     * @param integer $index
+     * @param integer $count
      */
     public function remove($index, $count)
     {

@@ -1200,68 +1200,6 @@ class VectorTypeCheck extends \Icecave\Collections\TypeCheck\AbstractValidator
         }
     }
 
-    public function shiftLeft(array $arguments)
-    {
-        $argumentCount = \count($arguments);
-        if ($argumentCount < 2) {
-            if ($argumentCount < 1) {
-                throw new \Icecave\Collections\TypeCheck\Exception\MissingArgumentException('index', 0, 'integer');
-            }
-            throw new \Icecave\Collections\TypeCheck\Exception\MissingArgumentException('count', 1, 'integer');
-        } elseif ($argumentCount > 2) {
-            throw new \Icecave\Collections\TypeCheck\Exception\UnexpectedArgumentException(2, $arguments[2]);
-        }
-        $value = $arguments[0];
-        if (!\is_int($value)) {
-            throw new \Icecave\Collections\TypeCheck\Exception\UnexpectedArgumentValueException(
-                'index',
-                0,
-                $arguments[0],
-                'integer'
-            );
-        }
-        $value = $arguments[1];
-        if (!\is_int($value)) {
-            throw new \Icecave\Collections\TypeCheck\Exception\UnexpectedArgumentValueException(
-                'count',
-                1,
-                $arguments[1],
-                'integer'
-            );
-        }
-    }
-
-    public function shiftRight(array $arguments)
-    {
-        $argumentCount = \count($arguments);
-        if ($argumentCount < 2) {
-            if ($argumentCount < 1) {
-                throw new \Icecave\Collections\TypeCheck\Exception\MissingArgumentException('index', 0, 'integer');
-            }
-            throw new \Icecave\Collections\TypeCheck\Exception\MissingArgumentException('count', 1, 'integer');
-        } elseif ($argumentCount > 2) {
-            throw new \Icecave\Collections\TypeCheck\Exception\UnexpectedArgumentException(2, $arguments[2]);
-        }
-        $value = $arguments[0];
-        if (!\is_int($value)) {
-            throw new \Icecave\Collections\TypeCheck\Exception\UnexpectedArgumentValueException(
-                'index',
-                0,
-                $arguments[0],
-                'integer'
-            );
-        }
-        $value = $arguments[1];
-        if (!\is_int($value)) {
-            throw new \Icecave\Collections\TypeCheck\Exception\UnexpectedArgumentValueException(
-                'count',
-                1,
-                $arguments[1],
-                'integer'
-            );
-        }
-    }
-
     public function clamp(array $arguments)
     {
         $argumentCount = \count($arguments);
@@ -1300,25 +1238,6 @@ class VectorTypeCheck extends \Icecave\Collections\TypeCheck\AbstractValidator
                 'max',
                 2,
                 $arguments[2],
-                'integer'
-            );
-        }
-    }
-
-    public function expand(array $arguments)
-    {
-        $argumentCount = \count($arguments);
-        if ($argumentCount < 1) {
-            throw new \Icecave\Collections\TypeCheck\Exception\MissingArgumentException('count', 0, 'integer');
-        } elseif ($argumentCount > 1) {
-            throw new \Icecave\Collections\TypeCheck\Exception\UnexpectedArgumentException(1, $arguments[1]);
-        }
-        $value = $arguments[0];
-        if (!\is_int($value)) {
-            throw new \Icecave\Collections\TypeCheck\Exception\UnexpectedArgumentValueException(
-                'count',
-                0,
-                $arguments[0],
                 'integer'
             );
         }
