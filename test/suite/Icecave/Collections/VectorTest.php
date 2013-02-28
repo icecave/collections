@@ -861,7 +861,7 @@ class VectorTest extends PHPUnit_Framework_TestCase
         $this->assertSame(array('foo', 'bar', 'frob', 'spam'), $this->_collection->elements());
     }
 
-    public function testInsertManyNonCountable()
+    public function testInsertManyWithNonCountable()
     {
         $this->_collection->append(array('foo', 'spam'));
 
@@ -1024,6 +1024,15 @@ class VectorTest extends PHPUnit_Framework_TestCase
         $this->_collection->append(array('foo', 'bar', 'spam', 'doom'));
 
         $this->_collection->replace(1, array('a', 'b'));
+
+        $this->assertSame(array('foo', 'a', 'b'), $this->_collection->elements());
+    }
+
+    public function testReplaceWithNonCountable()
+    {
+        $this->_collection->append(array('foo', 'bar', 'spam', 'doom'));
+
+        $this->_collection->replace(1, new LimitIterator(new ArrayIterator(array('a', 'b'))));
 
         $this->assertSame(array('foo', 'a', 'b'), $this->_collection->elements());
     }

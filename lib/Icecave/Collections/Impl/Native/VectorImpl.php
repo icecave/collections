@@ -82,8 +82,10 @@ class VectorImpl
         $output->reserve($input->size);
         $output->size = 0;
 
+        $capacity = $output->capacity();
+
         foreach ($input->elements as $index => $element) {
-            if ($index >= count($output->elements)) {
+            if ($index >= $capacity) {
                 break;
             } elseif ($index >= $size) {
                 $output->elements[$index] = null;
@@ -278,19 +280,12 @@ class VectorImpl
      */
     public function insertMany($index, $elements)
     {
-        $sizeHint = Collection::size($elements, false);
+        $size = Collection::size($elements);
+        $this->shiftRight($index, $size);
+        $this->size += $size;
 
-        if (null === $sizeHint) {
-            foreach ($elements as $element) {
-                $this->insert($index++, $element);
-            }
-        } elseif ($sizeHint) {
-            $this->shiftRight($index, $sizeHint);
-            $this->size += $sizeHint;
-
-            foreach ($elements as $element) {
-                $this->elements[$index++] = $element;
-            }
+        foreach ($elements as $element) {
+            $this->elements[$index++] = $element;
         }
     }
 
@@ -317,7 +312,7 @@ class VectorImpl
      */
     public function replace($index, $elements, $count)
     {
-        $diff = count($elements) - $count;
+        $diff = Collection::size($elements) - $count;
 
         if ($diff > 0) {
             $this->shiftRight($index + $count, $diff);

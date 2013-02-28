@@ -804,7 +804,9 @@ class Vector implements MutableRandomAccessInterface, Countable, Iterator, Array
     {
         $this->typeCheck->insert(func_get_args());
 
-        $this->insertMany($index, array($element));
+        $this->validateIndex($index, $this->size());
+
+        $this->impl->insert($index, $element);
     }
 
     /**
@@ -819,7 +821,13 @@ class Vector implements MutableRandomAccessInterface, Countable, Iterator, Array
 
         $this->validateIndex($index, $this->size());
 
-        $this->impl->insertMany($index, $elements);
+        if (Collection::iteratorTraits($elements)->isCountable) {
+            $this->impl->insertMany($index, $elements);
+        } else {
+            foreach ($elements as $element) {
+                $this->impl->insert($index++, $element);
+            }
+        }
     }
 
     /**
@@ -889,7 +897,14 @@ class Vector implements MutableRandomAccessInterface, Countable, Iterator, Array
 
         $this->validateIndex($index);
         $count = $this->clamp($count, 0, $this->size() - $index);
-        $this->impl->replace($index, $elements, $count);
+
+        if (Collection::iteratorTraits($elements)->isCountable) {
+            $this->impl->replace($index, $elements, $count);
+        } else {
+            $before = $this->size();
+            $this->insertMany($index, $elements);
+            $this->removeMany($index + $this->size() - $before, $count);
+        }
     }
 
     /**
