@@ -4,6 +4,10 @@ namespace Icecave\Collections;
 use Icecave\Collections\Iterator\Traits;
 use PHPUnit_Framework_TestCase;
 
+/**
+ * @covers Icecave\Collections\Vector
+ * @covers Icecave\Collections\Impl\Native\VectorImpl
+ */
 class VectorTest extends PHPUnit_Framework_TestCase
 {
     public function setUp()
@@ -373,12 +377,12 @@ class VectorTest extends PHPUnit_Framework_TestCase
 
     public function testSorted()
     {
-        $this->_collection->append(array(3, 2, 1, 5, 4));
+        $this->_collection->append(array(3, 2, 1, 5, 2, 4));
 
         $result = $this->_collection->sorted();
 
         $this->assertInstanceOf(__NAMESPACE__ . '\Vector', $result);
-        $this->assertSame(array(1, 2, 3, 4, 5), $result->elements());
+        $this->assertSame(array(1, 2, 2, 3, 4, 5), $result->elements());
     }
 
     public function testSortedWithComparator()
