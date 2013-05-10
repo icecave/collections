@@ -1,9 +1,7 @@
-# ![Collections]
+# Collections
 
 [![Build Status]](http://travis-ci.org/IcecaveStudios/collections)
 [![Test Coverage]](http://icecave.com.au/collections/artifacts/tests/coverage)
-
----
 
 **Collections** provides a set of PHP collection types loosely inspired by the .NET runtime and the C++ standard template library.
 
@@ -54,6 +52,5 @@ The provided collection types support [serialization](http://au1.php.net/manual/
 The provided collection implementations support [cloning](http://php.net/manual/en/language.oop5.cloning.php). Cloning a collection produces a copy of the collection containing the same elements. The elements themselves are not cloned.
 
 <!-- references -->
-[Collections]: http://icecave.com.au/assets/img/project-icons/icon-collections.png
 [Build Status]: https://raw.github.com/IcecaveStudios/collections/gh-pages/artifacts/images/icecave/regular/build-status.png
 [Test Coverage]: https://raw.github.com/IcecaveStudios/collections/gh-pages/artifacts/images/icecave/regular/coverage.png
