@@ -11,13 +11,13 @@
         }
     ],
     "require": {
-        "php": ">=5.3.3",
+        "php": ">=5.3",
         "icecave/repr": "~1"
     },
     "require-dev": {
         "eloquent/liberator": "~1",
         "eloquent/typhoon": "~0.9",
-        "icecave/archer": "~0.2"
+        "icecave/archer": "~0.3"
     },
     "autoload": {
         "psr-0": {
