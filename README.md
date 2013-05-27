@@ -22,7 +22,7 @@ PHP has long been lacking formal, performant collection types. The addition of t
 * [Sequence](lib/Icecave/Collections/SequenceInterface.php): A sequence is a variable-sized collection whose elements are arranged in a strict linear order.
 * [Mutable Sequence](lib/Icecave/Collections/MutableSequenceInterface.php): A sequence that supports insertion and removal of elements.
 * [Random Access Sequence](lib/Icecave/Collections/RandomAccessInterface.php): A sequence that provides access to elements by their position in the sequence.
-* [Mutable Random Access Sequence](lib/Icecave/Collections/MutableRandomAccessInterface.php): A sequence that allows for insertion / removal of elements by their position in the sequence.
+* [Mutable Random Access Sequence](lib/Icecave/Collections/MutableRandomAccessInterface.php): A sequence that allows for insertion / removal of elements by their position.
 * [Associative Collection](lib/Icecave/Collections/AssociativeInterface.php): A variable-sized collection that supports efficient retrieval of values based on keys.
 * [Mutable Associative Collection](lib/Icecave/Collections/MutableAssociativeInterface.php): An associative collection that supports insertion and removal of elements.
 * [Queued Access](lib/Icecave/Collections/QueuedAccessInterface.php): A F/LIFO buffer (ie, stacks and queues).
