@@ -7,6 +7,9 @@ use Icecave\Repr\Repr;
 use Serializable;
 use SplQueue;
 
+/**
+ * A first-in/first-out (FIFO) queue of elements.
+ */
 class Queue implements QueuedAccessInterface, Countable, Serializable
 {
     /**
@@ -203,6 +206,8 @@ class Queue implements QueuedAccessInterface, Countable, Serializable
     ////////////////////////////////////
 
     /**
+     * Serialize the collection.
+     *
      * @return string The serialized data.
      */
     public function serialize()
@@ -213,6 +218,8 @@ class Queue implements QueuedAccessInterface, Countable, Serializable
     }
 
     /**
+     * Unserialize collection data.
+     *
      * @param string $packet The serialized data.
      */
     public function unserialize($packet)

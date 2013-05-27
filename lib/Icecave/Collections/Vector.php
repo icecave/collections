@@ -9,6 +9,9 @@ use Iterator;
 use Serializable;
 use SplFixedArray;
 
+/**
+ * A resizable sequence of elements.
+ */
 class Vector implements MutableRandomAccessInterface, Countable, Iterator, ArrayAccess, Serializable
 {
     /**
@@ -1207,6 +1210,8 @@ class Vector implements MutableRandomAccessInterface, Countable, Iterator, Array
     ////////////////////////////////////
 
     /**
+     * Serialize the collection.
+     *
      * @return string The serialized data.
      */
     public function serialize()
@@ -1217,6 +1222,8 @@ class Vector implements MutableRandomAccessInterface, Countable, Iterator, Array
     }
 
     /**
+     * Unserialize collection data.
+     *
      * @param string $packet The serialized data.
      */
     public function unserialize($packet)
@@ -1232,6 +1239,8 @@ class Vector implements MutableRandomAccessInterface, Countable, Iterator, Array
     ////////////////////////////
 
     /**
+     * Fetch the current reserved capacity of the vector.
+     *
      * @return integer The current reserved capacity of the vector.
      */
     public function capacity()

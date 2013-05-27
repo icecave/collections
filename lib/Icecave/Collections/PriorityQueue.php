@@ -7,7 +7,7 @@ use Serializable;
 use SplPriorityQueue;
 
 /**
- * A prioritized queue.
+ * A prioritized first-in/first-out (FIFO) queue of elements.
  *
  * Higher priority values are moved closer to the front of the queue.
  *
@@ -127,6 +127,8 @@ class PriorityQueue extends Queue implements Serializable
     ////////////////////////////////////
 
     /**
+     * Serialize the collection.
+     *
      * @return string The serialized data.
      */
     public function serialize()
@@ -142,6 +144,8 @@ class PriorityQueue extends Queue implements Serializable
     }
 
     /**
+     * Unserialize collection data.
+     *
      * @param string $packet The serialized data.
      */
     public function unserialize($packet)

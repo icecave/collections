@@ -14,7 +14,7 @@ use Iterator;
 class AssociativeIterator implements Iterator
 {
     /**
-     * @param AssociativeInterface $collection The collection to iterate.
+     * @param AssociativeInterface $collection The collection to be iterated.
      */
     public function __construct(AssociativeInterface $collection)
     {
@@ -25,7 +25,9 @@ class AssociativeIterator implements Iterator
     }
 
     /**
-     * @return AssociativeInterface The collection to iterate.
+     * Fetch the collection to be iterated.
+     *
+     * @return AssociativeInterface The collection to be iterated.
      */
     public function collection()
     {
@@ -35,6 +37,8 @@ class AssociativeIterator implements Iterator
     }
 
     /**
+     * Fetch the current value.
+     *
      * @return mixed The current value.
      */
     public function current()
@@ -45,6 +49,8 @@ class AssociativeIterator implements Iterator
     }
 
     /**
+     * Fetch the current key.
+     *
      * @return mixed The current key.
      */
     public function key()
@@ -77,6 +83,8 @@ class AssociativeIterator implements Iterator
     }
 
     /**
+     * Check if the current element is valid.
+     *
      * @return boolean True if the iterator points to a valid element; otherwise, false.
      */
     public function valid()

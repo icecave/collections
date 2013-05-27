@@ -14,7 +14,7 @@ use SplObjectStorage;
 use Traversable;
 
 /**
- * Utility function for working with arbitrary collection types.
+ * Utility functions for working with arbitrary collection types.
  */
 abstract class Collection
 {

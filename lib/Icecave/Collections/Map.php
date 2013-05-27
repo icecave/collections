@@ -9,6 +9,9 @@ use Icecave\Repr\Repr;
 use Iterator;
 use Serializable;
 
+/**
+ * A map of keys of arbitrary type to values.
+ */
 class Map implements MutableAssociativeInterface, Countable, Iterator, ArrayAccess, Serializable
 {
     /**
@@ -1143,6 +1146,8 @@ class Map implements MutableAssociativeInterface, Countable, Iterator, ArrayAcce
     ////////////////////////////////////
 
     /**
+     * Serialize the collection.
+     *
      * @return string The serialized data.
      */
     public function serialize()
@@ -1158,6 +1163,8 @@ class Map implements MutableAssociativeInterface, Countable, Iterator, ArrayAcce
     }
 
     /**
+     * Unserialize collection data.
+     *
      * @param string $packet The serialized data.
      */
     public function unserialize($packet)

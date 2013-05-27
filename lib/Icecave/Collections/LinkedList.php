@@ -1271,6 +1271,8 @@ class LinkedList implements MutableRandomAccessInterface, Countable, Iterator, S
     ////////////////////////////////////
 
     /**
+     * Serialize the collection.
+     *
      * @return string The serialized data.
      */
     public function serialize()
@@ -1286,6 +1288,8 @@ class LinkedList implements MutableRandomAccessInterface, Countable, Iterator, S
     }
 
     /**
+     * Unserialize collection data.
+     *
      * @param string $packet The serialized data.
      */
     public function unserialize($packet)

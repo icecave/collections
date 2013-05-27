@@ -7,6 +7,9 @@ use Icecave\Repr\Repr;
 use Serializable;
 use SplStack;
 
+/**
+ * A last-in/first-out (LIFO) stack of elements.
+ */
 class Stack implements QueuedAccessInterface, Countable, Serializable
 {
     /**
@@ -203,6 +206,8 @@ class Stack implements QueuedAccessInterface, Countable, Serializable
     ////////////////////////////////////
 
     /**
+     * Serialize the collection.
+     *
      * @return string The serialized data.
      */
     public function serialize()
@@ -217,6 +222,8 @@ class Stack implements QueuedAccessInterface, Countable, Serializable
     }
 
     /**
+     * Unserialize collection data.
+     *
      * @param string $packet The serialized data.
      */
     public function unserialize($packet)

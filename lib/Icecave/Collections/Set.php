@@ -10,6 +10,9 @@ use Icecave\Repr\Repr;
 use IteratorAggregate;
 use Serializable;
 
+/**
+ * A collection of unique elements.
+ */
 class Set implements MutableIterableInterface, Countable, IteratorAggregate, Serializable
 {
     /**
@@ -383,6 +386,8 @@ class Set implements MutableIterableInterface, Countable, IteratorAggregate, Ser
     ////////////////////////////////////
 
     /**
+     * Serialize the collection.
+     *
      * @return string The serialized data.
      */
     public function serialize()
@@ -398,6 +403,8 @@ class Set implements MutableIterableInterface, Countable, IteratorAggregate, Ser
     }
 
     /**
+     * Unserialize collection data.
+     *
      * @param string $packet The serialized data.
      */
     public function unserialize($packet)
