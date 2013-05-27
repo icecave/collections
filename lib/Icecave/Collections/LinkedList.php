@@ -9,7 +9,7 @@ use Serializable;
 use stdClass;
 
 /**
- * A singly-linked list.
+ * A mutable sequence with efficient addition and removal of elements.
  */
 class LinkedList implements MutableRandomAccessInterface, Countable, Iterator, Serializable
 {
@@ -256,7 +256,7 @@ class LinkedList implements MutableRandomAccessInterface, Countable, Iterator, S
      *
      * @param callable $predicate A predicate function used to determine which partitioned collection to place the elements in.
      *
-     * @return tuple<IterableInterface, IterableInterface> A 2-tuple containing the partitioned collections. The first collection contains the element for which the predicate returned true.
+     * @return tuple<IterableInterface,IterableInterface> A 2-tuple containing the partitioned collections. The first collection contains the element for which the predicate returned true.
      */
     public function partition($predicate)
     {

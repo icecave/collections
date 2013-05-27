@@ -33,9 +33,9 @@ PHP has long been lacking formal, performant collection types. The addition of t
 * [LinkedList](lib/Icecave/Collections/LinkedList.php): A mutable sequence with efficient addition and removal of elements.
 * [Map](lib/Icecave/Collections/Map.php): An associative collection with efficient access by key.
 * [Set](lib/Icecave/Collections/Set.php): An iterable collection with unique elements.
-* [Queue](lib/Icecave/Collections/Queue.php): A FIFO queue.
-* [PriorityQueue](lib/Icecave/Collections/PriorityQueue.php): A prioritized queue.
-* [Stack]((lib/Icecave/Collections/Stack.php): A LIFO stack.
+* [Queue](lib/Icecave/Collections/Queue.php): A first-in/first-out (FIFO) queue of elements.
+* [PriorityQueue](lib/Icecave/Collections/PriorityQueue.php): A prioritized first-in/first-out (FIFO) queue of elements.
+* [Stack]((lib/Icecave/Collections/Stack.php): A last-in/first-out (LIFO) stack of elements.
 
 ## Iterators
 
@@ -54,3 +54,4 @@ The provided collection implementations support [cloning](http://php.net/manual/
 <!-- references -->
 [Build Status]: https://raw.github.com/IcecaveStudios/collections/gh-pages/artifacts/images/icecave/regular/build-status.png
 [Test Coverage]: https://raw.github.com/IcecaveStudios/collections/gh-pages/artifacts/images/icecave/regular/coverage.png
+[API Documentation]: http://icecave.com.au/collections/artifacts/documentation/api/

@@ -11,7 +11,7 @@ use IteratorAggregate;
 use Serializable;
 
 /**
- * A collection of unique elements.
+ * An iterable collection with unique elements.
  */
 class Set implements MutableIterableInterface, Countable, IteratorAggregate, Serializable
 {
@@ -230,7 +230,7 @@ class Set implements MutableIterableInterface, Countable, IteratorAggregate, Ser
      *
      * @param callable $predicate A predicate function used to determine which partitioned collection to place the elements in.
      *
-     * @return tuple<IterableInterface, IterableInterface> A 2-tuple containing the partitioned collections. The first collection contains the element for which the predicate returned true.
+     * @return tuple<IterableInterface,IterableInterface> A 2-tuple containing the partitioned collections. The first collection contains the element for which the predicate returned true.
      */
     public function partition($predicate)
     {

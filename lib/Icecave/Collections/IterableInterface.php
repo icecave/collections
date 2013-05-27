@@ -58,7 +58,7 @@ interface IterableInterface extends CollectionInterface, TraitsProviderInterface
      *
      * @param callable $predicate A predicate function used to determine which partitioned collection to place the elements in.
      *
-     * @return tuple<IterableInterface, IterableInterface> A 2-tuple containing the partitioned collections. The first collection contains the element for which the predicate returned true.
+     * @return tuple<IterableInterface,IterableInterface> A 2-tuple containing the partitioned collections. The first collection contains the element for which the predicate returned true.
      */
     public function partition($predicate);
 
