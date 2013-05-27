@@ -5,9 +5,8 @@
 
 **Collections** provides a set of PHP collection types loosely inspired by the .NET runtime and the C++ standard template library.
 
-## Installation
-
-* [Composer](http://getcomposer.org) package [icecave/collections](https://packagist.org/packages/icecave/collections)
+* Install via [Composer](http://getcomposer.org) package [icecave/collections](https://packagist.org/packages/icecave/collections)
+* Read the [API documentation](http://icecave.com.au/collections/artifacts/documentation/api/)
 
 ## Rationale
 
@@ -54,4 +53,3 @@ The provided collection implementations support [cloning](http://php.net/manual/
 <!-- references -->
 [Build Status]: https://raw.github.com/IcecaveStudios/collections/gh-pages/artifacts/images/icecave/regular/build-status.png
 [Test Coverage]: https://raw.github.com/IcecaveStudios/collections/gh-pages/artifacts/images/icecave/regular/coverage.png
-[API Documentation]: http://icecave.com.au/collections/artifacts/documentation/api/
