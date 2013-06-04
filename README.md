@@ -3,14 +3,16 @@
 [![Build Status]](http://travis-ci.org/IcecaveStudios/collections)
 [![Test Coverage]](http://icecave.com.au/collections/artifacts/tests/coverage)
 
-**Collections** provides a set of PHP collection types loosely inspired by the .NET runtime and the C++ standard template library.
+**Collections** provides a set of collection types loosely inspired by the .NET runtime and the C++ standard template library.
+
+PHP has long been lacking formal, performant collection types. The addition of the heap-centric collections to the SPL
+has gone some way to addressing this problem but has fallen short in some regards. For example, [SplDoublyLinkedList](http://www.php.net/manual/en/class.spldoublylinkedlist.php)
+does not expose some of the operations that linked lists are designed to solve efficiently, such as insertion and
+deletion operations in the middle of the collection. There are also several broken abstractions. One example is [SplQueue](http://php.net/manual/en/class.splqueue.php)
+which exposes methods for manipulating both the head and tail of the queue.
 
 * Install via [Composer](http://getcomposer.org) package [icecave/collections](https://packagist.org/packages/icecave/collections)
-* Read the [API documentation](http://icecave.com.au/collections/artifacts/documentation/api/)
-
-## Rationale
-
-PHP has long been lacking formal, performant collection types. The addition of the heap-centric collections to the SPL has gone some way to addressing this problem but has fallen short in some regards. For example, [SplDoublyLinkedList](http://www.php.net/manual/en/class.spldoublylinkedlist.php) does not expose some of the operations that linked lists are designed to solve efficiently, such as insertion and deletion operations in the middle of the collection. There are also several broken abstractions. One example is [SplQueue](http://php.net/manual/en/class.splqueue.php) which exposes methods for manipulating both the head and tail of the queue.
+* Read the [API documentation](http://icecavestudios.github.io/collections/artifacts/documentation/api/)
 
 ## Concepts
 
@@ -44,11 +46,13 @@ PHP has long been lacking formal, performant collection types. The addition of t
 
 ## Serialization
 
-The provided collection types support [serialization](http://au1.php.net/manual/en/function.serialize.php), so long as the elements contained within the collection are also serializable.
+The provided collection types support [serialization](http://au1.php.net/manual/en/function.serialize.php), so long as
+the elements contained within the collection are also serializable.
 
 ## Cloning
 
-The provided collection implementations support [cloning](http://php.net/manual/en/language.oop5.cloning.php). Cloning a collection produces a copy of the collection containing the same elements. The elements themselves are not cloned.
+The provided collection implementations support [cloning](http://php.net/manual/en/language.oop5.cloning.php). Cloning a
+collection produces a copy of the collection containing the same elements. The elements themselves are not cloned.
 
 <!-- references -->
 [Build Status]: https://raw.github.com/IcecaveStudios/collections/gh-pages/artifacts/images/icecave/regular/build-status.png
