@@ -1,7 +1,7 @@
 # Collections
 
 [![Build Status]](http://travis-ci.org/IcecaveStudios/collections)
-[![Test Coverage]](http://icecave.com.au/collections/artifacts/tests/coverage)
+[![Test Coverage]](http://icecavestudios.github.io/collections/artifacts/tests/coverage)
 
 **Collections** provides a set of collection types loosely inspired by the .NET runtime and the C++ standard template library.
 
