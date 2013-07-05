@@ -18,12 +18,12 @@ which exposes methods for manipulating both the head and tail of the queue.
 
 * [Collection](lib/Icecave/Collections/CollectionInterface.php): A collection is an object that stores other objects (called elements).
 * [Mutable Collection](lib/Icecave/Collections/MutableCollectionInterface.php): A mutable collection is a collection on which elements can be added and removed.
-* [Iterable](lib/Icecave/Collections/IterableInterface.php): Iterable collections allow (at the very least) sequential access to the elements without modifying the collection.
+* [Iterable](lib/Icecave/Collections/IterableInterface.php): Iterable collections allow sequential access to the elements without modifying the collection.
 * [Mutable Iterable](lib/Icecave/Collections/MutableIterableInterface.php): An iterable collection that can be modified in place.
 * [Sequence](lib/Icecave/Collections/SequenceInterface.php): A sequence is a variable-sized collection whose elements are arranged in a strict linear order.
 * [Mutable Sequence](lib/Icecave/Collections/MutableSequenceInterface.php): A sequence that supports insertion and removal of elements.
-* [Random Access Sequence](lib/Icecave/Collections/RandomAccessInterface.php): A sequence that provides access to elements by their position in the sequence.
-* [Mutable Random Access Sequence](lib/Icecave/Collections/MutableRandomAccessInterface.php): A sequence that allows for insertion / removal of elements by their position.
+* [Random Access Sequence](lib/Icecave/Collections/RandomAccessInterface.php): A sequence that provides access to elements by position.
+* [Mutable Random Access Sequence](lib/Icecave/Collections/MutableRandomAccessInterface.php): A sequence that allows for insertion / removal of elements by position.
 * [Associative Collection](lib/Icecave/Collections/AssociativeInterface.php): A variable-sized collection that supports efficient retrieval of values based on keys.
 * [Mutable Associative Collection](lib/Icecave/Collections/MutableAssociativeInterface.php): An associative collection that supports insertion and removal of elements.
 * [Queued Access](lib/Icecave/Collections/QueuedAccessInterface.php): A F/LIFO buffer (ie, stacks and queues).
