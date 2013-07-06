@@ -419,6 +419,24 @@ class VectorTest extends PHPUnit_Framework_TestCase
         $this->assertSame(array(1, 2, 3, 4, 5, 6, 7, 8, 9), $result->elements());
     }
 
+    /**
+     * @group regression
+     * @link https://github.com/IcecaveStudios/collections/issues/44
+     */
+    public function testJoinOverCapacity()
+    {
+        $this->_collection->append(array(1, 2, 3));
+        $this->_collection->reserve(32);
+
+        $result = $this->_collection->join(
+            array(4, 5, 6),
+            array(7, 8, 9)
+        );
+
+        $this->assertInstanceOf(__NAMESPACE__ . '\Vector', $result);
+        $this->assertSame(array(1, 2, 3, 4, 5, 6, 7, 8, 9), $result->elements());
+    }
+
     ////////////////////////////////////////////////
     // Implementation of MutableSequenceInterface //
     ////////////////////////////////////////////////

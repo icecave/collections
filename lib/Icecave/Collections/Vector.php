@@ -513,7 +513,7 @@ class Vector implements MutableRandomAccessInterface, Countable, Iterator, Array
     {
         $this->typeCheck->join(func_get_args());
 
-        $result = new static($this->elements);
+        $result = new static($this);
         foreach (func_get_args() as $sequence) {
             $result->insertMany($result->size(), $sequence);
         }
