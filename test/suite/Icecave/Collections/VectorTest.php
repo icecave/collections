@@ -1,6 +1,7 @@
 <?php
 namespace Icecave\Collections;
 
+use Eloquent\Liberator\Liberator;
 use Icecave\Collections\Iterator\Traits;
 use Icecave\Collections\TestFixtures\UncountableIterator;
 use PHPUnit_Framework_TestCase;
@@ -10,6 +11,15 @@ class VectorTest extends PHPUnit_Framework_TestCase
     public function setUp()
     {
         $this->_collection = new Vector;
+    }
+
+    public function tearDown()
+    {
+        $collection = Liberator::liberate($this->_collection);
+
+        for ($index = $collection->size(); $index < $collection->capacity(); ++$index) {
+            $this->assertNull($collection->elements[$index]);
+        }
     }
 
     public function testConstructor()
@@ -295,6 +305,19 @@ class VectorTest extends PHPUnit_Framework_TestCase
         );
 
         $this->assertSame(array(1, 3, 5), $this->_collection->elements());
+    }
+
+    public function testFilterWithPredicateThreshold()
+    {
+        $this->_collection->append(array(1, 2, 3, 4, 5, 6, 7, 8, 9, 10));
+
+        $this->_collection->filter(
+            function ($element) {
+                return $element < 4;
+            }
+        );
+
+        $this->assertSame(array(1, 2, 3), $this->_collection->elements());
     }
 
     public function testApply()

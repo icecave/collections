@@ -349,10 +349,12 @@ class Vector implements MutableRandomAccessInterface, Countable, Iterator, Array
         $this->size = 0;
 
         foreach ($this->elements as $index => $element) {
-            if ($index >= $size) {
-                $this->elements[$index] = null;
-            } elseif (call_user_func($predicate, $element)) {
+            if (call_user_func($predicate, $element)) {
                 $this->elements[$this->size++] = $element;
+            }
+
+            if ($index >= $this->size) {
+                $this->elements[$index] = null;
             }
         }
     }
