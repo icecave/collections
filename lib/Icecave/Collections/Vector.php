@@ -925,17 +925,33 @@ class Vector implements MutableRandomAccessInterface, Countable, Iterator, Array
 
         $this->validateIndex($index, $this->size);
 
-        $count = count($elements);
+        // The number of elements is not known.
+        // Using the normal expansion rules we create a gap in which to insert the elements.
+        // Once all elements have been inserted the gap is closed.
+        if (!Collection::iteratorTraits($elements)->isCountable) {
+            $shiftIndex = $index;
 
-        if (0 === $count) {
-            return;
-        }
+            foreach ($elements as $element) {
+                if ($index === $shiftIndex) {
+                    $actualExpansion = $this->expand(1);
+                    $this->shiftRight($index, $actualExpansion);
+                    $shiftIndex += $actualExpansion;
+                }
 
-        $this->shiftRight($index, $count);
-        $this->size += $count;
+                $this->elements[$index++] = $element;
+                ++$this->size;
+            }
 
-        foreach ($elements as $element) {
-            $this->elements[$index++] = $element;
+            $this->shiftLeft($shiftIndex, $shiftIndex - $index);
+
+        // The number of elements is known, expand the vector once and insert the elements.
+        } elseif ($count = count($elements)) {
+            $this->shiftRight($index, $count);
+            $this->size += $count;
+
+            foreach ($elements as $element) {
+                $this->elements[$index++] = $element;
+            }
         }
     }
 
@@ -1299,14 +1315,15 @@ class Vector implements MutableRandomAccessInterface, Countable, Iterator, Array
      */
     private function shiftLeft($index, $count)
     {
+        $capacity = $this->capacity();
         $target = $index - $count;
         $source = $index;
 
-        while ($source < $this->size) {
+        while ($source < $capacity) {
             $this->elements[$target++] = $this->elements[$source++];
         }
 
-        while ($target < $this->size) {
+        while ($target < $capacity) {
             $this->elements[$target++] = null;
         }
     }
@@ -1350,20 +1367,21 @@ class Vector implements MutableRandomAccessInterface, Countable, Iterator, Array
      */
     private function expand($count)
     {
-        if ($this->capacity() >= $this->size + $count) {
-            return;
-        }
+        $currentCapacity = $this->capacity();
+        $targetCapacity  = $this->size + $count;
 
-        if (0 === $this->size) {
-            $capacity = $this->size + $count;
+        if (0 === $currentCapacity) {
+            $newCapacity = $targetCapacity;
         } else {
-            $capacity = $this->capacity();
-            $target = $this->size + $count;
-            while ($capacity < $target) {
-                $capacity <<= 1;
+            $newCapacity = $currentCapacity;
+            while ($newCapacity < $targetCapacity) {
+                $newCapacity <<= 1;
             }
         }
-        $this->reserve($capacity);
+
+        $this->reserve($newCapacity);
+
+        return $newCapacity - $currentCapacity;
     }
 
     private $typeCheck;

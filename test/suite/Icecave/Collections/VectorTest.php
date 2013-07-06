@@ -2,6 +2,7 @@
 namespace Icecave\Collections;
 
 use Icecave\Collections\Iterator\Traits;
+use Icecave\Collections\TestFixtures\UncountableIterator;
 use PHPUnit_Framework_TestCase;
 
 class VectorTest extends PHPUnit_Framework_TestCase
@@ -904,6 +905,45 @@ class VectorTest extends PHPUnit_Framework_TestCase
     {
         $this->setExpectedException(__NAMESPACE__ . '\Exception\IndexException', 'Index 1 is out of range.');
         $this->_collection->insertMany(1, array('bar', 'frob'));
+    }
+
+    public function testInsertManyWithUncountableIterator()
+    {
+        $this->_collection->append(array('foo', 'spam'));
+
+        $this->_collection->insertMany(1, new UncountableIterator(array('bar', 'frob')));
+
+        $this->assertSame(array('foo', 'bar', 'frob', 'spam'), $this->_collection->elements());
+    }
+
+    public function testInsertManyAtStartWithUncountableIterator()
+    {
+        $this->_collection->insertMany(0, new UncountableIterator(array('foo', 'bar')));
+
+        $this->assertSame(array('foo', 'bar'), $this->_collection->elements());
+    }
+
+    public function testInsertManyAtEndWithUncountableIterator()
+    {
+        $this->_collection->append(array('foo', 'spam'));
+
+        $this->_collection->insertMany($this->_collection->size(), new UncountableIterator(array('bar', 'frob')));
+
+        $this->assertSame(array('foo', 'spam', 'bar', 'frob'), $this->_collection->elements());
+    }
+
+    public function testInsertManyWithUncountableIteratorAndMoreElementsThanFirstExpansion()
+    {
+        $this->_collection->append(array('foo', 'spam'));
+
+        $this->_collection->insertMany(
+            1,
+            new UncountableIterator(
+                array('bar', 'frob', 'doom')
+            )
+        );
+
+        $this->assertSame(array('foo', 'bar', 'frob', 'doom', 'spam'), $this->_collection->elements());
     }
 
     public function testRemove()
