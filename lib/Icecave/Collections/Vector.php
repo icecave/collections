@@ -1364,6 +1364,8 @@ class Vector implements MutableRandomAccessInterface, Countable, Iterator, Array
 
     /**
      * @param integer $count
+     *
+     * @param integer The unused capacity of the vector.
      */
     private function expand($count)
     {
@@ -1381,7 +1383,7 @@ class Vector implements MutableRandomAccessInterface, Countable, Iterator, Array
 
         $this->reserve($newCapacity);
 
-        return $newCapacity - $currentCapacity;
+        return $this->capacity() - $this->size;
     }
 
     private $typeCheck;

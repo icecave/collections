@@ -916,6 +916,16 @@ class VectorTest extends PHPUnit_Framework_TestCase
         $this->assertSame(array('foo', 'bar', 'frob', 'spam'), $this->_collection->elements());
     }
 
+    public function testInsertManyWithUncountableIteratorAndExistingCapacity()
+    {
+        $this->_collection->append(array('foo', 'spam'));
+        $this->_collection->reserve(4);
+
+        $this->_collection->insertMany(1, new UncountableIterator(array('bar', 'frob')));
+
+        $this->assertSame(array('foo', 'bar', 'frob', 'spam'), $this->_collection->elements());
+    }
+
     public function testInsertManyAtStartWithUncountableIterator()
     {
         $this->_collection->insertMany(0, new UncountableIterator(array('foo', 'bar')));
