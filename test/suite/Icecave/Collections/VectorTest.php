@@ -1122,6 +1122,15 @@ class VectorTest extends PHPUnit_Framework_TestCase
         $this->assertSame(array('foo', 'a', 'b'), $this->_collection->elements());
     }
 
+    public function testReplaceWithRemoveMore()
+    {
+        $this->_collection->append(array('foo', 'bar', 'spam', 'doom'));
+
+        $this->_collection->replace(1, array('a'), 2);
+
+        $this->assertSame(array('foo', 'a', 'doom'), $this->_collection->elements());
+    }
+
     public function testReplaceWithNegativeIndex()
     {
         $this->_collection->append(array('foo', 'bar', 'spam', 'doom'));
@@ -1135,6 +1144,42 @@ class VectorTest extends PHPUnit_Framework_TestCase
     {
         $this->setExpectedException(__NAMESPACE__ . '\Exception\IndexException', 'Index 1 is out of range.');
         $this->_collection->replace(1, array());
+    }
+
+    public function testReplaceWithUncountableIterator()
+    {
+        $this->_collection->append(array('foo', 'bar', 'spam', 'doom'));
+
+        $this->_collection->replace(1, new UncountableIterator(array('a', 'b')));
+
+        $this->assertSame(array('foo', 'a', 'b'), $this->_collection->elements());
+    }
+
+    public function testReplaceWithUncountableIteratorAndCount()
+    {
+        $this->_collection->append(array('foo', 'bar', 'spam', 'doom'));
+
+        $this->_collection->replace(1, new UncountableIterator(array('a', 'b')), 2);
+
+        $this->assertSame(array('foo', 'a', 'b', 'doom'), $this->_collection->elements());
+    }
+
+    public function testReplaceWithUncountableIteratorAddMore()
+    {
+        $this->_collection->append(array('foo', 'bar', 'spam', 'doom'));
+
+        $this->_collection->replace(1, new UncountableIterator(array('a', 'b')), 1);
+
+        $this->assertSame(array('foo', 'a', 'b', 'spam', 'doom'), $this->_collection->elements());
+    }
+
+    public function testReplaceWithUncountableIteratorRemoveMore()
+    {
+        $this->_collection->append(array('foo', 'bar', 'spam', 'doom'));
+
+        $this->_collection->replace(1, new UncountableIterator(array('a', 'b')), 3);
+
+        $this->assertSame(array('foo', 'a', 'b'), $this->_collection->elements());
     }
 
     public function testReplaceRange()

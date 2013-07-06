@@ -1027,18 +1027,29 @@ class Vector implements MutableRandomAccessInterface, Countable, Iterator, Array
         $this->validateIndex($index);
 
         $count = $this->clamp($count, 0, $this->size - $index);
-        $diff  = count($elements) - $count;
 
-        if ($diff > 0) {
-            $this->shiftRight($index + $count, $diff);
-        } elseif ($diff < 0) {
-            $this->shiftLeft($index + $count, abs($diff));
-        }
+        // Element count is available ...
+        if (Collection::iteratorTraits($elements)->isCountable) {
+            $diff = count($elements) - $count;
 
-        $this->size += $diff;
+            if ($diff > 0) {
+                $this->shiftRight($index + $count, $diff);
+            } elseif ($diff < 0) {
+                $this->shiftLeft($index + $count, abs($diff));
+            }
 
-        foreach ($elements as $element) {
-            $this->elements[$index++] = $element;
+            $this->size += $diff;
+
+            foreach ($elements as $element) {
+                $this->elements[$index++] = $element;
+            }
+
+        // No count is available ...
+        } else {
+            $originalSize = $this->size;
+            $this->insertMany($index, $elements);
+            $elementCount = $this->size - $originalSize;
+            $this->removeMany($index + $elementCount, $count);
         }
     }
 
