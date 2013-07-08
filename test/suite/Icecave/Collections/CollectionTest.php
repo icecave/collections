@@ -19,21 +19,21 @@ class CollectionTest extends PHPUnit_Framework_TestCase
 {
     public function setUp()
     {
-        if (isset($this->_array)) {
+        if (isset($this->array)) {
             return;
         }
 
-        $this->_array = array(1, 2, 3);
-        $this->_vector = new Vector($this->_array);
-        $this->_map = new Map($this->_array);
-        $this->_countable = new ArrayIterator($this->_array);
-        $this->_traversable = Phake::partialMock('LimitIterator', $this->_countable);
+        $this->array = array(1, 2, 3);
+        $this->vector = new Vector($this->array);
+        $this->map = new Map($this->array);
+        $this->countable = new ArrayIterator($this->array);
+        $this->traversable = Phake::partialMock('LimitIterator', $this->countable);
     }
 
     public function tearDown()
     {
         // Iteration should only be performed once ...
-        Phake::verify($this->_traversable, Phake::atMost(1))->rewind();
+        Phake::verify($this->traversable, Phake::atMost(1))->rewind();
     }
 
     public function getCollections()
@@ -41,11 +41,11 @@ class CollectionTest extends PHPUnit_Framework_TestCase
         $this->setUp();
 
         return array(
-            array($this->_array),
-            array($this->_vector),
-            array($this->_map),
-            array($this->_countable),
-            array($this->_traversable),
+            array($this->array),
+            array($this->vector),
+            array($this->map),
+            array($this->countable),
+            array($this->traversable),
         );
     }
 
@@ -420,8 +420,8 @@ class CollectionTest extends PHPUnit_Framework_TestCase
             array(new Traits(true,  true),  new SplPriorityQueue),
             array(new Traits(true,  true),  new SplFixedArray),
             array(new Traits(true,  true),  new SplObjectStorage),
-            array(new Traits(true,  false), $this->_countable),
-            array(new Traits(false, false), $this->_traversable),
+            array(new Traits(true,  false), $this->countable),
+            array(new Traits(false, false), $this->traversable),
         );
     }
 }

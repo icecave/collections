@@ -8,15 +8,15 @@ class AssociativeIteratorTest extends PHPUnit_Framework_TestCase
 {
     public function setUp()
     {
-        $this->_collection = new Map(array('a' => 1, 'b' => 2, 'c' => 3));
-        $this->_iterator = new AssociativeIterator($this->_collection);
+        $this->collection = new Map(array('a' => 1, 'b' => 2, 'c' => 3));
+        $this->iterator = new AssociativeIterator($this->collection);
     }
 
     public function testIteration()
     {
         $result = array();
 
-        foreach ($this->_iterator as $index => $value) {
+        foreach ($this->iterator as $index => $value) {
             $result[$index] = $value;
         }
 
@@ -25,6 +25,6 @@ class AssociativeIteratorTest extends PHPUnit_Framework_TestCase
 
     public function testCollection()
     {
-        $this->assertSame($this->_collection, $this->_iterator->collection());
+        $this->assertSame($this->collection, $this->iterator->collection());
     }
 }

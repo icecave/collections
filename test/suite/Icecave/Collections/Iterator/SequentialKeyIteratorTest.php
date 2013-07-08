@@ -8,15 +8,15 @@ class SequentialKeyIteratorTest extends PHPUnit_Framework_TestCase
 {
     public function setUp()
     {
-        $this->_internal = new ArrayIterator(array('a' => 'one', 'b' => 'two', 'c' => 'three'));
-        $this->_iterator = new SequentialKeyIterator($this->_internal);
+        $this->internal = new ArrayIterator(array('a' => 'one', 'b' => 'two', 'c' => 'three'));
+        $this->iterator = new SequentialKeyIterator($this->internal);
     }
 
     public function testIteration()
     {
         $result = array();
 
-        foreach ($this->_iterator as $index => $value) {
+        foreach ($this->iterator as $index => $value) {
             $result[$index] = $value;
         }
 

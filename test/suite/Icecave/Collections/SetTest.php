@@ -9,12 +9,12 @@ class SetTest extends PHPUnit_Framework_TestCase
 {
     public function setUp()
     {
-        $this->_collection = new Set;
+        $this->collection = new Set;
     }
 
     public function testConstructor()
     {
-        $this->assertSame(0, $this->_collection->size());
+        $this->assertSame(0, $this->collection->size());
     }
 
     public function testConstructorWithArray()
@@ -25,28 +25,28 @@ class SetTest extends PHPUnit_Framework_TestCase
 
     public function testClone()
     {
-        $this->_collection->add(1);
-        $this->_collection->add(2);
-        $this->_collection->add(3);
+        $this->collection->add(1);
+        $this->collection->add(2);
+        $this->collection->add(3);
 
-        $collection = clone $this->_collection;
+        $collection = clone $this->collection;
 
         $collection->remove(2);
 
         $this->assertSame(array(1, 3), $collection->elements());
-        $this->assertSame(array(1, 2, 3), $this->_collection->elements());
+        $this->assertSame(array(1, 2, 3), $this->collection->elements());
     }
 
     public function testSerialization()
     {
-        $this->_collection->add(1);
-        $this->_collection->add(2);
-        $this->_collection->add(3);
+        $this->collection->add(1);
+        $this->collection->add(2);
+        $this->collection->add(3);
 
-        $packet = serialize($this->_collection);
+        $packet = serialize($this->collection);
         $collection = unserialize($packet);
 
-        $this->assertSame($this->_collection->elements(), $collection->elements());
+        $this->assertSame($this->collection->elements(), $collection->elements());
     }
 
     /**
@@ -69,45 +69,45 @@ class SetTest extends PHPUnit_Framework_TestCase
 
     public function testSize()
     {
-        $this->assertSame(0, $this->_collection->size());
+        $this->assertSame(0, $this->collection->size());
 
-        $this->_collection->add('a');
-        $this->_collection->add('b');
-        $this->_collection->add('c');
+        $this->collection->add('a');
+        $this->collection->add('b');
+        $this->collection->add('c');
 
-        $this->assertSame(3, $this->_collection->size());
+        $this->assertSame(3, $this->collection->size());
 
-        $this->_collection->clear();
+        $this->collection->clear();
 
-        $this->assertSame(0, $this->_collection->size());
+        $this->assertSame(0, $this->collection->size());
     }
 
     public function testIsEmpty()
     {
-        $this->assertTrue($this->_collection->isEmpty());
+        $this->assertTrue($this->collection->isEmpty());
 
-        $this->_collection->add('a');
+        $this->collection->add('a');
 
-        $this->assertFalse($this->_collection->isEmpty());
+        $this->assertFalse($this->collection->isEmpty());
 
-        $this->_collection->clear();
+        $this->collection->clear();
 
-        $this->assertTrue($this->_collection->isEmpty());
+        $this->assertTrue($this->collection->isEmpty());
     }
 
     public function testToString()
     {
-        $this->assertSame('<Set 0>', $this->_collection->__toString());
+        $this->assertSame('<Set 0>', $this->collection->__toString());
 
-        $this->_collection->add('a');
-        $this->_collection->add('b');
-        $this->_collection->add('c');
+        $this->collection->add('a');
+        $this->collection->add('b');
+        $this->collection->add('c');
 
-        $this->assertSame('<Set 3 ["a", "b", "c"]>', $this->_collection->__toString());
+        $this->assertSame('<Set 3 ["a", "b", "c"]>', $this->collection->__toString());
 
-        $this->_collection->add('d');
+        $this->collection->add('d');
 
-        $this->assertSame('<Set 4 ["a", "b", "c", ...]>', $this->_collection->__toString());
+        $this->assertSame('<Set 4 ["a", "b", "c", ...]>', $this->collection->__toString());
     }
 
     //////////////////////////////////////////////////
@@ -116,11 +116,11 @@ class SetTest extends PHPUnit_Framework_TestCase
 
     public function testClear()
     {
-        $this->_collection->add('a');
+        $this->collection->add('a');
 
-        $this->_collection->clear();
+        $this->collection->clear();
 
-        $this->assertTrue($this->_collection->isEmpty());
+        $this->assertTrue($this->collection->isEmpty());
     }
 
     //////////////////////////////////////////////
@@ -129,7 +129,7 @@ class SetTest extends PHPUnit_Framework_TestCase
 
     public function testIteratorTraits()
     {
-        $this->assertEquals(new Traits(true, true), $this->_collection->iteratorTraits());
+        $this->assertEquals(new Traits(true, true), $this->collection->iteratorTraits());
     }
 
     /////////////////////////////////////////
@@ -138,31 +138,31 @@ class SetTest extends PHPUnit_Framework_TestCase
 
     public function testElements()
     {
-        $this->assertSame(array(), $this->_collection->elements());
+        $this->assertSame(array(), $this->collection->elements());
 
-        $this->_collection->add('a');
-        $this->_collection->add('b');
-        $this->_collection->add('c');
+        $this->collection->add('a');
+        $this->collection->add('b');
+        $this->collection->add('c');
 
-        $this->assertSame(array('a', 'b', 'c'), $this->_collection->elements());
+        $this->assertSame(array('a', 'b', 'c'), $this->collection->elements());
     }
 
     public function testContains()
     {
-        $this->assertFalse($this->_collection->contains('a'));
+        $this->assertFalse($this->collection->contains('a'));
 
-        $this->_collection->add('a');
+        $this->collection->add('a');
 
-        $this->assertTrue($this->_collection->contains('a'));
+        $this->assertTrue($this->collection->contains('a'));
     }
 
     public function testFiltered()
     {
-        $this->_collection->add('a');
-        $this->_collection->add(null);
-        $this->_collection->add('c');
+        $this->collection->add('a');
+        $this->collection->add(null);
+        $this->collection->add('c');
 
-        $result = $this->_collection->filtered();
+        $result = $this->collection->filtered();
 
         $this->assertInstanceOf(__NAMESPACE__ . '\Set', $result);
         $this->assertSame(array('a', 'c'), $result->elements());
@@ -170,13 +170,13 @@ class SetTest extends PHPUnit_Framework_TestCase
 
     public function testFilteredWithPredicate()
     {
-        $this->_collection->add(1);
-        $this->_collection->add(2);
-        $this->_collection->add(3);
-        $this->_collection->add(4);
-        $this->_collection->add(5);
+        $this->collection->add(1);
+        $this->collection->add(2);
+        $this->collection->add(3);
+        $this->collection->add(4);
+        $this->collection->add(5);
 
-        $result = $this->_collection->filtered(
+        $result = $this->collection->filtered(
             function ($value) {
                 return $value & 0x1;
             }
@@ -188,11 +188,11 @@ class SetTest extends PHPUnit_Framework_TestCase
 
     public function testMap()
     {
-        $this->_collection->add(1);
-        $this->_collection->add(2);
-        $this->_collection->add(3);
+        $this->collection->add(1);
+        $this->collection->add(2);
+        $this->collection->add(3);
 
-        $result = $this->_collection->map(
+        $result = $this->collection->map(
             function ($value) {
                 return $value + 1;
             }
@@ -204,11 +204,11 @@ class SetTest extends PHPUnit_Framework_TestCase
 
     public function testPartition()
     {
-        $this->_collection->add(1);
-        $this->_collection->add(2);
-        $this->_collection->add(3);
+        $this->collection->add(1);
+        $this->collection->add(2);
+        $this->collection->add(3);
 
-        $result = $this->_collection->partition(
+        $result = $this->collection->partition(
             function ($element) {
                 return $element < 3;
             }
@@ -233,11 +233,11 @@ class SetTest extends PHPUnit_Framework_TestCase
             $calls[] = func_get_args();
         };
 
-        $this->_collection->add(1);
-        $this->_collection->add(2);
-        $this->_collection->add(3);
+        $this->collection->add(1);
+        $this->collection->add(2);
+        $this->collection->add(3);
 
-        $this->_collection->each($callback);
+        $this->collection->each($callback);
 
         $expected = array(
             array(1),
@@ -250,12 +250,12 @@ class SetTest extends PHPUnit_Framework_TestCase
 
     public function testAll()
     {
-        $this->_collection->add(1);
-        $this->_collection->add(2);
-        $this->_collection->add(3);
+        $this->collection->add(1);
+        $this->collection->add(2);
+        $this->collection->add(3);
 
         $this->assertTrue(
-            $this->_collection->all(
+            $this->collection->all(
                 function ($element) {
                     return is_int($element);
                 }
@@ -263,7 +263,7 @@ class SetTest extends PHPUnit_Framework_TestCase
         );
 
         $this->assertFalse(
-            $this->_collection->all(
+            $this->collection->all(
                 function ($element) {
                     return $element > 2;
                 }
@@ -273,12 +273,12 @@ class SetTest extends PHPUnit_Framework_TestCase
 
     public function testAny()
     {
-        $this->_collection->add(1);
-        $this->_collection->add(2);
-        $this->_collection->add(3);
+        $this->collection->add(1);
+        $this->collection->add(2);
+        $this->collection->add(3);
 
         $this->assertTrue(
-            $this->_collection->any(
+            $this->collection->any(
                 function ($element) {
                     return $element > 2;
                 }
@@ -286,7 +286,7 @@ class SetTest extends PHPUnit_Framework_TestCase
         );
 
         $this->assertFalse(
-            $this->_collection->any(
+            $this->collection->any(
                 function ($element) {
                     return is_float($element);
                 }
@@ -300,45 +300,45 @@ class SetTest extends PHPUnit_Framework_TestCase
 
     public function testFilter()
     {
-        $this->_collection->add('a');
-        $this->_collection->add(null);
-        $this->_collection->add('c');
+        $this->collection->add('a');
+        $this->collection->add(null);
+        $this->collection->add('c');
 
-        $this->_collection->filter();
+        $this->collection->filter();
 
-        $this->assertSame(array('a', 'c'), $this->_collection->elements());
+        $this->assertSame(array('a', 'c'), $this->collection->elements());
     }
 
     public function testFilterWithPredicate()
     {
-        $this->_collection->add(1);
-        $this->_collection->add(2);
-        $this->_collection->add(3);
-        $this->_collection->add(4);
-        $this->_collection->add(5);
+        $this->collection->add(1);
+        $this->collection->add(2);
+        $this->collection->add(3);
+        $this->collection->add(4);
+        $this->collection->add(5);
 
-        $this->_collection->filter(
+        $this->collection->filter(
             function ($value) {
                 return $value & 0x1;
             }
         );
 
-        $this->assertSame(array(1, 3, 5), $this->_collection->elements());
+        $this->assertSame(array(1, 3, 5), $this->collection->elements());
     }
 
     public function testApply()
     {
-        $this->_collection->add(1);
-        $this->_collection->add(2);
-        $this->_collection->add(3);
+        $this->collection->add(1);
+        $this->collection->add(2);
+        $this->collection->add(3);
 
-        $this->_collection->apply(
+        $this->collection->apply(
             function ($value) {
                 return $value + 1;
             }
         );
 
-        $this->assertSame(array(2, 3, 4), $this->_collection->elements());
+        $this->assertSame(array(2, 3, 4), $this->collection->elements());
     }
 
     /////////////////////////////////
@@ -347,17 +347,17 @@ class SetTest extends PHPUnit_Framework_TestCase
 
     public function testCount()
     {
-        $this->assertSame(0, count($this->_collection));
+        $this->assertSame(0, count($this->collection));
 
-        $this->_collection->add('a');
-        $this->_collection->add('b');
-        $this->_collection->add('c');
+        $this->collection->add('a');
+        $this->collection->add('b');
+        $this->collection->add('c');
 
-        $this->assertSame(3, count($this->_collection));
+        $this->assertSame(3, count($this->collection));
 
-        $this->_collection->clear();
+        $this->collection->clear();
 
-        $this->assertSame(0, count($this->_collection));
+        $this->assertSame(0, count($this->collection));
     }
 
     /////////////////////////////////////////
@@ -366,11 +366,11 @@ class SetTest extends PHPUnit_Framework_TestCase
 
     public function testIteration()
     {
-        $this->_collection->add('a');
-        $this->_collection->add('b');
-        $this->_collection->add('c');
+        $this->collection->add('a');
+        $this->collection->add('b');
+        $this->collection->add('c');
 
-        $result = iterator_to_array($this->_collection);
+        $result = iterator_to_array($this->collection);
 
         $this->assertSame(array(0 => 'a', 1 => 'b', 2 => 'c'), $result);
     }
@@ -381,199 +381,199 @@ class SetTest extends PHPUnit_Framework_TestCase
 
     public function testCascade()
     {
-        $this->_collection->add('b');
+        $this->collection->add('b');
 
-        $this->assertSame('b', $this->_collection->cascade('a', 'b', 'c'));
+        $this->assertSame('b', $this->collection->cascade('a', 'b', 'c'));
     }
 
     public function testCascadeFailure()
     {
         $this->setExpectedException(__NAMESPACE__ . '\Exception\UnknownKeyException', 'Key "c" does not exist.');
 
-        $this->_collection->cascade('a', 'b', 'c');
+        $this->collection->cascade('a', 'b', 'c');
     }
 
     public function testCascadeWithDefault()
     {
-        $this->assertSame('<default>', $this->_collection->cascadeWithDefault('<default>', 'a', 'b', 'c'));
+        $this->assertSame('<default>', $this->collection->cascadeWithDefault('<default>', 'a', 'b', 'c'));
 
-        $this->_collection->add('b');
+        $this->collection->add('b');
 
-        $this->assertSame('b', $this->_collection->cascadeWithDefault('<default>', 'a', 'b', 'c'));
+        $this->assertSame('b', $this->collection->cascadeWithDefault('<default>', 'a', 'b', 'c'));
     }
 
     public function testCascadeIterable()
     {
-        $this->_collection->add('b');
+        $this->collection->add('b');
 
-        $this->assertSame('b', $this->_collection->cascadeIterable(array('a', 'b', 'c')));
+        $this->assertSame('b', $this->collection->cascadeIterable(array('a', 'b', 'c')));
     }
 
     public function testCascadeIterableWithDefault()
     {
-        $this->assertSame('<default>', $this->_collection->cascadeIterableWithDefault('<default>', array('a', 'b', 'c')));
+        $this->assertSame('<default>', $this->collection->cascadeIterableWithDefault('<default>', array('a', 'b', 'c')));
 
-        $this->_collection->add('b');
+        $this->collection->add('b');
 
-        $this->assertSame('b', $this->_collection->cascadeIterableWithDefault('<default>', array('a', 'b', 'c')));
+        $this->assertSame('b', $this->collection->cascadeIterableWithDefault('<default>', array('a', 'b', 'c')));
     }
 
     public function testAdd()
     {
-        $this->assertFalse($this->_collection->contains('a'));
+        $this->assertFalse($this->collection->contains('a'));
 
-        $this->assertTrue($this->_collection->add('a'));
+        $this->assertTrue($this->collection->add('a'));
 
-        $this->assertTrue($this->_collection->contains('a'));
+        $this->assertTrue($this->collection->contains('a'));
 
-        $this->assertFalse($this->_collection->add('a'));
+        $this->assertFalse($this->collection->add('a'));
 
-        $this->assertTrue($this->_collection->contains('a'));
+        $this->assertTrue($this->collection->contains('a'));
     }
 
     public function testRemove()
     {
-        $this->assertFalse($this->_collection->remove('a'));
+        $this->assertFalse($this->collection->remove('a'));
 
-        $this->_collection->add('a');
+        $this->collection->add('a');
 
-        $this->assertTrue($this->_collection->remove('a'));
+        $this->assertTrue($this->collection->remove('a'));
 
-        $this->assertFalse($this->_collection->contains('a'));
+        $this->assertFalse($this->collection->contains('a'));
     }
 
     public function testIsEqual()
     {
-        $this->_collection->add('a');
-        $this->_collection->add('b');
-        $this->_collection->add('c');
+        $this->collection->add('a');
+        $this->collection->add('b');
+        $this->collection->add('c');
 
         $collection = new Set;
         $collection->add('c');
         $collection->add('b');
         $collection->add('a');
 
-        $this->assertTrue($this->_collection->isEqual($collection));
+        $this->assertTrue($this->collection->isEqual($collection));
 
         $collection->remove('b');
 
-        $this->assertFalse($this->_collection->isEqual($collection));
+        $this->assertFalse($this->collection->isEqual($collection));
 
         $collection->add('b');
-        $this->_collection->remove('b');
+        $this->collection->remove('b');
 
-        $this->assertFalse($this->_collection->isEqual($collection));
+        $this->assertFalse($this->collection->isEqual($collection));
     }
 
     public function testIsSuperset()
     {
-        $this->_collection->add('a');
-        $this->_collection->add('b');
-        $this->_collection->add('c');
+        $this->collection->add('a');
+        $this->collection->add('b');
+        $this->collection->add('c');
 
         $collection = new Set;
         $collection->add('c');
         $collection->add('b');
         $collection->add('a');
 
-        $this->assertTrue($this->_collection->isSuperset($collection));
+        $this->assertTrue($this->collection->isSuperset($collection));
 
-        $this->_collection->add('d');
+        $this->collection->add('d');
 
-        $this->assertTrue($this->_collection->isSuperset($collection));
+        $this->assertTrue($this->collection->isSuperset($collection));
 
-        $this->_collection->remove('a');
+        $this->collection->remove('a');
 
-        $this->assertFalse($this->_collection->isSuperset($collection));
+        $this->assertFalse($this->collection->isSuperset($collection));
     }
 
     public function testIsSubset()
     {
-        $this->_collection->add('a');
-        $this->_collection->add('b');
-        $this->_collection->add('c');
+        $this->collection->add('a');
+        $this->collection->add('b');
+        $this->collection->add('c');
 
         $collection = new Set;
         $collection->add('c');
         $collection->add('b');
         $collection->add('a');
 
-        $this->assertTrue($this->_collection->isSubset($collection));
+        $this->assertTrue($this->collection->isSubset($collection));
 
         $collection->add('d');
 
-        $this->assertTrue($this->_collection->isSubset($collection));
+        $this->assertTrue($this->collection->isSubset($collection));
 
         $collection->remove('a');
 
-        $this->assertFalse($this->_collection->isSubset($collection));
+        $this->assertFalse($this->collection->isSubset($collection));
     }
 
     public function testIsStrictSuperset()
     {
-        $this->_collection->add('a');
-        $this->_collection->add('b');
-        $this->_collection->add('c');
+        $this->collection->add('a');
+        $this->collection->add('b');
+        $this->collection->add('c');
 
         $collection = new Set;
         $collection->add('c');
         $collection->add('b');
         $collection->add('a');
 
-        $this->assertFalse($this->_collection->isStrictSuperset($collection));
+        $this->assertFalse($this->collection->isStrictSuperset($collection));
 
-        $this->_collection->add('d');
+        $this->collection->add('d');
 
-        $this->assertTrue($this->_collection->isStrictSuperset($collection));
+        $this->assertTrue($this->collection->isStrictSuperset($collection));
 
-        $this->_collection->remove('a');
+        $this->collection->remove('a');
 
-        $this->assertFalse($this->_collection->isStrictSuperset($collection));
+        $this->assertFalse($this->collection->isStrictSuperset($collection));
     }
 
     public function testIsStrictSubset()
     {
-        $this->_collection->add('a');
-        $this->_collection->add('b');
-        $this->_collection->add('c');
+        $this->collection->add('a');
+        $this->collection->add('b');
+        $this->collection->add('c');
 
         $collection = new Set;
         $collection->add('c');
         $collection->add('b');
         $collection->add('a');
 
-        $this->assertFalse($this->_collection->isStrictSubset($collection));
+        $this->assertFalse($this->collection->isStrictSubset($collection));
 
         $collection->add('d');
 
-        $this->assertTrue($this->_collection->isStrictSubset($collection));
+        $this->assertTrue($this->collection->isStrictSubset($collection));
 
         $collection->remove('a');
 
-        $this->assertFalse($this->_collection->isStrictSubset($collection));
+        $this->assertFalse($this->collection->isStrictSubset($collection));
     }
 
     public function testUnion()
     {
-        $this->_collection->add('a');
-        $this->_collection->add('b');
-        $this->_collection->add('c');
+        $this->collection->add('a');
+        $this->collection->add('b');
+        $this->collection->add('c');
 
         $set = new Set;
         $set->add('c');
         $set->add('d');
         $set->add('e');
 
-        $result = $this->_collection->union($set);
+        $result = $this->collection->union($set);
 
         $this->assertSame(array('a', 'b', 'c', 'd', 'e'), $result->elements());
     }
 
     public function testUnionWithArray()
     {
-        $this->_collection->add('a');
-        $this->_collection->add('b');
-        $this->_collection->add('c');
+        $this->collection->add('a');
+        $this->collection->add('b');
+        $this->collection->add('c');
 
         $array = array(
             'c',
@@ -581,32 +581,32 @@ class SetTest extends PHPUnit_Framework_TestCase
             'e'
         );
 
-        $result = $this->_collection->union($array);
+        $result = $this->collection->union($array);
 
         $this->assertSame(array('a', 'b', 'c', 'd', 'e'), $result->elements());
     }
 
     public function testIntersect()
     {
-        $this->_collection->add('a');
-        $this->_collection->add('b');
-        $this->_collection->add('c');
+        $this->collection->add('a');
+        $this->collection->add('b');
+        $this->collection->add('c');
 
         $set = new Set;
         $set->add('c');
         $set->add('d');
         $set->add('e');
 
-        $result = $this->_collection->intersect($set);
+        $result = $this->collection->intersect($set);
 
         $this->assertSame(array('c'), $result->elements());
     }
 
     public function testIntersectWithArray()
     {
-        $this->_collection->add('a');
-        $this->_collection->add('b');
-        $this->_collection->add('c');
+        $this->collection->add('a');
+        $this->collection->add('b');
+        $this->collection->add('c');
 
         $array = array(
             'c',
@@ -614,32 +614,32 @@ class SetTest extends PHPUnit_Framework_TestCase
             'e'
         );
 
-        $result = $this->_collection->intersect($array);
+        $result = $this->collection->intersect($array);
 
         $this->assertSame(array('c'), $result->elements());
     }
 
     public function testComplement()
     {
-        $this->_collection->add('a');
-        $this->_collection->add('b');
-        $this->_collection->add('c');
+        $this->collection->add('a');
+        $this->collection->add('b');
+        $this->collection->add('c');
 
         $set = new Set;
         $set->add('c');
         $set->add('d');
         $set->add('e');
 
-        $result = $this->_collection->complement($set);
+        $result = $this->collection->complement($set);
 
         $this->assertSame(array('a', 'b'), $result->elements());
     }
 
     public function testComplementWithArray()
     {
-        $this->_collection->add('a');
-        $this->_collection->add('b');
-        $this->_collection->add('c');
+        $this->collection->add('a');
+        $this->collection->add('b');
+        $this->collection->add('c');
 
         $array = array(
             'c',
@@ -647,7 +647,7 @@ class SetTest extends PHPUnit_Framework_TestCase
             'e'
         );
 
-        $result = $this->_collection->complement($array);
+        $result = $this->collection->complement($array);
 
         $this->assertSame(array('a', 'b'), $result->elements());
     }
