@@ -1328,6 +1328,36 @@ class VectorTest extends PHPUnit_Framework_TestCase
         $this->assertSame($input, $result);
     }
 
+    ////////////////////////////////////////
+    // Implementation of SeekableIterator //
+    ////////////////////////////////////////
+
+    public function testSeek()
+    {
+        $input = array(1, 2, 3, 4, 5);
+
+        $this->_collection->append($input);
+
+        $this->_collection->seek(2);
+
+        $this->assertSame(3, $this->_collection->current());
+    }
+
+    public function testSeekBackwards()
+    {
+        $input = array(1, 2, 3, 4, 5);
+
+        $this->_collection->append($input);
+
+        $this->_collection->next();
+        $this->_collection->next();
+        $this->_collection->next();
+
+        $this->_collection->seek(1);
+
+        $this->assertSame(2, $this->_collection->current());
+    }
+
     ///////////////////////////////////
     // Implementation of ArrayAccess //
     ///////////////////////////////////

@@ -6,13 +6,14 @@ use Countable;
 use Icecave\Collections\Iterator\Traits;
 use Icecave\Collections\TypeCheck\TypeCheck;
 use Iterator;
+use SeekableIterator;
 use Serializable;
 use SplFixedArray;
 
 /**
  * A mutable sequence with efficient access by position and iteration.
  */
-class Vector implements MutableRandomAccessInterface, Countable, Iterator, ArrayAccess, Serializable
+class Vector implements MutableRandomAccessInterface, Countable, Iterator, SeekableIterator, ArrayAccess, Serializable
 {
     /**
      * @param mixed<mixed>|null $collection An iterable type containing the elements to include in this vector, or null to create an empty vector.
@@ -1177,6 +1178,32 @@ class Vector implements MutableRandomAccessInterface, Countable, Iterator, Array
             && $index < $this->size();
     }
 
+    ////////////////////////////////////////
+    // Implementation of SeekableIterator //
+    ////////////////////////////////////////
+
+    /**
+     * @param integer $index
+     */
+    public function seek($index)
+    {
+        $this->typeCheck->seek(func_get_args());
+
+        $this->validateIndex($index);
+
+        $currentIndex = $this->key();
+
+        if ($index < $currentIndex) {
+            $this->rewind();
+        } else {
+            $index -= $currentIndex;
+        }
+
+        while ($index--) {
+            $this->next();
+        }
+    }
+
     ///////////////////////////////////
     // Implementation of ArrayAccess //
     ///////////////////////////////////
@@ -1378,7 +1405,7 @@ class Vector implements MutableRandomAccessInterface, Countable, Iterator, Array
     /**
      * @param integer $count
      *
-     * @param integer The unused capacity of the vector.
+     * @return integer The unused capacity of the vector.
      */
     private function expand($count)
     {
