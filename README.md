@@ -1,7 +1,8 @@
 # Collections
 
-[![Build Status]](http://travis-ci.org/IcecaveStudios/collections)
-[![Test Coverage]](http://icecavestudios.github.io/collections/artifacts/tests/coverage)
+[![Build Status]](https://travis-ci.org/IcecaveStudios/collections)
+[![Test Coverage]](https://coveralls.io/r/IcecaveStudios/collections?branch=develop)
+[![SemVer]](http://semver.org)
 
 **Collections** provides a set of collection types loosely inspired by the .NET runtime and the C++ standard template library.
 
@@ -55,5 +56,6 @@ The provided collection implementations support [cloning](http://php.net/manual/
 collection produces a copy of the collection containing the same elements. The elements themselves are not cloned.
 
 <!-- references -->
-[Build Status]: https://raw.github.com/IcecaveStudios/collections/gh-pages/artifacts/images/icecave/regular/build-status.png
-[Test Coverage]: https://raw.github.com/IcecaveStudios/collections/gh-pages/artifacts/images/icecave/regular/coverage.png
+[Build Status]: https://travis-ci.org/IcecaveStudios/collections.png?branch=develop
+[Test Coverage]: https://coveralls.io/repos/IcecaveStudios/collections/badge.png?branch=develop
+[SemVer]: http://calm-shore-6115.herokuapp.com/?label=semver&value=0.6.0&color=yellow
