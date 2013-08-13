@@ -156,19 +156,19 @@ class SetTest extends PHPUnit_Framework_TestCase
         $this->assertTrue($this->collection->contains('a'));
     }
 
-    public function testFiltered()
+    public function testFilter()
     {
         $this->collection->add('a');
         $this->collection->add(null);
         $this->collection->add('c');
 
-        $result = $this->collection->filtered();
+        $result = $this->collection->filter();
 
         $this->assertInstanceOf(__NAMESPACE__ . '\Set', $result);
         $this->assertSame(array('a', 'c'), $result->elements());
     }
 
-    public function testFilteredWithPredicate()
+    public function testFilterWithPredicate()
     {
         $this->collection->add(1);
         $this->collection->add(2);
@@ -176,7 +176,7 @@ class SetTest extends PHPUnit_Framework_TestCase
         $this->collection->add(4);
         $this->collection->add(5);
 
-        $result = $this->collection->filtered(
+        $result = $this->collection->filter(
             function ($value) {
                 return $value & 0x1;
             }
@@ -298,18 +298,18 @@ class SetTest extends PHPUnit_Framework_TestCase
     // Implementation of MutableIterableInterface //
     ////////////////////////////////////////////////
 
-    public function testFilter()
+    public function testFilterInPlace()
     {
         $this->collection->add('a');
         $this->collection->add(null);
         $this->collection->add('c');
 
-        $this->collection->filter();
+        $this->collection->filterInPlace();
 
         $this->assertSame(array('a', 'c'), $this->collection->elements());
     }
 
-    public function testFilterWithPredicate()
+    public function testFilterInPlaceWithPredicate()
     {
         $this->collection->add(1);
         $this->collection->add(2);
@@ -317,7 +317,7 @@ class SetTest extends PHPUnit_Framework_TestCase
         $this->collection->add(4);
         $this->collection->add(5);
 
-        $this->collection->filter(
+        $this->collection->filterInPlace(
             function ($value) {
                 return $value & 0x1;
             }
@@ -326,13 +326,13 @@ class SetTest extends PHPUnit_Framework_TestCase
         $this->assertSame(array(1, 3, 5), $this->collection->elements());
     }
 
-    public function testApply()
+    public function testMapInPlace()
     {
         $this->collection->add(1);
         $this->collection->add(2);
         $this->collection->add(3);
 
-        $this->collection->apply(
+        $this->collection->mapInPlace(
             function ($value) {
                 return $value + 1;
             }
@@ -509,7 +509,7 @@ class SetTest extends PHPUnit_Framework_TestCase
         $this->assertFalse($this->collection->isSubset($collection));
     }
 
-    public function testIsStrictSuperset()
+    public function testIsProperSuperset()
     {
         $this->collection->add('a');
         $this->collection->add('b');
@@ -520,18 +520,18 @@ class SetTest extends PHPUnit_Framework_TestCase
         $collection->add('b');
         $collection->add('a');
 
-        $this->assertFalse($this->collection->isStrictSuperset($collection));
+        $this->assertFalse($this->collection->IsProperSuperset($collection));
 
         $this->collection->add('d');
 
-        $this->assertTrue($this->collection->isStrictSuperset($collection));
+        $this->assertTrue($this->collection->IsProperSuperset($collection));
 
         $this->collection->remove('a');
 
-        $this->assertFalse($this->collection->isStrictSuperset($collection));
+        $this->assertFalse($this->collection->IsProperSuperset($collection));
     }
 
-    public function testIsStrictSubset()
+    public function testIsProperSubset()
     {
         $this->collection->add('a');
         $this->collection->add('b');
@@ -542,15 +542,61 @@ class SetTest extends PHPUnit_Framework_TestCase
         $collection->add('b');
         $collection->add('a');
 
-        $this->assertFalse($this->collection->isStrictSubset($collection));
+        $this->assertFalse($this->collection->IsProperSubset($collection));
 
         $collection->add('d');
 
-        $this->assertTrue($this->collection->isStrictSubset($collection));
+        $this->assertTrue($this->collection->IsProperSubset($collection));
 
         $collection->remove('a');
 
-        $this->assertFalse($this->collection->isStrictSubset($collection));
+        $this->assertFalse($this->collection->IsProperSubset($collection));
+    }
+
+    public function testIsIntersectingWithSubset()
+    {
+        $this->collection->add('a');
+        $this->collection->add('b');
+        $this->collection->add('c');
+
+        $collection = new Set;
+        $collection->add('b');
+        $collection->add('c');
+        $collection->add('d');
+
+        $this->assertTrue($this->collection->isIntersecting($collection));
+        $this->assertTrue($collection->isIntersecting($this->collection));
+    }
+
+    public function testIsIntersectingWithSuperset()
+    {
+        $this->collection->add('a');
+        $this->collection->add('b');
+        $this->collection->add('c');
+
+        $collection = new Set;
+        $collection->add('a');
+        $collection->add('b');
+        $collection->add('c');
+        $collection->add('d');
+
+        $this->assertTrue($this->collection->isIntersecting($collection));
+        $this->assertTrue($collection->isIntersecting($this->collection));
+    }
+
+    public function testIsIntersectingWithExclusiveSets()
+    {
+        $this->collection->add('a');
+        $this->collection->add('b');
+        $this->collection->add('c');
+
+        $collection = new Set;
+        $collection->add('d');
+        $collection->add('e');
+        $collection->add('f');
+
+        $this->assertFalse($this->collection->isIntersecting($collection));
+        $this->assertFalse($collection->isIntersecting($this->collection));
     }
 
     public function testUnion()
@@ -565,7 +611,6 @@ class SetTest extends PHPUnit_Framework_TestCase
         $set->add('e');
 
         $result = $this->collection->union($set);
-
         $this->assertSame(array('a', 'b', 'c', 'd', 'e'), $result->elements());
     }
 
@@ -584,6 +629,39 @@ class SetTest extends PHPUnit_Framework_TestCase
         $result = $this->collection->union($array);
 
         $this->assertSame(array('a', 'b', 'c', 'd', 'e'), $result->elements());
+    }
+
+    public function testUnionInPlace()
+    {
+        $this->collection->add('a');
+        $this->collection->add('b');
+        $this->collection->add('c');
+
+        $set = new Set;
+        $set->add('c');
+        $set->add('d');
+        $set->add('e');
+
+        $this->collection->unionInPlace($set);
+
+        $this->assertSame(array('a', 'b', 'c', 'd', 'e'), $this->collection->elements());
+    }
+
+    public function testUnionInPlaceWithArray()
+    {
+        $this->collection->add('a');
+        $this->collection->add('b');
+        $this->collection->add('c');
+
+        $array = array(
+            'c',
+            'd',
+            'e'
+        );
+
+        $this->collection->unionInPlace($array);
+
+        $this->assertSame(array('a', 'b', 'c', 'd', 'e'), $this->collection->elements());
     }
 
     public function testIntersect()
@@ -619,7 +697,7 @@ class SetTest extends PHPUnit_Framework_TestCase
         $this->assertSame(array('c'), $result->elements());
     }
 
-    public function testComplement()
+    public function testIntersectInPlace()
     {
         $this->collection->add('a');
         $this->collection->add('b');
@@ -630,12 +708,12 @@ class SetTest extends PHPUnit_Framework_TestCase
         $set->add('d');
         $set->add('e');
 
-        $result = $this->collection->complement($set);
+        $this->collection->intersectInPlace($set);
 
-        $this->assertSame(array('a', 'b'), $result->elements());
+        $this->assertSame(array('c'), $this->collection->elements());
     }
 
-    public function testComplementWithArray()
+    public function testIntersectInPlaceWithArray()
     {
         $this->collection->add('a');
         $this->collection->add('b');
@@ -647,8 +725,140 @@ class SetTest extends PHPUnit_Framework_TestCase
             'e'
         );
 
-        $result = $this->collection->complement($array);
+        $this->collection->intersectInPlace($array);
+
+        $this->assertSame(array('c'), $this->collection->elements());
+    }
+
+    public function testDiff()
+    {
+        $this->collection->add('a');
+        $this->collection->add('b');
+        $this->collection->add('c');
+
+        $set = new Set;
+        $set->add('c');
+        $set->add('d');
+        $set->add('e');
+
+        $result = $this->collection->diff($set);
 
         $this->assertSame(array('a', 'b'), $result->elements());
+    }
+
+    public function testDiffWithArray()
+    {
+        $this->collection->add('a');
+        $this->collection->add('b');
+        $this->collection->add('c');
+
+        $array = array(
+            'c',
+            'd',
+            'e'
+        );
+
+        $result = $this->collection->diff($array);
+
+        $this->assertSame(array('a', 'b'), $result->elements());
+    }
+
+    public function testDiffInPlace()
+    {
+        $this->collection->add('a');
+        $this->collection->add('b');
+        $this->collection->add('c');
+
+        $set = new Set;
+        $set->add('c');
+        $set->add('d');
+        $set->add('e');
+
+        $this->collection->diffInPlace($set);
+
+        $this->assertSame(array('a', 'b'), $this->collection->elements());
+    }
+
+    public function testDiffInPlaceWithArray()
+    {
+        $this->collection->add('a');
+        $this->collection->add('b');
+        $this->collection->add('c');
+
+        $array = array(
+            'c',
+            'd',
+            'e'
+        );
+
+        $this->collection->diffInPlace($array);
+
+        $this->assertSame(array('a', 'b'), $this->collection->elements());
+    }
+
+    public function testSymmetricDiff()
+    {
+        $this->collection->add('a');
+        $this->collection->add('b');
+        $this->collection->add('c');
+
+        $set = new Set;
+        $set->add('c');
+        $set->add('d');
+        $set->add('e');
+
+        $result = $this->collection->symmetricDiff($set);
+
+        $this->assertSame(array('a', 'b', 'd', 'e'), $result->elements());
+    }
+
+    public function testSymmetricDiffWithArray()
+    {
+        $this->collection->add('a');
+        $this->collection->add('b');
+        $this->collection->add('c');
+
+        $array = array(
+            'c',
+            'd',
+            'e'
+        );
+
+        $result = $this->collection->symmetricDiff($array);
+
+        $this->assertSame(array('a', 'b', 'd', 'e'), $result->elements());
+    }
+
+    public function testSymmetricDiffInPlace()
+    {
+        $this->collection->add('a');
+        $this->collection->add('b');
+        $this->collection->add('c');
+
+        $set = new Set;
+        $set->add('c');
+        $set->add('d');
+        $set->add('e');
+
+        $this->collection->symmetricDiffInPlace($set);
+
+        $this->assertSame(array('a', 'b', 'd', 'e'), $this->collection->elements());
+    }
+
+    public function testSymmetricDiffInPlaceWithArray()
+    {
+        $this->collection->add('a');
+        $this->collection->add('b');
+        $this->collection->add('c');
+
+        $array = array(
+            'c',
+            'd',
+            'e'
+        );
+
+        $this->collection->symmetricDiffInPlace($array);
+
+        $this->assertSame(array('a', 'b', 'd', 'e'), $this->collection->elements());
     }
 }

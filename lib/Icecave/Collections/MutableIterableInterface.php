@@ -11,7 +11,7 @@ interface MutableIterableInterface extends IterableInterface, MutableCollectionI
      *
      * @param callable|null $predicate A predicate function used to determine which elements to retain, or null to retain all non-null elements.
      */
-    public function filter($predicate = null);
+    public function filterInPlace($predicate = null);
 
     /**
      * Replace each element in the collection with the result of a transformation on that element.
@@ -20,5 +20,5 @@ interface MutableIterableInterface extends IterableInterface, MutableCollectionI
      *
      * @param callable $transform The transform to apply to each element.
      */
-    public function apply($transform);
+    public function mapInPlace($transform);
 }

@@ -163,19 +163,19 @@ class MapTest extends PHPUnit_Framework_TestCase
         $this->assertTrue($this->collection->contains(1));
     }
 
-    public function testFiltered()
+    public function testFilter()
     {
         $this->collection->set('a', 1);
         $this->collection->set('b', null);
         $this->collection->set('c', 3);
 
-        $result = $this->collection->filtered();
+        $result = $this->collection->filter();
 
         $this->assertInstanceOf(__NAMESPACE__ . '\Map', $result);
         $this->assertSame(array(array('a', 1), array('c', 3)), $result->elements());
     }
 
-    public function testFilteredWithPredicate()
+    public function testFilterWithPredicate()
     {
         $this->collection->set('a', 1);
         $this->collection->set('b', 2);
@@ -183,7 +183,7 @@ class MapTest extends PHPUnit_Framework_TestCase
         $this->collection->set('d', 4);
         $this->collection->set('e', 5);
 
-        $result = $this->collection->filtered(
+        $result = $this->collection->filter(
             function ($key, $value) {
                 return $value & 0x1;
             }
@@ -305,18 +305,18 @@ class MapTest extends PHPUnit_Framework_TestCase
     // Implementation of MutableIterableInterface //
     ////////////////////////////////////////////////
 
-    public function testFilter()
+    public function testFilterInPlace()
     {
         $this->collection->set('a', 1);
         $this->collection->set('b', null);
         $this->collection->set('c', 3);
 
-        $this->collection->filter();
+        $this->collection->filterInPlace();
 
         $this->assertSame(array(array('a', 1), array('c', 3)), $this->collection->elements());
     }
 
-    public function testFilterWithPredicate()
+    public function testFilterInPlaceWithPredicate()
     {
         $this->collection->set('a', 1);
         $this->collection->set('b', 2);
@@ -324,7 +324,7 @@ class MapTest extends PHPUnit_Framework_TestCase
         $this->collection->set('d', 4);
         $this->collection->set('e', 5);
 
-        $this->collection->filter(
+        $this->collection->filterInPlace(
             function ($key, $value) {
                 return $value & 0x1;
             }
@@ -333,13 +333,13 @@ class MapTest extends PHPUnit_Framework_TestCase
         $this->assertSame(array(array('a', 1), array('c', 3), array('e', 5)), $this->collection->elements());
     }
 
-    public function testApply()
+    public function testMapInPlace()
     {
         $this->collection->set('a', 1);
         $this->collection->set('b', 2);
         $this->collection->set('c', 3);
 
-        $this->collection->apply(
+        $this->collection->mapInPlace(
             function ($key, $value) {
                 return $value + 1;
             }
@@ -455,7 +455,7 @@ class MapTest extends PHPUnit_Framework_TestCase
         $this->assertSame(array(1, 2, 3), $this->collection->values());
     }
 
-    public function testCombine()
+    public function testMerge()
     {
         $this->collection->set('a', 1);
         $this->collection->set('c', 3);
@@ -464,7 +464,7 @@ class MapTest extends PHPUnit_Framework_TestCase
         $collection->set('a', 10);
         $collection->set('b', 20);
 
-        $result = $this->collection->combine($collection);
+        $result = $this->collection->merge($collection);
 
         $this->assertSame(array(array('a', 10), array('c', 3), array('b', 20)), $result->elements());
     }
@@ -590,7 +590,7 @@ class MapTest extends PHPUnit_Framework_TestCase
         $this->assertFalse($this->collection->hasKey('a'));
     }
 
-    public function testMerge()
+    public function testMergeInPlace()
     {
         $this->collection->set('a', 1);
         $this->collection->set('c', 3);
@@ -599,7 +599,7 @@ class MapTest extends PHPUnit_Framework_TestCase
         $collection->set('a', 10);
         $collection->set('b', 20);
 
-        $this->collection->merge($collection);
+        $this->collection->mergeInPlace($collection);
 
         $this->assertSame(array(array('a', 10), array('c', 3), array('b', 20)), $this->collection->elements());
     }

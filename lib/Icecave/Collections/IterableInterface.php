@@ -37,7 +37,7 @@ interface IterableInterface extends CollectionInterface, TraitsProviderInterface
      *
      * @return IterableInterface The filtered collection.
      */
-    public function filtered($predicate = null);
+    public function filter($predicate = null);
 
     /**
      * Produce a new collection by applying a transformation to each element.

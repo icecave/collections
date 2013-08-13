@@ -253,7 +253,7 @@ class CollectionTypeCheck extends \Icecave\Collections\TypeCheck\AbstractValidat
         }
     }
 
-    public function filtered(array $arguments)
+    public function filter(array $arguments)
     {
         $argumentCount = \count($arguments);
         if ($argumentCount < 2) {

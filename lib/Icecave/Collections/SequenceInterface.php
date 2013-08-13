@@ -49,7 +49,7 @@ interface SequenceInterface extends CollectionInterface
      *
      * @return SequenceInterface
      */
-    public function sorted($comparator = null);
+    public function sort($comparator = null);
 
     /**
      * Create a new sequence with the elements from this sequence in reverse order.
@@ -58,7 +58,7 @@ interface SequenceInterface extends CollectionInterface
      *
      * @return SequenceInterface The reversed sequence.
      */
-    public function reversed();
+    public function reverse();
 
     /**
      * Create a new sequence by appending the elements in the given sequence to this sequence.

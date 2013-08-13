@@ -95,7 +95,7 @@ class VectorTypeCheck extends \Icecave\Collections\TypeCheck\AbstractValidator
         }
     }
 
-    public function filtered(array $arguments)
+    public function filter(array $arguments)
     {
         $argumentCount = \count($arguments);
         if ($argumentCount > 1) {
@@ -209,7 +209,7 @@ class VectorTypeCheck extends \Icecave\Collections\TypeCheck\AbstractValidator
         }
     }
 
-    public function filter(array $arguments)
+    public function filterInPlace(array $arguments)
     {
         $argumentCount = \count($arguments);
         if ($argumentCount > 1) {
@@ -228,7 +228,7 @@ class VectorTypeCheck extends \Icecave\Collections\TypeCheck\AbstractValidator
         }
     }
 
-    public function apply(array $arguments)
+    public function mapInPlace(array $arguments)
     {
         $argumentCount = \count($arguments);
         if ($argumentCount < 1) {
@@ -281,7 +281,7 @@ class VectorTypeCheck extends \Icecave\Collections\TypeCheck\AbstractValidator
         }
     }
 
-    public function sorted(array $arguments)
+    public function sort(array $arguments)
     {
         $argumentCount = \count($arguments);
         if ($argumentCount > 1) {
@@ -300,7 +300,7 @@ class VectorTypeCheck extends \Icecave\Collections\TypeCheck\AbstractValidator
         }
     }
 
-    public function reversed(array $arguments)
+    public function reverse(array $arguments)
     {
         if (\count($arguments) > 0) {
             throw new \Icecave\Collections\TypeCheck\Exception\UnexpectedArgumentException(0, $arguments[0]);
@@ -356,7 +356,7 @@ class VectorTypeCheck extends \Icecave\Collections\TypeCheck\AbstractValidator
         }
     }
 
-    public function sort(array $arguments)
+    public function sortInPlace(array $arguments)
     {
         $argumentCount = \count($arguments);
         if ($argumentCount > 1) {
@@ -375,7 +375,7 @@ class VectorTypeCheck extends \Icecave\Collections\TypeCheck\AbstractValidator
         }
     }
 
-    public function reverse(array $arguments)
+    public function reverseInPlace(array $arguments)
     {
         if (\count($arguments) > 0) {
             throw new \Icecave\Collections\TypeCheck\Exception\UnexpectedArgumentException(0, $arguments[0]);

@@ -99,7 +99,7 @@ class MapTypeCheck extends \Icecave\Collections\TypeCheck\AbstractValidator
         }
     }
 
-    public function filtered(array $arguments)
+    public function filter(array $arguments)
     {
         $argumentCount = \count($arguments);
         if ($argumentCount > 1) {
@@ -213,7 +213,7 @@ class MapTypeCheck extends \Icecave\Collections\TypeCheck\AbstractValidator
         }
     }
 
-    public function filter(array $arguments)
+    public function filterInPlace(array $arguments)
     {
         $argumentCount = \count($arguments);
         if ($argumentCount > 1) {
@@ -232,7 +232,7 @@ class MapTypeCheck extends \Icecave\Collections\TypeCheck\AbstractValidator
         }
     }
 
-    public function apply(array $arguments)
+    public function mapInPlace(array $arguments)
     {
         $argumentCount = \count($arguments);
         if ($argumentCount < 1) {
@@ -384,7 +384,7 @@ class MapTypeCheck extends \Icecave\Collections\TypeCheck\AbstractValidator
         }
     }
 
-    public function combine(array $arguments)
+    public function merge(array $arguments)
     {
         $argumentCount = \count($arguments);
         if ($argumentCount < 1) {
@@ -528,7 +528,7 @@ class MapTypeCheck extends \Icecave\Collections\TypeCheck\AbstractValidator
         }
     }
 
-    public function merge(array $arguments)
+    public function mergeInPlace(array $arguments)
     {
         $argumentCount = \count($arguments);
         if ($argumentCount < 1) {

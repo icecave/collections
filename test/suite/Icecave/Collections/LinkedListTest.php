@@ -165,21 +165,21 @@ class LinkedListTest extends PHPUnit_Framework_TestCase
         $this->assertTrue($this->collection->contains('bar'));
     }
 
-    public function testFiltered()
+    public function testFilter()
     {
         $this->collection->append(array(1, null, 2, null, 3));
 
-        $result = $this->collection->filtered();
+        $result = $this->collection->filter();
 
         $this->assertInstanceOf(__NAMESPACE__ . '\LinkedList', $result);
         $this->assertSame(array(1, 2, 3), $result->elements());
     }
 
-    public function testFilteredWithPredicate()
+    public function testFilterWithPredicate()
     {
         $this->collection->append(array(1, 2, 3, 4, 5));
 
-        $result = $this->collection->filtered(
+        $result = $this->collection->filter(
             function ($element) {
                 return $element & 0x1;
             }
@@ -291,20 +291,20 @@ class LinkedListTest extends PHPUnit_Framework_TestCase
     // Implementation of MutableIterableInterface //
     ////////////////////////////////////////////////
 
-    public function testFilter()
+    public function testFilterInPlace()
     {
         $this->collection->append(array(null, 1, null, 2, null, 3));
 
-        $this->collection->filter();
+        $this->collection->filterInPlace();
 
         $this->assertSame(array(1, 2, 3), $this->collection->elements());
     }
 
-    public function testFilterWithPredicate()
+    public function testFilterInPlaceWithPredicate()
     {
         $this->collection->append(array(1, 2, 3, 4, 5));
 
-        $this->collection->filter(
+        $this->collection->filterInPlace(
             function ($element) {
                 return $element & 0x1;
             }
@@ -313,11 +313,11 @@ class LinkedListTest extends PHPUnit_Framework_TestCase
         $this->assertSame(array(1, 3, 5), $this->collection->elements());
     }
 
-    public function testApply()
+    public function testMapInPlace()
     {
         $this->collection->append(array(1, 2, 3));
 
-        $this->collection->apply(
+        $this->collection->mapInPlace(
             function ($element) {
                 return $element + 1;
             }
@@ -387,11 +387,11 @@ class LinkedListTest extends PHPUnit_Framework_TestCase
         $this->assertSame('<not null>', $element); // Reference should not be changed on failure.
     }
 
-    public function testSorted()
+    public function testSort()
     {
         $this->collection->append(array(3, 2, 1, 5, 4));
 
-        $result = $this->collection->sorted();
+        $result = $this->collection->sort();
 
         $this->assertInstanceOf(__NAMESPACE__ . '\LinkedList', $result);
         $this->assertSame(array(1, 2, 3, 4, 5), $result->elements());
@@ -400,11 +400,11 @@ class LinkedListTest extends PHPUnit_Framework_TestCase
         $this->assertSame(array(3, 2, 1, 5, 4), $this->collection->elements());
     }
 
-    public function testSortedWithComparator()
+    public function testSortWithComparator()
     {
         $this->collection->append(array(3, 2, 1, 5, 4));
 
-        $result = $this->collection->sorted(
+        $result = $this->collection->sort(
             function ($a, $b) {
                 return $b - $a;
             }
@@ -417,11 +417,11 @@ class LinkedListTest extends PHPUnit_Framework_TestCase
         $this->assertSame(array(3, 2, 1, 5, 4), $this->collection->elements());
     }
 
-    public function testReversed()
+    public function testReverse()
     {
         $this->collection->append(array(1, 2, 3, 4, 5));
 
-        $result = $this->collection->reversed();
+        $result = $this->collection->reverse();
 
         $this->assertInstanceOf(__NAMESPACE__ . '\LinkedList', $result);
         $this->assertSame(array(5, 4, 3, 2, 1), $result->elements());
@@ -444,20 +444,20 @@ class LinkedListTest extends PHPUnit_Framework_TestCase
     // Implementation of MutableSequenceInterface //
     ////////////////////////////////////////////////
 
-    public function testSort()
+    public function testSortInPlace()
     {
         $this->collection->append(array(4, 3, 2, 1, 5, 4));
 
-        $this->collection->sort();
+        $this->collection->sortInPlace();
 
         $this->assertSame(array(1, 2, 3, 4, 4, 5), $this->collection->elements());
     }
 
-    public function testSortWithComparator()
+    public function testSortInPlaceWithComparator()
     {
         $this->collection->append(array(4, 3, 2, 1, 5, 4));
 
-        $this->collection->sort(
+        $this->collection->sortInPlace(
             function ($a, $b) {
                 return $b - $a;
             }
@@ -466,27 +466,27 @@ class LinkedListTest extends PHPUnit_Framework_TestCase
         $this->assertSame(array(5, 4, 4, 3, 2, 1), $this->collection->elements());
     }
 
-    public function testSortWithEmptyCollection()
+    public function testSortInPlaceWithEmptyCollection()
     {
-        $this->collection->sort();
+        $this->collection->sortInPlace();
 
         $this->assertSame(array(), $this->collection->elements());
     }
 
-    public function testSortWithSingleElement()
+    public function testSortInPlaceWithSingleElement()
     {
         $this->collection->pushBack(1);
 
-        $this->collection->sort();
+        $this->collection->sortInPlace();
 
         $this->assertSame(array(1), $this->collection->elements());
     }
 
-    public function testReverse()
+    public function testReverseInPlace()
     {
         $this->collection->append(array(1, 2, 3, 4, 5));
 
-        $this->collection->reverse();
+        $this->collection->reverseInPlace();
 
         $this->assertSame(array(5, 4, 3, 2, 1), $this->collection->elements());
     }

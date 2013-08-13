@@ -99,7 +99,7 @@ class SetTypeCheck extends \Icecave\Collections\TypeCheck\AbstractValidator
         }
     }
 
-    public function filtered(array $arguments)
+    public function filter(array $arguments)
     {
         $argumentCount = \count($arguments);
         if ($argumentCount > 1) {
@@ -213,7 +213,7 @@ class SetTypeCheck extends \Icecave\Collections\TypeCheck\AbstractValidator
         }
     }
 
-    public function filter(array $arguments)
+    public function filterInPlace(array $arguments)
     {
         $argumentCount = \count($arguments);
         if ($argumentCount > 1) {
@@ -232,7 +232,7 @@ class SetTypeCheck extends \Icecave\Collections\TypeCheck\AbstractValidator
         }
     }
 
-    public function apply(array $arguments)
+    public function mapInPlace(array $arguments)
     {
         $argumentCount = \count($arguments);
         if ($argumentCount < 1) {
@@ -468,7 +468,7 @@ class SetTypeCheck extends \Icecave\Collections\TypeCheck\AbstractValidator
         }
     }
 
-    public function isStrictSuperset(array $arguments)
+    public function isProperSuperset(array $arguments)
     {
         $argumentCount = \count($arguments);
         if ($argumentCount < 1) {
@@ -495,7 +495,34 @@ class SetTypeCheck extends \Icecave\Collections\TypeCheck\AbstractValidator
         }
     }
 
-    public function isStrictSubset(array $arguments)
+    public function isProperSubset(array $arguments)
+    {
+        $argumentCount = \count($arguments);
+        if ($argumentCount < 1) {
+            throw new \Icecave\Collections\TypeCheck\Exception\MissingArgumentException('elements', 0, 'mixed<mixed>');
+        } elseif ($argumentCount > 1) {
+            throw new \Icecave\Collections\TypeCheck\Exception\UnexpectedArgumentException(1, $arguments[1]);
+        }
+        $value = $arguments[0];
+        $check = function ($value) {
+            if (!\is_array($value) && !$value instanceof \Traversable) {
+                return false;
+            }
+            foreach ($value as $key => $subValue) {
+            }
+            return true;
+        };
+        if (!$check($arguments[0])) {
+            throw new \Icecave\Collections\TypeCheck\Exception\UnexpectedArgumentValueException(
+                'elements',
+                0,
+                $arguments[0],
+                'mixed<mixed>'
+            );
+        }
+    }
+
+    public function isIntersecting(array $arguments)
     {
         $argumentCount = \count($arguments);
         if ($argumentCount < 1) {
@@ -630,7 +657,7 @@ class SetTypeCheck extends \Icecave\Collections\TypeCheck\AbstractValidator
         }
     }
 
-    public function complement(array $arguments)
+    public function diff(array $arguments)
     {
         $argumentCount = \count($arguments);
         if ($argumentCount < 1) {
@@ -657,7 +684,61 @@ class SetTypeCheck extends \Icecave\Collections\TypeCheck\AbstractValidator
         }
     }
 
-    public function complementInPlace(array $arguments)
+    public function diffInPlace(array $arguments)
+    {
+        $argumentCount = \count($arguments);
+        if ($argumentCount < 1) {
+            throw new \Icecave\Collections\TypeCheck\Exception\MissingArgumentException('elements', 0, 'mixed<mixed>');
+        } elseif ($argumentCount > 1) {
+            throw new \Icecave\Collections\TypeCheck\Exception\UnexpectedArgumentException(1, $arguments[1]);
+        }
+        $value = $arguments[0];
+        $check = function ($value) {
+            if (!\is_array($value) && !$value instanceof \Traversable) {
+                return false;
+            }
+            foreach ($value as $key => $subValue) {
+            }
+            return true;
+        };
+        if (!$check($arguments[0])) {
+            throw new \Icecave\Collections\TypeCheck\Exception\UnexpectedArgumentValueException(
+                'elements',
+                0,
+                $arguments[0],
+                'mixed<mixed>'
+            );
+        }
+    }
+
+    public function symmetricDiff(array $arguments)
+    {
+        $argumentCount = \count($arguments);
+        if ($argumentCount < 1) {
+            throw new \Icecave\Collections\TypeCheck\Exception\MissingArgumentException('elements', 0, 'mixed<mixed>');
+        } elseif ($argumentCount > 1) {
+            throw new \Icecave\Collections\TypeCheck\Exception\UnexpectedArgumentException(1, $arguments[1]);
+        }
+        $value = $arguments[0];
+        $check = function ($value) {
+            if (!\is_array($value) && !$value instanceof \Traversable) {
+                return false;
+            }
+            foreach ($value as $key => $subValue) {
+            }
+            return true;
+        };
+        if (!$check($arguments[0])) {
+            throw new \Icecave\Collections\TypeCheck\Exception\UnexpectedArgumentValueException(
+                'elements',
+                0,
+                $arguments[0],
+                'mixed<mixed>'
+            );
+        }
+    }
+
+    public function symmetricDiffInPlace(array $arguments)
     {
         $argumentCount = \count($arguments);
         if ($argumentCount < 1) {

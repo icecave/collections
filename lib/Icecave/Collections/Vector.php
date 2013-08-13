@@ -178,9 +178,9 @@ class Vector implements MutableRandomAccessInterface, Countable, Iterator, Seeka
      *
      * @return Vector The filtered collection.
      */
-    public function filtered($predicate = null)
+    public function filter($predicate = null)
     {
-        $this->typeCheck->filtered(func_get_args());
+        $this->typeCheck->filter(func_get_args());
 
         if (null === $predicate) {
             $predicate = function ($element) {
@@ -336,9 +336,9 @@ class Vector implements MutableRandomAccessInterface, Countable, Iterator, Seeka
      *
      * @param callable|null $predicate A predicate function used to determine which elements to retain, or null to retain all non-null elements.
      */
-    public function filter($predicate = null)
+    public function filterInPlace($predicate = null)
     {
-        $this->typeCheck->filter(func_get_args());
+        $this->typeCheck->filterInPlace(func_get_args());
 
         if (null === $predicate) {
             $predicate = function ($element) {
@@ -367,9 +367,9 @@ class Vector implements MutableRandomAccessInterface, Countable, Iterator, Seeka
      *
      * @param callable $transform The transform to apply to each element.
      */
-    public function apply($transform)
+    public function mapInPlace($transform)
     {
-        $this->typeCheck->apply(func_get_args());
+        $this->typeCheck->mapInPlace(func_get_args());
 
         foreach ($this->elements as $index => $element) {
             if ($index >= $this->size) {
@@ -463,9 +463,9 @@ class Vector implements MutableRandomAccessInterface, Countable, Iterator, Seeka
      *
      * @return Vector
      */
-    public function sorted($comparator = null)
+    public function sort($comparator = null)
     {
-        $this->typeCheck->sorted(func_get_args());
+        $this->typeCheck->sort(func_get_args());
 
         $elements = $this->elements();
 
@@ -485,9 +485,9 @@ class Vector implements MutableRandomAccessInterface, Countable, Iterator, Seeka
      *
      * @return Vector The reversed sequence.
      */
-    public function reversed()
+    public function reverse()
     {
-        $this->typeCheck->reversed(func_get_args());
+        $this->typeCheck->reverse(func_get_args());
 
         $result = new static;
         $result->resize($this->size);
@@ -533,9 +533,9 @@ class Vector implements MutableRandomAccessInterface, Countable, Iterator, Seeka
      *
      * @param callable|null $comparator A strcmp style comparator function.
      */
-    public function sort($comparator = null)
+    public function sortInPlace($comparator = null)
     {
-        $this->typeCheck->sort(func_get_args());
+        $this->typeCheck->sortInPlace(func_get_args());
 
         $elements = $this->elements();
 
@@ -551,9 +551,9 @@ class Vector implements MutableRandomAccessInterface, Countable, Iterator, Seeka
     /**
      * Reverse this sequence in-place.
      */
-    public function reverse()
+    public function reverseInPlace()
     {
-        $this->typeCheck->reverse(func_get_args());
+        $this->typeCheck->reverseInPlace(func_get_args());
 
         $first = 0;
         $last  = $this->size;

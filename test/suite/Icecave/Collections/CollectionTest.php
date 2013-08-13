@@ -237,9 +237,9 @@ class CollectionTest extends PHPUnit_Framework_TestCase
     /**
      * @dataProvider getCollections
      */
-    public function testFiltered($collection)
+    public function testFilter($collection)
     {
-        $result = Collection::filtered(
+        $result = Collection::filter(
             $collection,
             function ($key, $value) {
                 return $key % 2 === 0;
@@ -257,11 +257,11 @@ class CollectionTest extends PHPUnit_Framework_TestCase
     /**
      * @dataProvider getCollections
      */
-    public function testFilteredWithArrayAccess($collection)
+    public function testFilterWithArrayAccess($collection)
     {
         $map = new Map;
 
-        $result = Collection::filtered(
+        $result = Collection::filter(
             $collection,
             function ($key, $value) {
                 return $key % 2 === 0;
@@ -283,11 +283,11 @@ class CollectionTest extends PHPUnit_Framework_TestCase
     /**
      * @dataProvider getCollections
      */
-    public function testFilteredWithExplicitArray($collection)
+    public function testFilterWithExplicitArray($collection)
     {
         $array = array();
 
-        $result = Collection::filtered(
+        $result = Collection::filter(
             $collection,
             function ($key, $value) {
                 return $key % 2 === 0;

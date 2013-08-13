@@ -182,9 +182,9 @@ class Map implements MutableAssociativeInterface, Countable, Iterator, ArrayAcce
      *
      * @return Map The filtered collection.
      */
-    public function filtered($predicate = null)
+    public function filter($predicate = null)
     {
-        $this->typeCheck->filtered(func_get_args());
+        $this->typeCheck->filter(func_get_args());
 
         if (null === $predicate) {
             $predicate = function ($key, $value) {
@@ -344,9 +344,9 @@ class Map implements MutableAssociativeInterface, Countable, Iterator, ArrayAcce
      *
      * @param callable|null $predicate A predicate function used to determine which elements to retain, or null to retain all elements with non-null values.
      */
-    public function filter($predicate = null)
+    public function filterInPlace($predicate = null)
     {
-        $this->typeCheck->filter(func_get_args());
+        $this->typeCheck->filterInPlace(func_get_args());
 
         if (null === $predicate) {
             $predicate = function ($key, $value) {
@@ -372,9 +372,9 @@ class Map implements MutableAssociativeInterface, Countable, Iterator, ArrayAcce
      *
      * @param callable $transform The transform to apply to each element.
      */
-    public function apply($transform)
+    public function mapInPlace($transform)
     {
-        $this->typeCheck->apply(func_get_args());
+        $this->typeCheck->mapInPlace(func_get_args());
 
         foreach ($this->elements as $hash => $element) {
             list($key, $value) = $element;
@@ -603,9 +603,9 @@ class Map implements MutableAssociativeInterface, Countable, Iterator, ArrayAcce
      *
      * @return AssociativeInterface The merged collection.
      */
-    public function combine(AssociativeInterface $collection)
+    public function merge(AssociativeInterface $collection)
     {
-        $this->typeCheck->combine(func_get_args());
+        $this->typeCheck->merge(func_get_args());
 
         $result = clone $this;
 
@@ -840,9 +840,9 @@ class Map implements MutableAssociativeInterface, Countable, Iterator, ArrayAcce
      * @param AssociativeInterface $collection     The collection to merge.
      * @param AssociativeInterface $additional,... Additional collections to merge.
      */
-    public function merge(AssociativeInterface $collection)
+    public function mergeInPlace(AssociativeInterface $collection)
     {
-        $this->typeCheck->merge(func_get_args());
+        $this->typeCheck->mergeInPlace(func_get_args());
 
         foreach (func_get_args() as $collection) {
             foreach ($collection->elements() as $element) {

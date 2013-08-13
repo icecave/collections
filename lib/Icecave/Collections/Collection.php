@@ -320,9 +320,9 @@ abstract class Collection
      *
      * @return array|ArrayAccess Returns $result.
      */
-    public static function filtered($collection, $predicate, &$result = array())
+    public static function filter($collection, $predicate, &$result = array())
     {
-        TypeCheck::get(__CLASS__)->filtered(func_get_args());
+        TypeCheck::get(__CLASS__)->filter(func_get_args());
 
         static::each(
             $collection,

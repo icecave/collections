@@ -176,9 +176,9 @@ class Set implements MutableIterableInterface, Countable, IteratorAggregate, Ser
      *
      * @return Set The filtered collection.
      */
-    public function filtered($predicate = null)
+    public function filter($predicate = null)
     {
-        $this->typeCheck->filtered(func_get_args());
+        $this->typeCheck->filter(func_get_args());
 
         if (null === $predicate) {
             $predicate = function ($element) {
@@ -322,9 +322,9 @@ class Set implements MutableIterableInterface, Countable, IteratorAggregate, Ser
      *
      * @param callable|null $predicate A predicate function used to determine which elements to retain, or null to retain all elements with non-null values.
      */
-    public function filter($predicate = null)
+    public function filterInPlace($predicate = null)
     {
-        $this->typeCheck->filter(func_get_args());
+        $this->typeCheck->filterInPlace(func_get_args());
 
         if (null === $predicate) {
             $predicate = function ($element) {
@@ -349,9 +349,9 @@ class Set implements MutableIterableInterface, Countable, IteratorAggregate, Ser
      *
      * @param callable $transform The transform to apply to each element.
      */
-    public function apply($transform)
+    public function mapInPlace($transform)
     {
-        $this->typeCheck->apply(func_get_args());
+        $this->typeCheck->mapInPlace(func_get_args());
 
         $result = $this->map($transform);
         $this->elements = $result->elements;
@@ -571,7 +571,7 @@ class Set implements MutableIterableInterface, Countable, IteratorAggregate, Ser
     /**
      * Check if this set is equal to, or a superset of another.
      *
-     * @param mixed<mixed> $elements The $elements of the second set.
+     * @param mixed<mixed> $elements The elements of the second set.
      *
      * @return boolean True if this set contains all of the given elements; otherwise, false.
      */
@@ -591,7 +591,7 @@ class Set implements MutableIterableInterface, Countable, IteratorAggregate, Ser
     /**
      * Check if this set is equal to, or a subset of another.
      *
-     * @param mixed<mixed> $elements The $elements of the second set.
+     * @param mixed<mixed> $elements The elements of the second set.
      *
      * @return boolean True if this set contains only elements present in $elements; otherwise, false.
      */
@@ -610,15 +610,15 @@ class Set implements MutableIterableInterface, Countable, IteratorAggregate, Ser
     }
 
     /**
-     * Check if this set is a strict superset of another.
+     * Check if this set is a proper superset of another.
      *
-     * @param mixed<mixed> $elements The $elements of the second set.
+     * @param mixed<mixed> $elements The elements of the second set.
      *
      * @return boolean True if this set contains all of the given elements; otherwise, false.
      */
-    public function isStrictSuperset($elements)
+    public function isProperSuperset($elements)
     {
-        $this->typeCheck->isStrictSuperset(func_get_args());
+        $this->typeCheck->isProperSuperset(func_get_args());
 
         $size = 0;
         foreach ($elements as $element) {
@@ -632,15 +632,15 @@ class Set implements MutableIterableInterface, Countable, IteratorAggregate, Ser
     }
 
     /**
-     * Check if this set is a strict subset of another.
+     * Check if this set is a proper subset of another.
      *
-     * @param mixed<mixed> $elements The $elements of the second set.
+     * @param mixed<mixed> $elements The elements of the second set.
      *
      * @return boolean True if this set contains only elements present in $elements; otherwise, false.
      */
-    public function isStrictSubset($elements)
+    public function isProperSubset($elements)
     {
-        $this->typeCheck->isStrictSubset(func_get_args());
+        $this->typeCheck->isProperSubset(func_get_args());
 
         $matches = 0;
         $size = 0;
@@ -653,6 +653,24 @@ class Set implements MutableIterableInterface, Countable, IteratorAggregate, Ser
 
         return $matches < $size
             && $this->size() === $matches;
+    }
+
+    /**
+     * Check if this set is intersecting another.
+     *
+     * @param mixed<mixed> $elements The elements of the second set.
+     *
+     * @return boolean True if this set contains one or more elements present in $elements; otherwise false.
+     */
+    public function isIntersecting($elements)
+    {
+        foreach ($elements as $element) {
+            if ($this->contains($element)) {
+                return true;
+            }
+        }
+
+        return false;
     }
 
     /**
@@ -733,30 +751,30 @@ class Set implements MutableIterableInterface, Countable, IteratorAggregate, Ser
     }
 
     /**
-     * Compute the complement (or difference) of this set and another.
+     * Compute the difference (or complement) of this set and another.
      *
      * @param mixed<mixed> $elements The elements of the second set.
      *
      * @return Set A set containing only the elements present in $this, but not $elements.
      */
-    public function complement($elements)
+    public function diff($elements)
     {
-        $this->typeCheck->complement(func_get_args());
+        $this->typeCheck->diff(func_get_args());
 
         $result = clone $this;
-        $result->complementInPlace($elements);
+        $result->diffInPlace($elements);
 
         return $result;
     }
 
     /**
-     * Compute the complement (or difference) of this set and another, in place.
+     * Compute the difference (or complement) of this set and another, in place.
      *
      * @param mixed<mixed> $elements The elements of the second set.
      */
-    public function complementInPlace($elements)
+    public function diffInPlace($elements)
     {
-        $this->typeCheck->complementInPlace(func_get_args());
+        $this->typeCheck->diffInPlace(func_get_args());
 
         if ($elements instanceof self && $this->hashFunction == $elements->hashFunction) {
             $this->elements = array_diff_assoc($this->elements, $elements->elements);
@@ -766,6 +784,43 @@ class Set implements MutableIterableInterface, Countable, IteratorAggregate, Ser
                 unset($this->elements[$hash]);
             }
         }
+    }
+
+    /**
+     * Compute the symmetric difference (or complement) of this set and another.
+     *
+     * The symmetric difference is the set of elements which are in either of the sets and not in their intersection.
+     *
+     * @param mixed<mixed> $elements The elements of the second set.
+     *
+     * @return Set A set containing only the elements present in $this, or $elements, but not both.
+     */
+    public function symmetricDiff($elements)
+    {
+        $this->typeCheck->symmetricDiff(func_get_args());
+
+        $set = $this->union($elements);
+        $set->diffInPlace(
+            $this->intersect($elements)
+        );
+
+        return $set;
+    }
+
+    /**
+     * Compute the symmetric difference (or complement) of this set and another, in place.
+     *
+     * The symmetric difference is the set of elements which are in either of the sets and not in their intersection.
+     *
+     * @param mixed<mixed> $elements The elements of the second set.
+     */
+    public function symmetricDiffInPlace($elements)
+    {
+        $this->typeCheck->symmetricDiffInPlace(func_get_args());
+
+        $intersection = $this->intersect($elements);
+        $this->unionInPlace($elements);
+        $this->diffInPlace($intersection);
     }
 
     /**
