@@ -5,11 +5,11 @@ use Eloquent\Liberator\Liberator;
 use Icecave\Collections\Iterator\Traits;
 use PHPUnit_Framework_TestCase;
 
-class SetTest extends PHPUnit_Framework_TestCase
+class HashSetTest extends PHPUnit_Framework_TestCase
 {
     public function setUp()
     {
-        $this->collection = new Set;
+        $this->collection = new HashSet;
     }
 
     public function testConstructor()
@@ -19,7 +19,7 @@ class SetTest extends PHPUnit_Framework_TestCase
 
     public function testConstructorWithArray()
     {
-        $collection = new Set(array(1, 2, 3, 3, 4, 5));
+        $collection = new HashSet(array(1, 2, 3, 3, 4, 5));
         $this->assertSame(array(1, 2, 3, 4, 5), $collection->elements());
     }
 
@@ -55,7 +55,7 @@ class SetTest extends PHPUnit_Framework_TestCase
      */
     public function testSerializationOfHashFunction()
     {
-        $collection = new Set(null, 'sha1');
+        $collection = new HashSet(null, 'sha1');
 
         $packet = serialize($collection);
         $collection = unserialize($packet);
@@ -97,17 +97,17 @@ class SetTest extends PHPUnit_Framework_TestCase
 
     public function testToString()
     {
-        $this->assertSame('<Set 0>', $this->collection->__toString());
+        $this->assertSame('<HashSet 0>', $this->collection->__toString());
 
         $this->collection->add('a');
         $this->collection->add('b');
         $this->collection->add('c');
 
-        $this->assertSame('<Set 3 ["a", "b", "c"]>', $this->collection->__toString());
+        $this->assertSame('<HashSet 3 ["a", "b", "c"]>', $this->collection->__toString());
 
         $this->collection->add('d');
 
-        $this->assertSame('<Set 4 ["a", "b", "c", ...]>', $this->collection->__toString());
+        $this->assertSame('<HashSet 4 ["a", "b", "c", ...]>', $this->collection->__toString());
     }
 
     //////////////////////////////////////////////////
@@ -164,7 +164,7 @@ class SetTest extends PHPUnit_Framework_TestCase
 
         $result = $this->collection->filter();
 
-        $this->assertInstanceOf(__NAMESPACE__ . '\Set', $result);
+        $this->assertInstanceOf(__NAMESPACE__ . '\HashSet', $result);
         $this->assertSame(array('a', 'c'), $result->elements());
     }
 
@@ -182,7 +182,7 @@ class SetTest extends PHPUnit_Framework_TestCase
             }
         );
 
-        $this->assertInstanceOf(__NAMESPACE__ . '\Set', $result);
+        $this->assertInstanceOf(__NAMESPACE__ . '\HashSet', $result);
         $this->assertSame(array(1, 3, 5), $result->elements());
     }
 
@@ -198,7 +198,7 @@ class SetTest extends PHPUnit_Framework_TestCase
             }
         );
 
-        $this->assertInstanceOf(__NAMESPACE__ . '\Set', $result);
+        $this->assertInstanceOf(__NAMESPACE__ . '\HashSet', $result);
         $this->assertSame(array(2, 3, 4), $result->elements());
     }
 
@@ -219,10 +219,10 @@ class SetTest extends PHPUnit_Framework_TestCase
 
         list($left, $right) = $result;
 
-        $this->assertInstanceOf(__NAMESPACE__ . '\Set', $left);
+        $this->assertInstanceOf(__NAMESPACE__ . '\HashSet', $left);
         $this->assertSame(array(1, 2), $left->elements());
 
-        $this->assertInstanceOf(__NAMESPACE__ . '\Set', $right);
+        $this->assertInstanceOf(__NAMESPACE__ . '\HashSet', $right);
         $this->assertSame(array(3), $right->elements());
     }
 
@@ -448,7 +448,7 @@ class SetTest extends PHPUnit_Framework_TestCase
         $this->collection->add('b');
         $this->collection->add('c');
 
-        $collection = new Set;
+        $collection = new HashSet;
         $collection->add('c');
         $collection->add('b');
         $collection->add('a');
@@ -471,7 +471,7 @@ class SetTest extends PHPUnit_Framework_TestCase
         $this->collection->add('b');
         $this->collection->add('c');
 
-        $collection = new Set;
+        $collection = new HashSet;
         $collection->add('c');
         $collection->add('b');
         $collection->add('a');
@@ -493,7 +493,7 @@ class SetTest extends PHPUnit_Framework_TestCase
         $this->collection->add('b');
         $this->collection->add('c');
 
-        $collection = new Set;
+        $collection = new HashSet;
         $collection->add('c');
         $collection->add('b');
         $collection->add('a');
@@ -515,7 +515,7 @@ class SetTest extends PHPUnit_Framework_TestCase
         $this->collection->add('b');
         $this->collection->add('c');
 
-        $collection = new Set;
+        $collection = new HashSet;
         $collection->add('c');
         $collection->add('b');
         $collection->add('a');
@@ -537,7 +537,7 @@ class SetTest extends PHPUnit_Framework_TestCase
         $this->collection->add('b');
         $this->collection->add('c');
 
-        $collection = new Set;
+        $collection = new HashSet;
         $collection->add('c');
         $collection->add('b');
         $collection->add('a');
@@ -559,7 +559,7 @@ class SetTest extends PHPUnit_Framework_TestCase
         $this->collection->add('b');
         $this->collection->add('c');
 
-        $collection = new Set;
+        $collection = new HashSet;
         $collection->add('b');
         $collection->add('c');
         $collection->add('d');
@@ -574,7 +574,7 @@ class SetTest extends PHPUnit_Framework_TestCase
         $this->collection->add('b');
         $this->collection->add('c');
 
-        $collection = new Set;
+        $collection = new HashSet;
         $collection->add('a');
         $collection->add('b');
         $collection->add('c');
@@ -590,7 +590,7 @@ class SetTest extends PHPUnit_Framework_TestCase
         $this->collection->add('b');
         $this->collection->add('c');
 
-        $collection = new Set;
+        $collection = new HashSet;
         $collection->add('d');
         $collection->add('e');
         $collection->add('f');
@@ -605,7 +605,7 @@ class SetTest extends PHPUnit_Framework_TestCase
         $this->collection->add('b');
         $this->collection->add('c');
 
-        $set = new Set;
+        $set = new HashSet;
         $set->add('c');
         $set->add('d');
         $set->add('e');
@@ -637,7 +637,7 @@ class SetTest extends PHPUnit_Framework_TestCase
         $this->collection->add('b');
         $this->collection->add('c');
 
-        $set = new Set;
+        $set = new HashSet;
         $set->add('c');
         $set->add('d');
         $set->add('e');
@@ -670,7 +670,7 @@ class SetTest extends PHPUnit_Framework_TestCase
         $this->collection->add('b');
         $this->collection->add('c');
 
-        $set = new Set;
+        $set = new HashSet;
         $set->add('c');
         $set->add('d');
         $set->add('e');
@@ -703,7 +703,7 @@ class SetTest extends PHPUnit_Framework_TestCase
         $this->collection->add('b');
         $this->collection->add('c');
 
-        $set = new Set;
+        $set = new HashSet;
         $set->add('c');
         $set->add('d');
         $set->add('e');
@@ -736,7 +736,7 @@ class SetTest extends PHPUnit_Framework_TestCase
         $this->collection->add('b');
         $this->collection->add('c');
 
-        $set = new Set;
+        $set = new HashSet;
         $set->add('c');
         $set->add('d');
         $set->add('e');
@@ -769,7 +769,7 @@ class SetTest extends PHPUnit_Framework_TestCase
         $this->collection->add('b');
         $this->collection->add('c');
 
-        $set = new Set;
+        $set = new HashSet;
         $set->add('c');
         $set->add('d');
         $set->add('e');
@@ -802,7 +802,7 @@ class SetTest extends PHPUnit_Framework_TestCase
         $this->collection->add('b');
         $this->collection->add('c');
 
-        $set = new Set;
+        $set = new HashSet;
         $set->add('c');
         $set->add('d');
         $set->add('e');
@@ -835,7 +835,7 @@ class SetTest extends PHPUnit_Framework_TestCase
         $this->collection->add('b');
         $this->collection->add('c');
 
-        $set = new Set;
+        $set = new HashSet;
         $set->add('c');
         $set->add('d');
         $set->add('e');

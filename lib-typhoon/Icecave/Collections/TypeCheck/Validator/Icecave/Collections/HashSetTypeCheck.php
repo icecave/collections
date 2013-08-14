@@ -1,7 +1,7 @@
 <?php
 namespace Icecave\Collections\TypeCheck\Validator\Icecave\Collections;
 
-class SetTypeCheck extends \Icecave\Collections\TypeCheck\AbstractValidator
+class HashSetTypeCheck extends \Icecave\Collections\TypeCheck\AbstractValidator
 {
     public function validateConstruct(array $arguments)
     {

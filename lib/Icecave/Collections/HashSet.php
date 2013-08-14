@@ -13,7 +13,7 @@ use Serializable;
 /**
  * An iterable collection with unique elements.
  */
-class Set implements MutableIterableInterface, Countable, IteratorAggregate, Serializable
+class HashSet implements MutableIterableInterface, Countable, IteratorAggregate, Serializable
 {
     /**
      * @param mixed<mixed>|null $collection   An iterable type containing the elements to include in this set, or null to create an empty set.
@@ -44,7 +44,7 @@ class Set implements MutableIterableInterface, Countable, IteratorAggregate, Ser
     /**
      * Fetch the number of elements in the collection.
      *
-     * @see Set::isEmpty()
+     * @see HashSet::isEmpty()
      *
      * @return integer The number of elements in the collection.
      */
@@ -78,7 +78,7 @@ class Set implements MutableIterableInterface, Countable, IteratorAggregate, Ser
     public function __toString()
     {
         if ($this->isEmpty()) {
-            return '<Set 0>';
+            return '<HashSet 0>';
         }
 
         $elements = array();
@@ -92,9 +92,9 @@ class Set implements MutableIterableInterface, Countable, IteratorAggregate, Ser
         }
 
         if ($this->size() > 3) {
-            $format = '<Set %d [%s, ...]>';
+            $format = '<HashSet %d [%s, ...]>';
         } else {
-            $format = '<Set %d [%s]>';
+            $format = '<HashSet %d [%s]>';
         }
 
         return sprintf(
@@ -174,7 +174,7 @@ class Set implements MutableIterableInterface, Countable, IteratorAggregate, Ser
      *
      * @param callable|null $predicate A predicate function used to determine which elements to include, or null to include all non-null elements.
      *
-     * @return Set The filtered collection.
+     * @return HashSet The filtered collection.
      */
     public function filter($predicate = null)
     {
@@ -457,7 +457,7 @@ class Set implements MutableIterableInterface, Countable, IteratorAggregate, Ser
     /**
      * Return the first of the given elements that is contained in the set.
      *
-     * Behaves as per {@see Set::cascade()} except that the elements are provided as
+     * Behaves as per {@see HashSet::cascade()} except that the elements are provided as
      * a traversable (eg, array) instead of via a variable argument list.
      *
      * @param mixed<mixed> $elements The list of elements.
@@ -482,7 +482,7 @@ class Set implements MutableIterableInterface, Countable, IteratorAggregate, Ser
     /**
      * Return the first of the given elements that is contained in the set, or a default if none are found.
      *
-     * Behaves as per {@see Set::cascadeDefault()} except that the elements are provided as
+     * Behaves as per {@see HashSet::cascadeDefault()} except that the elements are provided as
      * a traversable (eg, array) instead of via a variable argument list.
      *
      * @param mixed        $default  The default value to return if no such elements exist.
@@ -678,7 +678,7 @@ class Set implements MutableIterableInterface, Countable, IteratorAggregate, Ser
      *
      * @param mixed<mixed> $elements The elements of the second set.
      *
-     * @return Set A set containing all elements of $this and $elements.
+     * @return HashSet A set containing all elements of $this and $elements.
      */
     public function union($elements)
     {
@@ -713,7 +713,7 @@ class Set implements MutableIterableInterface, Countable, IteratorAggregate, Ser
      *
      * @param mixed<mixed> $elements The elements of the second set.
      *
-     * @return Set A set containing only the elements present in $this and $elements.
+     * @return HashSet A set containing only the elements present in $this and $elements.
      */
     public function intersect($elements)
     {
@@ -755,7 +755,7 @@ class Set implements MutableIterableInterface, Countable, IteratorAggregate, Ser
      *
      * @param mixed<mixed> $elements The elements of the second set.
      *
-     * @return Set A set containing only the elements present in $this, but not $elements.
+     * @return HashSet A set containing only the elements present in $this, but not $elements.
      */
     public function diff($elements)
     {
@@ -793,7 +793,7 @@ class Set implements MutableIterableInterface, Countable, IteratorAggregate, Ser
      *
      * @param mixed<mixed> $elements The elements of the second set.
      *
-     * @return Set A set containing only the elements present in $this, or $elements, but not both.
+     * @return HashSet A set containing only the elements present in $this, or $elements, but not both.
      */
     public function symmetricDiff($elements)
     {
