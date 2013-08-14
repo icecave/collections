@@ -10,7 +10,18 @@ class HashSetTest extends PHPUnit_Framework_TestCase
     public function setUp()
     {
         $this->collection = new HashSet;
+        $this->liberatedCollection = Liberator::liberate($this->collection);
         $this->incompatibleCollection = new HashSet(null, 'sha1');
+    }
+
+    public function assertSameNumericElements($elements, $collection = null)
+    {
+        $this->assertSame(
+            array_combine($elements, $elements),
+            Liberator::liberate(
+                $collection ?: $this->collection
+            )->elements
+        );
     }
 
     public function testConstructor()
@@ -21,7 +32,7 @@ class HashSetTest extends PHPUnit_Framework_TestCase
     public function testConstructorWithArray()
     {
         $collection = new HashSet(array(1, 2, 3, 3, 4, 5));
-        $this->assertSame(array(1, 2, 3, 4, 5), $collection->elements());
+        $this->assertSameNumericElements(array(1, 2, 3, 4, 5), $collection);
     }
 
     public function testClone()
@@ -34,8 +45,8 @@ class HashSetTest extends PHPUnit_Framework_TestCase
 
         $collection->remove(2);
 
-        $this->assertSame(array(1, 3), $collection->elements());
-        $this->assertSame(array(1, 2, 3), $this->collection->elements());
+        $this->assertSameNumericElements(array(1, 3), $collection);
+        $this->assertSameNumericElements(array(1, 2, 3));
     }
 
     public function testSerialization()
@@ -47,7 +58,7 @@ class HashSetTest extends PHPUnit_Framework_TestCase
         $packet = serialize($this->collection);
         $collection = unserialize($packet);
 
-        $this->assertSame($this->collection->elements(), $collection->elements());
+        $this->assertSame($this->liberatedCollection->elements, Liberator::liberate($collection)->elements);
     }
 
     /**
@@ -159,14 +170,14 @@ class HashSetTest extends PHPUnit_Framework_TestCase
 
     public function testFilter()
     {
-        $this->collection->add('a');
+        $this->collection->add(1);
         $this->collection->add(null);
-        $this->collection->add('c');
+        $this->collection->add(3);
 
         $result = $this->collection->filter();
 
         $this->assertInstanceOf(__NAMESPACE__ . '\HashSet', $result);
-        $this->assertSame(array('a', 'c'), $result->elements());
+        $this->assertSameNumericElements(array(1, 3), $result);
     }
 
     public function testFilterWithPredicate()
@@ -184,7 +195,7 @@ class HashSetTest extends PHPUnit_Framework_TestCase
         );
 
         $this->assertInstanceOf(__NAMESPACE__ . '\HashSet', $result);
-        $this->assertSame(array(1, 3, 5), $result->elements());
+        $this->assertSameNumericElements(array(1, 3, 5), $result);
     }
 
     public function testMap()
@@ -200,7 +211,7 @@ class HashSetTest extends PHPUnit_Framework_TestCase
         );
 
         $this->assertInstanceOf(__NAMESPACE__ . '\HashSet', $result);
-        $this->assertSame(array(2, 3, 4), $result->elements());
+        $this->assertSameNumericElements(array(2, 3, 4), $result);
     }
 
     public function testPartition()
@@ -221,10 +232,10 @@ class HashSetTest extends PHPUnit_Framework_TestCase
         list($left, $right) = $result;
 
         $this->assertInstanceOf(__NAMESPACE__ . '\HashSet', $left);
-        $this->assertSame(array(1, 2), $left->elements());
+        $this->assertSameNumericElements(array(1, 2), $left);
 
         $this->assertInstanceOf(__NAMESPACE__ . '\HashSet', $right);
-        $this->assertSame(array(3), $right->elements());
+        $this->assertSameNumericElements(array(3), $right);
     }
 
     public function testEach()
@@ -301,13 +312,13 @@ class HashSetTest extends PHPUnit_Framework_TestCase
 
     public function testFilterInPlace()
     {
-        $this->collection->add('a');
+        $this->collection->add(1);
         $this->collection->add(null);
-        $this->collection->add('c');
+        $this->collection->add(2);
 
         $this->collection->filterInPlace();
 
-        $this->assertSame(array('a', 'c'), $this->collection->elements());
+        $this->assertSameNumericElements(array(1, 2));
     }
 
     public function testFilterInPlaceWithPredicate()
@@ -324,13 +335,13 @@ class HashSetTest extends PHPUnit_Framework_TestCase
             }
         );
 
-        $this->assertSame(array(1, 3, 5), $this->collection->elements());
+        $this->assertSameNumericElements(array(1, 3, 5));
     }
 
     public function testMapInPlace()
     {
-        $this->collection->add(1);
         $this->collection->add(2);
+        $this->collection->add(1);
         $this->collection->add(3);
 
         $this->collection->mapInPlace(
@@ -339,7 +350,7 @@ class HashSetTest extends PHPUnit_Framework_TestCase
             }
         );
 
-        $this->assertSame(array(2, 3, 4), $this->collection->elements());
+        $this->assertSameNumericElements(array(3, 2, 4));
     }
 
     /////////////////////////////////
@@ -421,26 +432,44 @@ class HashSetTest extends PHPUnit_Framework_TestCase
 
     public function testAdd()
     {
-        $this->assertFalse($this->collection->contains('a'));
+        $this->assertFalse($this->collection->contains(1));
 
-        $this->assertTrue($this->collection->add('a'));
+        $this->assertTrue($this->collection->add(1));
 
-        $this->assertTrue($this->collection->contains('a'));
+        $this->assertTrue($this->collection->contains(1));
 
-        $this->assertFalse($this->collection->add('a'));
+        $this->assertFalse($this->collection->add(1));
 
-        $this->assertTrue($this->collection->contains('a'));
+        $this->assertTrue($this->collection->contains(1));
+
+        $this->assertSameNumericElements(array(1));
+    }
+
+    public function testAddMany()
+    {
+        $this->collection->addMany(array(1, 3, 1, 2));
+
+        $this->assertSameNumericElements(array(1, 3, 2));
     }
 
     public function testRemove()
     {
-        $this->assertFalse($this->collection->remove('a'));
+        $this->assertFalse($this->collection->remove(1));
 
-        $this->collection->add('a');
+        $this->collection->add(1);
 
-        $this->assertTrue($this->collection->remove('a'));
+        $this->assertTrue($this->collection->remove(1));
 
-        $this->assertFalse($this->collection->contains('a'));
+        $this->assertFalse($this->collection->contains(1));
+    }
+
+    public function testRemoveMany()
+    {
+        $this->collection->addMany(array(1, 2, 3, 4, 5));
+
+        $this->collection->removeMany(array(4, 2));
+
+        $this->assertSameNumericElements(array(1, 3, 5));
     }
 
     public function testIsEqualSet()

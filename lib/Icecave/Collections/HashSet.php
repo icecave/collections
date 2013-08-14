@@ -150,16 +150,16 @@ class HashSet implements MutableIterableInterface, Countable, IteratorAggregate,
     /**
      * Check if the collection contains an element with the given value.
      *
-     * @param mixed $value The value to check.
+     * @param mixed $element The value to check.
      *
-     * @return boolean True if the collection contains $value; otherwise, false.
+     * @return boolean True if the collection contains $element; otherwise, false.
      */
-    public function contains($value)
+    public function contains($element)
     {
         $this->typeCheck->contains(func_get_args());
 
         return array_key_exists(
-            $this->generateHash($value),
+            $this->generateHash($element),
             $this->elements
         );
     }
@@ -213,10 +213,9 @@ class HashSet implements MutableIterableInterface, Countable, IteratorAggregate,
         $this->typeCheck->map(func_get_args());
 
         $result = $this->createSet();
-
-        foreach ($this->elements as $hash => $element) {
-            $result->elements[$hash] = call_user_func($transform, $element);
-        }
+        $result->addMany(
+            array_map($transform, $this->elements)
+        );
 
         return $result;
     }
@@ -351,8 +350,19 @@ class HashSet implements MutableIterableInterface, Countable, IteratorAggregate,
     {
         $this->typeCheck->mapInPlace(func_get_args());
 
-        foreach ($this->elements as $hash => &$element) {
-            $element = call_user_func($transform, $element);
+        $keep = array();
+
+        foreach ($this->elements as $hash => $element) {
+            $newElement = call_user_func($transform, $element);
+            $newHash = $this->generateHash($newElement);
+            $keep[$newHash] = true;
+
+            if ($hash !== $newHash) {
+                $this->elements[$newHash] = $newElement;
+                if (!array_key_exists($hash, $keep)) {
+                    unset($this->elements[$hash]);
+                }
+            }
         }
     }
 
@@ -521,6 +531,21 @@ class HashSet implements MutableIterableInterface, Countable, IteratorAggregate,
     }
 
     /**
+     * Add multiple elements to the set.
+     *
+     * @see HashSet::unionInPlace() may be faster when adding all elements from a another set.
+     *
+     * @param mixed<mixed> $elements The elements to add.
+     */
+    public function addMany($elements)
+    {
+        foreach ($elements as $element) {
+            $hash = $this->generateHash($element);
+            $this->elements[$hash] = $element;
+        }
+    }
+
+    /**
      * Remove an element from the set, if it exists.
      *
      * @param mixed $element The element to remove.
@@ -537,6 +562,21 @@ class HashSet implements MutableIterableInterface, Countable, IteratorAggregate,
         unset($this->elements[$hash]);
 
         return $size > $this->size();
+    }
+
+    /**
+     * Remove multiple elements from the set.
+     *
+     * @see HashSet::diffInPlace() may be faster when removing all elements from a another set.
+     *
+     * @param mixed<mixed> $elements The elements to remote.
+     */
+    public function removeMany($elements)
+    {
+        foreach ($elements as $element) {
+            $hash = $this->generateHash($element);
+            unset($this->elements[$hash]);
+        }
     }
 
     /**
@@ -848,5 +888,4 @@ class HashSet implements MutableIterableInterface, Countable, IteratorAggregate,
     private $typeCheck;
     private $hashFunction;
     private $elements;
-    private $index;
 }
