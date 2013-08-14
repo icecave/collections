@@ -80,28 +80,24 @@ class HashSet implements MutableIterableInterface, Countable, IteratorAggregate,
     {
         if ($this->isEmpty()) {
             return '<HashSet 0>';
-        }
-
-        $elements = array();
-        $index = 0;
-        foreach ($this->elements as $element) {
-            if ($index++ === 3) {
-                break;
-            }
-
-            $elements[] = Repr::repr($element);
-        }
-
-        if ($this->size() > 3) {
+        } elseif ($this->size() > 3) {
             $format = '<HashSet %d [%s, ...]>';
+            $elements = array_slice($this->elements, 0, 3);
         } else {
             $format = '<HashSet %d [%s]>';
+            $elements = $this->elements;
         }
 
         return sprintf(
             $format,
             $this->size(),
-            implode(', ', $elements)
+            implode(
+                ', ',
+                array_map(
+                    'Icecave\Repr\Repr::repr',
+                    $elements
+                )
+            )
         );
     }
 
@@ -162,9 +158,10 @@ class HashSet implements MutableIterableInterface, Countable, IteratorAggregate,
     {
         $this->typeCheck->contains(func_get_args());
 
-        $hash = $this->generateHash($value);
-
-        return array_key_exists($hash, $this->elements);
+        return array_key_exists(
+            $this->generateHash($value),
+            $this->elements
+        );
     }
 
     /**
@@ -187,11 +184,11 @@ class HashSet implements MutableIterableInterface, Countable, IteratorAggregate,
             };
         }
 
-        $result = new self(null, $this->hashFunction);
+        $result = $this->createSet();
 
-        foreach ($this->elements as $element) {
+        foreach ($this->elements as $hash => $element) {
             if (call_user_func($predicate, $element)) {
-                $result->add($element);
+                $result->elements[$hash] = $element;
             }
         }
 
@@ -215,10 +212,10 @@ class HashSet implements MutableIterableInterface, Countable, IteratorAggregate,
     {
         $this->typeCheck->map(func_get_args());
 
-        $result = new self(null, $this->hashFunction);
+        $result = $this->createSet();
 
-        foreach ($this->elements as $element) {
-            $result->add(call_user_func($transform, $element));
+        foreach ($this->elements as $hash => $element) {
+            $result->elements[$hash] = call_user_func($transform, $element);
         }
 
         return $result;
@@ -237,14 +234,14 @@ class HashSet implements MutableIterableInterface, Countable, IteratorAggregate,
     {
         $this->typeCheck->partition(func_get_args());
 
-        $left  = new self(null, $this->hashFunction);
-        $right = new self(null, $this->hashFunction);
+        $left  = $this->createSet();
+        $right = $this->createSet();
 
-        foreach ($this->elements as $element) {
+        foreach ($this->elements as $hash => $element) {
             if (call_user_func($predicate, $element)) {
-                $left->add($element);
+                $left->elements[$hash] = $element;
             } else {
-                $right->add($element);
+                $right->elements[$hash] = $element;
             }
         }
 
@@ -354,8 +351,9 @@ class HashSet implements MutableIterableInterface, Countable, IteratorAggregate,
     {
         $this->typeCheck->mapInPlace(func_get_args());
 
-        $result = $this->map($transform);
-        $this->elements = $result->elements;
+        foreach ($this->elements as $hash => &$element) {
+            $element = call_user_func($transform, $element);
+        }
     }
 
     /////////////////////////////////
@@ -471,8 +469,7 @@ class HashSet implements MutableIterableInterface, Countable, IteratorAggregate,
         $this->typeCheck->cascadeIterable(func_get_args());
 
         foreach ($elements as $element) {
-            $hash = $this->generateHash($element);
-            if (array_key_exists($hash, $this->elements)) {
+            if ($this->contains($element)) {
                 return $element;
             }
         }
@@ -496,8 +493,7 @@ class HashSet implements MutableIterableInterface, Countable, IteratorAggregate,
         $this->typeCheck->cascadeIterableWithDefault(func_get_args());
 
         foreach ($elements as $element) {
-            $hash = $this->generateHash($element);
-            if (array_key_exists($hash, $this->elements)) {
+            if ($this->contains($element)) {
                 return $element;
             }
         }
@@ -516,14 +512,12 @@ class HashSet implements MutableIterableInterface, Countable, IteratorAggregate,
     {
         $this->typeCheck->add(func_get_args());
 
+        $size = $this->size();
         $hash = $this->generateHash($element);
-        if (array_key_exists($hash, $this->elements)) {
-            return false;
-        }
 
         $this->elements[$hash] = $element;
 
-        return true;
+        return $size < $this->size();
     }
 
     /**
@@ -537,14 +531,12 @@ class HashSet implements MutableIterableInterface, Countable, IteratorAggregate,
     {
         $this->typeCheck->remove(func_get_args());
 
+        $size = $this->size();
         $hash = $this->generateHash($element);
-        if (array_key_exists($hash, $this->elements)) {
-            unset($this->elements[$hash]);
 
-            return true;
-        }
+        unset($this->elements[$hash]);
 
-        return false;
+        return $size > $this->size();
     }
 
     /**
@@ -690,8 +682,10 @@ class HashSet implements MutableIterableInterface, Countable, IteratorAggregate,
     {
         $this->typeCheck->union(func_get_args());
 
-        $result = clone $this;
-        $result->unionInPlace($set);
+        $this->assertCompatible($set);
+
+        $result = $this->createSet();
+        $result->elements = $this->elements + $set->elements;
 
         return $result;
     }
@@ -721,8 +715,10 @@ class HashSet implements MutableIterableInterface, Countable, IteratorAggregate,
     {
         $this->typeCheck->intersect(func_get_args());
 
-        $result = clone $this;
-        $result->intersectInPlace($set);
+        $this->assertCompatible($set);
+
+        $result = $this->createSet();
+        $result->elements = array_intersect_key($this->elements, $set->elements);
 
         return $result;
     }
@@ -756,8 +752,10 @@ class HashSet implements MutableIterableInterface, Countable, IteratorAggregate,
     {
         $this->typeCheck->diff(func_get_args());
 
-        $result = clone $this;
-        $result->diffInPlace($set);
+        $this->assertCompatible($set);
+
+        $result = $this->createSet();
+        $result->elements = array_diff_key($this->elements, $set->elements);
 
         return $result;
     }
@@ -827,6 +825,14 @@ class HashSet implements MutableIterableInterface, Countable, IteratorAggregate,
     private function generateHash($key)
     {
         return call_user_func($this->hashFunction, $key);
+    }
+
+    /**
+     * @return HashSet
+     */
+    private function createSet()
+    {
+        return new self(null, $this->hashFunction);
     }
 
     /**

@@ -537,7 +537,14 @@ class HashSetTypeCheck extends \Icecave\Collections\TypeCheck\AbstractValidator
         }
     }
 
-    public function assertCompatibility(array $arguments)
+    public function createSet(array $arguments)
+    {
+        if (\count($arguments) > 0) {
+            throw new \Icecave\Collections\TypeCheck\Exception\UnexpectedArgumentException(0, $arguments[0]);
+        }
+    }
+
+    public function assertCompatible(array $arguments)
     {
         $argumentCount = \count($arguments);
         if ($argumentCount < 1) {
