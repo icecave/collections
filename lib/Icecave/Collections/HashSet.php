@@ -3,10 +3,11 @@ namespace Icecave\Collections;
 
 use ArrayIterator;
 use Countable;
-use Icecave\Collections\Iterator\Traits;
 use Icecave\Collections\Iterator\SequentialKeyIterator;
+use Icecave\Collections\Iterator\Traits;
 use Icecave\Collections\TypeCheck\TypeCheck;
 use Icecave\Repr\Repr;
+use InvalidArgumentException;
 use IteratorAggregate;
 use Serializable;
 
@@ -186,7 +187,7 @@ class HashSet implements MutableIterableInterface, Countable, IteratorAggregate,
             };
         }
 
-        $result = new static(null, $this->hashFunction);
+        $result = new self(null, $this->hashFunction);
 
         foreach ($this->elements as $element) {
             if (call_user_func($predicate, $element)) {
@@ -214,7 +215,7 @@ class HashSet implements MutableIterableInterface, Countable, IteratorAggregate,
     {
         $this->typeCheck->map(func_get_args());
 
-        $result = new static(null, $this->hashFunction);
+        $result = new self(null, $this->hashFunction);
 
         foreach ($this->elements as $element) {
             $result->add(call_user_func($transform, $element));
@@ -236,8 +237,8 @@ class HashSet implements MutableIterableInterface, Countable, IteratorAggregate,
     {
         $this->typeCheck->partition(func_get_args());
 
-        $left = new static;
-        $right = new static;
+        $left  = new self(null, $this->hashFunction);
+        $right = new self(null, $this->hashFunction);
 
         foreach ($this->elements as $element) {
             if (call_user_func($predicate, $element)) {
@@ -549,38 +550,22 @@ class HashSet implements MutableIterableInterface, Countable, IteratorAggregate,
     /**
      * Check if this set is equal to another.
      *
-     * @param mixed<mixed> $elements The elements of the second set.
+     * @param HashSet $set The set to compare against.
      *
-     * @return boolean True if this set contains the same elements as $elements; otherwise false.
+     * @return boolean True if this set contains the same elements as $set; otherwise false.
      */
-    public function isEqual($elements)
+    public function isEqualSet(HashSet $set)
     {
-        $this->typeCheck->isEqual(func_get_args());
+        $this->typeCheck->isEqualSet(func_get_args());
 
-        $size = 0;
-        foreach ($elements as $element) {
-            ++$size;
-            if (!$this->contains($element)) {
-                return false;
-            }
+        $this->assertCompatible($set);
+
+        if ($this->size() !== $set->size()) {
+            return false;
         }
 
-        return $this->size() === $size;
-    }
-
-    /**
-     * Check if this set is equal to, or a superset of another.
-     *
-     * @param mixed<mixed> $elements The elements of the second set.
-     *
-     * @return boolean True if this set contains all of the given elements; otherwise, false.
-     */
-    public function isSuperset($elements)
-    {
-        $this->typeCheck->isSuperset(func_get_args());
-
-        foreach ($elements as $element) {
-            if (!$this->contains($element)) {
+        foreach ($set->elements as $hash => $element) {
+            if (!array_key_exists($hash, $this->elements)) {
                 return false;
             }
         }
@@ -589,83 +574,104 @@ class HashSet implements MutableIterableInterface, Countable, IteratorAggregate,
     }
 
     /**
-     * Check if this set is equal to, or a subset of another.
+     * Check if this set is a superset of another.
      *
-     * @param mixed<mixed> $elements The elements of the second set.
+     * @param HashSet $set The set to compare against.
      *
-     * @return boolean True if this set contains only elements present in $elements; otherwise, false.
+     * @return boolean True if this set contains all of the elements in $set; otherwise, false.
      */
-    public function isSubset($elements)
+    public function isSuperSet(HashSet $set)
     {
-        $this->typeCheck->isSubset(func_get_args());
+        $this->typeCheck->isSuperSet(func_get_args());
 
-        $matches = 0;
-        foreach ($elements as $element) {
-            if ($this->contains($element)) {
-                ++$matches;
+        $this->assertCompatible($set);
+
+        if ($this->size() < $set->size()) {
+            return false;
+        }
+
+        foreach ($set->elements as $hash => $element) {
+            if (!array_key_exists($hash, $this->elements)) {
+                return false;
             }
         }
 
-        return $this->size() === $matches;
+        return true;
+    }
+
+    /**
+     * Check if this set is a subset of another.
+     *
+     * @param HashSet $set The set to compare against.
+     *
+     * @return boolean True if this set contains only elements present in $set; otherwise, false.
+     */
+    public function isSubSet(HashSet $set)
+    {
+        $this->typeCheck->isSubSet(func_get_args());
+
+        $this->assertCompatible($set);
+
+        return $set->isSuperSet($this);
     }
 
     /**
      * Check if this set is a proper superset of another.
      *
-     * @param mixed<mixed> $elements The elements of the second set.
+     * @param HashSet $set The set to compare against.
      *
-     * @return boolean True if this set contains all of the given elements; otherwise, false.
+     * @return boolean True if this set contains all of elements in $set, but is not equal to $set; otherwise, false.
      */
-    public function isProperSuperset($elements)
+    public function isProperSuperSet(HashSet $set)
     {
-        $this->typeCheck->isProperSuperset(func_get_args());
+        $this->typeCheck->isProperSuperSet(func_get_args());
 
-        $size = 0;
-        foreach ($elements as $element) {
-            ++$size;
-            if (!$this->contains($element)) {
+        $this->assertCompatible($set);
+
+        if ($this->size() <= $set->size()) {
+            return false;
+        }
+
+        foreach ($set->elements as $hash => $element) {
+            if (!array_key_exists($hash, $this->elements)) {
                 return false;
             }
         }
 
-        return $this->size() > $size;
+        return true;
     }
 
     /**
      * Check if this set is a proper subset of another.
      *
-     * @param mixed<mixed> $elements The elements of the second set.
+     * @param HashSet $set The set to compare against.
      *
-     * @return boolean True if this set contains only elements present in $elements; otherwise, false.
+     * @return boolean True if this set contains only elements present in $set, but is not equal to $set; otherwise, false.
      */
-    public function isProperSubset($elements)
+    public function isProperSubSet(HashSet $set)
     {
-        $this->typeCheck->isProperSubset(func_get_args());
+        $this->typeCheck->isProperSubSet(func_get_args());
 
-        $matches = 0;
-        $size = 0;
-        foreach ($elements as $element) {
-            ++$size;
-            if ($this->contains($element)) {
-                ++$matches;
-            }
-        }
+        $this->assertCompatible($set);
 
-        return $matches < $size
-            && $this->size() === $matches;
+        return $set->isProperSuperSet($this);
     }
 
     /**
      * Check if this set is intersecting another.
      *
-     * @param mixed<mixed> $elements The elements of the second set.
+     * @param HashSet $set The set to compare against.
      *
-     * @return boolean True if this set contains one or more elements present in $elements; otherwise false.
+     * @return boolean True if this set contains one or more elements present in $set; otherwise false.
      */
-    public function isIntersecting($elements)
+    public function isIntersecting(HashSet $set)
     {
-        foreach ($elements as $element) {
-            if ($this->contains($element)) {
+        $this->typeCheck->isIntersecting(func_get_args());
+
+        $this->assertCompatible($set);
+
+        foreach ($set->elements as $hash => $element) {
+            if (array_key_exists($hash, $this->elements)) {
                 return true;
             }
         }
@@ -676,16 +682,16 @@ class HashSet implements MutableIterableInterface, Countable, IteratorAggregate,
     /**
      * Compute the union of this set and another.
      *
-     * @param mixed<mixed> $elements The elements of the second set.
+     * @param HashSet $set The second set.
      *
      * @return HashSet A set containing all elements of $this and $elements.
      */
-    public function union($elements)
+    public function union(HashSet $set)
     {
         $this->typeCheck->union(func_get_args());
 
         $result = clone $this;
-        $result->unionInPlace($elements);
+        $result->unionInPlace($set);
 
         return $result;
     }
@@ -693,34 +699,30 @@ class HashSet implements MutableIterableInterface, Countable, IteratorAggregate,
     /**
      * Compute the union of this set and another, in place.
      *
-     * @param mixed<mixed> $elements The elements of the second set.
+     * @param HashSet $set The second set.
      */
-    public function unionInPlace($elements)
+    public function unionInPlace(HashSet $set)
     {
         $this->typeCheck->unionInPlace(func_get_args());
 
-        if ($elements instanceof self && $this->hashFunction == $elements->hashFunction) {
-            $this->elements += $elements->elements;
-        } else {
-            foreach ($elements as $element) {
-                $this->add($element);
-            }
-        }
+        $this->assertCompatible($set);
+
+        $this->elements += $set->elements;
     }
 
     /**
      * Compute the intersection of this set and another.
      *
-     * @param mixed<mixed> $elements The elements of the second set.
+     * @param HashSet $set The second set.
      *
      * @return HashSet A set containing only the elements present in $this and $elements.
      */
-    public function intersect($elements)
+    public function intersect(HashSet $set)
     {
         $this->typeCheck->intersect(func_get_args());
 
         $result = clone $this;
-        $result->intersectInPlace($elements);
+        $result->intersectInPlace($set);
 
         return $result;
     }
@@ -728,41 +730,34 @@ class HashSet implements MutableIterableInterface, Countable, IteratorAggregate,
     /**
      * Compute the intersection of this set and another, in place.
      *
-     * @param mixed<mixed> $elements The elements of the second set.
+     * @param HashSet $set The second set.
      */
-    public function intersectInPlace($elements)
+    public function intersectInPlace(HashSet $set)
     {
         $this->typeCheck->intersectInPlace(func_get_args());
 
-        if ($elements instanceof self && $this->hashFunction == $elements->hashFunction) {
-            $this->elements = array_intersect_assoc($this->elements, $elements->elements);
-        } else {
-            $newElements = array();
+        $this->assertCompatible($set);
 
-            foreach ($elements as $element) {
-                $hash = $this->generateHash($element);
-                if (array_key_exists($hash, $this->elements)) {
-                    $newElements[$hash] = $element;
-                }
+        foreach ($this->elements as $hash => $element) {
+            if (!array_key_exists($hash, $set->elements)) {
+                unset($this->elements[$hash]);
             }
-
-            $this->elements = $newElements;
         }
     }
 
     /**
      * Compute the difference (or complement) of this set and another.
      *
-     * @param mixed<mixed> $elements The elements of the second set.
+     * @param HashSet $set The second set.
      *
      * @return HashSet A set containing only the elements present in $this, but not $elements.
      */
-    public function diff($elements)
+    public function diff(HashSet $set)
     {
         $this->typeCheck->diff(func_get_args());
 
         $result = clone $this;
-        $result->diffInPlace($elements);
+        $result->diffInPlace($set);
 
         return $result;
     }
@@ -770,19 +765,16 @@ class HashSet implements MutableIterableInterface, Countable, IteratorAggregate,
     /**
      * Compute the difference (or complement) of this set and another, in place.
      *
-     * @param mixed<mixed> $elements The elements of the second set.
+     * @param HashSet $set The second set.
      */
-    public function diffInPlace($elements)
+    public function diffInPlace(HashSet $set)
     {
         $this->typeCheck->diffInPlace(func_get_args());
 
-        if ($elements instanceof self && $this->hashFunction == $elements->hashFunction) {
-            $this->elements = array_diff_assoc($this->elements, $elements->elements);
-        } else {
-            foreach ($elements as $element) {
-                $hash = $this->generateHash($element);
-                unset($this->elements[$hash]);
-            }
+        $this->assertCompatible($set);
+
+        foreach ($set->elements as $hash => $element) {
+            unset($this->elements[$hash]);
         }
     }
 
@@ -791,20 +783,22 @@ class HashSet implements MutableIterableInterface, Countable, IteratorAggregate,
      *
      * The symmetric difference is the set of elements which are in either of the sets and not in their intersection.
      *
-     * @param mixed<mixed> $elements The elements of the second set.
+     * @param HashSet $set The second set.
      *
      * @return HashSet A set containing only the elements present in $this, or $elements, but not both.
      */
-    public function symmetricDiff($elements)
+    public function symmetricDiff(HashSet $set)
     {
         $this->typeCheck->symmetricDiff(func_get_args());
 
-        $set = $this->union($elements);
-        $set->diffInPlace(
-            $this->intersect($elements)
+        $this->assertCompatible($set);
+
+        $result = $this->union($set);
+        $result->diffInPlace(
+            $this->intersect($set)
         );
 
-        return $set;
+        return $result;
     }
 
     /**
@@ -812,14 +806,16 @@ class HashSet implements MutableIterableInterface, Countable, IteratorAggregate,
      *
      * The symmetric difference is the set of elements which are in either of the sets and not in their intersection.
      *
-     * @param mixed<mixed> $elements The elements of the second set.
+     * @param HashSet $set The second set.
      */
-    public function symmetricDiffInPlace($elements)
+    public function symmetricDiffInPlace(HashSet $set)
     {
         $this->typeCheck->symmetricDiffInPlace(func_get_args());
 
-        $intersection = $this->intersect($elements);
-        $this->unionInPlace($elements);
+        $this->assertCompatible($set);
+
+        $intersection = $this->intersect($set);
+        $this->unionInPlace($set);
         $this->diffInPlace($intersection);
     }
 
@@ -831,6 +827,16 @@ class HashSet implements MutableIterableInterface, Countable, IteratorAggregate,
     private function generateHash($key)
     {
         return call_user_func($this->hashFunction, $key);
+    }
+
+    /**
+     * @param HashSet $set
+     */
+    private function assertCompatible(HashSet $set)
+    {
+        if ($set->hashFunction != $this->hashFunction) {
+            throw new InvalidArgumentException('The given set does not use the same hashing algorithm.');
+        }
     }
 
     private $typeCheck;

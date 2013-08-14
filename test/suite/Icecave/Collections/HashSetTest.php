@@ -10,6 +10,7 @@ class HashSetTest extends PHPUnit_Framework_TestCase
     public function setUp()
     {
         $this->collection = new HashSet;
+        $this->incompatibleCollection = new HashSet(null, 'sha1');
     }
 
     public function testConstructor()
@@ -442,143 +443,147 @@ class HashSetTest extends PHPUnit_Framework_TestCase
         $this->assertFalse($this->collection->contains('a'));
     }
 
-    public function testIsEqual()
+    public function testIsEqualSet()
     {
         $this->collection->add('a');
         $this->collection->add('b');
         $this->collection->add('c');
 
-        $collection = new HashSet;
-        $collection->add('c');
-        $collection->add('b');
-        $collection->add('a');
+        $collection = new HashSet(array('a', 'b', 'c'));
+        $this->assertTrue($this->collection->isEqualSet($collection));
 
-        $this->assertTrue($this->collection->isEqual($collection));
+        $collection = new HashSet(array('a', 'b'));
+        $this->assertFalse($this->collection->isEqualSet($collection));
 
-        $collection->remove('b');
-
-        $this->assertFalse($this->collection->isEqual($collection));
-
-        $collection->add('b');
-        $this->collection->remove('b');
-
-        $this->assertFalse($this->collection->isEqual($collection));
+        $collection = new HashSet(array('c', 'b', 'x'));
+        $this->assertFalse($this->collection->isEqualSet($collection));
     }
 
-    public function testIsSuperset()
+    public function testIsEqualSetIncompatible()
     {
-        $this->collection->add('a');
-        $this->collection->add('b');
-        $this->collection->add('c');
-
-        $collection = new HashSet;
-        $collection->add('c');
-        $collection->add('b');
-        $collection->add('a');
-
-        $this->assertTrue($this->collection->isSuperset($collection));
-
-        $this->collection->add('d');
-
-        $this->assertTrue($this->collection->isSuperset($collection));
-
-        $this->collection->remove('a');
-
-        $this->assertFalse($this->collection->isSuperset($collection));
+        $this->setExpectedException('InvalidArgumentException', 'The given set does not use the same hashing algorithm.');
+        $this->collection->isEqualSet($this->incompatibleCollection);
     }
 
-    public function testIsSubset()
+    public function testIsSuperSet()
     {
         $this->collection->add('a');
         $this->collection->add('b');
         $this->collection->add('c');
 
-        $collection = new HashSet;
-        $collection->add('c');
-        $collection->add('b');
-        $collection->add('a');
+        $collection = new HashSet(array('a', 'b', 'c'));
+        $this->assertTrue($this->collection->isSuperSet($collection));
 
-        $this->assertTrue($this->collection->isSubset($collection));
+        $collection = new HashSet(array('a', 'b'));
+        $this->assertTrue($this->collection->isSuperSet($collection));
 
-        $collection->add('d');
+        $collection = new HashSet(array('a', 'b', 'x'));
+        $this->assertFalse($this->collection->isSuperSet($collection));
 
-        $this->assertTrue($this->collection->isSubset($collection));
-
-        $collection->remove('a');
-
-        $this->assertFalse($this->collection->isSubset($collection));
+        $collection = new HashSet(array('a', 'b', 'c', 'd'));
+        $this->assertFalse($this->collection->isSuperSet($collection));
     }
 
-    public function testIsProperSuperset()
+    public function testIsSuperSetIncompatible()
     {
-        $this->collection->add('a');
-        $this->collection->add('b');
-        $this->collection->add('c');
-
-        $collection = new HashSet;
-        $collection->add('c');
-        $collection->add('b');
-        $collection->add('a');
-
-        $this->assertFalse($this->collection->IsProperSuperset($collection));
-
-        $this->collection->add('d');
-
-        $this->assertTrue($this->collection->IsProperSuperset($collection));
-
-        $this->collection->remove('a');
-
-        $this->assertFalse($this->collection->IsProperSuperset($collection));
+        $this->setExpectedException('InvalidArgumentException', 'The given set does not use the same hashing algorithm.');
+        $this->collection->isSuperSet($this->incompatibleCollection);
     }
 
-    public function testIsProperSubset()
+    public function testIsSubSet()
     {
         $this->collection->add('a');
         $this->collection->add('b');
         $this->collection->add('c');
 
-        $collection = new HashSet;
-        $collection->add('c');
-        $collection->add('b');
-        $collection->add('a');
+        $collection = new HashSet(array('a', 'b', 'c'));
+        $this->assertTrue($this->collection->isSubSet($collection));
 
-        $this->assertFalse($this->collection->IsProperSubset($collection));
+        $collection = new HashSet(array('a', 'b'));
+        $this->assertFalse($this->collection->isSubSet($collection));
 
-        $collection->add('d');
+        $collection = new HashSet(array('a', 'b', 'x'));
+        $this->assertFalse($this->collection->isSubSet($collection));
 
-        $this->assertTrue($this->collection->IsProperSubset($collection));
-
-        $collection->remove('a');
-
-        $this->assertFalse($this->collection->IsProperSubset($collection));
+        $collection = new HashSet(array('a', 'b', 'c', 'd'));
+        $this->assertTrue($this->collection->isSubSet($collection));
     }
 
-    public function testIsIntersectingWithSubset()
+    public function testIsSubSetIncompatible()
+    {
+        $this->setExpectedException('InvalidArgumentException', 'The given set does not use the same hashing algorithm.');
+        $this->collection->isSubSet($this->incompatibleCollection);
+    }
+
+    public function testIsProperSuperSet()
     {
         $this->collection->add('a');
         $this->collection->add('b');
         $this->collection->add('c');
 
-        $collection = new HashSet;
-        $collection->add('b');
-        $collection->add('c');
-        $collection->add('d');
+        $collection = new HashSet(array('a', 'b', 'c'));
+        $this->assertFalse($this->collection->isProperSuperSet($collection));
+
+        $collection = new HashSet(array('a', 'b'));
+        $this->assertTrue($this->collection->isProperSuperSet($collection));
+
+        $collection = new HashSet(array('a', 'x'));
+        $this->assertFalse($this->collection->isProperSuperSet($collection));
+
+        $collection = new HashSet(array('a', 'b', 'c', 'd'));
+        $this->assertFalse($this->collection->isProperSuperSet($collection));
+    }
+
+    public function testIsProperSuperSetIncompatible()
+    {
+        $this->setExpectedException('InvalidArgumentException', 'The given set does not use the same hashing algorithm.');
+        $this->collection->isProperSuperSet($this->incompatibleCollection);
+    }
+
+    public function testIsProperSubSet()
+    {
+        $this->collection->add('a');
+        $this->collection->add('b');
+        $this->collection->add('c');
+
+        $collection = new HashSet(array('a', 'b', 'c'));
+        $this->assertFalse($this->collection->isProperSubSet($collection));
+
+        $collection = new HashSet(array('a', 'b'));
+        $this->assertFalse($this->collection->isProperSubSet($collection));
+
+        $collection = new HashSet(array('a', 'x'));
+        $this->assertFalse($this->collection->isProperSubSet($collection));
+
+        $collection = new HashSet(array('a', 'b', 'c', 'd'));
+        $this->assertTrue($this->collection->isProperSubSet($collection));
+    }
+
+    public function testIsProperSubSetIncompatible()
+    {
+        $this->setExpectedException('InvalidArgumentException', 'The given set does not use the same hashing algorithm.');
+        $this->collection->isProperSubSet($this->incompatibleCollection);
+    }
+
+    public function testIsIntersectingWithSubSet()
+    {
+        $this->collection->add('a');
+        $this->collection->add('b');
+        $this->collection->add('c');
+
+        $collection = new HashSet(array('b', 'c', 'd'));
 
         $this->assertTrue($this->collection->isIntersecting($collection));
         $this->assertTrue($collection->isIntersecting($this->collection));
     }
 
-    public function testIsIntersectingWithSuperset()
+    public function testIsIntersectingWithSuperSet()
     {
         $this->collection->add('a');
         $this->collection->add('b');
         $this->collection->add('c');
 
-        $collection = new HashSet;
-        $collection->add('a');
-        $collection->add('b');
-        $collection->add('c');
-        $collection->add('d');
+        $collection = new HashSet(array('a', 'b', 'c', 'd'));
 
         $this->assertTrue($this->collection->isIntersecting($collection));
         $this->assertTrue($collection->isIntersecting($this->collection));
@@ -590,13 +595,16 @@ class HashSetTest extends PHPUnit_Framework_TestCase
         $this->collection->add('b');
         $this->collection->add('c');
 
-        $collection = new HashSet;
-        $collection->add('d');
-        $collection->add('e');
-        $collection->add('f');
+        $collection = new HashSet(array('d', 'e', 'f'));
 
         $this->assertFalse($this->collection->isIntersecting($collection));
         $this->assertFalse($collection->isIntersecting($this->collection));
+    }
+
+    public function testIsIsIntersectingIncompatible()
+    {
+        $this->setExpectedException('InvalidArgumentException', 'The given set does not use the same hashing algorithm.');
+        $this->collection->isIntersecting($this->incompatibleCollection);
     }
 
     public function testUnion()
@@ -614,21 +622,10 @@ class HashSetTest extends PHPUnit_Framework_TestCase
         $this->assertSame(array('a', 'b', 'c', 'd', 'e'), $result->elements());
     }
 
-    public function testUnionWithArray()
+    public function testIsUnionIncompatible()
     {
-        $this->collection->add('a');
-        $this->collection->add('b');
-        $this->collection->add('c');
-
-        $array = array(
-            'c',
-            'd',
-            'e'
-        );
-
-        $result = $this->collection->union($array);
-
-        $this->assertSame(array('a', 'b', 'c', 'd', 'e'), $result->elements());
+        $this->setExpectedException('InvalidArgumentException', 'The given set does not use the same hashing algorithm.');
+        $this->collection->union($this->incompatibleCollection);
     }
 
     public function testUnionInPlace()
@@ -647,21 +644,10 @@ class HashSetTest extends PHPUnit_Framework_TestCase
         $this->assertSame(array('a', 'b', 'c', 'd', 'e'), $this->collection->elements());
     }
 
-    public function testUnionInPlaceWithArray()
+    public function testIsUnionInPlaceIncompatible()
     {
-        $this->collection->add('a');
-        $this->collection->add('b');
-        $this->collection->add('c');
-
-        $array = array(
-            'c',
-            'd',
-            'e'
-        );
-
-        $this->collection->unionInPlace($array);
-
-        $this->assertSame(array('a', 'b', 'c', 'd', 'e'), $this->collection->elements());
+        $this->setExpectedException('InvalidArgumentException', 'The given set does not use the same hashing algorithm.');
+        $this->collection->unionInPlace($this->incompatibleCollection);
     }
 
     public function testIntersect()
@@ -680,21 +666,10 @@ class HashSetTest extends PHPUnit_Framework_TestCase
         $this->assertSame(array('c'), $result->elements());
     }
 
-    public function testIntersectWithArray()
+    public function testIsIntersectIncompatible()
     {
-        $this->collection->add('a');
-        $this->collection->add('b');
-        $this->collection->add('c');
-
-        $array = array(
-            'c',
-            'd',
-            'e'
-        );
-
-        $result = $this->collection->intersect($array);
-
-        $this->assertSame(array('c'), $result->elements());
+        $this->setExpectedException('InvalidArgumentException', 'The given set does not use the same hashing algorithm.');
+        $this->collection->intersect($this->incompatibleCollection);
     }
 
     public function testIntersectInPlace()
@@ -713,21 +688,10 @@ class HashSetTest extends PHPUnit_Framework_TestCase
         $this->assertSame(array('c'), $this->collection->elements());
     }
 
-    public function testIntersectInPlaceWithArray()
+    public function testIsIntersectInPlaceIncompatible()
     {
-        $this->collection->add('a');
-        $this->collection->add('b');
-        $this->collection->add('c');
-
-        $array = array(
-            'c',
-            'd',
-            'e'
-        );
-
-        $this->collection->intersectInPlace($array);
-
-        $this->assertSame(array('c'), $this->collection->elements());
+        $this->setExpectedException('InvalidArgumentException', 'The given set does not use the same hashing algorithm.');
+        $this->collection->intersectInPlace($this->incompatibleCollection);
     }
 
     public function testDiff()
@@ -746,21 +710,10 @@ class HashSetTest extends PHPUnit_Framework_TestCase
         $this->assertSame(array('a', 'b'), $result->elements());
     }
 
-    public function testDiffWithArray()
+    public function testDiffIncompatible()
     {
-        $this->collection->add('a');
-        $this->collection->add('b');
-        $this->collection->add('c');
-
-        $array = array(
-            'c',
-            'd',
-            'e'
-        );
-
-        $result = $this->collection->diff($array);
-
-        $this->assertSame(array('a', 'b'), $result->elements());
+        $this->setExpectedException('InvalidArgumentException', 'The given set does not use the same hashing algorithm.');
+        $this->collection->diff($this->incompatibleCollection);
     }
 
     public function testDiffInPlace()
@@ -779,21 +732,10 @@ class HashSetTest extends PHPUnit_Framework_TestCase
         $this->assertSame(array('a', 'b'), $this->collection->elements());
     }
 
-    public function testDiffInPlaceWithArray()
+    public function testDiffInPlaceIncompatible()
     {
-        $this->collection->add('a');
-        $this->collection->add('b');
-        $this->collection->add('c');
-
-        $array = array(
-            'c',
-            'd',
-            'e'
-        );
-
-        $this->collection->diffInPlace($array);
-
-        $this->assertSame(array('a', 'b'), $this->collection->elements());
+        $this->setExpectedException('InvalidArgumentException', 'The given set does not use the same hashing algorithm.');
+        $this->collection->diffInPlace($this->incompatibleCollection);
     }
 
     public function testSymmetricDiff()
@@ -812,21 +754,10 @@ class HashSetTest extends PHPUnit_Framework_TestCase
         $this->assertSame(array('a', 'b', 'd', 'e'), $result->elements());
     }
 
-    public function testSymmetricDiffWithArray()
+    public function testSymmetricDiffIncompatible()
     {
-        $this->collection->add('a');
-        $this->collection->add('b');
-        $this->collection->add('c');
-
-        $array = array(
-            'c',
-            'd',
-            'e'
-        );
-
-        $result = $this->collection->symmetricDiff($array);
-
-        $this->assertSame(array('a', 'b', 'd', 'e'), $result->elements());
+        $this->setExpectedException('InvalidArgumentException', 'The given set does not use the same hashing algorithm.');
+        $this->collection->symmetricDiff($this->incompatibleCollection);
     }
 
     public function testSymmetricDiffInPlace()
@@ -845,20 +776,9 @@ class HashSetTest extends PHPUnit_Framework_TestCase
         $this->assertSame(array('a', 'b', 'd', 'e'), $this->collection->elements());
     }
 
-    public function testSymmetricDiffInPlaceWithArray()
+    public function testSymmetricDiffInPlaceIncompatible()
     {
-        $this->collection->add('a');
-        $this->collection->add('b');
-        $this->collection->add('c');
-
-        $array = array(
-            'c',
-            'd',
-            'e'
-        );
-
-        $this->collection->symmetricDiffInPlace($array);
-
-        $this->assertSame(array('a', 'b', 'd', 'e'), $this->collection->elements());
+        $this->setExpectedException('InvalidArgumentException', 'The given set does not use the same hashing algorithm.');
+        $this->collection->symmetricDiffInPlace($this->incompatibleCollection);
     }
 }

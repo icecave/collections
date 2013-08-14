@@ -387,138 +387,53 @@ class HashSetTypeCheck extends \Icecave\Collections\TypeCheck\AbstractValidator
         }
     }
 
-    public function isEqual(array $arguments)
+    public function isEqualSet(array $arguments)
     {
         $argumentCount = \count($arguments);
         if ($argumentCount < 1) {
-            throw new \Icecave\Collections\TypeCheck\Exception\MissingArgumentException('elements', 0, 'mixed<mixed>');
+            throw new \Icecave\Collections\TypeCheck\Exception\MissingArgumentException('set', 0, 'Icecave\\Collections\\HashSet');
         } elseif ($argumentCount > 1) {
             throw new \Icecave\Collections\TypeCheck\Exception\UnexpectedArgumentException(1, $arguments[1]);
-        }
-        $value = $arguments[0];
-        $check = function ($value) {
-            if (!\is_array($value) && !$value instanceof \Traversable) {
-                return false;
-            }
-            foreach ($value as $key => $subValue) {
-            }
-            return true;
-        };
-        if (!$check($arguments[0])) {
-            throw new \Icecave\Collections\TypeCheck\Exception\UnexpectedArgumentValueException(
-                'elements',
-                0,
-                $arguments[0],
-                'mixed<mixed>'
-            );
         }
     }
 
-    public function isSuperset(array $arguments)
+    public function isSuperSet(array $arguments)
     {
         $argumentCount = \count($arguments);
         if ($argumentCount < 1) {
-            throw new \Icecave\Collections\TypeCheck\Exception\MissingArgumentException('elements', 0, 'mixed<mixed>');
+            throw new \Icecave\Collections\TypeCheck\Exception\MissingArgumentException('set', 0, 'Icecave\\Collections\\HashSet');
         } elseif ($argumentCount > 1) {
             throw new \Icecave\Collections\TypeCheck\Exception\UnexpectedArgumentException(1, $arguments[1]);
-        }
-        $value = $arguments[0];
-        $check = function ($value) {
-            if (!\is_array($value) && !$value instanceof \Traversable) {
-                return false;
-            }
-            foreach ($value as $key => $subValue) {
-            }
-            return true;
-        };
-        if (!$check($arguments[0])) {
-            throw new \Icecave\Collections\TypeCheck\Exception\UnexpectedArgumentValueException(
-                'elements',
-                0,
-                $arguments[0],
-                'mixed<mixed>'
-            );
         }
     }
 
-    public function isSubset(array $arguments)
+    public function isSubSet(array $arguments)
     {
         $argumentCount = \count($arguments);
         if ($argumentCount < 1) {
-            throw new \Icecave\Collections\TypeCheck\Exception\MissingArgumentException('elements', 0, 'mixed<mixed>');
+            throw new \Icecave\Collections\TypeCheck\Exception\MissingArgumentException('set', 0, 'Icecave\\Collections\\HashSet');
         } elseif ($argumentCount > 1) {
             throw new \Icecave\Collections\TypeCheck\Exception\UnexpectedArgumentException(1, $arguments[1]);
-        }
-        $value = $arguments[0];
-        $check = function ($value) {
-            if (!\is_array($value) && !$value instanceof \Traversable) {
-                return false;
-            }
-            foreach ($value as $key => $subValue) {
-            }
-            return true;
-        };
-        if (!$check($arguments[0])) {
-            throw new \Icecave\Collections\TypeCheck\Exception\UnexpectedArgumentValueException(
-                'elements',
-                0,
-                $arguments[0],
-                'mixed<mixed>'
-            );
         }
     }
 
-    public function isProperSuperset(array $arguments)
+    public function isProperSuperSet(array $arguments)
     {
         $argumentCount = \count($arguments);
         if ($argumentCount < 1) {
-            throw new \Icecave\Collections\TypeCheck\Exception\MissingArgumentException('elements', 0, 'mixed<mixed>');
+            throw new \Icecave\Collections\TypeCheck\Exception\MissingArgumentException('set', 0, 'Icecave\\Collections\\HashSet');
         } elseif ($argumentCount > 1) {
             throw new \Icecave\Collections\TypeCheck\Exception\UnexpectedArgumentException(1, $arguments[1]);
-        }
-        $value = $arguments[0];
-        $check = function ($value) {
-            if (!\is_array($value) && !$value instanceof \Traversable) {
-                return false;
-            }
-            foreach ($value as $key => $subValue) {
-            }
-            return true;
-        };
-        if (!$check($arguments[0])) {
-            throw new \Icecave\Collections\TypeCheck\Exception\UnexpectedArgumentValueException(
-                'elements',
-                0,
-                $arguments[0],
-                'mixed<mixed>'
-            );
         }
     }
 
-    public function isProperSubset(array $arguments)
+    public function isProperSubSet(array $arguments)
     {
         $argumentCount = \count($arguments);
         if ($argumentCount < 1) {
-            throw new \Icecave\Collections\TypeCheck\Exception\MissingArgumentException('elements', 0, 'mixed<mixed>');
+            throw new \Icecave\Collections\TypeCheck\Exception\MissingArgumentException('set', 0, 'Icecave\\Collections\\HashSet');
         } elseif ($argumentCount > 1) {
             throw new \Icecave\Collections\TypeCheck\Exception\UnexpectedArgumentException(1, $arguments[1]);
-        }
-        $value = $arguments[0];
-        $check = function ($value) {
-            if (!\is_array($value) && !$value instanceof \Traversable) {
-                return false;
-            }
-            foreach ($value as $key => $subValue) {
-            }
-            return true;
-        };
-        if (!$check($arguments[0])) {
-            throw new \Icecave\Collections\TypeCheck\Exception\UnexpectedArgumentValueException(
-                'elements',
-                0,
-                $arguments[0],
-                'mixed<mixed>'
-            );
         }
     }
 
@@ -526,26 +441,9 @@ class HashSetTypeCheck extends \Icecave\Collections\TypeCheck\AbstractValidator
     {
         $argumentCount = \count($arguments);
         if ($argumentCount < 1) {
-            throw new \Icecave\Collections\TypeCheck\Exception\MissingArgumentException('elements', 0, 'mixed<mixed>');
+            throw new \Icecave\Collections\TypeCheck\Exception\MissingArgumentException('set', 0, 'Icecave\\Collections\\HashSet');
         } elseif ($argumentCount > 1) {
             throw new \Icecave\Collections\TypeCheck\Exception\UnexpectedArgumentException(1, $arguments[1]);
-        }
-        $value = $arguments[0];
-        $check = function ($value) {
-            if (!\is_array($value) && !$value instanceof \Traversable) {
-                return false;
-            }
-            foreach ($value as $key => $subValue) {
-            }
-            return true;
-        };
-        if (!$check($arguments[0])) {
-            throw new \Icecave\Collections\TypeCheck\Exception\UnexpectedArgumentValueException(
-                'elements',
-                0,
-                $arguments[0],
-                'mixed<mixed>'
-            );
         }
     }
 
@@ -553,26 +451,9 @@ class HashSetTypeCheck extends \Icecave\Collections\TypeCheck\AbstractValidator
     {
         $argumentCount = \count($arguments);
         if ($argumentCount < 1) {
-            throw new \Icecave\Collections\TypeCheck\Exception\MissingArgumentException('elements', 0, 'mixed<mixed>');
+            throw new \Icecave\Collections\TypeCheck\Exception\MissingArgumentException('set', 0, 'Icecave\\Collections\\HashSet');
         } elseif ($argumentCount > 1) {
             throw new \Icecave\Collections\TypeCheck\Exception\UnexpectedArgumentException(1, $arguments[1]);
-        }
-        $value = $arguments[0];
-        $check = function ($value) {
-            if (!\is_array($value) && !$value instanceof \Traversable) {
-                return false;
-            }
-            foreach ($value as $key => $subValue) {
-            }
-            return true;
-        };
-        if (!$check($arguments[0])) {
-            throw new \Icecave\Collections\TypeCheck\Exception\UnexpectedArgumentValueException(
-                'elements',
-                0,
-                $arguments[0],
-                'mixed<mixed>'
-            );
         }
     }
 
@@ -580,26 +461,9 @@ class HashSetTypeCheck extends \Icecave\Collections\TypeCheck\AbstractValidator
     {
         $argumentCount = \count($arguments);
         if ($argumentCount < 1) {
-            throw new \Icecave\Collections\TypeCheck\Exception\MissingArgumentException('elements', 0, 'mixed<mixed>');
+            throw new \Icecave\Collections\TypeCheck\Exception\MissingArgumentException('set', 0, 'Icecave\\Collections\\HashSet');
         } elseif ($argumentCount > 1) {
             throw new \Icecave\Collections\TypeCheck\Exception\UnexpectedArgumentException(1, $arguments[1]);
-        }
-        $value = $arguments[0];
-        $check = function ($value) {
-            if (!\is_array($value) && !$value instanceof \Traversable) {
-                return false;
-            }
-            foreach ($value as $key => $subValue) {
-            }
-            return true;
-        };
-        if (!$check($arguments[0])) {
-            throw new \Icecave\Collections\TypeCheck\Exception\UnexpectedArgumentValueException(
-                'elements',
-                0,
-                $arguments[0],
-                'mixed<mixed>'
-            );
         }
     }
 
@@ -607,26 +471,9 @@ class HashSetTypeCheck extends \Icecave\Collections\TypeCheck\AbstractValidator
     {
         $argumentCount = \count($arguments);
         if ($argumentCount < 1) {
-            throw new \Icecave\Collections\TypeCheck\Exception\MissingArgumentException('elements', 0, 'mixed<mixed>');
+            throw new \Icecave\Collections\TypeCheck\Exception\MissingArgumentException('set', 0, 'Icecave\\Collections\\HashSet');
         } elseif ($argumentCount > 1) {
             throw new \Icecave\Collections\TypeCheck\Exception\UnexpectedArgumentException(1, $arguments[1]);
-        }
-        $value = $arguments[0];
-        $check = function ($value) {
-            if (!\is_array($value) && !$value instanceof \Traversable) {
-                return false;
-            }
-            foreach ($value as $key => $subValue) {
-            }
-            return true;
-        };
-        if (!$check($arguments[0])) {
-            throw new \Icecave\Collections\TypeCheck\Exception\UnexpectedArgumentValueException(
-                'elements',
-                0,
-                $arguments[0],
-                'mixed<mixed>'
-            );
         }
     }
 
@@ -634,26 +481,9 @@ class HashSetTypeCheck extends \Icecave\Collections\TypeCheck\AbstractValidator
     {
         $argumentCount = \count($arguments);
         if ($argumentCount < 1) {
-            throw new \Icecave\Collections\TypeCheck\Exception\MissingArgumentException('elements', 0, 'mixed<mixed>');
+            throw new \Icecave\Collections\TypeCheck\Exception\MissingArgumentException('set', 0, 'Icecave\\Collections\\HashSet');
         } elseif ($argumentCount > 1) {
             throw new \Icecave\Collections\TypeCheck\Exception\UnexpectedArgumentException(1, $arguments[1]);
-        }
-        $value = $arguments[0];
-        $check = function ($value) {
-            if (!\is_array($value) && !$value instanceof \Traversable) {
-                return false;
-            }
-            foreach ($value as $key => $subValue) {
-            }
-            return true;
-        };
-        if (!$check($arguments[0])) {
-            throw new \Icecave\Collections\TypeCheck\Exception\UnexpectedArgumentValueException(
-                'elements',
-                0,
-                $arguments[0],
-                'mixed<mixed>'
-            );
         }
     }
 
@@ -661,26 +491,9 @@ class HashSetTypeCheck extends \Icecave\Collections\TypeCheck\AbstractValidator
     {
         $argumentCount = \count($arguments);
         if ($argumentCount < 1) {
-            throw new \Icecave\Collections\TypeCheck\Exception\MissingArgumentException('elements', 0, 'mixed<mixed>');
+            throw new \Icecave\Collections\TypeCheck\Exception\MissingArgumentException('set', 0, 'Icecave\\Collections\\HashSet');
         } elseif ($argumentCount > 1) {
             throw new \Icecave\Collections\TypeCheck\Exception\UnexpectedArgumentException(1, $arguments[1]);
-        }
-        $value = $arguments[0];
-        $check = function ($value) {
-            if (!\is_array($value) && !$value instanceof \Traversable) {
-                return false;
-            }
-            foreach ($value as $key => $subValue) {
-            }
-            return true;
-        };
-        if (!$check($arguments[0])) {
-            throw new \Icecave\Collections\TypeCheck\Exception\UnexpectedArgumentValueException(
-                'elements',
-                0,
-                $arguments[0],
-                'mixed<mixed>'
-            );
         }
     }
 
@@ -688,26 +501,9 @@ class HashSetTypeCheck extends \Icecave\Collections\TypeCheck\AbstractValidator
     {
         $argumentCount = \count($arguments);
         if ($argumentCount < 1) {
-            throw new \Icecave\Collections\TypeCheck\Exception\MissingArgumentException('elements', 0, 'mixed<mixed>');
+            throw new \Icecave\Collections\TypeCheck\Exception\MissingArgumentException('set', 0, 'Icecave\\Collections\\HashSet');
         } elseif ($argumentCount > 1) {
             throw new \Icecave\Collections\TypeCheck\Exception\UnexpectedArgumentException(1, $arguments[1]);
-        }
-        $value = $arguments[0];
-        $check = function ($value) {
-            if (!\is_array($value) && !$value instanceof \Traversable) {
-                return false;
-            }
-            foreach ($value as $key => $subValue) {
-            }
-            return true;
-        };
-        if (!$check($arguments[0])) {
-            throw new \Icecave\Collections\TypeCheck\Exception\UnexpectedArgumentValueException(
-                'elements',
-                0,
-                $arguments[0],
-                'mixed<mixed>'
-            );
         }
     }
 
@@ -715,26 +511,9 @@ class HashSetTypeCheck extends \Icecave\Collections\TypeCheck\AbstractValidator
     {
         $argumentCount = \count($arguments);
         if ($argumentCount < 1) {
-            throw new \Icecave\Collections\TypeCheck\Exception\MissingArgumentException('elements', 0, 'mixed<mixed>');
+            throw new \Icecave\Collections\TypeCheck\Exception\MissingArgumentException('set', 0, 'Icecave\\Collections\\HashSet');
         } elseif ($argumentCount > 1) {
             throw new \Icecave\Collections\TypeCheck\Exception\UnexpectedArgumentException(1, $arguments[1]);
-        }
-        $value = $arguments[0];
-        $check = function ($value) {
-            if (!\is_array($value) && !$value instanceof \Traversable) {
-                return false;
-            }
-            foreach ($value as $key => $subValue) {
-            }
-            return true;
-        };
-        if (!$check($arguments[0])) {
-            throw new \Icecave\Collections\TypeCheck\Exception\UnexpectedArgumentValueException(
-                'elements',
-                0,
-                $arguments[0],
-                'mixed<mixed>'
-            );
         }
     }
 
@@ -742,26 +521,9 @@ class HashSetTypeCheck extends \Icecave\Collections\TypeCheck\AbstractValidator
     {
         $argumentCount = \count($arguments);
         if ($argumentCount < 1) {
-            throw new \Icecave\Collections\TypeCheck\Exception\MissingArgumentException('elements', 0, 'mixed<mixed>');
+            throw new \Icecave\Collections\TypeCheck\Exception\MissingArgumentException('set', 0, 'Icecave\\Collections\\HashSet');
         } elseif ($argumentCount > 1) {
             throw new \Icecave\Collections\TypeCheck\Exception\UnexpectedArgumentException(1, $arguments[1]);
-        }
-        $value = $arguments[0];
-        $check = function ($value) {
-            if (!\is_array($value) && !$value instanceof \Traversable) {
-                return false;
-            }
-            foreach ($value as $key => $subValue) {
-            }
-            return true;
-        };
-        if (!$check($arguments[0])) {
-            throw new \Icecave\Collections\TypeCheck\Exception\UnexpectedArgumentValueException(
-                'elements',
-                0,
-                $arguments[0],
-                'mixed<mixed>'
-            );
         }
     }
 
@@ -770,6 +532,16 @@ class HashSetTypeCheck extends \Icecave\Collections\TypeCheck\AbstractValidator
         $argumentCount = \count($arguments);
         if ($argumentCount < 1) {
             throw new \Icecave\Collections\TypeCheck\Exception\MissingArgumentException('key', 0, 'mixed');
+        } elseif ($argumentCount > 1) {
+            throw new \Icecave\Collections\TypeCheck\Exception\UnexpectedArgumentException(1, $arguments[1]);
+        }
+    }
+
+    public function assertCompatibility(array $arguments)
+    {
+        $argumentCount = \count($arguments);
+        if ($argumentCount < 1) {
+            throw new \Icecave\Collections\TypeCheck\Exception\MissingArgumentException('set', 0, 'Icecave\\Collections\\HashSet');
         } elseif ($argumentCount > 1) {
             throw new \Icecave\Collections\TypeCheck\Exception\UnexpectedArgumentException(1, $arguments[1]);
         }
