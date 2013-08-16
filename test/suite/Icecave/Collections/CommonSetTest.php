@@ -82,7 +82,10 @@ class CommonSetTest extends ParameterizedTestCase
             $elements = $elements[0];
         }
 
-        $elements = array_combine($elements, $elements);
+        if (count($elements)) {
+            $elements = array_combine($elements, $elements);
+        }
+
         $actualElements = Liberator::liberate($collection)->elements;
 
         ksort($elements);
