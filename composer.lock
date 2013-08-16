@@ -3,8 +3,69 @@
         "This file locks the dependencies of your project to a known state",
         "Read more about it at http://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file"
     ],
-    "hash": "3f153ec0148886e32957138d8b8c30b0",
+    "hash": "d59602faa4071c556f86344c380fff4c",
     "packages": [
+        {
+            "name": "icecave/parity",
+            "version": "0.1.0",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/IcecaveStudios/parity.git",
+                "reference": "0.1.0"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/IcecaveStudios/parity/zipball/0.1.0",
+                "reference": "0.1.0",
+                "shasum": ""
+            },
+            "require": {
+                "icecave/repr": ">=1.0,<2.0",
+                "php": ">=5.3"
+            },
+            "require-dev": {
+                "eloquent/typhoon": ">=0.9,<1.0",
+                "icecave/archer": ">=0.3,<1.0"
+            },
+            "type": "library",
+            "extra": {
+                "typhoon": {
+                    "output-path": "lib-typhoon",
+                    "validator-namespace": "Icecave\\Parity\\TypeCheck",
+                    "use-native-callable": false
+                }
+            },
+            "autoload": {
+                "psr-0": {
+                    "Icecave\\Parity": "lib",
+                    "Icecave\\Parity\\TypeCheck": "lib-typhoon"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "James Harris",
+                    "email": "james.harris@icecave.com.au",
+                    "homepage": "https://github.com/jmalloc"
+                }
+            ],
+            "description": "A comparator library for PHP.",
+            "homepage": "https://github.com/IcecaveStudios/parity",
+            "keywords": [
+                "compare",
+                "comparison",
+                "equal",
+                "equality",
+                "greater",
+                "less",
+                "sort",
+                "sorting"
+            ],
+            "time": "2013-05-29 08:00:22"
+        },
         {
             "name": "icecave/repr",
             "version": "1.0.0",
@@ -568,6 +629,53 @@
                 "type"
             ],
             "time": "2013-02-18 23:16:04"
+        },
+        {
+            "name": "ezzatron/phpunit-extensions",
+            "version": "1.0.2",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/ezzatron/phpunit-extensions.git",
+                "reference": "1.0.2"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/ezzatron/phpunit-extensions/zipball/1.0.2",
+                "reference": "1.0.2",
+                "shasum": ""
+            },
+            "require-dev": {
+                "eloquent/liberator": ">=1.1,<2.0",
+                "icecave/archer": ">=0.2,<1.0"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-0": {
+                    "Ezzatron\\PHPUnit": "src"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Erin Millard",
+                    "email": "ezzatron@gmail.com",
+                    "homepage": "http://ezzatron.com/"
+                }
+            ],
+            "description": "Extensions for PHPUnit to provide additional functionality.",
+            "homepage": "https://github.com/ezzatron/phpunit-extensions",
+            "keywords": [
+                "case",
+                "extension",
+                "parameterized",
+                "phpunit",
+                "test",
+                "testing"
+            ],
+            "time": "2013-03-04 10:59:13"
         },
         {
             "name": "guzzle/guzzle",
