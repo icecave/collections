@@ -477,4 +477,103 @@ abstract class Collection
             return new Traits($iterator instanceof Countable, false);
         }
     }
+
+    /**
+     * Return the index of the first element in a sorted collection that is not less than the given element.
+     *
+     * @param array|ArrayAccess $collection The sorted collection to search.
+     * @param mixed             $element    The element to search for.
+     * @param callable          $comparator The comparator used to compare elements.
+     * @param integer           $startIndex The index at which to start the search.
+     * @param integer|null      $endIndex   The index at which to stop the search, or null to use the entire collection.
+     */
+    public static function lowerBound($collection, $element, $comparator, $startIndex = 0, $endIndex = null)
+    {
+        TypeCheck::get(__CLASS__)->lowerBound(func_get_args());
+
+        if (null === $endIndex) {
+            $endIndex = static::size($collection);
+        }
+
+        $count = $endIndex - $startIndex;
+
+        while ($count > 0) {
+            $step = intval($count / 2);
+            $pivotIndex = $startIndex + $step;
+
+            if (call_user_func($comparator, $collection[$pivotIndex], $element) < 0) {
+                $startIndex = $pivotIndex + 1;
+                $count -= $step + 1;
+            } else {
+                $count = $step;
+            }
+        }
+
+        return $startIndex;
+    }
+
+    /**
+     * Return the index of the first element in a sorted collection that is greater than the given element.
+     *
+     * @param array|ArrayAccess $collection The sorted collection to search.
+     * @param mixed             $element    The element to search for.
+     * @param callable          $comparator The comparator used to compare elements.
+     * @param integer           $startIndex The index at which to start the search.
+     * @param integer|null      $endIndex   The index at which to stop the search, or null to use the entire collection.
+     */
+    public static function upperBound($collection, $element, $comparator, $startIndex = 0, $endIndex = null)
+    {
+        TypeCheck::get(__CLASS__)->upperBound(func_get_args());
+
+        if (null === $endIndex) {
+            $endIndex = static::size($collection);
+        }
+
+        $count = $endIndex - $startIndex;
+
+        while ($count > 0) {
+            $step = intval($count / 2);
+            $pivotIndex = $startIndex + $step;
+
+            if (call_user_func($comparator, $collection[$pivotIndex], $element) <= 0) {
+                $startIndex = $pivotIndex + 1;
+                $count -= $step + 1;
+            } else {
+                $count = $step;
+            }
+        }
+
+        return $startIndex;
+    }
+
+    /**
+     * Perform a binary search on a sorted sequence.
+     *
+     * @param array|ArrayAccess $collection   The collection to search.
+     * @param mixed             $element      The element to search for.
+     * @param callable          $comparator   The comparator used to compare elements.
+     * @param integer           $startIndex   The index at which to start the search.
+     * @param integer|null      $endIndex     The index at which to stop the search, or null to use the entire collection.
+     * @param integer|null      &$insertIndex Assigned the index at which $element must be inserted to maintain sortedness.
+     *
+     * @return integer|null The index at which an element equal to $element is present in $collection.
+     */
+    public static function binarySearch($collection, $element, $comparator, $startIndex = 0, $endIndex = null, &$insertIndex = null)
+    {
+        TypeCheck::get(__CLASS__)->binarySearch(func_get_args());
+
+        if (null === $endIndex) {
+            $endIndex = static::size($collection);
+        }
+
+        $insertIndex = static::lowerBound($collection, $element, $comparator, $startIndex, $endIndex);
+
+        if ($insertIndex === $endIndex) {
+            return null;
+        } elseif (0 !== call_user_func($comparator, $collection[$insertIndex], $element)) {
+            return null;
+        }
+
+        return $insertIndex;
+    }
 }

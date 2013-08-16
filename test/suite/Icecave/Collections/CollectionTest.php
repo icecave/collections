@@ -424,4 +424,99 @@ class CollectionTest extends PHPUnit_Framework_TestCase
             array(new Traits(false, false), $this->traversable),
         );
     }
+
+    /**
+     * @dataProvider getLowerBoundData
+     */
+    public function testLowerBound($element, $startIndex, $endIndex, $expectedIndex)
+    {
+        $comparator = function ($lhs, $rhs) {
+            return $lhs - $rhs;
+        };
+
+        $index = Collection::lowerBound(array(10, 10, 20, 20, 30, 30, 40, 40, 50, 50, 60), $element, $comparator, $startIndex, $endIndex);
+        $this->assertSame($expectedIndex, $index);
+    }
+
+    public function getLowerBoundData()
+    {
+        return array(
+            'not found, start'              => array(5,  0, null, 0),
+            'found, start'                  => array(10, 0, null, 0),
+            'not found, midway'             => array(15, 0, null, 2),
+            'found, midway'                 => array(20, 0, null, 2),
+            'not found, end'                => array(65, 0, null, 11),
+            'found, end'                    => array(60, 0, null, 10),
+            'found, sub-range'              => array(30, 2, 5,    4),
+            'not found, sub-range'          => array(25, 2, 5,    4),
+            'found, start of sub-range'     => array(20, 2, 5,    2),
+            'not found, start of sub-range' => array(10, 2, 5,    2),
+            'found, end of sub-range'       => array(30, 2, 5,    4),
+            'not found, end of sub-range'   => array(60, 2, 5,    5),
+        );
+    }
+
+    /**
+     * @dataProvider getUpperBoundData
+     */
+    public function testUpperBound($element, $startIndex, $endIndex, $expectedIndex)
+    {
+        $comparator = function ($lhs, $rhs) {
+            return $lhs - $rhs;
+        };
+
+        $index = Collection::upperBound(array(10, 10, 20, 20, 30, 30, 40, 40, 50, 50, 60), $element, $comparator, $startIndex, $endIndex);
+        $this->assertSame($expectedIndex, $index);
+    }
+
+    public function getUpperBoundData()
+    {
+        return array(
+            'not found, start'              => array(5,  0, null, 0),
+            'found, start'                  => array(10, 0, null, 2),
+            'not found, midway'             => array(15, 0, null, 2),
+            'found, midway'                 => array(20, 0, null, 4),
+            'not found, end'                => array(65, 0, null, 11),
+            'found, end'                    => array(60, 0, null, 11),
+            'found, sub-range'              => array(30, 2, 5,    5),
+            'not found, sub-range'          => array(25, 2, 5,    4),
+            'found, start of sub-range'     => array(20, 2, 5,    4),
+            'not found, start of sub-range' => array(10, 2, 5,    2),
+            'found, end of sub-range'       => array(30, 2, 5,    5),
+            'not found, end of sub-range'   => array(60, 2, 5,    5),
+        );
+    }
+
+    /**
+     * @dataProvider getBinarySearchTerms
+     */
+    public function testBinarySearch($element, $startIndex, $endIndex, $expectedIndex, $expectedInsertIndex)
+    {
+        $comparator = function ($lhs, $rhs) {
+            return $lhs - $rhs;
+        };
+
+        $insertIndex = null;
+        $index = Collection::binarySearch(array(10, 20, 30, 40, 50, 60, 70, 80, 90, 100), $element, $comparator, $startIndex, $endIndex, $insertIndex);
+
+        $this->assertSame($expectedIndex, $index);
+        $this->assertSame($expectedInsertIndex, $insertIndex);
+    }
+
+    public function getBinarySearchTerms()
+    {
+        return array(
+            'not found, start'              => array(5,   0, null, null, 0),
+            'found, start'                  => array(10,  0, null, 0,    0),
+            'not found, midway'             => array(15,  0, null, null, 1),
+            'found, end'                    => array(100, 0, null, 9,    9),
+            'not found, end'                => array(105, 0, null, null, 10),
+            'found, sub-range'              => array(30,  1, 5,    2,    2),
+            'not found, sub-range'          => array(80,  1, 5,    null, 5),
+            'found, start of sub-range'     => array(20,  1, 5,    1,    1),
+            'not found, start of sub-range' => array(10,  1, 5,    null, 1),
+            'found, end of sub-range'       => array(50,  1, 5,    4,    4),
+            'not found, end of sub-range'   => array(60,  1, 5,    null, 5),
+        );
+    }
 }

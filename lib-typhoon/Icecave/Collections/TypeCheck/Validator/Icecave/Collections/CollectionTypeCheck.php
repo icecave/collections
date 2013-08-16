@@ -426,4 +426,183 @@ class CollectionTypeCheck extends \Icecave\Collections\TypeCheck\AbstractValidat
         }
     }
 
+    public function lowerBound(array $arguments)
+    {
+        $argumentCount = \count($arguments);
+        if ($argumentCount < 3) {
+            if ($argumentCount < 1) {
+                throw new \Icecave\Collections\TypeCheck\Exception\MissingArgumentException('collection', 0, 'array|ArrayAccess');
+            }
+            if ($argumentCount < 2) {
+                throw new \Icecave\Collections\TypeCheck\Exception\MissingArgumentException('element', 1, 'mixed');
+            }
+            throw new \Icecave\Collections\TypeCheck\Exception\MissingArgumentException('comparator', 2, 'callable');
+        } elseif ($argumentCount > 5) {
+            throw new \Icecave\Collections\TypeCheck\Exception\UnexpectedArgumentException(5, $arguments[5]);
+        }
+        $value = $arguments[0];
+        if (!(\is_array($value) || $value instanceof \ArrayAccess)) {
+            throw new \Icecave\Collections\TypeCheck\Exception\UnexpectedArgumentValueException(
+                'collection',
+                0,
+                $arguments[0],
+                'array|ArrayAccess'
+            );
+        }
+        $value = $arguments[2];
+        if (!\is_callable($value)) {
+            throw new \Icecave\Collections\TypeCheck\Exception\UnexpectedArgumentValueException(
+                'comparator',
+                2,
+                $arguments[2],
+                'callable'
+            );
+        }
+        if ($argumentCount > 3) {
+            $value = $arguments[3];
+            if (!\is_int($value)) {
+                throw new \Icecave\Collections\TypeCheck\Exception\UnexpectedArgumentValueException(
+                    'startIndex',
+                    3,
+                    $arguments[3],
+                    'integer'
+                );
+            }
+        }
+        if ($argumentCount > 4) {
+            $value = $arguments[4];
+            if (!(\is_int($value) || $value === null)) {
+                throw new \Icecave\Collections\TypeCheck\Exception\UnexpectedArgumentValueException(
+                    'endIndex',
+                    4,
+                    $arguments[4],
+                    'integer|null'
+                );
+            }
+        }
+    }
+
+    public function upperBound(array $arguments)
+    {
+        $argumentCount = \count($arguments);
+        if ($argumentCount < 3) {
+            if ($argumentCount < 1) {
+                throw new \Icecave\Collections\TypeCheck\Exception\MissingArgumentException('collection', 0, 'array|ArrayAccess');
+            }
+            if ($argumentCount < 2) {
+                throw new \Icecave\Collections\TypeCheck\Exception\MissingArgumentException('element', 1, 'mixed');
+            }
+            throw new \Icecave\Collections\TypeCheck\Exception\MissingArgumentException('comparator', 2, 'callable');
+        } elseif ($argumentCount > 5) {
+            throw new \Icecave\Collections\TypeCheck\Exception\UnexpectedArgumentException(5, $arguments[5]);
+        }
+        $value = $arguments[0];
+        if (!(\is_array($value) || $value instanceof \ArrayAccess)) {
+            throw new \Icecave\Collections\TypeCheck\Exception\UnexpectedArgumentValueException(
+                'collection',
+                0,
+                $arguments[0],
+                'array|ArrayAccess'
+            );
+        }
+        $value = $arguments[2];
+        if (!\is_callable($value)) {
+            throw new \Icecave\Collections\TypeCheck\Exception\UnexpectedArgumentValueException(
+                'comparator',
+                2,
+                $arguments[2],
+                'callable'
+            );
+        }
+        if ($argumentCount > 3) {
+            $value = $arguments[3];
+            if (!\is_int($value)) {
+                throw new \Icecave\Collections\TypeCheck\Exception\UnexpectedArgumentValueException(
+                    'startIndex',
+                    3,
+                    $arguments[3],
+                    'integer'
+                );
+            }
+        }
+        if ($argumentCount > 4) {
+            $value = $arguments[4];
+            if (!(\is_int($value) || $value === null)) {
+                throw new \Icecave\Collections\TypeCheck\Exception\UnexpectedArgumentValueException(
+                    'endIndex',
+                    4,
+                    $arguments[4],
+                    'integer|null'
+                );
+            }
+        }
+    }
+
+    public function binarySearch(array $arguments)
+    {
+        $argumentCount = \count($arguments);
+        if ($argumentCount < 3) {
+            if ($argumentCount < 1) {
+                throw new \Icecave\Collections\TypeCheck\Exception\MissingArgumentException('collection', 0, 'array|ArrayAccess');
+            }
+            if ($argumentCount < 2) {
+                throw new \Icecave\Collections\TypeCheck\Exception\MissingArgumentException('element', 1, 'mixed');
+            }
+            throw new \Icecave\Collections\TypeCheck\Exception\MissingArgumentException('comparator', 2, 'callable');
+        } elseif ($argumentCount > 6) {
+            throw new \Icecave\Collections\TypeCheck\Exception\UnexpectedArgumentException(6, $arguments[6]);
+        }
+        $value = $arguments[0];
+        if (!(\is_array($value) || $value instanceof \ArrayAccess)) {
+            throw new \Icecave\Collections\TypeCheck\Exception\UnexpectedArgumentValueException(
+                'collection',
+                0,
+                $arguments[0],
+                'array|ArrayAccess'
+            );
+        }
+        $value = $arguments[2];
+        if (!\is_callable($value)) {
+            throw new \Icecave\Collections\TypeCheck\Exception\UnexpectedArgumentValueException(
+                'comparator',
+                2,
+                $arguments[2],
+                'callable'
+            );
+        }
+        if ($argumentCount > 3) {
+            $value = $arguments[3];
+            if (!\is_int($value)) {
+                throw new \Icecave\Collections\TypeCheck\Exception\UnexpectedArgumentValueException(
+                    'startIndex',
+                    3,
+                    $arguments[3],
+                    'integer'
+                );
+            }
+        }
+        if ($argumentCount > 4) {
+            $value = $arguments[4];
+            if (!(\is_int($value) || $value === null)) {
+                throw new \Icecave\Collections\TypeCheck\Exception\UnexpectedArgumentValueException(
+                    'endIndex',
+                    4,
+                    $arguments[4],
+                    'integer|null'
+                );
+            }
+        }
+        if ($argumentCount > 5) {
+            $value = $arguments[5];
+            if (!(\is_int($value) || $value === null)) {
+                throw new \Icecave\Collections\TypeCheck\Exception\UnexpectedArgumentValueException(
+                    'insertIndex',
+                    5,
+                    $arguments[5],
+                    'integer|null'
+                );
+            }
+        }
+    }
+
 }
