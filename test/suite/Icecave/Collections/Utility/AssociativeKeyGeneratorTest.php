@@ -1,5 +1,5 @@
 <?php
-namespace Icecave\Collections;
+namespace Icecave\Collections\Utility;
 
 use PHPUnit_Framework_TestCase;
 

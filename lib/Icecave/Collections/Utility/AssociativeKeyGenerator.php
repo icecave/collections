@@ -1,5 +1,5 @@
 <?php
-namespace Icecave\Collections;
+namespace Icecave\Collections\Utility;
 
 use Icecave\Collections\TypeCheck\TypeCheck;
 

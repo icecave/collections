@@ -5,18 +5,18 @@ use Eloquent\Liberator\Liberator;
 use Icecave\Collections\Iterator\Traits;
 use PHPUnit_Framework_TestCase;
 
-class HashSetTest extends PHPUnit_Framework_TestCase
+class SetTest extends PHPUnit_Framework_TestCase
 {
     public function setUp()
     {
-        $this->collection = new HashSet;
+        $this->collection = new Set;
         $this->liberatedCollection = Liberator::liberate($this->collection);
-        $this->incompatibleCollection = new HashSet(null, function () {});
+        $this->incompatibleCollection = new Set(null, function () {});
         $this->setClass = get_class($this->collection);
     }
 
     private function createSet($elements = null) {
-        return new HashSet($elements);
+        return new Set($elements);
     }
 
     private function setupElements()
@@ -28,7 +28,7 @@ class HashSetTest extends PHPUnit_Framework_TestCase
     {
         $elements = func_get_args();
 
-        if (end($elements) instanceof HashSet) {
+        if (end($elements) instanceof Set) {
             $collection = array_pop($elements);
         } else {
             $collection = $this->collection;
@@ -38,15 +38,11 @@ class HashSetTest extends PHPUnit_Framework_TestCase
             $elements = $elements[0];
         }
 
-        $elements = array_combine($elements, $elements);
-        $actualElements = Liberator::liberate($collection)->elements;
-
-        ksort($elements);
-        ksort($actualElements);
+        sort($elements);
 
         $this->assertSame(
             $elements,
-            $actualElements
+            $collection->elements()
         );
     }
 
@@ -80,23 +76,19 @@ class HashSetTest extends PHPUnit_Framework_TestCase
         $collection = unserialize($packet);
 
         $this->assertSame(
-            $this->liberatedCollection->elements,
-            Liberator::liberate($collection)->elements
+            $this->liberatedCollection->elements->elements(),
+            Liberator::liberate($collection)->elements->elements()
         );
     }
 
-    /**
-     * @group regression
-     * @link https://github.com/IcecaveStudios/collections/issues/23
-     */
-    public function testSerializationOfHashFunction()
+    public function testSerializationOfComparator()
     {
-        $collection = new HashSet(null, 'sha1');
+        $collection = new Set(null, 'strcmp');
 
         $packet = serialize($collection);
         $collection = unserialize($packet);
 
-        $this->assertSame('sha1', Liberator::liberate($collection)->hashFunction);
+        $this->assertSame('strcmp', Liberator::liberate($collection)->comparator);
     }
 
     ///////////////////////////////////////////
@@ -127,13 +119,13 @@ class HashSetTest extends PHPUnit_Framework_TestCase
 
     public function testToString()
     {
-        $this->assertSame('<HashSet 0>', $this->collection->__toString());
+        $this->assertSame('<Set 0>', $this->collection->__toString());
 
         $this->setupElements('a', 'b', 'c');
-        $this->assertSame('<HashSet 3 ["a", "b", "c"]>', $this->collection->__toString());
+        $this->assertSame('<Set 3 ["a", "b", "c"]>', $this->collection->__toString());
 
         $this->collection->add('d');
-        $this->assertSame('<HashSet 4 ["a", "b", "c", ...]>', $this->collection->__toString());
+        $this->assertSame('<Set 4 ["a", "b", "c", ...]>', $this->collection->__toString());
     }
 
     //////////////////////////////////////////////////
