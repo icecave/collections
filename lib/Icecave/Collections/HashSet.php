@@ -539,6 +539,8 @@ class HashSet implements MutableIterableInterface, Countable, IteratorAggregate,
      */
     public function addMany($elements)
     {
+        $this->typeCheck->addMany(func_get_args());
+
         foreach ($elements as $element) {
             $hash = $this->generateHash($element);
             $this->elements[$hash] = $element;
@@ -573,6 +575,8 @@ class HashSet implements MutableIterableInterface, Countable, IteratorAggregate,
      */
     public function removeMany($elements)
     {
+        $this->typeCheck->removeMany(func_get_args());
+
         foreach ($elements as $element) {
             $hash = $this->generateHash($element);
             unset($this->elements[$hash]);
