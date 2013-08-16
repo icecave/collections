@@ -1,5 +1,5 @@
 <?php
-namespace Icecave\Collections\TypeCheck\Validator\Icecave\Collections;
+namespace Icecave\Collections\TypeCheck\Validator\Icecave\Collections\Utility;
 
 class AssociativeKeyGeneratorTypeCheck extends \Icecave\Collections\TypeCheck\AbstractValidator
 {

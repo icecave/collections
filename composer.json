@@ -12,10 +12,12 @@
     ],
     "require": {
         "php": ">=5.3",
+        "icecave/parity": "~0.1",
         "icecave/repr": "~1"
     },
     "require-dev": {
         "eloquent/liberator": "~1",
+        "ezzatron/phpunit-extensions" : "~1",
         "eloquent/typhoon": "~0.9",
         "icecave/archer": "1.0.0-alpha.2"
     },

@@ -23,7 +23,7 @@ class Map implements MutableAssociativeInterface, Countable, Iterator, ArrayAcce
         $this->typeCheck = TypeCheck::get(__CLASS__, func_get_args());
 
         if (null === $hashFunction) {
-            $hashFunction = new AssociativeKeyGenerator;
+            $hashFunction = new Utility\AssociativeKeyGenerator;
         }
 
         $this->hashFunction = $hashFunction;
