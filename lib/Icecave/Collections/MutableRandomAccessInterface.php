@@ -63,7 +63,7 @@ interface MutableRandomAccessInterface extends RandomAccessInterface, MutableSeq
      * @param integer $begin The index of the first element to remove, if begin is a negative number the removal begins that far from the end of the sequence.
      * @param integer $end   The index of the last element to remove, if end is a negative number the removal ends that far from the end of the sequence.
      *
-     * @throws Exception\IndexException if $index is out of range.
+     * @throws Exception\IndexException if $begin or $end is out of range.
      */
     public function removeRange($begin, $end);
 

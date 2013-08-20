@@ -710,7 +710,7 @@ class Vector implements MutableRandomAccessInterface, Countable, Iterator, Seeka
      * @param mixed $index The index of the element to fetch, if index is a negative number the element that far from the end of the sequence is returned.
      *
      * @return mixed                    The element at $index.
-     * @throws Exception\IndexException if no such index exists.
+     * @throws Exception\IndexException if $index is out of range.
      */
     public function get($index)
     {
@@ -762,7 +762,7 @@ class Vector implements MutableRandomAccessInterface, Countable, Iterator, Seeka
      * @param integer $end   The index at which the slice will end. If end is a negative number the slice will end that far from the end of the sequence.
      *
      * @return SequenceInterface        The sliced sequence.
-     * @throws Exception\IndexException if $index is out of range.
+     * @throws Exception\IndexException if $begin or $end is out of range.
      */
     public function range($begin, $end)
     {
@@ -1001,7 +1001,7 @@ class Vector implements MutableRandomAccessInterface, Countable, Iterator, Seeka
      * @param integer $begin The index of the first element to remove, if $begin is a negative number the removal begins that far from the end of the sequence.
      * @param integer $end   The index of the last element to remove, if $end is a negative number the removal ends that far from the end of the sequence.
      *
-     * @throws Exception\IndexException if $index is out of range.
+     * @throws Exception\IndexException if $begin or $end is out of range.
      */
     public function removeRange($begin, $end)
     {

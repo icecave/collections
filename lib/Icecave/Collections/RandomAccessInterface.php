@@ -12,7 +12,7 @@ interface RandomAccessInterface extends SequenceInterface
      * @param mixed $index The index of the element to fetch, if index is a negative number the element that far from the end of the sequence is returned.
      *
      * @return mixed                    The element at $index.
-     * @throws Exception\IndexException if no such index exists.
+     * @throws Exception\IndexException if $index is out of range.
      */
     public function get($index);
 
@@ -40,7 +40,7 @@ interface RandomAccessInterface extends SequenceInterface
      * @param integer $end   The index at which the slice will end. If end is a negative number the slice will end that far from the end of the sequence.
      *
      * @return SequenceInterface        The sliced sequence.
-     * @throws Exception\IndexException if $index is out of range.
+     * @throws Exception\IndexException if $begin or $end is out of range.
      */
     public function range($begin, $end);
 
