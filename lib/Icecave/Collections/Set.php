@@ -1493,7 +1493,7 @@ class Set implements MutableIterableInterface, Countable, IteratorAggregate, Ser
     private function assertCompatible(Set $set)
     {
         if ($set->comparator != $this->comparator) {
-            throw new InvalidArgumentException('The given set does not use the same hashing algorithm.');
+            throw new InvalidArgumentException('The given set does not use the same comparator.');
         }
     }
 
