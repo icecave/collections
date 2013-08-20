@@ -307,6 +307,28 @@ class VectorTest extends PHPUnit_Framework_TestCase
         $this->assertSame(array(1, 3, 5), $this->collection->elements());
     }
 
+    /**
+     * @group regression
+     * @link https://github.com/IcecaveStudios/collections/issues/52
+     */
+    public function testFilterInPlaceDoesNotLeakReservedNullValues()
+    {
+        $this->collection->reserve(4);
+        $this->collection->append(array(1, 2, 3));
+
+        $elements = array();
+
+        $this->collection->filterInPlace(
+            function ($element) use (&$elements) {
+                $elements[] = $element;
+
+                return true;
+            }
+        );
+
+        $this->assertSame(array(1, 2, 3), $elements);
+    }
+
     public function testFilterInPlaceWithPredicateThreshold()
     {
         $this->collection->append(array(1, 2, 3, 4, 5, 6, 7, 8, 9, 10));
