@@ -756,6 +756,60 @@ class VectorTypeCheck extends \Icecave\Collections\TypeCheck\AbstractValidator
         }
     }
 
+    public function insertRange(array $arguments)
+    {
+        $argumentCount = \count($arguments);
+        if ($argumentCount < 3) {
+            if ($argumentCount < 1) {
+                throw new \Icecave\Collections\TypeCheck\Exception\MissingArgumentException('index', 0, 'integer');
+            }
+            if ($argumentCount < 2) {
+                throw new \Icecave\Collections\TypeCheck\Exception\MissingArgumentException('elements', 1, 'Icecave\\Collections\\RandomAccessInterface+Icecave\\Collections\\Vector');
+            }
+            throw new \Icecave\Collections\TypeCheck\Exception\MissingArgumentException('begin', 2, 'integer');
+        } elseif ($argumentCount > 4) {
+            throw new \Icecave\Collections\TypeCheck\Exception\UnexpectedArgumentException(4, $arguments[4]);
+        }
+        $value = $arguments[0];
+        if (!\is_int($value)) {
+            throw new \Icecave\Collections\TypeCheck\Exception\UnexpectedArgumentValueException(
+                'index',
+                0,
+                $arguments[0],
+                'integer'
+            );
+        }
+        $value = $arguments[1];
+        if (!($value instanceof \Icecave\Collections\RandomAccessInterface && $value instanceof \Icecave\Collections\Vector)) {
+            throw new \Icecave\Collections\TypeCheck\Exception\UnexpectedArgumentValueException(
+                'elements',
+                1,
+                $arguments[1],
+                'Icecave\\Collections\\RandomAccessInterface+Icecave\\Collections\\Vector'
+            );
+        }
+        $value = $arguments[2];
+        if (!\is_int($value)) {
+            throw new \Icecave\Collections\TypeCheck\Exception\UnexpectedArgumentValueException(
+                'begin',
+                2,
+                $arguments[2],
+                'integer'
+            );
+        }
+        if ($argumentCount > 3) {
+            $value = $arguments[3];
+            if (!\is_int($value)) {
+                throw new \Icecave\Collections\TypeCheck\Exception\UnexpectedArgumentValueException(
+                    'end',
+                    3,
+                    $arguments[3],
+                    'integer'
+                );
+            }
+        }
+    }
+
     public function remove(array $arguments)
     {
         $argumentCount = \count($arguments);

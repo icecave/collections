@@ -979,6 +979,28 @@ class VectorTest extends PHPUnit_Framework_TestCase
         $this->assertSame(array('foo', 'bar', 'frob', 'doom', 'spam'), $this->collection->elements());
     }
 
+    public function testInsertRange()
+    {
+        $this->collection->append(array(1, 2, 3));
+
+        $elements = new Vector(array('a', 'b', 'c', 'd', 'e'));
+
+        $this->collection->insertRange(1, $elements, 2, 4);
+
+        $this->assertSame(array(1, 'c', 'd', 2, 3), $this->collection->elements());
+    }
+
+    public function testInsertRangeEmpty()
+    {
+        $this->collection->append(array(1, 2, 3));
+
+        $elements = new Vector(array('a', 'b', 'c', 'd', 'e'));
+
+        $this->collection->insertRange(1, $elements, 2, 2);
+
+        $this->assertSame(array(1, 2, 3), $this->collection->elements());
+    }
+
     public function testRemove()
     {
         $this->collection->append(array('foo', 'bar', 'spam'));

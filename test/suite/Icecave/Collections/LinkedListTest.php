@@ -902,6 +902,28 @@ class LinkedListTest extends PHPUnit_Framework_TestCase
         $this->collection->insertMany(1, array('bar', 'frob'));
     }
 
+    public function testInsertRange()
+    {
+        $this->collection->append(array(1, 2, 3));
+
+        $elements = new LinkedList(array('a', 'b', 'c', 'd', 'e'));
+
+        $this->collection->insertRange(1, $elements, 2, 4);
+
+        $this->assertSame(array(1, 'c', 'd', 2, 3), $this->collection->elements());
+    }
+
+    public function testInsertRangeEmpty()
+    {
+        $this->collection->append(array(1, 2, 3));
+
+        $elements = new LinkedList(array('a', 'b', 'c', 'd', 'e'));
+
+        $this->collection->insertRange(1, $elements, 2, 2);
+
+        $this->assertSame(array(1, 2, 3), $this->collection->elements());
+    }
+
     public function testRemove()
     {
         $this->collection->append(array('foo', 'bar', 'spam'));

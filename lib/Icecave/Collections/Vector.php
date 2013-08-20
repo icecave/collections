@@ -917,7 +917,7 @@ class Vector implements MutableRandomAccessInterface, Countable, Iterator, Seeka
     }
 
     /**
-     * Insert a range of elements at a particular index.
+     * Insert all elements from another collection at a particular index.
      *
      * @param integer      $index    The index at which the elements are inserted, if index is a negative number the elements are inserted that far from the end of the sequence.
      * @param mixed<mixed> $elements The elements to insert.
@@ -955,6 +955,33 @@ class Vector implements MutableRandomAccessInterface, Countable, Iterator, Seeka
             foreach ($elements as $element) {
                 $this->elements[$index++] = $element;
             }
+        }
+    }
+
+    /**
+     * Insert a sub-range of another collection at a particular index.
+     *
+     * @param integer                      $index    The index at which the elements are inserted, if index is a negative number the elements are inserted that far from the end of the sequence.
+     * @param RandomAccessInterface+Vector $elements The elements to insert.
+     * @param integer                      $begin    The index of the first element from $elements to insert, if begin is a negative number the removal begins that far from the end of the sequence.
+     * @param integer                      $end|null The index of the last element to $elements to insert, if end is a negative number the removal ends that far from the end of the sequence.
+     *
+     * @throws Exception\IndexException if $index, $begin or $end is out of range.
+     */
+    public function insertRange($index, RandomAccessInterface $elements, $begin, $end = null)
+    {
+        $this->typeCheck->insertRange(func_get_args());
+
+        $this->validateIndex($index);
+        $elements->validateIndex($begin);
+        $elements->validateIndex($end, $elements->size);
+
+        $size = $end - $begin;
+        $this->shiftRight($index, $size);
+        $this->size += $size;
+
+        while ($begin !== $end) {
+            $this->elements[$index++] = $elements->elements[$begin++];
         }
     }
 

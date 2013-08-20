@@ -1024,7 +1024,7 @@ class LinkedList implements MutableRandomAccessInterface, Countable, Iterator, S
     }
 
     /**
-     * Insert a range of elements at a particular index.
+     * Insert all elements from another collection at a particular index.
      *
      * @param integer      $index    The index at which the elements are inserted, if index is a negative number the elements are inserted that far from the end of the sequence.
      * @param mixed<mixed> $elements The elements to insert.
@@ -1037,24 +1037,34 @@ class LinkedList implements MutableRandomAccessInterface, Countable, Iterator, S
 
         list($head, $tail, $size) = $this->createNodes($elements);
 
-        if (null === $head) {
-            return;
-        } elseif (0 === $this->size) {
-            $this->head = $head;
-            $this->tail = $tail;
-        } elseif (0 === $index) {
-            $tail->next = $this->head;
-            $this->head = $head;
-        } elseif ($this->size === $index) {
-            $this->tail->next = $head;
-            $this->tail = $tail;
-        } else {
-            $node = $this->nodeAt($index - 1);
-            $tail->next = $node->next;
-            $node->next = $head;
-        }
+        $this->insertNodes($index, $head, $tail, $size);
+    }
 
-        $this->size += $size;
+    /**
+     * Insert a sub-range of another collection at a particular index.
+     *
+     * @param integer                          $index    The index at which the elements are inserted, if index is a negative number the elements are inserted that far from the end of the sequence.
+     * @param RandomAccessInterface+LinkedList $elements The elements to insert.
+     * @param integer                          $begin    The index of the first element from $elements to insert, if begin is a negative number the removal begins that far from the end of the sequence.
+     * @param integer                          $end|null The index of the last element to $elements to insert, if end is a negative number the removal ends that far from the end of the sequence.
+     *
+     * @throws Exception\IndexException if $index, $begin or $end is out of range.
+     */
+    public function insertRange($index, RandomAccessInterface $elements, $begin, $end = null)
+    {
+        $this->typeCheck->insertRange(func_get_args());
+
+        $this->validateIndex($index);
+        $elements->validateIndex($begin);
+        $elements->validateIndex($end, $elements->size);
+
+        list($head, $tail, $size) = $elements->cloneNodes(
+            $elements->nodeAt($begin),
+            null,
+            $end - $begin
+        );
+
+        $this->insertNodes($index, $head, $tail, $size);
     }
 
     /**
@@ -1378,14 +1388,15 @@ class LinkedList implements MutableRandomAccessInterface, Countable, Iterator, S
     /**
      * @param stdClass      $start
      * @param stdClass|null $stop
+     * @param integer|null  $limit
      */
-    private function cloneNodes(stdClass $start, stdClass $stop = null)
+    private function cloneNodes(stdClass $start, stdClass $stop = null, $limit = null)
     {
         $head = null;
         $tail = null;
         $size = 0;
 
-        for ($node = $start; $stop !== $node; $node = $node->next) {
+        for ($node = $start; $stop !== $node && $size !== $limit; $node = $node->next) {
             $n = $this->createNode($node->element);
             if (null === $head) {
                 $head = $n;
@@ -1420,6 +1431,34 @@ class LinkedList implements MutableRandomAccessInterface, Countable, Iterator, S
         }
 
         return array($head, $tail, $size);
+    }
+
+    /**
+     * @param integer       $index
+     * @param stdClass|null $head
+     * @param stdClass|null $tail
+     * @param integer       $size
+     */
+    private function insertNodes($index, stdClass $head = null, stdClass $tail = null, $size)
+    {
+        if (null === $head) {
+            return;
+        } elseif (0 === $this->size) {
+            $this->head = $head;
+            $this->tail = $tail;
+        } elseif (0 === $index) {
+            $tail->next = $this->head;
+            $this->head = $head;
+        } elseif ($this->size === $index) {
+            $this->tail->next = $head;
+            $this->tail = $tail;
+        } else {
+            $node = $this->nodeAt($index - 1);
+            $tail->next = $node->next;
+            $node->next = $head;
+        }
+
+        $this->size += $size;
     }
 
     private $typeCheck;
