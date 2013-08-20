@@ -1499,18 +1499,18 @@ class Set implements MutableIterableInterface, Countable, IteratorAggregate, Ser
 
     /**
      * @param mixed        $element
-     * @param integer      $startIndex
+     * @param integer      $begin
      * @param integer|null &$insertIndex
      *
      * @return integer|null
      */
-    private function binarySearch($element, $startIndex = 0, &$insertIndex = null)
+    private function binarySearch($element, $begin = 0, &$insertIndex = null)
     {
         return Collection::binarySearch(
             $this->elements,
             $element,
             $this->comparator,
-            $startIndex,
+            $begin,
             null,
             $insertIndex
         );

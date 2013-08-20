@@ -759,72 +759,84 @@ class VectorTest extends PHPUnit_Framework_TestCase
         $result = $this->collection->range(1, 100);
     }
 
-    public function testIndexOf()
+    /**
+     * @dataProvider getIndexOfData
+     */
+    public function testIndexOf($elements, $element, $begin, $end, $expectedIndex)
     {
-        $this->collection->append(array('foo', 'bar', 'spam', 'bar', 'doom'));
-        $this->assertSame(1, $this->collection->indexOf('bar'));
+        $this->collection->append($elements);
+
+        $index = $this->collection->indexOf($element, $begin, $end);
+        $this->assertSame($expectedIndex, $index);
     }
 
-    public function testIndexOfWithStartIndex()
+    /**
+     * @dataProvider getIndexOfLastData
+     */
+    public function testIndexOfLast($elements, $element, $begin, $end, $expectedIndex)
     {
-        $this->collection->append(array('foo', 'bar', 'spam', 'bar', 'doom'));
-        $this->assertSame(1, $this->collection->indexOf('bar', 1));
+        $this->collection->append($elements);
 
-        $this->collection->append(array('foo', 'bar', 'spam', 'bar', 'doom'));
-        $this->assertSame(3, $this->collection->indexOf('bar', 2));
+        $index = $this->collection->indexOfLast($element, $begin, $end);
+        $this->assertSame($expectedIndex, $index);
     }
 
-    public function testIndexOfWithNoMatch()
+    /**
+     * @dataProvider getIndexOfData
+     */
+    public function testFind($elements, $element, $begin, $end, $expectedIndex)
     {
-        $this->collection->reserve(16); // Inflate capacity to test that iteration stops at size().
-        $this->assertNull($this->collection->indexOf('foo'));
+        $this->collection->append($elements);
 
-        $this->collection->pushBack('bar');
-        $this->assertNull($this->collection->indexOf('foo'));
-    }
-
-    public function testIndexOfLast()
-    {
-        $this->collection->append(array('foo', 'bar', 'spam', 'bar', 'doom'));
-        $this->assertSame(3, $this->collection->indexOfLast('bar'));
-    }
-
-    public function testIndexOfLastWithStartIndex()
-    {
-        $this->collection->append(array('foo', 'bar', 'spam', 'bar', 'doom'));
-        $this->assertSame(3, $this->collection->indexOfLast('bar', 3));
-
-        $this->collection->append(array('foo', 'bar', 'spam', 'bar', 'doom'));
-        $this->assertSame(1, $this->collection->indexOfLast('bar', 2));
-    }
-
-    public function testIndexOfLastWithNoMatch()
-    {
-        $this->collection->reserve(16); // Inflate capacity to test that iteration stops at size().
-        $this->assertNull($this->collection->indexOfLast('foo'));
-
-        $this->collection->pushBack('bar');
-        $this->assertNull($this->collection->indexOfLast('foo'));
-    }
-
-    public function testFind()
-    {
-        $comparator = function ($element) {
-            return $element === 'bar';
+        $predicate = function ($value) use ($element) {
+            return $value === $element;
         };
 
-        $this->collection->append(array('foo', 'bar', 'spam', 'bar', 'doom'));
-        $this->assertSame(1, $this->collection->find($comparator));
+        $index = $this->collection->find($predicate, $begin, $end);
+        $this->assertSame($expectedIndex, $index);
     }
 
-    public function testFindLast()
+    /**
+     * @dataProvider getIndexOfLastData
+     */
+    public function testFindLast($elements, $element, $begin, $end, $expectedIndex)
     {
-        $comparator = function ($element) {
-            return $element === 'bar';
+        $this->collection->append($elements);
+
+        $predicate = function ($value) use ($element) {
+            return $value === $element;
         };
 
-        $this->collection->append(array('foo', 'bar', 'spam', 'bar', 'doom'));
-        $this->assertSame(3, $this->collection->findLast($comparator));
+        $index = $this->collection->findLast($predicate, $begin, $end);
+        $this->assertSame($expectedIndex, $index);
+    }
+
+    public function getIndexOfData()
+    {
+        $elements = array('foo', 'bar', 'spam', 'bar', 'doom');
+
+        return array(
+            'empty'          => array(array(),   'foo',  0, null, null),
+            'match'          => array($elements, 'bar',  0, null, 1),
+            'no match'       => array($elements, 'grob', 0, null, null),
+            'begin index'    => array($elements, 'bar',  2, null, 3),
+            'range match'    => array($elements, 'bar',  1, 3,    1),
+            'range no match' => array($elements, 'bar',  2, 3,    null),
+        );
+    }
+
+    public function getIndexOfLastData()
+    {
+        $elements = array('foo', 'bar', 'spam', 'bar', 'doom');
+
+        return array(
+            'empty'          => array(array(),   'foo',  0, null, null),
+            'match'          => array($elements, 'bar',  0, null, 3),
+            'no match'       => array($elements, 'grob', 0, null, null),
+            'begin index'    => array($elements, 'bar',  2, null, 3),
+            'range match'    => array($elements, 'bar',  1, 3,    1),
+            'range no match' => array($elements, 'bar',  2, 3,    null),
+        );
     }
 
     ////////////////////////////////////////////////////

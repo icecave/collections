@@ -656,7 +656,7 @@ class SetTypeCheck extends \Icecave\Collections\TypeCheck\AbstractValidator
             $value = $arguments[1];
             if (!\is_int($value)) {
                 throw new \Icecave\Collections\TypeCheck\Exception\UnexpectedArgumentValueException(
-                    'startIndex',
+                    'begin',
                     1,
                     $arguments[1],
                     'integer'

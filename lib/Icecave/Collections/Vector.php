@@ -788,13 +788,14 @@ class Vector implements MutableRandomAccessInterface, Countable, Iterator, Seeka
     /**
      * Find the index of the first instance of a particular element in the sequence.
      *
-     * @param mixed   $element    The element to search for.
-     * @param integer $startIndex The index to start searching from.
+     * @param mixed        $element The element to search for.
+     * @param integer      $begin   The index to start searching from.
+     * @param integer|null $end     The index to to stop searching at, or null to search to the end of the sequence.
      *
      * @return integer|null             The index of the element, or null if is not present in the sequence.
-     * @throws Exception\IndexException if $startIndex is out of range.
+     * @throws Exception\IndexException if $begin or $end is out of range.
      */
-    public function indexOf($element, $startIndex = 0)
+    public function indexOf($element, $begin = 0, $end = null)
     {
         $this->typeCheck->indexOf(func_get_args());
 
@@ -802,19 +803,20 @@ class Vector implements MutableRandomAccessInterface, Countable, Iterator, Seeka
             return $element === $e;
         };
 
-        return $this->find($predicate, $startIndex);
+        return $this->find($predicate, $begin, $end);
     }
 
     /**
      * Find the index of the last instance of a particular element in the sequence.
      *
-     * @param mixed        $element    The element to search for.
-     * @param integer|null $startIndex The index to start searching from, or null to use the last index.
+     * @param mixed        $element The element to search for.
+     * @param integer      $begin   The index to start searching from.
+     * @param integer|null $end     The index to to stop searching at, or null to search to the end of the sequence.
      *
      * @return integer|null             The index of the element, or null if is not present in the sequence.
-     * @throws Exception\IndexException if $startIndex is out of range.
+     * @throws Exception\IndexException if $begin is out of range.
      */
-    public function indexOfLast($element, $startIndex = null)
+    public function indexOfLast($element, $begin = 0, $end = null)
     {
         $this->typeCheck->indexOfLast(func_get_args());
 
@@ -822,19 +824,20 @@ class Vector implements MutableRandomAccessInterface, Countable, Iterator, Seeka
             return $element === $e;
         };
 
-        return $this->findLast($predicate, $startIndex);
+        return $this->findLast($predicate, $begin, $end);
     }
 
     /**
      * Find the index of the first instance of an element matching given criteria.
      *
-     * @param callable $predicate  A predicate function used to determine which element constitutes a match.
-     * @param integer  $startIndex The index to start searching from.
+     * @param callable     $predicate A predicate function used to determine which element constitutes a match.
+     * @param integer      $begin     The index to start searching from.
+     * @param integer|null $end       The index to to stop searching at, or null to search to the end of the sequence.
      *
      * @return integer|null             The index of the element, or null if is not present in the sequence.
-     * @throws Exception\IndexException if $startIndex is out of range.
+     * @throws Exception\IndexException if $begin is out of range.
      */
-    public function find($predicate, $startIndex = 0)
+    public function find($predicate, $begin = 0, $end = null)
     {
         $this->typeCheck->find(func_get_args());
 
@@ -842,11 +845,12 @@ class Vector implements MutableRandomAccessInterface, Countable, Iterator, Seeka
             return null;
         }
 
-        $this->validateIndex($startIndex);
+        $this->validateIndex($begin);
+        $this->validateIndex($end, $this->size);
 
-        for ($index = $startIndex; $index < $this->size; ++$index) {
-            if (call_user_func($predicate, $this->elements[$index])) {
-                return $index;
+        for (; $begin !== $end; ++$begin) {
+            if (call_user_func($predicate, $this->elements[$begin])) {
+                return $begin;
             }
         }
 
@@ -856,29 +860,29 @@ class Vector implements MutableRandomAccessInterface, Countable, Iterator, Seeka
     /**
      * Find the index of the last instance of an element matching given criteria.
      *
-     * @param callable     $predicate  A predicate function used to determine which element constitutes a match.
-     * @param integer|null $startIndex The index to start searching from, or null to use the last index.
+     * @param callable     $predicate A predicate function used to determine which element constitutes a match.
+     * @param integer      $begin     The index to start searching from.
+     * @param integer|null $end       The index to to stop searching at, or null to search to the end of the sequence.
      *
      * @return integer|null             The index of the element, or null if is not present in the sequence.
-     * @throws Exception\IndexException if $startIndex is out of range.
+     * @throws Exception\IndexException if $begin is out of range.
      */
-    public function findLast($predicate, $startIndex = null)
+    public function findLast($predicate, $begin = 0, $end = null)
     {
         $this->typeCheck->findLast(func_get_args());
 
         if ($this->isEmpty()) {
             return null;
-        } elseif (null === $startIndex) {
-            $startIndex = $this->size - 1;
         }
 
-        for ($index = $startIndex; $index >= 0; --$index) {
-            if (call_user_func($predicate, $this->elements[$index])) {
-                return $index;
+        $this->validateIndex($begin);
+        $this->validateIndex($end, $this->size);
+
+        while ($begin !== $end) {
+            if (call_user_func($predicate, $this->elements[--$end])) {
+                return $end;
             }
         }
-
-        return null;
     }
 
     ////////////////////////////////////////////////////
@@ -1367,7 +1371,9 @@ class Vector implements MutableRandomAccessInterface, Countable, Iterator, Seeka
             $max = $this->size - 1;
         }
 
-        if ($index < 0) {
+        if (null === $index) {
+            $index = $max;
+        } elseif ($index < 0) {
             $index += $this->size;
         }
 

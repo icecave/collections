@@ -462,7 +462,7 @@ class CollectionTypeCheck extends \Icecave\Collections\TypeCheck\AbstractValidat
             $value = $arguments[3];
             if (!\is_int($value)) {
                 throw new \Icecave\Collections\TypeCheck\Exception\UnexpectedArgumentValueException(
-                    'startIndex',
+                    'begin',
                     3,
                     $arguments[3],
                     'integer'
@@ -473,7 +473,7 @@ class CollectionTypeCheck extends \Icecave\Collections\TypeCheck\AbstractValidat
             $value = $arguments[4];
             if (!(\is_int($value) || $value === null)) {
                 throw new \Icecave\Collections\TypeCheck\Exception\UnexpectedArgumentValueException(
-                    'endIndex',
+                    'end',
                     4,
                     $arguments[4],
                     'integer|null'
@@ -518,7 +518,7 @@ class CollectionTypeCheck extends \Icecave\Collections\TypeCheck\AbstractValidat
             $value = $arguments[3];
             if (!\is_int($value)) {
                 throw new \Icecave\Collections\TypeCheck\Exception\UnexpectedArgumentValueException(
-                    'startIndex',
+                    'begin',
                     3,
                     $arguments[3],
                     'integer'
@@ -529,7 +529,7 @@ class CollectionTypeCheck extends \Icecave\Collections\TypeCheck\AbstractValidat
             $value = $arguments[4];
             if (!(\is_int($value) || $value === null)) {
                 throw new \Icecave\Collections\TypeCheck\Exception\UnexpectedArgumentValueException(
-                    'endIndex',
+                    'end',
                     4,
                     $arguments[4],
                     'integer|null'
@@ -574,7 +574,7 @@ class CollectionTypeCheck extends \Icecave\Collections\TypeCheck\AbstractValidat
             $value = $arguments[3];
             if (!\is_int($value)) {
                 throw new \Icecave\Collections\TypeCheck\Exception\UnexpectedArgumentValueException(
-                    'startIndex',
+                    'begin',
                     3,
                     $arguments[3],
                     'integer'
@@ -585,7 +585,7 @@ class CollectionTypeCheck extends \Icecave\Collections\TypeCheck\AbstractValidat
             $value = $arguments[4];
             if (!(\is_int($value) || $value === null)) {
                 throw new \Icecave\Collections\TypeCheck\Exception\UnexpectedArgumentValueException(
-                    'endIndex',
+                    'end',
                     4,
                     $arguments[4],
                     'integer|null'

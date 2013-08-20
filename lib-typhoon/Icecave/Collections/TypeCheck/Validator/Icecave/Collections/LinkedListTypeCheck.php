@@ -576,17 +576,28 @@ class LinkedListTypeCheck extends \Icecave\Collections\TypeCheck\AbstractValidat
         $argumentCount = \count($arguments);
         if ($argumentCount < 1) {
             throw new \Icecave\Collections\TypeCheck\Exception\MissingArgumentException('element', 0, 'mixed');
-        } elseif ($argumentCount > 2) {
-            throw new \Icecave\Collections\TypeCheck\Exception\UnexpectedArgumentException(2, $arguments[2]);
+        } elseif ($argumentCount > 3) {
+            throw new \Icecave\Collections\TypeCheck\Exception\UnexpectedArgumentException(3, $arguments[3]);
         }
         if ($argumentCount > 1) {
             $value = $arguments[1];
             if (!\is_int($value)) {
                 throw new \Icecave\Collections\TypeCheck\Exception\UnexpectedArgumentValueException(
-                    'startIndex',
+                    'begin',
                     1,
                     $arguments[1],
                     'integer'
+                );
+            }
+        }
+        if ($argumentCount > 2) {
+            $value = $arguments[2];
+            if (!(\is_int($value) || $value === null)) {
+                throw new \Icecave\Collections\TypeCheck\Exception\UnexpectedArgumentValueException(
+                    'end',
+                    2,
+                    $arguments[2],
+                    'integer|null'
                 );
             }
         }
@@ -597,16 +608,27 @@ class LinkedListTypeCheck extends \Icecave\Collections\TypeCheck\AbstractValidat
         $argumentCount = \count($arguments);
         if ($argumentCount < 1) {
             throw new \Icecave\Collections\TypeCheck\Exception\MissingArgumentException('element', 0, 'mixed');
-        } elseif ($argumentCount > 2) {
-            throw new \Icecave\Collections\TypeCheck\Exception\UnexpectedArgumentException(2, $arguments[2]);
+        } elseif ($argumentCount > 3) {
+            throw new \Icecave\Collections\TypeCheck\Exception\UnexpectedArgumentException(3, $arguments[3]);
         }
         if ($argumentCount > 1) {
             $value = $arguments[1];
-            if (!(\is_int($value) || $value === null)) {
+            if (!\is_int($value)) {
                 throw new \Icecave\Collections\TypeCheck\Exception\UnexpectedArgumentValueException(
-                    'startIndex',
+                    'begin',
                     1,
                     $arguments[1],
+                    'integer'
+                );
+            }
+        }
+        if ($argumentCount > 2) {
+            $value = $arguments[2];
+            if (!(\is_int($value) || $value === null)) {
+                throw new \Icecave\Collections\TypeCheck\Exception\UnexpectedArgumentValueException(
+                    'end',
+                    2,
+                    $arguments[2],
                     'integer|null'
                 );
             }
@@ -618,8 +640,8 @@ class LinkedListTypeCheck extends \Icecave\Collections\TypeCheck\AbstractValidat
         $argumentCount = \count($arguments);
         if ($argumentCount < 1) {
             throw new \Icecave\Collections\TypeCheck\Exception\MissingArgumentException('predicate', 0, 'callable');
-        } elseif ($argumentCount > 2) {
-            throw new \Icecave\Collections\TypeCheck\Exception\UnexpectedArgumentException(2, $arguments[2]);
+        } elseif ($argumentCount > 3) {
+            throw new \Icecave\Collections\TypeCheck\Exception\UnexpectedArgumentException(3, $arguments[3]);
         }
         $value = $arguments[0];
         if (!\is_callable($value)) {
@@ -634,10 +656,21 @@ class LinkedListTypeCheck extends \Icecave\Collections\TypeCheck\AbstractValidat
             $value = $arguments[1];
             if (!\is_int($value)) {
                 throw new \Icecave\Collections\TypeCheck\Exception\UnexpectedArgumentValueException(
-                    'startIndex',
+                    'begin',
                     1,
                     $arguments[1],
                     'integer'
+                );
+            }
+        }
+        if ($argumentCount > 2) {
+            $value = $arguments[2];
+            if (!(\is_int($value) || $value === null)) {
+                throw new \Icecave\Collections\TypeCheck\Exception\UnexpectedArgumentValueException(
+                    'end',
+                    2,
+                    $arguments[2],
+                    'integer|null'
                 );
             }
         }
@@ -648,8 +681,8 @@ class LinkedListTypeCheck extends \Icecave\Collections\TypeCheck\AbstractValidat
         $argumentCount = \count($arguments);
         if ($argumentCount < 1) {
             throw new \Icecave\Collections\TypeCheck\Exception\MissingArgumentException('predicate', 0, 'callable');
-        } elseif ($argumentCount > 2) {
-            throw new \Icecave\Collections\TypeCheck\Exception\UnexpectedArgumentException(2, $arguments[2]);
+        } elseif ($argumentCount > 3) {
+            throw new \Icecave\Collections\TypeCheck\Exception\UnexpectedArgumentException(3, $arguments[3]);
         }
         $value = $arguments[0];
         if (!\is_callable($value)) {
@@ -662,11 +695,22 @@ class LinkedListTypeCheck extends \Icecave\Collections\TypeCheck\AbstractValidat
         }
         if ($argumentCount > 1) {
             $value = $arguments[1];
-            if (!(\is_int($value) || $value === null)) {
+            if (!\is_int($value)) {
                 throw new \Icecave\Collections\TypeCheck\Exception\UnexpectedArgumentValueException(
-                    'startIndex',
+                    'begin',
                     1,
                     $arguments[1],
+                    'integer'
+                );
+            }
+        }
+        if ($argumentCount > 2) {
+            $value = $arguments[2];
+            if (!(\is_int($value) || $value === null)) {
+                throw new \Icecave\Collections\TypeCheck\Exception\UnexpectedArgumentValueException(
+                    'end',
+                    2,
+                    $arguments[2],
                     'integer|null'
                 );
             }

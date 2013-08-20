@@ -428,13 +428,13 @@ class CollectionTest extends PHPUnit_Framework_TestCase
     /**
      * @dataProvider getLowerBoundData
      */
-    public function testLowerBound($element, $startIndex, $endIndex, $expectedIndex)
+    public function testLowerBound($element, $begin, $end, $expectedIndex)
     {
         $comparator = function ($lhs, $rhs) {
             return $lhs - $rhs;
         };
 
-        $index = Collection::lowerBound(array(10, 10, 20, 20, 30, 30, 40, 40, 50, 50, 60), $element, $comparator, $startIndex, $endIndex);
+        $index = Collection::lowerBound(array(10, 10, 20, 20, 30, 30, 40, 40, 50, 50, 60), $element, $comparator, $begin, $end);
         $this->assertSame($expectedIndex, $index);
     }
 
@@ -459,13 +459,13 @@ class CollectionTest extends PHPUnit_Framework_TestCase
     /**
      * @dataProvider getUpperBoundData
      */
-    public function testUpperBound($element, $startIndex, $endIndex, $expectedIndex)
+    public function testUpperBound($element, $begin, $end, $expectedIndex)
     {
         $comparator = function ($lhs, $rhs) {
             return $lhs - $rhs;
         };
 
-        $index = Collection::upperBound(array(10, 10, 20, 20, 30, 30, 40, 40, 50, 50, 60), $element, $comparator, $startIndex, $endIndex);
+        $index = Collection::upperBound(array(10, 10, 20, 20, 30, 30, 40, 40, 50, 50, 60), $element, $comparator, $begin, $end);
         $this->assertSame($expectedIndex, $index);
     }
 
@@ -490,14 +490,14 @@ class CollectionTest extends PHPUnit_Framework_TestCase
     /**
      * @dataProvider getBinarySearchTerms
      */
-    public function testBinarySearch($element, $startIndex, $endIndex, $expectedIndex, $expectedInsertIndex)
+    public function testBinarySearch($element, $begin, $end, $expectedIndex, $expectedInsertIndex)
     {
         $comparator = function ($lhs, $rhs) {
             return $lhs - $rhs;
         };
 
         $insertIndex = null;
-        $index = Collection::binarySearch(array(10, 20, 30, 40, 50, 60, 70, 80, 90, 100), $element, $comparator, $startIndex, $endIndex, $insertIndex);
+        $index = Collection::binarySearch(array(10, 20, 30, 40, 50, 60, 70, 80, 90, 100), $element, $comparator, $begin, $end, $insertIndex);
 
         $this->assertSame($expectedIndex, $index);
         $this->assertSame($expectedInsertIndex, $insertIndex);
