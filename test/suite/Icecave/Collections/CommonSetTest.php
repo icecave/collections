@@ -4,7 +4,6 @@ namespace Icecave\Collections;
 use Eloquent\Liberator\Liberator;
 use Ezzatron\PHPUnit\ParameterizedTestCase;
 use Icecave\Collections\Iterator\Traits;
-use PHPUnit_Framework_TestCase;
 
 /**
  * @covers Icecave\Collections\Set
@@ -30,7 +29,8 @@ class CommonSetTest extends ParameterizedTestCase
         $this->verifyElementsFunction = $verifyElementsFunction;
     }
 
-    private function createSet($elements = null) {
+    private function createSet($elements = null)
+    {
         $class = $this->className;
 
         return new $class($elements);
