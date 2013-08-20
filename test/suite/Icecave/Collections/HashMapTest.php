@@ -6,11 +6,11 @@ use Icecave\Collections\Iterator\Traits;
 use PHPUnit_Framework_TestCase;
 use stdClass;
 
-class MapTest extends PHPUnit_Framework_TestCase
+class HashMapTest extends PHPUnit_Framework_TestCase
 {
     public function setUp()
     {
-        $this->collection = new Map;
+        $this->collection = new HashMap;
     }
 
     public function testConstructor()
@@ -26,7 +26,7 @@ class MapTest extends PHPUnit_Framework_TestCase
             'c' => 3,
         );
 
-        $collection = new Map($array);
+        $collection = new HashMap($array);
         $this->assertSame(array(array('a', 1), array('b', 2), array('c', 3)), $collection->elements());
     }
 
@@ -62,7 +62,7 @@ class MapTest extends PHPUnit_Framework_TestCase
      */
     public function testSerializationOfHashFunction()
     {
-        $collection = new Map(null, 'sha1');
+        $collection = new HashMap(null, 'sha1');
 
         $packet = serialize($collection);
         $collection = unserialize($packet);
@@ -104,17 +104,17 @@ class MapTest extends PHPUnit_Framework_TestCase
 
     public function testToString()
     {
-        $this->assertSame('<Map 0>', $this->collection->__toString());
+        $this->assertSame('<HashMap 0>', $this->collection->__toString());
 
         $this->collection->set('a', 1);
         $this->collection->set('b', 2);
         $this->collection->set('c', 3);
 
-        $this->assertSame('<Map 3 ["a" => 1, "b" => 2, "c" => 3]>', $this->collection->__toString());
+        $this->assertSame('<HashMap 3 ["a" => 1, "b" => 2, "c" => 3]>', $this->collection->__toString());
 
         $this->collection->set('d', 4);
 
-        $this->assertSame('<Map 4 ["a" => 1, "b" => 2, "c" => 3, ...]>', $this->collection->__toString());
+        $this->assertSame('<HashMap 4 ["a" => 1, "b" => 2, "c" => 3, ...]>', $this->collection->__toString());
     }
 
     //////////////////////////////////////////////////
@@ -171,7 +171,7 @@ class MapTest extends PHPUnit_Framework_TestCase
 
         $result = $this->collection->filter();
 
-        $this->assertInstanceOf(__NAMESPACE__ . '\Map', $result);
+        $this->assertInstanceOf(__NAMESPACE__ . '\HashMap', $result);
         $this->assertSame(array(array('a', 1), array('c', 3)), $result->elements());
     }
 
@@ -189,7 +189,7 @@ class MapTest extends PHPUnit_Framework_TestCase
             }
         );
 
-        $this->assertInstanceOf(__NAMESPACE__ . '\Map', $result);
+        $this->assertInstanceOf(__NAMESPACE__ . '\HashMap', $result);
         $this->assertSame(array(array('a', 1), array('c', 3), array('e', 5)), $result->elements());
     }
 
@@ -205,7 +205,7 @@ class MapTest extends PHPUnit_Framework_TestCase
             }
         );
 
-        $this->assertInstanceOf(__NAMESPACE__ . '\Map', $result);
+        $this->assertInstanceOf(__NAMESPACE__ . '\HashMap', $result);
         $this->assertSame(array(array('a', 2), array('b', 3), array('c', 4)), $result->elements());
     }
 
@@ -226,10 +226,10 @@ class MapTest extends PHPUnit_Framework_TestCase
 
         list($left, $right) = $result;
 
-        $this->assertInstanceOf(__NAMESPACE__ . '\Map', $left);
+        $this->assertInstanceOf(__NAMESPACE__ . '\HashMap', $left);
         $this->assertSame(array(array('a', 1), array('b', 2)), $left->elements());
 
-        $this->assertInstanceOf(__NAMESPACE__ . '\Map', $right);
+        $this->assertInstanceOf(__NAMESPACE__ . '\HashMap', $right);
         $this->assertSame(array(array('c', 3)), $right->elements());
     }
 
@@ -460,7 +460,7 @@ class MapTest extends PHPUnit_Framework_TestCase
         $this->collection->set('a', 1);
         $this->collection->set('c', 3);
 
-        $collection = new Map;
+        $collection = new HashMap;
         $collection->set('a', 10);
         $collection->set('b', 20);
 
@@ -595,7 +595,7 @@ class MapTest extends PHPUnit_Framework_TestCase
         $this->collection->set('a', 1);
         $this->collection->set('c', 3);
 
-        $collection = new Map;
+        $collection = new HashMap;
         $collection->set('a', 10);
         $collection->set('b', 20);
 

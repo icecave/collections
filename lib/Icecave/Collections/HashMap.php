@@ -12,7 +12,7 @@ use Serializable;
 /**
  * An associative collection with efficient access by key.
  */
-class Map implements MutableAssociativeInterface, Countable, Iterator, ArrayAccess, Serializable
+class HashMap implements MutableAssociativeInterface, Countable, Iterator, ArrayAccess, Serializable
 {
     /**
      * @param mixed<mixed>|null $collection   An iterable type containing the elements to include in this map, or null to create an empty map.
@@ -43,7 +43,7 @@ class Map implements MutableAssociativeInterface, Countable, Iterator, ArrayAcce
     /**
      * Fetch the number of elements in the collection.
      *
-     * @see Map::isEmpty()
+     * @see HashMap::isEmpty()
      *
      * @return integer The number of elements in the collection.
      */
@@ -77,7 +77,7 @@ class Map implements MutableAssociativeInterface, Countable, Iterator, ArrayAcce
     public function __toString()
     {
         if ($this->isEmpty()) {
-            return '<Map 0>';
+            return '<HashMap 0>';
         }
 
         $elements = array();
@@ -93,9 +93,9 @@ class Map implements MutableAssociativeInterface, Countable, Iterator, ArrayAcce
         }
 
         if ($this->size() > 3) {
-            $format = '<Map %d [%s, ...]>';
+            $format = '<HashMap %d [%s, ...]>';
         } else {
-            $format = '<Map %d [%s]>';
+            $format = '<HashMap %d [%s]>';
         }
 
         return sprintf(
@@ -180,7 +180,7 @@ class Map implements MutableAssociativeInterface, Countable, Iterator, ArrayAcce
      *
      * @param callable|null $predicate A predicate function used to determine which elements to include, or null to include all elements with non-null values.
      *
-     * @return Map The filtered collection.
+     * @return HashMap The filtered collection.
      */
     public function filter($predicate = null)
     {
@@ -505,7 +505,7 @@ class Map implements MutableAssociativeInterface, Countable, Iterator, ArrayAcce
     /**
      * Return the value associated with the first existing key in the given sequence.
      *
-     * Behaves as per {@see Map::cascade()} except that the keys are provided as
+     * Behaves as per {@see HashMap::cascade()} except that the keys are provided as
      * a traversable (eg, array) instead of via a variable argument list.
      *
      * @param mixed<mixed> $keys The list of keys.
@@ -530,7 +530,7 @@ class Map implements MutableAssociativeInterface, Countable, Iterator, ArrayAcce
     /**
      * Return the value associated with the first existing key in the given sequence, or a default value if none of the provided keys exist.
      *
-     * Behaves as per {@see Map::cascadeDefault()} except that the keys are provided as
+     * Behaves as per {@see HashMap::cascadeDefault()} except that the keys are provided as
      * a traversable (eg, array) instead of via a variable argument list.
      *
      * @param mixed        $default The default value to return if no such keys exist.
@@ -555,7 +555,7 @@ class Map implements MutableAssociativeInterface, Countable, Iterator, ArrayAcce
     /**
      * Fetch a native array containing the keys in the collection.
      *
-     * There is no guarantee that the order of keys will match the order of values produced by {@see Map::values()}.
+     * There is no guarantee that the order of keys will match the order of values produced by {@see HashMap::values()}.
      *
      * @return array A native array containing the keys in the collection.
      */
@@ -575,7 +575,7 @@ class Map implements MutableAssociativeInterface, Countable, Iterator, ArrayAcce
     /**
      * Fetch a native array containing the values in the collection.
      *
-     * There is no guarantee that the order of values will match the order of keys produced by {@see Map::keys()}.
+     * There is no guarantee that the order of values will match the order of keys produced by {@see HashMap::keys()}.
      *
      * @return array A native array containing the values in the collection.
      */
@@ -670,8 +670,8 @@ class Map implements MutableAssociativeInterface, Countable, Iterator, ArrayAcce
      *
      * Associates $value with $key regardless of whether or not $key already exists.
      *
-     * @see Map::add()
-     * @see Map::replace()
+     * @see HashMap::add()
+     * @see HashMap::replace()
      *
      * @param mixed $key   The element's key.
      * @param mixed $value The element's value.
@@ -689,9 +689,9 @@ class Map implements MutableAssociativeInterface, Countable, Iterator, ArrayAcce
      *
      * Associates $value with $key only if $key does not already exist.
      *
-     * @see Map::set()
-     * @see Map::replace()
-     * @see Map::tryAdd()
+     * @see HashMap::set()
+     * @see HashMap::replace()
+     * @see HashMap::tryAdd()
      *
      * @param mixed $key   The element's key.
      * @param mixed $value The element's value.
@@ -712,7 +712,7 @@ class Map implements MutableAssociativeInterface, Countable, Iterator, ArrayAcce
      *
      * Associates $value with $key only if $key does not already exist.
      *
-     * @see Map::add()
+     * @see HashMap::add()
      *
      * @param mixed $key   The element's key.
      * @param mixed $value The element's value.
@@ -738,9 +738,9 @@ class Map implements MutableAssociativeInterface, Countable, Iterator, ArrayAcce
      *
      * Associates $value with $key only if $key already exists.
      *
-     * @see Map::add()
-     * @see Map::set()
-     * @see Map::tryReplace()
+     * @see HashMap::add()
+     * @see HashMap::set()
+     * @see HashMap::tryReplace()
      *
      * @param mixed $key   The element's key.
      * @param mixed $value The element's value.
@@ -765,7 +765,7 @@ class Map implements MutableAssociativeInterface, Countable, Iterator, ArrayAcce
      *
      * Associates $value with $key only if $key already exists.
      *
-     * @see Map::replace()
+     * @see HashMap::replace()
      *
      * @param mixed $key       The element's key.
      * @param mixed $value     The element's value.
@@ -909,9 +909,9 @@ class Map implements MutableAssociativeInterface, Countable, Iterator, ArrayAcce
     /**
      * Move an element from one key to another, replacing the target key if it already exists.
      *
-     * @see Map::tryMove()
-     * @see Map::rename()
-     * @see Map::tryRename()
+     * @see HashMap::tryMove()
+     * @see HashMap::rename()
+     * @see HashMap::tryRename()
      *
      * @param mixed $source The existing key.
      * @param mixed $target The new key.
@@ -929,9 +929,9 @@ class Map implements MutableAssociativeInterface, Countable, Iterator, ArrayAcce
     /**
      * Move an element from one key to another, replacing the target key if it already exists.
      *
-     * @see Map::move()
-     * @see Map::rename()
-     * @see Map::tryRename()
+     * @see HashMap::move()
+     * @see HashMap::rename()
+     * @see HashMap::tryRename()
      *
      * @param mixed $source The existing key.
      * @param mixed $target The new key.
@@ -957,9 +957,9 @@ class Map implements MutableAssociativeInterface, Countable, Iterator, ArrayAcce
      *
      * It is an error if the target key already exists.
      *
-     * @see Map::move()
-     * @see Map::tryMove()
-     * @see Map::tryRename()
+     * @see HashMap::move()
+     * @see HashMap::tryMove()
+     * @see HashMap::tryRename()
      *
      * @param mixed $source The existing key.
      * @param mixed $target The new key.
@@ -993,9 +993,9 @@ class Map implements MutableAssociativeInterface, Countable, Iterator, ArrayAcce
      *
      * It is an error if the target key already exists.
      *
-     * @see Map::move()
-     * @see Map::tryMove()
-     * @see Map::rename()
+     * @see HashMap::move()
+     * @see HashMap::tryMove()
+     * @see HashMap::rename()
      *
      * @param mixed $source The existing key.
      * @param mixed $target The new key.
