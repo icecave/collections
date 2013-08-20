@@ -481,6 +481,8 @@ abstract class Collection
     /**
      * Return the index of the first element in a sorted collection that is not less than the given element.
      *
+     * Searches all elements in the range [$begin, $end), i.e. $begin is inclusive, $end is exclusive.
+     *
      * @param array|ArrayAccess $collection The sorted collection to search.
      * @param mixed             $element    The element to search for.
      * @param callable          $comparator The comparator used to compare elements.
@@ -515,6 +517,8 @@ abstract class Collection
     /**
      * Return the index of the first element in a sorted collection that is greater than the given element.
      *
+     * Searches all elements in the range [$begin, $end), i.e. $begin is inclusive, $end is exclusive.
+     *
      * @param array|ArrayAccess $collection The sorted collection to search.
      * @param mixed             $element    The element to search for.
      * @param callable          $comparator The comparator used to compare elements.
@@ -548,6 +552,8 @@ abstract class Collection
 
     /**
      * Perform a binary search on a sorted sequence.
+     *
+     * Searches all elements in the range [$begin, $end), i.e. $begin is inclusive, $end is exclusive.
      *
      * @param array|ArrayAccess $collection   The collection to search.
      * @param mixed             $element      The element to search for.

@@ -43,6 +43,8 @@ interface MutableRandomAccessInterface extends RandomAccessInterface, MutableSeq
      *
      * And as such, the implementation may require $elements to be the same type as $this.
      *
+     * Replaces all elements from the range [$begin, $end), i.e. $begin is inclusive, $end is exclusive.
+     *
      * @param integer               $index    The index at which the elements are inserted, if index is a negative number the elements are inserted that far from the end of the sequence.
      * @param RandomAccessInterface $elements The elements to insert.
      * @param integer               $begin    The index of the first element from $elements to insert, if begin is a negative number the removal begins that far from the end of the sequence.

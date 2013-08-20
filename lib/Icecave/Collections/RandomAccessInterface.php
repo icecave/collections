@@ -47,6 +47,8 @@ interface RandomAccessInterface extends SequenceInterface
     /**
      * Find the index of the first instance of a particular element in the sequence.
      *
+     * Searches all elements in the range [$begin, $end), i.e. $begin is inclusive, $end is exclusive.
+     *
      * @param mixed        $element The element to search for.
      * @param integer      $begin   The index to start searching from.
      * @param integer|null $end     The index to to stop searching at, or null to search to the end of the sequence.
@@ -58,6 +60,8 @@ interface RandomAccessInterface extends SequenceInterface
 
     /**
      * Find the index of the last instance of a particular element in the sequence.
+     *
+     * Searches all elements in the range [$begin, $end), i.e. $begin is inclusive, $end is exclusive.
      *
      * @param mixed        $element The element to search for.
      * @param integer      $begin   The index to start searching from.
@@ -71,6 +75,8 @@ interface RandomAccessInterface extends SequenceInterface
     /**
      * Find the index of the first instance of an element matching given criteria.
      *
+     * Searches all elements in the range [$begin, $end), i.e. $begin is inclusive, $end is exclusive.
+     *
      * @param callable     $predicate A predicate function used to determine which element constitutes a match.
      * @param integer      $begin     The index to start searching from.
      * @param integer|null $end       The index to to stop searching at, or null to search to the end of the sequence.
@@ -82,6 +88,8 @@ interface RandomAccessInterface extends SequenceInterface
 
     /**
      * Find the index of the last instance of an element matching given criteria.
+     *
+     * Searches all elements in the range [$begin, $end), i.e. $begin is inclusive, $end is exclusive.
      *
      * @param callable     $predicate A predicate function used to determine which element constitutes a match.
      * @param integer      $begin     The index to start searching from.

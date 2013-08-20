@@ -788,6 +788,8 @@ class Vector implements MutableRandomAccessInterface, Countable, Iterator, Seeka
     /**
      * Find the index of the first instance of a particular element in the sequence.
      *
+     * Searches all elements in the range [$begin, $end), i.e. $begin is inclusive, $end is exclusive.
+     *
      * @param mixed        $element The element to search for.
      * @param integer      $begin   The index to start searching from.
      * @param integer|null $end     The index to to stop searching at, or null to search to the end of the sequence.
@@ -809,6 +811,8 @@ class Vector implements MutableRandomAccessInterface, Countable, Iterator, Seeka
     /**
      * Find the index of the last instance of a particular element in the sequence.
      *
+     * Searches all elements in the range [$begin, $end), i.e. $begin is inclusive, $end is exclusive.
+     *
      * @param mixed        $element The element to search for.
      * @param integer      $begin   The index to start searching from.
      * @param integer|null $end     The index to to stop searching at, or null to search to the end of the sequence.
@@ -829,6 +833,8 @@ class Vector implements MutableRandomAccessInterface, Countable, Iterator, Seeka
 
     /**
      * Find the index of the first instance of an element matching given criteria.
+     *
+     * Searches all elements in the range [$begin, $end), i.e. $begin is inclusive, $end is exclusive.
      *
      * @param callable     $predicate A predicate function used to determine which element constitutes a match.
      * @param integer      $begin     The index to start searching from.
@@ -859,6 +865,8 @@ class Vector implements MutableRandomAccessInterface, Countable, Iterator, Seeka
 
     /**
      * Find the index of the last instance of an element matching given criteria.
+     *
+     * Searches all elements in the range [$begin, $end), i.e. $begin is inclusive, $end is exclusive.
      *
      * @param callable     $predicate A predicate function used to determine which element constitutes a match.
      * @param integer      $begin     The index to start searching from.
@@ -965,6 +973,8 @@ class Vector implements MutableRandomAccessInterface, Countable, Iterator, Seeka
     /**
      * Insert a sub-range of another collection at a particular index.
      *
+     * Inserts all elements from the range [$begin, $end), i.e. $begin is inclusive, $end is exclusive.
+     *
      * @param integer                      $index    The index at which the elements are inserted, if index is a negative number the elements are inserted that far from the end of the sequence.
      * @param RandomAccessInterface+Vector $elements The elements to insert.
      * @param integer                      $begin    The index of the first element from $elements to insert, if begin is a negative number the removal begins that far from the end of the sequence.
@@ -1046,8 +1056,6 @@ class Vector implements MutableRandomAccessInterface, Countable, Iterator, Seeka
     /**
      * Replace a range of elements with a second set of elements.
      *
-     * Replaces all elements in the range [$begin, $end), i.e. $begin is inclusive, $end is exclusive.
-     *
      * @param integer      $index    The index of the first element to replace, if index is a negative number the replace begins that far from the end of the sequence.
      * @param mixed<mixed> $elements The elements to insert.
      * @param integer|null $count    The number of elements to replace, or null to replace all elements up to the end of the sequence.
@@ -1087,6 +1095,8 @@ class Vector implements MutableRandomAccessInterface, Countable, Iterator, Seeka
 
     /**
      * Replace a range of elements with a second set of elements.
+     *
+     * Replaces all elements in the range [$begin, $end), i.e. $begin is inclusive, $end is exclusive.
      *
      * @param integer      $begin    The index of the first element to replace, if begin is a negative number the replace begins that far from the end of the sequence.
      * @param integer      $end      The index of the last element to replace, if end is a negativ enumber the replace ends that far from the end of the sequence.
