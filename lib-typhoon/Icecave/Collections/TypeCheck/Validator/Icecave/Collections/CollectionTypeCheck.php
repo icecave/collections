@@ -407,6 +407,230 @@ class CollectionTypeCheck extends \Icecave\Collections\TypeCheck\AbstractValidat
         }
     }
 
+    public function getIterator(array $arguments)
+    {
+        $argumentCount = \count($arguments);
+        if ($argumentCount < 1) {
+            throw new \Icecave\Collections\TypeCheck\Exception\MissingArgumentException('collection', 0, 'mixed<mixed>');
+        } elseif ($argumentCount > 1) {
+            throw new \Icecave\Collections\TypeCheck\Exception\UnexpectedArgumentException(1, $arguments[1]);
+        }
+        $value = $arguments[0];
+        $check = function ($value) {
+            if (!\is_array($value) && !$value instanceof \Traversable) {
+                return false;
+            }
+            foreach ($value as $key => $subValue) {
+            }
+            return true;
+        };
+        if (!$check($arguments[0])) {
+            throw new \Icecave\Collections\TypeCheck\Exception\UnexpectedArgumentValueException(
+                'collection',
+                0,
+                $arguments[0],
+                'mixed<mixed>'
+            );
+        }
+    }
+
+    public function addElement(array $arguments)
+    {
+        $argumentCount = \count($arguments);
+        if ($argumentCount < 2) {
+            if ($argumentCount < 1) {
+                throw new \Icecave\Collections\TypeCheck\Exception\MissingArgumentException('collection', 0, 'Icecave\\Collections\\MutableSequenceInterface|Icecave\\Collections\\QueuedAccessInterface|Icecave\\Collections\\Set|Icecave\\Collections\\HashSet|ArrayAccess|array');
+            }
+            throw new \Icecave\Collections\TypeCheck\Exception\MissingArgumentException('element', 1, 'mixed');
+        } elseif ($argumentCount > 2) {
+            throw new \Icecave\Collections\TypeCheck\Exception\UnexpectedArgumentException(2, $arguments[2]);
+        }
+        $value = $arguments[0];
+        if (!($value instanceof \Icecave\Collections\MutableSequenceInterface || $value instanceof \Icecave\Collections\QueuedAccessInterface || $value instanceof \Icecave\Collections\Set || $value instanceof \Icecave\Collections\HashSet || $value instanceof \ArrayAccess || \is_array($value))) {
+            throw new \Icecave\Collections\TypeCheck\Exception\UnexpectedArgumentValueException(
+                'collection',
+                0,
+                $arguments[0],
+                'Icecave\\Collections\\MutableSequenceInterface|Icecave\\Collections\\QueuedAccessInterface|Icecave\\Collections\\Set|Icecave\\Collections\\HashSet|ArrayAccess|array'
+            );
+        }
+    }
+
+    public function addElements(array $arguments)
+    {
+        $argumentCount = \count($arguments);
+        if ($argumentCount < 2) {
+            if ($argumentCount < 1) {
+                throw new \Icecave\Collections\TypeCheck\Exception\MissingArgumentException('collection', 0, 'Icecave\\Collections\\MutableSequenceInterface|Icecave\\Collections\\QueuedAccessInterface|Icecave\\Collections\\Set|Icecave\\Collections\\HashSet|ArrayAccess|array');
+            }
+            throw new \Icecave\Collections\TypeCheck\Exception\MissingArgumentException('elements', 1, 'mixed<mixed>');
+        } elseif ($argumentCount > 2) {
+            throw new \Icecave\Collections\TypeCheck\Exception\UnexpectedArgumentException(2, $arguments[2]);
+        }
+        $value = $arguments[0];
+        if (!($value instanceof \Icecave\Collections\MutableSequenceInterface || $value instanceof \Icecave\Collections\QueuedAccessInterface || $value instanceof \Icecave\Collections\Set || $value instanceof \Icecave\Collections\HashSet || $value instanceof \ArrayAccess || \is_array($value))) {
+            throw new \Icecave\Collections\TypeCheck\Exception\UnexpectedArgumentValueException(
+                'collection',
+                0,
+                $arguments[0],
+                'Icecave\\Collections\\MutableSequenceInterface|Icecave\\Collections\\QueuedAccessInterface|Icecave\\Collections\\Set|Icecave\\Collections\\HashSet|ArrayAccess|array'
+            );
+        }
+        $value = $arguments[1];
+        $check = function ($value) {
+            if (!\is_array($value) && !$value instanceof \Traversable) {
+                return false;
+            }
+            foreach ($value as $key => $subValue) {
+            }
+            return true;
+        };
+        if (!$check($arguments[1])) {
+            throw new \Icecave\Collections\TypeCheck\Exception\UnexpectedArgumentValueException(
+                'elements',
+                1,
+                $arguments[1],
+                'mixed<mixed>'
+            );
+        }
+    }
+
+    public function implode(array $arguments)
+    {
+        $argumentCount = \count($arguments);
+        if ($argumentCount < 2) {
+            if ($argumentCount < 1) {
+                throw new \Icecave\Collections\TypeCheck\Exception\MissingArgumentException('separator', 0, 'string');
+            }
+            throw new \Icecave\Collections\TypeCheck\Exception\MissingArgumentException('collection', 1, 'mixed<mixed>');
+        } elseif ($argumentCount > 4) {
+            throw new \Icecave\Collections\TypeCheck\Exception\UnexpectedArgumentException(4, $arguments[4]);
+        }
+        $value = $arguments[0];
+        if (!\is_string($value)) {
+            throw new \Icecave\Collections\TypeCheck\Exception\UnexpectedArgumentValueException(
+                'separator',
+                0,
+                $arguments[0],
+                'string'
+            );
+        }
+        $value = $arguments[1];
+        $check = function ($value) {
+            if (!\is_array($value) && !$value instanceof \Traversable) {
+                return false;
+            }
+            foreach ($value as $key => $subValue) {
+            }
+            return true;
+        };
+        if (!$check($arguments[1])) {
+            throw new \Icecave\Collections\TypeCheck\Exception\UnexpectedArgumentValueException(
+                'collection',
+                1,
+                $arguments[1],
+                'mixed<mixed>'
+            );
+        }
+        if ($argumentCount > 2) {
+            $value = $arguments[2];
+            if (!\is_string($value)) {
+                throw new \Icecave\Collections\TypeCheck\Exception\UnexpectedArgumentValueException(
+                    'emptyResult',
+                    2,
+                    $arguments[2],
+                    'string'
+                );
+            }
+        }
+        if ($argumentCount > 3) {
+            $value = $arguments[3];
+            if (!(\is_callable($value) || $value === null)) {
+                throw new \Icecave\Collections\TypeCheck\Exception\UnexpectedArgumentValueException(
+                    'transform',
+                    3,
+                    $arguments[3],
+                    'callable|null'
+                );
+            }
+        }
+    }
+
+    public function explode(array $arguments)
+    {
+        $argumentCount = \count($arguments);
+        if ($argumentCount < 2) {
+            if ($argumentCount < 1) {
+                throw new \Icecave\Collections\TypeCheck\Exception\MissingArgumentException('separator', 0, 'string');
+            }
+            throw new \Icecave\Collections\TypeCheck\Exception\MissingArgumentException('string', 1, 'string');
+        } elseif ($argumentCount > 6) {
+            throw new \Icecave\Collections\TypeCheck\Exception\UnexpectedArgumentException(6, $arguments[6]);
+        }
+        $value = $arguments[0];
+        if (!\is_string($value)) {
+            throw new \Icecave\Collections\TypeCheck\Exception\UnexpectedArgumentValueException(
+                'separator',
+                0,
+                $arguments[0],
+                'string'
+            );
+        }
+        $value = $arguments[1];
+        if (!\is_string($value)) {
+            throw new \Icecave\Collections\TypeCheck\Exception\UnexpectedArgumentValueException(
+                'string',
+                1,
+                $arguments[1],
+                'string'
+            );
+        }
+        if ($argumentCount > 2) {
+            $value = $arguments[2];
+            if (!(\is_int($value) || $value === null)) {
+                throw new \Icecave\Collections\TypeCheck\Exception\UnexpectedArgumentValueException(
+                    'limit',
+                    2,
+                    $arguments[2],
+                    'integer|null'
+                );
+            }
+        }
+        if ($argumentCount > 3) {
+            $value = $arguments[3];
+            if (!($value instanceof \Icecave\Collections\MutableSequenceInterface || $value instanceof \Icecave\Collections\QueuedAccessInterface || $value instanceof \Icecave\Collections\Set || $value instanceof \Icecave\Collections\HashSet || $value instanceof \ArrayAccess || \is_array($value))) {
+                throw new \Icecave\Collections\TypeCheck\Exception\UnexpectedArgumentValueException(
+                    'collection',
+                    3,
+                    $arguments[3],
+                    'Icecave\\Collections\\MutableSequenceInterface|Icecave\\Collections\\QueuedAccessInterface|Icecave\\Collections\\Set|Icecave\\Collections\\HashSet|ArrayAccess|array'
+                );
+            }
+        }
+        if ($argumentCount > 4) {
+            $value = $arguments[4];
+            if (!(\is_callable($value) || $value === null)) {
+                throw new \Icecave\Collections\TypeCheck\Exception\UnexpectedArgumentValueException(
+                    'transform',
+                    4,
+                    $arguments[4],
+                    'callable|null'
+                );
+            }
+        }
+        if ($argumentCount > 5) {
+            $value = $arguments[5];
+            if (!(\is_string($value) || $value === null)) {
+                throw new \Icecave\Collections\TypeCheck\Exception\UnexpectedArgumentValueException(
+                    'encoding',
+                    5,
+                    $arguments[5],
+                    'string|null'
+                );
+            }
+        }
+    }
+
     public function iteratorTraits(array $arguments)
     {
         $argumentCount = \count($arguments);

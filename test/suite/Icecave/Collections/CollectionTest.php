@@ -383,6 +383,158 @@ class CollectionTest extends PHPUnit_Framework_TestCase
         $this->assertSame($expected, $result);
     }
 
+    public function testGetIterator()
+    {
+        $iterator = Collection::getIterator(array(1, 2, 3));
+        $this->assertSame(array(1, 2, 3), iterator_to_array($iterator));
+
+        $vector = new Vector(array(1, 2, 3));
+        $this->assertInstanceOf('Iterator', $vector);
+        $iterator = Collection::getIterator($vector);
+        $this->assertSame(array(1, 2, 3), iterator_to_array($iterator));
+
+        $set = new Set(array(1, 2, 3));
+        $this->assertInstanceOf('IteratorAggregate', $set);
+        $iterator = Collection::getIterator($set);
+        $this->assertSame(array(1, 2, 3), iterator_to_array($iterator));
+    }
+
+    public function testAddElementArray()
+    {
+        $collection = array('a');
+        Collection::addElement($collection, 'b');
+        Collection::addElements($collection, array('c', 'd'));
+
+        $this->assertSame(array('a', 'b', 'c', 'd'), $collection);
+    }
+
+    public function testAddElementSequence()
+    {
+        $collection = Phake::mock(__NAMESPACE__ . '\MutableSequenceInterface');
+        Collection::addElement($collection, 'a');
+        Collection::addElements($collection, array('b', 'c'));
+
+        Phake::inOrder(
+            Phake::verify($collection)->pushBack('a'),
+            Phake::verify($collection)->pushBack('b'),
+            Phake::verify($collection)->pushBack('c')
+        );
+    }
+
+    public function testAddElementSet()
+    {
+        $collection = Phake::mock(__NAMESPACE__ . '\Set'); // chage to SetInterface when available
+        Collection::addElement($collection, 'a');
+        Collection::addElements($collection, array('b', 'c'));
+
+        Phake::verify($collection)->add('a');
+        Phake::verify($collection)->add('b');
+        Phake::verify($collection)->add('c');
+    }
+
+    public function testAddElementQueuedAccess()
+    {
+        $collection = Phake::mock(__NAMESPACE__ . '\QueuedAccessInterface');
+        Collection::addElement($collection, 'a');
+        Collection::addElements($collection, array('b', 'c'));
+
+        Phake::inOrder(
+            Phake::verify($collection)->push('a'),
+            Phake::verify($collection)->push('b'),
+            Phake::verify($collection)->push('c')
+        );
+    }
+
+    public function testAddElementArrayAccess()
+    {
+        $collection = Phake::mock('ArrayAccess');
+        Collection::addElement($collection, 'a');
+        Collection::addElements($collection, array('b', 'c'));
+
+        Phake::inOrder(
+            Phake::verify($collection)->offsetSet(null, 'a'),
+            Phake::verify($collection)->offsetSet(null, 'b'),
+            Phake::verify($collection)->offsetSet(null, 'c')
+        );
+    }
+
+    /**
+     * @dataProvider getImplodeData
+     */
+    public function testImplode($separator, $collection, $emptyResult, $transform, $expectedResult)
+    {
+        $result = Collection::implode($separator, $collection, $emptyResult, $transform);
+        $this->assertSame($expectedResult, $result);
+    }
+
+    public function testImplodeDefaults()
+    {
+        $result = Collection::implode('.', array());
+        $this->assertSame('', $result);
+
+        $result = Collection::implode('.', array(1, 2, 3));
+        $this->assertSame('1.2.3', $result);
+    }
+
+    public function getImplodeData()
+    {
+        return array(
+            'empty'             => array(', ', array(),                                        '',        null,     ''),
+            'custom fallback'   => array(', ', array(),                                        'foo',     null,     'foo'),
+            'single element'    => array(', ', array('foo'),                                   '<empty>', null,     'foo'),
+            'multiple elements' => array(', ', array('foo', 'bar', 'spam'),                    '<empty>', null,     'foo, bar, spam'),
+            'transform'         => array(', ', array('foo', 'bar', 'spam'),                    '<empty>', 'strrev', 'oof, rab, maps'),
+            'iterator'          => array(', ', new ArrayIterator(array('foo', 'bar', 'spam')), '<empty>', null,     'foo, bar, spam'),
+        );
+    }
+
+    /**
+     * @dataProvider getExplodeData
+     */
+    public function testExplode($separator, $string, $limit, $collection, $transform, $encoding, $expectedResult)
+    {
+        $result = Collection::explode($separator, $string, $limit, $collection, $transform, $encoding);
+        $this->assertSame($expectedResult, $result);
+    }
+
+    public function testExplodeDefaults()
+    {
+        $result = Collection::explode(', ', 'foo, bar, spam');
+        $this->assertSame(array('foo', 'bar', 'spam'), $result);
+    }
+
+    public function testExplodeNonArray()
+    {
+        $collection = new Vector;
+        $result = Collection::explode(', ', 'foo, bar, spam', null, $collection);
+        $this->assertSame($collection, $result);
+        $this->assertSame(array('foo', 'bar', 'spam'), $collection->elements());
+    }
+
+    public function testExplodeInternalEncoding()
+    {
+        $previous = mb_internal_encoding();
+        mb_internal_encoding('UTF-8');
+
+        $result = Collection::explode(', ', "\xc3\xb6, \xc3\xb6, \xc3\xb6");
+        $this->assertSame(array("\xc3\xb6", "\xc3\xb6", "\xc3\xb6"), $result);
+
+        mb_internal_encoding($previous);
+    }
+
+    public function getExplodeData()
+    {
+        return array(
+            'empty'              => array(', ', '',                 null, array(), null,     'ascii', array()),
+            'single element'     => array(', ', 'foo',              null, array(), null,     'ascii', array('foo')),
+            'multiple elements'  => array(', ', 'foo, bar, spam',   null, array(), null,     'ascii', array('foo', 'bar', 'spam')),
+            'transform'          => array(', ', 'foo, bar, spam',   null, array(), 'strrev', 'ascii', array('oof', 'rab', 'maps')),
+            'separator at start' => array(', ', ', foo, bar, spam', null, array(), null,     'ascii', array('', 'foo', 'bar', 'spam')),
+            'separator at end'   => array(', ', 'foo, bar, spam, ', null, array(), null,     'ascii', array('foo', 'bar', 'spam', '')),
+            'limit'              => array(', ', 'foo, bar, spam',   2,    array(), null,     'ascii', array('foo', 'bar, spam')),
+        );
+    }
+
     /**
      * @dataProvider getIterators
      */

@@ -2,15 +2,17 @@
 namespace Icecave\Collections;
 
 use ArrayAccess;
+use ArrayIterator;
 use Countable;
 use Icecave\Collections\Iterator\Traits;
 use Icecave\Collections\Iterator\TraitsProviderInterface;
 use Icecave\Collections\TypeCheck\TypeCheck;
+use IteratorAggregate;
 use SplDoublyLinkedList;
-use SplHeap;
-use SplPriorityQueue;
 use SplFixedArray;
+use SplHeap;
 use SplObjectStorage;
+use SplPriorityQueue;
 use Traversable;
 
 /**
@@ -446,6 +448,177 @@ abstract class Collection
                 return $key === $expectedKey++;
             }
         );
+    }
+
+    /**
+     * Get an iterator for any traversable type.
+     *
+     * @param mixed<mixed> $collection
+     *
+     * @return Iterator
+     */
+    public static function getIterator($collection)
+    {
+        TypeCheck::get(__CLASS__)->getIterator(func_get_args());
+
+        if (is_array($collection)) {
+            $collection = new ArrayIterator($collection);
+        } elseif ($collection instanceof IteratorAggregate) {
+            $collection = $collection->getIterator();
+        }
+
+        return $collection;
+    }
+
+    /**
+     * Add an element to a collection.
+     *
+     * @param MutableSequenceInterface|QueuedAccessInterface|Set|HashSet|ArrayAccess|array &$collection The collection to add to.
+     * @param mixed                                                                        $element     The element to add.
+     */
+    public static function addElement(&$collection, $element)
+    {
+        TypeCheck::get(__CLASS__)->addElement(func_get_args());
+
+        if ($collection instanceof MutableSequenceInterface) {
+            $collection->pushBack($element);
+        } elseif ($collection instanceof QueuedAccessInterface) {
+            $collection->push($element);
+        } elseif ($collection instanceof Set || $collection instanceof HashSet) { // change to SetInterface when available
+            $collection->add($element);
+        } elseif ($collection instanceof ArrayAccess) {
+            $collection[] = $element;
+        } else {
+            $collection[] = $element;
+        }
+    }
+
+    /**
+     * Add elements from one collection to another.
+     *
+     * @param MutableSequenceInterface|QueuedAccessInterface|Set|HashSet|ArrayAccess|array &$collection The collection to append to.
+     * @param mixed<mixed>                                                                 $elements    The elements to be appended.
+     */
+    public static function addElements(&$collection, $elements)
+    {
+        TypeCheck::get(__CLASS__)->addElements(func_get_args());
+
+        foreach ($elements as $element) {
+            static::addElement($collection, $element);
+        }
+    }
+
+    /**
+     * Create a string by joining the elements in a collection.
+     *
+     * @param string        $separator   The separator string to place between elements.
+     * @param mixed<mixed>  $collection  The collection to join.
+     * @param string        $emptyResult The result to return when there are no elements in the collection.
+     * @param callable|null $transform   The transform to apply to convert each element to a string.
+     *
+     * @return string A string containing each element in $collection, transformed by $transform, separated by $separator.
+     */
+    public static function implode(
+        $separator,
+        $collection,
+        $emptyResult = '',
+        $transform = null
+    ) {
+        TypeCheck::get(__CLASS__)->implode(func_get_args());
+
+        // Create an identity transform if none is provided ...
+        if (null === $transform) {
+            $transform = function ($element) {
+                return $element;
+            };
+        }
+
+        $iterator = static::getIterator($collection);
+        $iterator->rewind();
+
+        if (!$iterator->valid()) {
+            return $emptyResult;
+        }
+
+        $result = call_user_func($transform, $iterator->current());
+        $iterator->next();
+
+        while ($iterator->valid()) {
+            $result .= $separator . call_user_func($transform, $iterator->current());
+            $iterator->next();
+        }
+
+        return $result;
+    }
+
+    /**
+     * Split a string based on a separator.
+     *
+     * @param string                                                                       $separator   The separator string to place between elements.
+     * @param string                                                                       $string      The string to split.
+     * @param integer|null                                                                 $limit       The maximum number of elements to insert into $collection, or null for unlimited.
+     * @param MutableSequenceInterface|QueuedAccessInterface|Set|HashSet|ArrayAccess|array &$collection The collection to append to, can be any type supported by {@see Collection::addElement()}.
+     * @param callable|null                                                                $transform   The transform to apply to each element before insertion into $collection.
+     * @param string|null                                                                  $encoding    The string encoding to use, or null to use the internal encoding ({@see mb_internal_encoding()}).
+     *
+     * @return mixed<mixed> Returns $collection.
+     */
+    public static function explode(
+        $separator,
+        $string,
+        $limit = null,
+        &$collection = array(),
+        $transform = null,
+        $encoding = null
+    ) {
+        TypeCheck::get(__CLASS__)->explode(func_get_args());
+
+        // Attempt to auto-detect encoding from $string ...
+        if (null === $encoding) {
+            $encoding = mb_internal_encoding();
+        }
+
+        // Create an identity transform if none is provided ...
+        if (null === $transform) {
+            $transform = function ($element) {
+                return $element;
+            };
+        }
+
+        $separatorLength = mb_strlen($separator, $encoding);
+        $stringLength = mb_strlen($string, $encoding);
+
+        $count = 0;
+        $begin = 0;
+        $end   = 0;
+
+        while ($end < $stringLength) {
+
+            if ($limit !== null && ++$count >= $limit) {
+                $end = $stringLength;
+            } else {
+                $end = mb_strpos($string, $separator, $begin, $encoding);
+                if (false === $end) {
+                    $end = $stringLength;
+                }
+            }
+
+            $element = mb_substr(
+                $string,
+                $begin,
+                $end - $begin,
+                $encoding
+            );
+
+            static::addElement(
+                $collection,
+                call_user_func($transform, $element)
+            );
+
+            $begin = $end + $separatorLength;
+        }
+
+        return $collection;
     }
 
     /**

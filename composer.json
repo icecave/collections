@@ -12,6 +12,7 @@
     ],
     "require": {
         "php": ">=5.3",
+        "ext-mbstring": "*",
         "icecave/parity": "~0.1",
         "icecave/repr": "~1"
     },
