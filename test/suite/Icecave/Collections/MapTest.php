@@ -6,11 +6,11 @@ use Icecave\Collections\Iterator\Traits;
 use PHPUnit_Framework_TestCase;
 use stdClass;
 
-class HashMapTest extends PHPUnit_Framework_TestCase
+class MapTest extends PHPUnit_Framework_TestCase
 {
     public function testSerialization()
     {
-        $collection = new HashMap;
+        $collection = new Map;
 
         $collection->set('a', 1);
         $collection->set('b', 2);
@@ -20,22 +20,18 @@ class HashMapTest extends PHPUnit_Framework_TestCase
         $unserializedCollection = unserialize($packet);
 
         $this->assertSame(
-            Liberator::liberate($unserializedCollection)->elements,
-            Liberator::liberate($collection)->elements
+            Liberator::liberate($unserializedCollection)->elements->elements(),
+            Liberator::liberate($collection)->elements->elements()
         );
     }
 
-    /**
-     * @group regression
-     * @link https://github.com/IcecaveStudios/collections/issues/23
-     */
-    public function testSerializationOfHashFunction()
+    public function testSerializationOfComparator()
     {
-        $collection = new HashMap(null, 'sha1');
+        $collection = new Map(null, 'strcmp');
 
         $packet = serialize($collection);
         $collection = unserialize($packet);
 
-        $this->assertSame('sha1', Liberator::liberate($collection)->hashFunction);
+        $this->assertSame('strcmp', Liberator::liberate($collection)->comparator);
     }
 }

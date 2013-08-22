@@ -351,8 +351,6 @@ class Map implements MutableAssociativeInterface, Countable, Iterator, ArrayAcce
 
         return $this->elements->filterInPlace(
             function ($element) use ($predicate) {
-                var_dump($element);
-                ob_flush();
                 return call_user_func_array($predicate, $element);
             }
         );
@@ -372,8 +370,10 @@ class Map implements MutableAssociativeInterface, Countable, Iterator, ArrayAcce
     {
         $this->typeCheck->mapInPlace(func_get_args());
 
-        foreach ($this->elements as &$element) {
-            $element[1] = call_user_func_array($transform, $element);
+        foreach ($this->elements as $index => $element) {
+            list($key, $value) = $element;
+            $value = call_user_func($transform, $key, $value);
+            $this->elements[$index] = array($key, $value);
         }
     }
 
@@ -877,8 +877,8 @@ class Map implements MutableAssociativeInterface, Countable, Iterator, ArrayAcce
         }
 
         $temp = $this->elements[$index1][1];
-        $this->elements[$index1][1] = $this->elements[$index2][1];
-        $this->elements[$index2][1] = $temp;
+        $this->elements[$index1] = array($key1, $this->elements[$index2][1]);
+        $this->elements[$index2] = array($key2, $temp);
     }
 
     /**
@@ -903,8 +903,8 @@ class Map implements MutableAssociativeInterface, Countable, Iterator, ArrayAcce
         }
 
         $temp = $this->elements[$index1][1];
-        $this->elements[$index1][1] = $this->elements[$index2][1];
-        $this->elements[$index2][1] = $temp;
+        $this->elements[$index1] = array($key1, $this->elements[$index2][1]);
+        $this->elements[$index2] = array($key2, $temp);
 
         return true;
     }
@@ -969,7 +969,7 @@ class Map implements MutableAssociativeInterface, Countable, Iterator, ArrayAcce
             );
         } else {
             if ($sourceIndex < $targetInsertIndex) {
-                --$targetInsert;
+                --$targetIndex;
             }
             $this->elements[$targetIndex] = array($target, $value);
         }

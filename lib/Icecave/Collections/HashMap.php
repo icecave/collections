@@ -377,8 +377,7 @@ class HashMap implements MutableAssociativeInterface, Countable, Iterator, Array
         $this->typeCheck->mapInPlace(func_get_args());
 
         foreach ($this->elements as $hash => $element) {
-            list($key, $value) = $element;
-            $this->elements[$hash][1] = call_user_func($transform, $key, $value);
+            $this->elements[$hash][1] = call_user_func_array($transform, $element);
         }
     }
 

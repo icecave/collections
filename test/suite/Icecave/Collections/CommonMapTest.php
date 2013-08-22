@@ -2,7 +2,10 @@
 namespace Icecave\Collections;
 
 use Eloquent\Liberator\Liberator;
+use Exception;
 use Ezzatron\PHPUnit\ParameterizedTestCase;
+use Icecave\Collections\Exception\DuplicateKeyException;
+use Icecave\Collections\Exception\UnknownKeyException;
 use Icecave\Collections\Iterator\Traits;
 use PHPUnit_Framework_TestCase;
 use stdClass;
@@ -369,11 +372,11 @@ class CommonMapTest extends ParameterizedTestCase
 
     public function testFilterInPlaceWithPredicate()
     {
-        $this->collection->set('a', 1);
-        $this->collection->set('b', 2);
-        $this->collection->set('c', 3);
-        $this->collection->set('d', 4);
-        $this->collection->set('e', 5);
+        $this->collection->set(10, 1);
+        $this->collection->set(20, 2);
+        $this->collection->set(30, 3);
+        $this->collection->set(40, 4);
+        $this->collection->set(50, 5);
 
         $this->collection->filterInPlace(
             function ($key, $value) {
@@ -381,14 +384,14 @@ class CommonMapTest extends ParameterizedTestCase
             }
         );
 
-        $this->assertSame(array(array('a', 1), array('c', 3), array('e', 5)), $this->collection->elements());
+        $this->verifyElements(array(10, 1), array(30, 3), array(50, 5));
     }
 
     public function testMapInPlace()
     {
-        $this->collection->set('a', 1);
-        $this->collection->set('b', 2);
-        $this->collection->set('c', 3);
+        $this->collection->set(10, 1);
+        $this->collection->set(20, 2);
+        $this->collection->set(30, 3);
 
         $this->collection->mapInPlace(
             function ($key, $value) {
@@ -396,7 +399,7 @@ class CommonMapTest extends ParameterizedTestCase
             }
         );
 
-        $this->assertSame(array(array('a', 2), array('b', 3), array('c', 4)), $this->collection->elements());
+        $this->verifyElements(array(10, 2), array(20, 3), array(30, 4));
     }
 
     ////////////////////////////////////////////
@@ -508,38 +511,38 @@ class CommonMapTest extends ParameterizedTestCase
 
     public function testMerge()
     {
-        $this->collection->set('a', 1);
-        $this->collection->set('c', 3);
+        $this->collection->set(10, 1);
+        $this->collection->set(30, 3);
 
-        $collection = new HashMap;
-        $collection->set('a', 10);
-        $collection->set('b', 20);
+        $collection = $this->createMap();
+        $collection->set(10, 10);
+        $collection->set(20, 20);
 
         $result = $this->collection->merge($collection);
 
-        $this->assertSame(array(array('a', 10), array('c', 3), array('b', 20)), $result->elements());
+        $this->verifyElements(array(10, 10), array(20, 20), array(30, 3), $result);
     }
 
     public function testProject()
     {
-        $this->collection->set('a', 1);
-        $this->collection->set('b', 2);
-        $this->collection->set('c', 3);
+        $this->collection->set(10, 1);
+        $this->collection->set(20, 2);
+        $this->collection->set(30, 3);
 
-        $result = $this->collection->project('b', 'd');
+        $result = $this->collection->project(20, 40);
 
-        $this->assertSame(array(array('b', 2)), $result->elements());
+        $this->verifyElements(array(20, 2), $result);
     }
 
     public function testProjectIterable()
     {
-        $this->collection->set('a', 1);
-        $this->collection->set('b', 2);
-        $this->collection->set('c', 3);
+        $this->collection->set(10, 1);
+        $this->collection->set(20, 2);
+        $this->collection->set(30, 3);
 
-        $result = $this->collection->projectIterable(array('b', 'd'));
+        $result = $this->collection->projectIterable(array(20, 40));
 
-        $this->assertSame(array(array('b', 2)), $result->elements());
+        $this->verifyElements(array(20, 2), $result);
     }
 
     ///////////////////////////////////////////////////
@@ -643,26 +646,29 @@ class CommonMapTest extends ParameterizedTestCase
 
     public function testMergeInPlace()
     {
-        $this->collection->set('a', 1);
-        $this->collection->set('c', 3);
+        $this->collection->set(10, 1);
+        $this->collection->set(30, 3);
 
-        $collection = new HashMap;
-        $collection->set('a', 10);
-        $collection->set('b', 20);
+        $collection = $this->createMap();
+        $collection->set(10, 10);
+        $collection->set(20, 20);
 
         $this->collection->mergeInPlace($collection);
 
-        $this->assertSame(array(array('a', 10), array('c', 3), array('b', 20)), $this->collection->elements());
+        $this->verifyElements(array(10, 10), array(20, 20), array(30, 3));
     }
 
     public function testSwap()
     {
-        $this->collection->set('a', 1);
-        $this->collection->set('b', 2);
+        $this->collection->set(10, 1);
+        $this->collection->set(20, 2);
+        $this->collection->set(30, 3);
+        $this->collection->set(40, 4);
+        $this->collection->set(50, 5);
 
-        $this->collection->swap('a', 'b');
+        $this->collection->swap(20, 40);
 
-        $this->assertSame(array(array('a', 2), array('b', 1)), $this->collection->elements());
+        $this->verifyElements(array(10, 1), array(20, 4), array(30, 3), array(40, 2), array(50, 5));
     }
 
     public function testSwapFailureWithUnknownSource()
@@ -683,120 +689,192 @@ class CommonMapTest extends ParameterizedTestCase
 
     public function testTrySwap()
     {
-        $this->collection->set('a', 1);
-        $this->collection->set('b', 2);
+        $this->collection->set(10, 1);
+        $this->collection->set(20, 2);
+        $this->collection->set(30, 3);
+        $this->collection->set(40, 4);
+        $this->collection->set(50, 5);
 
-        $this->assertTrue($this->collection->trySwap('a', 'b'));
+        $this->assertTrue($this->collection->trySwap(20, 40));
 
-        $this->assertSame(array(array('a', 2), array('b', 1)), $this->collection->elements());
+        $this->verifyElements(array(10, 1), array(20, 4), array(30, 3), array(40, 2), array(50, 5));
     }
 
     public function testTrySwapFailureWithUnknownSource()
     {
-        $this->collection->set('b', 2);
+        $this->collection->set(20, 2);
 
-        $this->assertFalse($this->collection->trySwap('a', 'b'));
+        $this->assertFalse($this->collection->trySwap(10, 20));
 
-        $this->assertSame(array(array('b', 2)), $this->collection->elements());
+        $this->verifyElements(array(20, 2));
     }
 
     public function testTrySwapFailureWithUnknownTarget()
     {
-        $this->collection->set('a', 1);
+        $this->collection->set(10, 1);
 
-        $this->assertFalse($this->collection->trySwap('a', 'b'));
+        $this->assertFalse($this->collection->trySwap(10, 20));
 
-        $this->assertSame(array(array('a', 1)), $this->collection->elements());
+        $this->verifyElements(array(10, 1));
     }
 
-    public function testMove()
+    /**
+     * @dataProvider getMoveData
+     */
+    public function testMove($sourceKey, $targetKey, $expectedResult)
     {
-        $this->collection->set('a', 1);
-        $this->collection->set('b', 2);
+        $this->collection->set(10, 1);
+        $this->collection->set(20, 2);
+        $this->collection->set(30, 3);
+        $this->collection->set(40, 4);
+        $this->collection->set(50, 5);
 
-        $this->collection->move('a', 'b');
-
-        $this->assertSame(array(array('b', 1)), $this->collection->elements());
+        if ($expectedResult instanceof Exception) {
+            $this->setExpectedException(get_class($expectedResult), $expectedResult->getMessage());
+            $this->collection->move($sourceKey, $targetKey);
+        } else {
+            $this->collection->move($sourceKey, $targetKey);
+            $this->verifyElements($expectedResult);
+        }
     }
 
-    public function testMoveFailure()
+    /**
+     * @dataProvider getMoveData
+     */
+    public function testTryMove($sourceKey, $targetKey, $expectedResult)
     {
-        $this->collection->set('b', 2);
+        $this->collection->set(10, 1);
+        $this->collection->set(20, 2);
+        $this->collection->set(30, 3);
+        $this->collection->set(40, 4);
+        $this->collection->set(50, 5);
 
-        $this->setExpectedException(__NAMESPACE__ . '\Exception\UnknownKeyException', 'Key "a" does not exist.');
-        $this->collection->move('a', 'b');
+        $result = $this->collection->tryMove($sourceKey, $targetKey);
+
+        if ($expectedResult instanceof Exception) {
+            $this->assertFalse($result);
+        } else {
+            $this->assertTrue($result);
+            $this->verifyElements($expectedResult);
+        }
     }
 
-    public function testTryMove()
+    public function getMoveData()
     {
-        $this->collection->set('a', 1);
-        $this->collection->set('b', 2);
-
-        $this->assertTrue($this->collection->tryMove('a', 'b'));
-
-        $this->assertSame(array(array('b', 1)), $this->collection->elements());
+        return array(
+            'lo-hi'             => array(20, 40,   array(array(10, 1), array(30, 3), array(40, 2), array(50, 5))),
+            'hi-lo'             => array(40, 20,   array(array(10, 1), array(20, 4), array(30, 3), array(50, 5))),
+            'new key lo-hi'     => array(20, 60,   array(array(10, 1), array(30, 3), array(40, 4), array(50, 5), array(60, 2))),
+            'new key hi-lo'     => array(20, 5,    array(array(5, 2),  array(10, 1), array(30, 3), array(40, 4), array(50, 5))),
+            'same key'          => array(20, 20,   array(array(10, 1), array(20, 2), array(30, 3), array(40, 4), array(50, 5))),
+            'failure'           => array(5,  20,   new UnknownKeyException(5)),
+        );
     }
 
-    public function testTryMoveFailure()
+    /**
+     * @dataProvider getRenameData
+     */
+    public function testRename($sourceKey, $targetKey, $expectedResult)
     {
-        $this->collection->set('b', 2);
+        $this->collection->set(10, 1);
+        $this->collection->set(20, 2);
+        $this->collection->set(30, 3);
+        $this->collection->set(40, 4);
+        $this->collection->set(50, 5);
 
-        $this->assertFalse($this->collection->tryMove('a', 'b'));
-
-        $this->assertSame(array(array('b', 2)), $this->collection->elements());
+        if ($expectedResult instanceof Exception) {
+            $this->setExpectedException(get_class($expectedResult), $expectedResult->getMessage());
+            $this->collection->rename($sourceKey, $targetKey);
+        } else {
+            $this->collection->rename($sourceKey, $targetKey);
+            $this->verifyElements($expectedResult);
+        }
     }
 
-    public function testRename()
+    /**
+     * @dataProvider getRenameData
+     */
+    public function testTryRename($sourceKey, $targetKey, $expectedResult)
     {
-        $this->collection->set('a', 1);
+        $this->collection->set(10, 1);
+        $this->collection->set(20, 2);
+        $this->collection->set(30, 3);
+        $this->collection->set(40, 4);
+        $this->collection->set(50, 5);
 
-        $this->collection->rename('a', 'b');
+        $result = $this->collection->tryRename($sourceKey, $targetKey);
 
-        $this->assertSame(array(array('b', 1)), $this->collection->elements());
+        if ($expectedResult instanceof Exception) {
+            $this->assertFalse($result);
+        } else {
+            $this->assertTrue($result);
+            $this->verifyElements($expectedResult);
+        }
     }
 
-    public function testRenameFailureWithUnknownSource()
+    public function getRenameData()
     {
-        $this->setExpectedException(__NAMESPACE__ . '\Exception\UnknownKeyException', 'Key "a" does not exist.');
-        $this->collection->rename('a', 'b');
+        return array(
+            'lo-hi'                 => array(20, 60,   array(array(10, 1), array(30, 3), array(40, 4), array(50, 5), array(60, 2))),
+            'hi-lo'                 => array(20, 5,    array(array(5, 2),  array(10, 1), array(30, 3), array(40, 4), array(50, 5))),
+            'failure - source key'  => array(5,  20,   new UnknownKeyException(5)),
+            'failure - target key'  => array(10, 20,   new DuplicateKeyException(20)),
+        );
     }
 
-    public function testRenameFailureWithDuplicateTarget()
-    {
-        $this->collection->set('a', 1);
-        $this->collection->set('b', 2);
 
-        $this->setExpectedException(__NAMESPACE__ . '\Exception\DuplicateKeyException', 'Key "b" already exists.');
-        $this->collection->rename('a', 'b');
-    }
 
-    public function testTryRename()
-    {
-        $this->collection->set('a', 1);
+    // public function testRename()
+    // {
+    //     $this->collection->set(10, 1);
 
-        $this->assertTrue($this->collection->tryRename('a', 'b'));
+    //     $this->collection->rename(10, 20);
 
-        $this->assertSame(array(array('b', 1)), $this->collection->elements());
-    }
+    //     $this->verifyElements(array(20, 1));
+    // }
 
-    public function testTryRenameFailureWithUnknownSource()
-    {
-        $this->collection->set('b', 2);
+    // public function testRenameFailureWithUnknownSource()
+    // {
+    //     $this->setExpectedException(__NAMESPACE__ . '\Exception\UnknownKeyException', 'Key "a" does not exist.');
+    //     $this->collection->rename('a', 'b');
+    // }
 
-        $this->assertFalse($this->collection->tryRename('a', 'b'));
+    // public function testRenameFailureWithDuplicateTarget()
+    // {
+    //     $this->collection->set('a', 1);
+    //     $this->collection->set('b', 2);
 
-        $this->assertSame(array(array('b', 2)), $this->collection->elements());
-    }
+    //     $this->setExpectedException(__NAMESPACE__ . '\Exception\DuplicateKeyException', 'Key "b" already exists.');
+    //     $this->collection->rename('a', 'b');
+    // }
 
-    public function testTryRenameFailureWithDuplicateTarget()
-    {
-        $this->collection->set('a', 1);
-        $this->collection->set('b', 2);
+    // public function testTryRename()
+    // {
+    //     $this->collection->set(10, 1);
 
-        $this->assertFalse($this->collection->tryRename('a', 'b'));
+    //     $this->assertTrue($this->collection->tryRename(10, 20));
 
-        $this->assertSame(array(array('a', 1), array('b', 2)), $this->collection->elements());
-    }
+    //     $this->verifyElements(array(20, 1));
+    // }
+
+    // public function testTryRenameFailureWithUnknownSource()
+    // {
+    //     $this->collection->set(20, 2);
+
+    //     $this->assertFalse($this->collection->tryRename(10, 20));
+
+    //     $this->verifyElements(array(20, 2));
+    // }
+
+    // public function testTryRenameFailureWithDuplicateTarget()
+    // {
+    //     $this->collection->set(10, 1);
+    //     $this->collection->set(20, 2);
+
+    //     $this->assertFalse($this->collection->tryRename(10, 20));
+
+    //     $this->verifyElements(array(10, 1), array(20, 2));
+    // }
 
     /////////////////////////////////
     // Implementation of Countable //
@@ -833,14 +911,17 @@ class CommonMapTest extends ParameterizedTestCase
     }
 
     /**
+     * @group regression
      * @link https://github.com/IcecaveStudios/collections/issues/34
      */
     public function testIteratorKeyLimitationWorkaround()
     {
         $key1 = new stdClass;
+        $key1->expectedValue = 'a';
         $this->collection->set($key1, 'a');
 
         $key2 = new stdClass;
+        $key2->expectedValue = 'b';
         $this->collection->set($key2, 'b');
 
         $keys = array();
@@ -851,8 +932,13 @@ class CommonMapTest extends ParameterizedTestCase
             $values[] = $value;
         }
 
-        $this->assertSame(array($key1, $key2), $keys);
-        $this->assertSame(array('a', 'b'), $values);
+        $this->assertSame(2, count($keys));
+        $this->assertTrue(in_array($key1, $keys));
+        $this->assertTrue(in_array($key2, $keys));
+
+        $this->assertSame(2, count($values));
+        $this->assertSame($keys[0]->expectedValue, $values[0]);
+        $this->assertSame($keys[1]->expectedValue, $values[1]);
     }
 
     ///////////////////////////////////
