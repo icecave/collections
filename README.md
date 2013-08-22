@@ -33,8 +33,8 @@ which exposes methods for manipulating both the head and tail of the queue.
 
 * [Vector](lib/Icecave/Collections/Vector.php): A mutable sequence with efficient access by position and iteration.
 * [LinkedList](lib/Icecave/Collections/LinkedList.php): A mutable sequence with efficient addition and removal of elements.
-* [Map](lib/Icecave/Collections/Map.php): An associative collection with efficient access by key.
-* [Set](lib/Icecave/Collections/Set.php): An iterable collection with unique elements.
+* [Map](lib/Icecave/Collections/Map.php), [HashMap](lib/Icecave/Collections/HashMap.php): Associative collections with efficient access by key.
+* [Set](lib/Icecave/Collections/Set.php), [HashSet](lib/Icecave/Collections/HashSet.php): Iterable collections with unique elements.
 * [Queue](lib/Icecave/Collections/Queue.php): A first-in/first-out (FIFO) queue of elements.
 * [PriorityQueue](lib/Icecave/Collections/PriorityQueue.php): A prioritized first-in/first-out (FIFO) queue of elements.
 * [Stack]((lib/Icecave/Collections/Stack.php): A last-in/first-out (LIFO) stack of elements.

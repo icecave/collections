@@ -12,35 +12,28 @@ use Serializable;
 /**
  * An associative collection with efficient access by key.
  */
-class Map implements MutableAssociativeInterface, Countable, Iterator, ArrayAccess, Serializable
+class HashMap implements MutableAssociativeInterface, Countable, Iterator, ArrayAccess, Serializable
 {
     /**
-     * @param mixed<mixed>|null $collection An iterable type containing the elements to include in this map, or null to create an empty map.
-     * @param callable|null     $comparator The function to use for comparing keys, or null to use the default.
+     * @param mixed<mixed>|null $collection   An iterable type containing the elements to include in this map, or null to create an empty map.
+     * @param callable|null     $hashFunction The function to use for generating hashes of element values, or null to use the default.
      */
-    public function __construct($collection = null, $comparator = null)
+    public function __construct($collection = null, $hashFunction = null)
     {
         $this->typeCheck = TypeCheck::get(__CLASS__, func_get_args());
 
-        if (null === $comparator) {
-            $comparator = new Utility\ObjectIdentityComparator;
+        if (null === $hashFunction) {
+            $hashFunction = new Utility\AssociativeKeyGenerator;
         }
 
-        $this->comparator = $comparator;
-        $this->elements = new Vector;
+        $this->hashFunction = $hashFunction;
+        $this->elements = array();
 
         if (null !== $collection) {
             foreach ($collection as $key => $value) {
                 $this->set($key, $value);
             }
         }
-    }
-
-    public function __clone()
-    {
-        $this->typeCheck->validateClone(func_get_args());
-
-        $this->elements = clone $this->elements;
     }
 
     ///////////////////////////////////////////
@@ -50,7 +43,7 @@ class Map implements MutableAssociativeInterface, Countable, Iterator, ArrayAcce
     /**
      * Fetch the number of elements in the collection.
      *
-     * @see Map::isEmpty()
+     * @see HashMap::isEmpty()
      *
      * @return integer The number of elements in the collection.
      */
@@ -58,7 +51,7 @@ class Map implements MutableAssociativeInterface, Countable, Iterator, ArrayAcce
     {
         $this->typeCheck->size(func_get_args());
 
-        return $this->elements->size();
+        return count($this->elements);
     }
 
     /**
@@ -70,7 +63,7 @@ class Map implements MutableAssociativeInterface, Countable, Iterator, ArrayAcce
     {
         $this->typeCheck->isEmpty(func_get_args());
 
-        return $this->elements->isEmpty();
+        return empty($this->elements);
     }
 
     /**
@@ -84,17 +77,25 @@ class Map implements MutableAssociativeInterface, Countable, Iterator, ArrayAcce
     public function __toString()
     {
         if ($this->isEmpty()) {
-            return '<Map 0>';
-        } elseif ($this->size() > 3) {
-            $format = '<Map %d [%s, ...]>';
-        } else {
-            $format = '<Map %d [%s]>';
+            return '<HashMap 0>';
         }
 
         $elements = array();
-        foreach ($this->elements->slice(0, 3) as $element) {
+        $index = 0;
+        foreach ($this->elements as $element) {
+            if ($index++ === 3) {
+                break;
+            }
+
             list($key, $value) = $element;
+
             $elements[] = Repr::repr($key) . ' => ' . Repr::repr($value);
+        }
+
+        if ($this->size() > 3) {
+            $format = '<HashMap %d [%s, ...]>';
+        } else {
+            $format = '<HashMap %d [%s]>';
         }
 
         return sprintf(
@@ -115,7 +116,7 @@ class Map implements MutableAssociativeInterface, Countable, Iterator, ArrayAcce
     {
         $this->typeCheck->clear(func_get_args());
 
-        $this->elements->clear();
+        $this->elements = array();
     }
 
     //////////////////////////////////////////////
@@ -147,7 +148,7 @@ class Map implements MutableAssociativeInterface, Countable, Iterator, ArrayAcce
     {
         $this->typeCheck->elements(func_get_args());
 
-        return $this->elements->elements();
+        return array_values($this->elements);
     }
 
     /**
@@ -179,7 +180,7 @@ class Map implements MutableAssociativeInterface, Countable, Iterator, ArrayAcce
      *
      * @param callable|null $predicate A predicate function used to determine which elements to include, or null to include all elements with non-null values.
      *
-     * @return Map The filtered collection.
+     * @return HashMap The filtered collection.
      */
     public function filter($predicate = null)
     {
@@ -191,12 +192,12 @@ class Map implements MutableAssociativeInterface, Countable, Iterator, ArrayAcce
             };
         }
 
-        $result = $this->createMap();
+        $result = new static(null, $this->hashFunction);
 
         foreach ($this->elements as $element) {
             list($key, $value) = $element;
             if (call_user_func($predicate, $key, $value)) {
-                $result->elements->pushBack($element);
+                $result->set($key, $value);
             }
         }
 
@@ -220,10 +221,12 @@ class Map implements MutableAssociativeInterface, Countable, Iterator, ArrayAcce
     {
         $this->typeCheck->map(func_get_args());
 
-        $result = $this->createMap();
+        $result = new static(null, $this->hashFunction);
 
         foreach ($this->elements as $element) {
-            list($key, $value) = call_user_func_array($transform, $element);
+            list($key, $value) = $element;
+            $element = call_user_func($transform, $key, $value);
+            list($key, $value) = $element;
             $result->set($key, $value);
         }
 
@@ -246,14 +249,14 @@ class Map implements MutableAssociativeInterface, Countable, Iterator, ArrayAcce
     {
         $this->typeCheck->partition(func_get_args());
 
-        $left  = $this->createMap();
-        $right = $this->createMap();
+        $left = new static(null, $this->hashFunction);
+        $right = new static(null, $this->hashFunction);
 
-        foreach ($this->elements as $element) {
+        foreach ($this->elements as $hash => $element) {
             if (call_user_func_array($predicate, $element)) {
-                $left->elements->pushBack($element);
+                $left->elements[$hash] = $element;
             } else {
-                $right->elements->pushBack($element);
+                $right->elements[$hash] = $element;
             }
         }
 
@@ -274,11 +277,9 @@ class Map implements MutableAssociativeInterface, Countable, Iterator, ArrayAcce
     {
         $this->typeCheck->each(func_get_args());
 
-        $this->elements->each(
-            function ($element) use ($callback) {
-                return call_user_func_array($callback, $element);
-            }
-        );
+        foreach ($this->elements as $element) {
+            call_user_func_array($callback, $element);
+        }
     }
 
     /**
@@ -297,11 +298,13 @@ class Map implements MutableAssociativeInterface, Countable, Iterator, ArrayAcce
     {
         $this->typeCheck->all(func_get_args());
 
-        return $this->elements->all(
-            function ($element) use ($predicate) {
-                return call_user_func_array($predicate, $element);
+        foreach ($this->elements as $element) {
+            if (!call_user_func_array($predicate, $element)) {
+                return false;
             }
-        );
+        }
+
+        return true;
     }
 
     /**
@@ -320,11 +323,13 @@ class Map implements MutableAssociativeInterface, Countable, Iterator, ArrayAcce
     {
         $this->typeCheck->any(func_get_args());
 
-        return $this->elements->any(
-            function ($element) use ($predicate) {
-                return call_user_func_array($predicate, $element);
+        foreach ($this->elements as $element) {
+            if (call_user_func_array($predicate, $element)) {
+                return true;
             }
-        );
+        }
+
+        return false;
     }
 
     ////////////////////////////////////////////////
@@ -349,11 +354,12 @@ class Map implements MutableAssociativeInterface, Countable, Iterator, ArrayAcce
             };
         }
 
-        return $this->elements->filterInPlace(
-            function ($element) use ($predicate) {
-                return call_user_func_array($predicate, $element);
+        foreach ($this->elements as $hash => $element) {
+            list($key, $value) = $element;
+            if (!call_user_func($predicate, $key, $value)) {
+                unset($this->elements[$hash]);
             }
-        );
+        }
     }
 
     /**
@@ -370,10 +376,8 @@ class Map implements MutableAssociativeInterface, Countable, Iterator, ArrayAcce
     {
         $this->typeCheck->mapInPlace(func_get_args());
 
-        foreach ($this->elements as $index => $element) {
-            list($key, $value) = $element;
-            $value = call_user_func($transform, $key, $value);
-            $this->elements[$index] = array($key, $value);
+        foreach ($this->elements as $hash => $element) {
+            $this->elements[$hash][1] = call_user_func_array($transform, $element);
         }
     }
 
@@ -392,7 +396,7 @@ class Map implements MutableAssociativeInterface, Countable, Iterator, ArrayAcce
     {
         $this->typeCheck->hasKey(func_get_args());
 
-        return null !== $this->binarySearch($key);
+        return array_key_exists($this->generateHash($key), $this->elements);
     }
 
     /**
@@ -427,15 +431,16 @@ class Map implements MutableAssociativeInterface, Countable, Iterator, ArrayAcce
     {
         $this->typeCheck->tryGet(func_get_args());
 
-        $index = $this->binarySearch($key);
+        $hash = $this->generateHash($key);
 
-        if (null === $index) {
-            return false;
+        if (array_key_exists($hash, $this->elements)) {
+            $element = $this->elements[$hash];
+            list($key, $value) = $element;
+
+            return true;
         }
 
-        list(, $value) = $this->elements[$index];
-
-        return true;
+        return false;
     }
 
     /**
@@ -499,7 +504,7 @@ class Map implements MutableAssociativeInterface, Countable, Iterator, ArrayAcce
     /**
      * Return the value associated with the first existing key in the given sequence.
      *
-     * Behaves as per {@see Map::cascade()} except that the keys are provided as
+     * Behaves as per {@see HashMap::cascade()} except that the keys are provided as
      * a traversable (eg, array) instead of via a variable argument list.
      *
      * @param mixed<mixed> $keys The list of keys.
@@ -524,7 +529,7 @@ class Map implements MutableAssociativeInterface, Countable, Iterator, ArrayAcce
     /**
      * Return the value associated with the first existing key in the given sequence, or a default value if none of the provided keys exist.
      *
-     * Behaves as per {@see Map::cascadeDefault()} except that the keys are provided as
+     * Behaves as per {@see HashMap::cascadeDefault()} except that the keys are provided as
      * a traversable (eg, array) instead of via a variable argument list.
      *
      * @param mixed        $default The default value to return if no such keys exist.
@@ -549,7 +554,7 @@ class Map implements MutableAssociativeInterface, Countable, Iterator, ArrayAcce
     /**
      * Fetch a native array containing the keys in the collection.
      *
-     * There is no guarantee that the order of keys will match the order of values produced by {@see Map::values()}.
+     * There is no guarantee that the order of keys will match the order of values produced by {@see HashMap::values()}.
      *
      * @return array A native array containing the keys in the collection.
      */
@@ -569,7 +574,7 @@ class Map implements MutableAssociativeInterface, Countable, Iterator, ArrayAcce
     /**
      * Fetch a native array containing the values in the collection.
      *
-     * There is no guarantee that the order of values will match the order of keys produced by {@see Map::keys()}.
+     * There is no guarantee that the order of values will match the order of keys produced by {@see HashMap::keys()}.
      *
      * @return array A native array containing the values in the collection.
      */
@@ -643,7 +648,7 @@ class Map implements MutableAssociativeInterface, Countable, Iterator, ArrayAcce
     {
         $this->typeCheck->projectIterable(func_get_args());
 
-        $result = $this->createMap();
+        $result = new static(null, $this->hashFunction);
 
         $value = null;
         foreach ($keys as $key) {
@@ -664,8 +669,8 @@ class Map implements MutableAssociativeInterface, Countable, Iterator, ArrayAcce
      *
      * Associates $value with $key regardless of whether or not $key already exists.
      *
-     * @see Map::add()
-     * @see Map::replace()
+     * @see HashMap::add()
+     * @see HashMap::replace()
      *
      * @param mixed $key   The element's key.
      * @param mixed $value The element's value.
@@ -674,16 +679,8 @@ class Map implements MutableAssociativeInterface, Countable, Iterator, ArrayAcce
     {
         $this->typeCheck->set(func_get_args());
 
-        $index = $this->binarySearch($key, 0, $insertIndex);
-
-        if (null === $index) {
-            $this->elements->insert(
-                $insertIndex,
-                array($key, $value)
-            );
-        } else {
-            $this->elements[$index] = array($key, $value);
-        }
+        $hash = $this->generateHash($key);
+        $this->elements[$hash] = array($key, $value);
     }
 
     /**
@@ -691,9 +688,9 @@ class Map implements MutableAssociativeInterface, Countable, Iterator, ArrayAcce
      *
      * Associates $value with $key only if $key does not already exist.
      *
-     * @see Map::set()
-     * @see Map::replace()
-     * @see Map::tryAdd()
+     * @see HashMap::set()
+     * @see HashMap::replace()
+     * @see HashMap::tryAdd()
      *
      * @param mixed $key   The element's key.
      * @param mixed $value The element's value.
@@ -714,7 +711,7 @@ class Map implements MutableAssociativeInterface, Countable, Iterator, ArrayAcce
      *
      * Associates $value with $key only if $key does not already exist.
      *
-     * @see Map::add()
+     * @see HashMap::add()
      *
      * @param mixed $key   The element's key.
      * @param mixed $value The element's value.
@@ -725,12 +722,12 @@ class Map implements MutableAssociativeInterface, Countable, Iterator, ArrayAcce
     {
         $this->typeCheck->tryAdd(func_get_args());
 
-        if (null !== $this->binarySearch($key, 0, $insertIndex)) {
+        $hash = $this->generateHash($key);
+        if (array_key_exists($hash, $this->elements)) {
             return false;
-        };
+        }
 
-        $element = array($key, $value);
-        $this->elements->insert($insertIndex, $element);
+        $this->elements[$hash] = array($key, $value);
 
         return true;
     }
@@ -740,9 +737,9 @@ class Map implements MutableAssociativeInterface, Countable, Iterator, ArrayAcce
      *
      * Associates $value with $key only if $key already exists.
      *
-     * @see Map::add()
-     * @see Map::set()
-     * @see Map::tryReplace()
+     * @see HashMap::add()
+     * @see HashMap::set()
+     * @see HashMap::tryReplace()
      *
      * @param mixed $key   The element's key.
      * @param mixed $value The element's value.
@@ -767,7 +764,7 @@ class Map implements MutableAssociativeInterface, Countable, Iterator, ArrayAcce
      *
      * Associates $value with $key only if $key already exists.
      *
-     * @see Map::replace()
+     * @see HashMap::replace()
      *
      * @param mixed $key       The element's key.
      * @param mixed $value     The element's value.
@@ -779,14 +776,13 @@ class Map implements MutableAssociativeInterface, Countable, Iterator, ArrayAcce
     {
         $this->typeCheck->tryReplace(func_get_args());
 
-        $index = $this->binarySearch($key);
-
-        if (null === $index) {
+        $hash = $this->generateHash($key);
+        if (!array_key_exists($hash, $this->elements)) {
             return false;
-        };
+        }
 
-        list(, $previous) = $this->elements[$index];
-        $this->elements[$index] = array($key, $value);
+        list(, $previous) = $this->elements[$hash];
+        $this->elements[$hash] = array($key, $value);
 
         return true;
     }
@@ -823,14 +819,14 @@ class Map implements MutableAssociativeInterface, Countable, Iterator, ArrayAcce
     {
         $this->typeCheck->tryRemove(func_get_args());
 
-        $index = $this->binarySearch($key);
-
-        if (null === $index) {
+        $hash = $this->generateHash($key);
+        if (!array_key_exists($hash, $this->elements)) {
             return false;
         }
 
-        list(, $value) = $this->elements[$index];
-        $this->elements->remove($index);
+        $element = $this->elements[$hash];
+        list($key, $value) = $element;
+        unset($this->elements[$hash]);
 
         return true;
     }
@@ -867,18 +863,18 @@ class Map implements MutableAssociativeInterface, Countable, Iterator, ArrayAcce
     {
         $this->typeCheck->swap(func_get_args());
 
-        $index1 = $this->binarySearch($key1);
-        $index2 = $this->binarySearch($key2);
+        $hash1 = $this->generateHash($key1);
+        $hash2 = $this->generateHash($key2);
 
-        if (null === $index1) {
+        if (!array_key_exists($hash1, $this->elements)) {
             throw new Exception\UnknownKeyException($key1);
-        } elseif (null === $index2) {
+        } elseif (!array_key_exists($hash2, $this->elements)) {
             throw new Exception\UnknownKeyException($key2);
         }
 
-        $temp = $this->elements[$index1][1];
-        $this->elements[$index1] = array($key1, $this->elements[$index2][1]);
-        $this->elements[$index2] = array($key2, $temp);
+        $temp = $this->elements[$hash1][1];
+        $this->elements[$hash1][1] = $this->elements[$hash2][1];
+        $this->elements[$hash2][1] = $temp;
     }
 
     /**
@@ -893,18 +889,18 @@ class Map implements MutableAssociativeInterface, Countable, Iterator, ArrayAcce
     {
         $this->typeCheck->trySwap(func_get_args());
 
-        $index1 = $this->binarySearch($key1);
-        $index2 = $this->binarySearch($key2);
+        $hash1 = $this->generateHash($key1);
+        $hash2 = $this->generateHash($key2);
 
-        if (null === $index1) {
+        if (!array_key_exists($hash1, $this->elements)) {
             return false;
-        } elseif (null === $index2) {
+        } elseif (!array_key_exists($hash2, $this->elements)) {
             return false;
         }
 
-        $temp = $this->elements[$index1][1];
-        $this->elements[$index1] = array($key1, $this->elements[$index2][1]);
-        $this->elements[$index2] = array($key2, $temp);
+        $temp = $this->elements[$hash1][1];
+        $this->elements[$hash1][1] = $this->elements[$hash2][1];
+        $this->elements[$hash2][1] = $temp;
 
         return true;
     }
@@ -912,9 +908,9 @@ class Map implements MutableAssociativeInterface, Countable, Iterator, ArrayAcce
     /**
      * Move an element from one key to another, replacing the target key if it already exists.
      *
-     * @see Map::tryMove()
-     * @see Map::rename()
-     * @see Map::tryRename()
+     * @see HashMap::tryMove()
+     * @see HashMap::rename()
+     * @see HashMap::tryRename()
      *
      * @param mixed $source The existing key.
      * @param mixed $target The new key.
@@ -925,17 +921,16 @@ class Map implements MutableAssociativeInterface, Countable, Iterator, ArrayAcce
     {
         $this->typeCheck->move(func_get_args());
 
-        if (!$this->tryMove($source, $target)) {
-            throw new Exception\UnknownKeyException($source);
-        }
+        $value = $this->remove($source);
+        $this->set($target, $value);
     }
 
     /**
      * Move an element from one key to another, replacing the target key if it already exists.
      *
-     * @see Map::move()
-     * @see Map::rename()
-     * @see Map::tryRename()
+     * @see HashMap::move()
+     * @see HashMap::rename()
+     * @see HashMap::tryRename()
      *
      * @param mixed $source The existing key.
      * @param mixed $target The new key.
@@ -946,35 +941,14 @@ class Map implements MutableAssociativeInterface, Countable, Iterator, ArrayAcce
     {
         $this->typeCheck->tryMove(func_get_args());
 
-        $sourceIndex = $this->binarySearch($source);
-        $targetIndex = $this->binarySearch($target, 0, $targetInsertIndex);
+        $value = null;
+        if ($this->tryRemove($source, $value)) {
+            $this->set($target, $value);
 
-        if (null === $sourceIndex) {
-            return false;
-        } elseif ($sourceIndex === $targetIndex) {
             return true;
         }
 
-        list(, $value) = $this->elements[$sourceIndex];
-
-        $this->elements->remove($sourceIndex);
-
-        if (null === $targetIndex) {
-            if ($sourceIndex < $targetInsertIndex) {
-                --$targetInsertIndex;
-            }
-            $this->elements->insert(
-                $targetInsertIndex,
-                array($target, $value)
-            );
-        } else {
-            if ($sourceIndex < $targetInsertIndex) {
-                --$targetIndex;
-            }
-            $this->elements[$targetIndex] = array($target, $value);
-        }
-
-        return true;
+        return false;
     }
 
     /**
@@ -982,9 +956,9 @@ class Map implements MutableAssociativeInterface, Countable, Iterator, ArrayAcce
      *
      * It is an error if the target key already exists.
      *
-     * @see Map::move()
-     * @see Map::tryMove()
-     * @see Map::tryRename()
+     * @see HashMap::move()
+     * @see HashMap::tryMove()
+     * @see HashMap::tryRename()
      *
      * @param mixed $source The existing key.
      * @param mixed $target The new key.
@@ -996,27 +970,21 @@ class Map implements MutableAssociativeInterface, Countable, Iterator, ArrayAcce
     {
         $this->typeCheck->rename(func_get_args());
 
-        $sourceIndex = $this->binarySearch($source);
-        $targetIndex = $this->binarySearch($target, 0, $targetInsertIndex);
+        $hash1 = $this->generateHash($source);
+        $hash2 = $this->generateHash($target);
 
-        if (null === $sourceIndex) {
+        if (!array_key_exists($hash1, $this->elements)) {
             throw new Exception\UnknownKeyException($source);
-        } elseif (null !== $targetIndex) {
+        } elseif (array_key_exists($hash2, $this->elements)) {
             throw new Exception\DuplicateKeyException($target);
         }
 
-        list(, $value) = $this->elements[$sourceIndex];
-
-        $this->elements->remove($sourceIndex);
-
-        if ($sourceIndex < $targetInsertIndex) {
-            --$targetInsertIndex;
-        }
-
-        $this->elements->insert(
-            $targetInsertIndex,
-            array($target, $value)
+        $this->elements[$hash2] = array(
+            $target,
+            $this->elements[$hash1][1]
         );
+
+        unset($this->elements[$hash1]);
     }
 
     /**
@@ -1024,9 +992,9 @@ class Map implements MutableAssociativeInterface, Countable, Iterator, ArrayAcce
      *
      * It is an error if the target key already exists.
      *
-     * @see Map::move()
-     * @see Map::tryMove()
-     * @see Map::rename()
+     * @see HashMap::move()
+     * @see HashMap::tryMove()
+     * @see HashMap::rename()
      *
      * @param mixed $source The existing key.
      * @param mixed $target The new key.
@@ -1037,27 +1005,21 @@ class Map implements MutableAssociativeInterface, Countable, Iterator, ArrayAcce
     {
         $this->typeCheck->tryRename(func_get_args());
 
-        $sourceIndex = $this->binarySearch($source);
-        $targetIndex = $this->binarySearch($target, 0, $targetInsertIndex);
+        $hash1 = $this->generateHash($source);
+        $hash2 = $this->generateHash($target);
 
-        if (null === $sourceIndex) {
+        if (!array_key_exists($hash1, $this->elements)) {
             return false;
-        } elseif (null !== $targetIndex) {
+        } elseif (array_key_exists($hash2, $this->elements)) {
             return false;
         }
 
-        list(, $value) = $this->elements[$sourceIndex];
-
-        $this->elements->remove($sourceIndex);
-
-        if ($sourceIndex < $targetInsertIndex) {
-            --$targetInsertIndex;
-        }
-
-        $this->elements->insert(
-            $targetInsertIndex,
-            array($target, $value)
+        $this->elements[$hash2] = array(
+            $target,
+            $this->elements[$hash1][1]
         );
+
+        unset($this->elements[$hash1]);
 
         return true;
     }
@@ -1081,7 +1043,8 @@ class Map implements MutableAssociativeInterface, Countable, Iterator, ArrayAcce
     {
         $this->typeCheck->current(func_get_args());
 
-        list($key, $value) = $this->elements->current();
+        $element = current($this->elements);
+        list($key, $value) = $element;
 
         return $value;
     }
@@ -1090,7 +1053,8 @@ class Map implements MutableAssociativeInterface, Countable, Iterator, ArrayAcce
     {
         $this->typeCheck->key(func_get_args());
 
-        list($key, $value) = $this->elements->current();
+        $element = current($this->elements);
+        list($key, $value) = $element;
 
         return $key;
     }
@@ -1099,21 +1063,21 @@ class Map implements MutableAssociativeInterface, Countable, Iterator, ArrayAcce
     {
         $this->typeCheck->next(func_get_args());
 
-        $this->elements->next();
+        next($this->elements);
     }
 
     public function rewind()
     {
         $this->typeCheck->rewind(func_get_args());
 
-        $this->elements->rewind();
+        reset($this->elements);
     }
 
     public function valid()
     {
         $this->typeCheck->valid(func_get_args());
 
-        return $this->elements->valid();
+        return null !== key($this->elements);
     }
 
     ///////////////////////////////////
@@ -1192,7 +1156,7 @@ class Map implements MutableAssociativeInterface, Countable, Iterator, ArrayAcce
         return serialize(
             array(
                 $this->elements(),
-                $this->comparator
+                $this->hashFunction
             )
         );
     }
@@ -1206,10 +1170,14 @@ class Map implements MutableAssociativeInterface, Countable, Iterator, ArrayAcce
     {
         TypeCheck::get(__CLASS__)->unserialize(func_get_args());
 
-        list($elements, $comparator) = unserialize($packet);
+        list($elements, $hashFunction) = unserialize($packet);
 
-        $this->__construct(null, $comparator);
-        $this->elements->append($elements);
+        $this->__construct(null, $hashFunction);
+
+        foreach ($elements as $element) {
+            list($key, $value) = $element;
+            $this->set($key, $value);
+        }
     }
 
     ////////////////////////////
@@ -1217,39 +1185,16 @@ class Map implements MutableAssociativeInterface, Countable, Iterator, ArrayAcce
     ////////////////////////////
 
     /**
-     * @param mixed<mixed>|null $elements
+     * @param mixed $key
      *
-     * @return Map
+     * @return integer|string
      */
-    private function createMap($elements = null)
+    private function generateHash($key)
     {
-        return new self($elements, $this->comparator);
-    }
-
-    /**
-     * @param mixed        $key
-     * @param integer      $begin
-     * @param integer|null &$insertIndex
-     *
-     * @return integer|null
-     */
-    private function binarySearch($key, $begin = 0, &$insertIndex = null)
-    {
-        $comparator = $this->comparator;
-
-        return Collection::binarySearch(
-            $this->elements,
-            array($key, null),
-            function ($lhs, $rhs) use ($comparator) {
-                return call_user_func($comparator, $lhs[0], $rhs[0]);
-            },
-            $begin,
-            null,
-            $insertIndex
-        );
+        return call_user_func($this->hashFunction, $key);
     }
 
     private $typeCheck;
-    private $comparator;
+    private $hashFunction;
     private $elements;
 }

@@ -43,45 +43,35 @@ class CommonSetTest extends ParameterizedTestCase
 
     private function verifyElements()
     {
-        call_user_func_array(array($this, $this->verifyElementsFunction), func_get_args());
-    }
+        $arguments = func_get_args();
 
-    public function verifyElementsInSet()
-    {
-        $elements = func_get_args();
-
-        if (end($elements) instanceof Set) {
-            $collection = array_pop($elements);
+        if (end($arguments) instanceof $this->className) {
+            $collection = array_pop($arguments);
         } else {
             $collection = $this->collection;
         }
 
-        if (is_array($elements[0])) {
-            $elements = $elements[0];
+        if (1 === count($arguments) && is_array($arguments[0])) {
+            $arguments = $arguments[0];
         }
 
-        sort($elements);
+        call_user_func(
+            array($this, $this->verifyElementsFunction),
+            $collection,
+            $arguments
+        );
+    }
 
+    public function verifyElementsInSet(Set $collection, array $elements)
+    {
         $this->assertSame(
             $elements,
             $collection->elements()
         );
     }
 
-    public function verifyElementsInHashSet()
+    public function verifyElementsInHashSet(HashSet $collection, array $elements)
     {
-        $elements = func_get_args();
-
-        if (end($elements) instanceof HashSet) {
-            $collection = array_pop($elements);
-        } else {
-            $collection = $this->collection;
-        }
-
-        if (is_array($elements[0])) {
-            $elements = $elements[0];
-        }
-
         if (count($elements)) {
             $elements = array_combine($elements, $elements);
         }
@@ -354,7 +344,7 @@ class CommonSetTest extends ParameterizedTestCase
             }
         );
 
-        $this->verifyElements(3, 2, 4);
+        $this->verifyElements(2, 3, 4);
     }
 
     /////////////////////////////////
@@ -463,7 +453,7 @@ class CommonSetTest extends ParameterizedTestCase
     {
         $this->collection->addMany(array(1, 3, 1, 2));
 
-        $this->verifyElements(1, 3, 2);
+        $this->verifyElements(1, 2, 3);
     }
 
     public function testRemove()
@@ -498,7 +488,7 @@ class CommonSetTest extends ParameterizedTestCase
 
     public function testIsEqualSetIncompatible()
     {
-        $this->setExpectedException('InvalidArgumentException', 'The given set does not use the same hashing algorithm.');
+        $this->setExpectedException('InvalidArgumentException', 'The given set does not use the same ');
         $this->collection->isEqualSet($this->incompatibleCollection);
     }
 
@@ -515,7 +505,7 @@ class CommonSetTest extends ParameterizedTestCase
 
     public function testIsSuperSetIncompatible()
     {
-        $this->setExpectedException('InvalidArgumentException', 'The given set does not use the same hashing algorithm.');
+        $this->setExpectedException('InvalidArgumentException', 'The given set does not use the same ');
         $this->collection->isSuperSet($this->incompatibleCollection);
     }
 
@@ -532,7 +522,7 @@ class CommonSetTest extends ParameterizedTestCase
 
     public function testIsSubSetIncompatible()
     {
-        $this->setExpectedException('InvalidArgumentException', 'The given set does not use the same hashing algorithm.');
+        $this->setExpectedException('InvalidArgumentException', 'The given set does not use the same ');
         $this->collection->isSubSet($this->incompatibleCollection);
     }
 
@@ -549,7 +539,7 @@ class CommonSetTest extends ParameterizedTestCase
 
     public function testIsProperSuperSetIncompatible()
     {
-        $this->setExpectedException('InvalidArgumentException', 'The given set does not use the same hashing algorithm.');
+        $this->setExpectedException('InvalidArgumentException', 'The given set does not use the same ');
         $this->collection->isProperSuperSet($this->incompatibleCollection);
     }
 
@@ -566,7 +556,7 @@ class CommonSetTest extends ParameterizedTestCase
 
     public function testIsProperSubSetIncompatible()
     {
-        $this->setExpectedException('InvalidArgumentException', 'The given set does not use the same hashing algorithm.');
+        $this->setExpectedException('InvalidArgumentException', 'The given set does not use the same ');
         $this->collection->isProperSubSet($this->incompatibleCollection);
     }
 
@@ -584,7 +574,7 @@ class CommonSetTest extends ParameterizedTestCase
 
     public function testIsIntersectingIncompatible()
     {
-        $this->setExpectedException('InvalidArgumentException', 'The given set does not use the same hashing algorithm.');
+        $this->setExpectedException('InvalidArgumentException', 'The given set does not use the same ');
         $this->collection->isIntersecting($this->incompatibleCollection);
     }
 
@@ -623,7 +613,7 @@ class CommonSetTest extends ParameterizedTestCase
 
     public function testUnionIncompatible()
     {
-        $this->setExpectedException('InvalidArgumentException', 'The given set does not use the same hashing algorithm.');
+        $this->setExpectedException('InvalidArgumentException', 'The given set does not use the same ');
         $this->collection->union($this->incompatibleCollection);
     }
 
@@ -641,7 +631,7 @@ class CommonSetTest extends ParameterizedTestCase
 
     public function testUnionInPlaceIncompatible()
     {
-        $this->setExpectedException('InvalidArgumentException', 'The given set does not use the same hashing algorithm.');
+        $this->setExpectedException('InvalidArgumentException', 'The given set does not use the same ');
         $this->collection->unionInPlace($this->incompatibleCollection);
     }
 
@@ -679,7 +669,7 @@ class CommonSetTest extends ParameterizedTestCase
 
     public function testIntersectIncompatible()
     {
-        $this->setExpectedException('InvalidArgumentException', 'The given set does not use the same hashing algorithm.');
+        $this->setExpectedException('InvalidArgumentException', 'The given set does not use the same ');
         $this->collection->intersect($this->incompatibleCollection);
     }
 
@@ -697,7 +687,7 @@ class CommonSetTest extends ParameterizedTestCase
 
     public function testIntersectInPlaceIncompatible()
     {
-        $this->setExpectedException('InvalidArgumentException', 'The given set does not use the same hashing algorithm.');
+        $this->setExpectedException('InvalidArgumentException', 'The given set does not use the same ');
         $this->collection->intersectInPlace($this->incompatibleCollection);
     }
 
@@ -735,7 +725,7 @@ class CommonSetTest extends ParameterizedTestCase
 
     public function testDiffIncompatible()
     {
-        $this->setExpectedException('InvalidArgumentException', 'The given set does not use the same hashing algorithm.');
+        $this->setExpectedException('InvalidArgumentException', 'The given set does not use the same ');
         $this->collection->diff($this->incompatibleCollection);
     }
 
@@ -753,7 +743,7 @@ class CommonSetTest extends ParameterizedTestCase
 
     public function testDiffInPlaceIncompatible()
     {
-        $this->setExpectedException('InvalidArgumentException', 'The given set does not use the same hashing algorithm.');
+        $this->setExpectedException('InvalidArgumentException', 'The given set does not use the same ');
         $this->collection->diffInPlace($this->incompatibleCollection);
     }
 
@@ -791,7 +781,7 @@ class CommonSetTest extends ParameterizedTestCase
 
     public function testSymmetricDiffIncompatible()
     {
-        $this->setExpectedException('InvalidArgumentException', 'The given set does not use the same hashing algorithm.');
+        $this->setExpectedException('InvalidArgumentException', 'The given set does not use the same ');
         $this->collection->symmetricDiff($this->incompatibleCollection);
     }
 
@@ -809,7 +799,7 @@ class CommonSetTest extends ParameterizedTestCase
 
     public function testSymmetricDiffInPlaceIncompatible()
     {
-        $this->setExpectedException('InvalidArgumentException', 'The given set does not use the same hashing algorithm.');
+        $this->setExpectedException('InvalidArgumentException', 'The given set does not use the same ');
         $this->collection->symmetricDiffInPlace($this->incompatibleCollection);
     }
 
