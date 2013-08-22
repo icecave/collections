@@ -15,7 +15,7 @@ use Serializable;
 class Map implements MutableAssociativeInterface, Countable, Iterator, ArrayAccess, Serializable
 {
     /**
-     * @param mixed<mixed>|null $collection   An iterable type containing the elements to include in this map, or null to create an empty map.
+     * @param mixed<mixed>|null $collection An iterable type containing the elements to include in this map, or null to create an empty map.
      * @param callable|null     $comparator The function to use for comparing keys, or null to use the default.
      */
     public function __construct($collection = null, $comparator = null)

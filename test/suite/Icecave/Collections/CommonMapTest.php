@@ -7,7 +7,6 @@ use Ezzatron\PHPUnit\ParameterizedTestCase;
 use Icecave\Collections\Exception\DuplicateKeyException;
 use Icecave\Collections\Exception\UnknownKeyException;
 use Icecave\Collections\Iterator\Traits;
-use PHPUnit_Framework_TestCase;
 use stdClass;
 
 /**
@@ -821,60 +820,6 @@ class CommonMapTest extends ParameterizedTestCase
             'failure - target key'  => array(10, 20,   new DuplicateKeyException(20)),
         );
     }
-
-
-
-    // public function testRename()
-    // {
-    //     $this->collection->set(10, 1);
-
-    //     $this->collection->rename(10, 20);
-
-    //     $this->verifyElements(array(20, 1));
-    // }
-
-    // public function testRenameFailureWithUnknownSource()
-    // {
-    //     $this->setExpectedException(__NAMESPACE__ . '\Exception\UnknownKeyException', 'Key "a" does not exist.');
-    //     $this->collection->rename('a', 'b');
-    // }
-
-    // public function testRenameFailureWithDuplicateTarget()
-    // {
-    //     $this->collection->set('a', 1);
-    //     $this->collection->set('b', 2);
-
-    //     $this->setExpectedException(__NAMESPACE__ . '\Exception\DuplicateKeyException', 'Key "b" already exists.');
-    //     $this->collection->rename('a', 'b');
-    // }
-
-    // public function testTryRename()
-    // {
-    //     $this->collection->set(10, 1);
-
-    //     $this->assertTrue($this->collection->tryRename(10, 20));
-
-    //     $this->verifyElements(array(20, 1));
-    // }
-
-    // public function testTryRenameFailureWithUnknownSource()
-    // {
-    //     $this->collection->set(20, 2);
-
-    //     $this->assertFalse($this->collection->tryRename(10, 20));
-
-    //     $this->verifyElements(array(20, 2));
-    // }
-
-    // public function testTryRenameFailureWithDuplicateTarget()
-    // {
-    //     $this->collection->set(10, 1);
-    //     $this->collection->set(20, 2);
-
-    //     $this->assertFalse($this->collection->tryRename(10, 20));
-
-    //     $this->verifyElements(array(10, 1), array(20, 2));
-    // }
 
     /////////////////////////////////
     // Implementation of Countable //

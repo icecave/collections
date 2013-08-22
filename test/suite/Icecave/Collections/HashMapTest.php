@@ -2,9 +2,7 @@
 namespace Icecave\Collections;
 
 use Eloquent\Liberator\Liberator;
-use Icecave\Collections\Iterator\Traits;
 use PHPUnit_Framework_TestCase;
-use stdClass;
 
 class HashMapTest extends PHPUnit_Framework_TestCase
 {
