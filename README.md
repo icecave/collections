@@ -28,6 +28,7 @@ which exposes methods for manipulating both the head and tail of the queue.
 * [Associative Collection](lib/Icecave/Collections/AssociativeInterface.php): A variable-sized collection that supports efficient retrieval of values based on keys.
 * [Mutable Associative Collection](lib/Icecave/Collections/MutableAssociativeInterface.php): An associative collection that supports insertion and removal of elements.
 * [Queued Access](lib/Icecave/Collections/QueuedAccessInterface.php): A F/LIFO buffer (ie, stacks and queues).
+* [Set](lib/Icecave/Collections/SetInterface.php): Un-ordered, iterable collection with unique elements.
 
 ## Collections
 
