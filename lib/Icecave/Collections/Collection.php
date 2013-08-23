@@ -473,8 +473,8 @@ abstract class Collection
     /**
      * Add an element to a collection.
      *
-     * @param MutableSequenceInterface|QueuedAccessInterface|Set|HashSet|ArrayAccess|array &$collection The collection to add to.
-     * @param mixed                                                                        $element     The element to add.
+     * @param MutableSequenceInterface|QueuedAccessInterface|SetInterface|ArrayAccess|array &$collection The collection to add to.
+     * @param mixed                                                                         $element     The element to add.
      */
     public static function addElement(&$collection, $element)
     {
@@ -484,7 +484,7 @@ abstract class Collection
             $collection->pushBack($element);
         } elseif ($collection instanceof QueuedAccessInterface) {
             $collection->push($element);
-        } elseif ($collection instanceof Set || $collection instanceof HashSet) { // change to SetInterface when available
+        } elseif ($collection instanceof SetInterface) {
             $collection->add($element);
         } elseif ($collection instanceof ArrayAccess) {
             $collection[] = $element;
@@ -496,8 +496,8 @@ abstract class Collection
     /**
      * Add elements from one collection to another.
      *
-     * @param MutableSequenceInterface|QueuedAccessInterface|Set|HashSet|ArrayAccess|array &$collection The collection to append to.
-     * @param mixed<mixed>                                                                 $elements    The elements to be appended.
+     * @param MutableSequenceInterface|QueuedAccessInterface|SetInterface|ArrayAccess|array &$collection The collection to append to.
+     * @param mixed<mixed>                                                                  $elements    The elements to be appended.
      */
     public static function addElements(&$collection, $elements)
     {
@@ -554,12 +554,12 @@ abstract class Collection
     /**
      * Split a string based on a separator.
      *
-     * @param string                                                                       $separator   The separator string to place between elements.
-     * @param string                                                                       $string      The string to split.
-     * @param integer|null                                                                 $limit       The maximum number of elements to insert into $collection, or null for unlimited.
-     * @param MutableSequenceInterface|QueuedAccessInterface|Set|HashSet|ArrayAccess|array &$collection The collection to append to, can be any type supported by {@see Collection::addElement()}.
-     * @param callable|null                                                                $transform   The transform to apply to each element before insertion into $collection.
-     * @param string|null                                                                  $encoding    The string encoding to use, or null to use the internal encoding ({@see mb_internal_encoding()}).
+     * @param string                                                                        $separator   The separator string to place between elements.
+     * @param string                                                                        $string      The string to split.
+     * @param integer|null                                                                  $limit       The maximum number of elements to insert into $collection, or null for unlimited.
+     * @param MutableSequenceInterface|QueuedAccessInterface|SetInterface|ArrayAccess|array &$collection The collection to append to, can be any type supported by {@see Collection::addElement()}.
+     * @param callable|null                                                                 $transform   The transform to apply to each element before insertion into $collection.
+     * @param string|null                                                                   $encoding    The string encoding to use, or null to use the internal encoding ({@see mb_internal_encoding()}).
      *
      * @return mixed<mixed> Returns $collection.
      */

@@ -423,7 +423,7 @@ class CollectionTest extends PHPUnit_Framework_TestCase
 
     public function testAddElementSet()
     {
-        $collection = Phake::mock(__NAMESPACE__ . '\Set'); // chage to SetInterface when available
+        $collection = Phake::mock(__NAMESPACE__ . '\SetInterface');
         Collection::addElement($collection, 'a');
         Collection::addElements($collection, array('b', 'c'));
 

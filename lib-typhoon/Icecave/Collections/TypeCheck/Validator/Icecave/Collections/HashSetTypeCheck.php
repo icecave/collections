@@ -445,7 +445,7 @@ class HashSetTypeCheck extends \Icecave\Collections\TypeCheck\AbstractValidator
     {
         $argumentCount = \count($arguments);
         if ($argumentCount < 1) {
-            throw new \Icecave\Collections\TypeCheck\Exception\MissingArgumentException('set', 0, 'Icecave\\Collections\\HashSet');
+            throw new \Icecave\Collections\TypeCheck\Exception\MissingArgumentException('set', 0, 'Icecave\\Collections\\SetInterface');
         } elseif ($argumentCount > 1) {
             throw new \Icecave\Collections\TypeCheck\Exception\UnexpectedArgumentException(1, $arguments[1]);
         }
@@ -455,7 +455,7 @@ class HashSetTypeCheck extends \Icecave\Collections\TypeCheck\AbstractValidator
     {
         $argumentCount = \count($arguments);
         if ($argumentCount < 1) {
-            throw new \Icecave\Collections\TypeCheck\Exception\MissingArgumentException('set', 0, 'Icecave\\Collections\\HashSet');
+            throw new \Icecave\Collections\TypeCheck\Exception\MissingArgumentException('set', 0, 'Icecave\\Collections\\SetInterface');
         } elseif ($argumentCount > 1) {
             throw new \Icecave\Collections\TypeCheck\Exception\UnexpectedArgumentException(1, $arguments[1]);
         }
@@ -465,7 +465,7 @@ class HashSetTypeCheck extends \Icecave\Collections\TypeCheck\AbstractValidator
     {
         $argumentCount = \count($arguments);
         if ($argumentCount < 1) {
-            throw new \Icecave\Collections\TypeCheck\Exception\MissingArgumentException('set', 0, 'Icecave\\Collections\\HashSet');
+            throw new \Icecave\Collections\TypeCheck\Exception\MissingArgumentException('set', 0, 'Icecave\\Collections\\SetInterface');
         } elseif ($argumentCount > 1) {
             throw new \Icecave\Collections\TypeCheck\Exception\UnexpectedArgumentException(1, $arguments[1]);
         }
@@ -475,7 +475,7 @@ class HashSetTypeCheck extends \Icecave\Collections\TypeCheck\AbstractValidator
     {
         $argumentCount = \count($arguments);
         if ($argumentCount < 1) {
-            throw new \Icecave\Collections\TypeCheck\Exception\MissingArgumentException('set', 0, 'Icecave\\Collections\\HashSet');
+            throw new \Icecave\Collections\TypeCheck\Exception\MissingArgumentException('set', 0, 'Icecave\\Collections\\SetInterface');
         } elseif ($argumentCount > 1) {
             throw new \Icecave\Collections\TypeCheck\Exception\UnexpectedArgumentException(1, $arguments[1]);
         }
@@ -485,7 +485,7 @@ class HashSetTypeCheck extends \Icecave\Collections\TypeCheck\AbstractValidator
     {
         $argumentCount = \count($arguments);
         if ($argumentCount < 1) {
-            throw new \Icecave\Collections\TypeCheck\Exception\MissingArgumentException('set', 0, 'Icecave\\Collections\\HashSet');
+            throw new \Icecave\Collections\TypeCheck\Exception\MissingArgumentException('set', 0, 'Icecave\\Collections\\SetInterface');
         } elseif ($argumentCount > 1) {
             throw new \Icecave\Collections\TypeCheck\Exception\UnexpectedArgumentException(1, $arguments[1]);
         }
@@ -495,7 +495,7 @@ class HashSetTypeCheck extends \Icecave\Collections\TypeCheck\AbstractValidator
     {
         $argumentCount = \count($arguments);
         if ($argumentCount < 1) {
-            throw new \Icecave\Collections\TypeCheck\Exception\MissingArgumentException('set', 0, 'Icecave\\Collections\\HashSet');
+            throw new \Icecave\Collections\TypeCheck\Exception\MissingArgumentException('set', 0, 'Icecave\\Collections\\SetInterface');
         } elseif ($argumentCount > 1) {
             throw new \Icecave\Collections\TypeCheck\Exception\UnexpectedArgumentException(1, $arguments[1]);
         }
@@ -505,7 +505,7 @@ class HashSetTypeCheck extends \Icecave\Collections\TypeCheck\AbstractValidator
     {
         $argumentCount = \count($arguments);
         if ($argumentCount < 1) {
-            throw new \Icecave\Collections\TypeCheck\Exception\MissingArgumentException('set', 0, 'Icecave\\Collections\\HashSet');
+            throw new \Icecave\Collections\TypeCheck\Exception\MissingArgumentException('set', 0, 'Icecave\\Collections\\SetInterface');
         } elseif ($argumentCount > 1) {
             throw new \Icecave\Collections\TypeCheck\Exception\UnexpectedArgumentException(1, $arguments[1]);
         }
@@ -515,7 +515,7 @@ class HashSetTypeCheck extends \Icecave\Collections\TypeCheck\AbstractValidator
     {
         $argumentCount = \count($arguments);
         if ($argumentCount < 1) {
-            throw new \Icecave\Collections\TypeCheck\Exception\MissingArgumentException('set', 0, 'Icecave\\Collections\\HashSet');
+            throw new \Icecave\Collections\TypeCheck\Exception\MissingArgumentException('set', 0, 'Icecave\\Collections\\SetInterface');
         } elseif ($argumentCount > 1) {
             throw new \Icecave\Collections\TypeCheck\Exception\UnexpectedArgumentException(1, $arguments[1]);
         }
@@ -525,7 +525,7 @@ class HashSetTypeCheck extends \Icecave\Collections\TypeCheck\AbstractValidator
     {
         $argumentCount = \count($arguments);
         if ($argumentCount < 1) {
-            throw new \Icecave\Collections\TypeCheck\Exception\MissingArgumentException('set', 0, 'Icecave\\Collections\\HashSet');
+            throw new \Icecave\Collections\TypeCheck\Exception\MissingArgumentException('set', 0, 'Icecave\\Collections\\SetInterface');
         } elseif ($argumentCount > 1) {
             throw new \Icecave\Collections\TypeCheck\Exception\UnexpectedArgumentException(1, $arguments[1]);
         }
@@ -535,7 +535,7 @@ class HashSetTypeCheck extends \Icecave\Collections\TypeCheck\AbstractValidator
     {
         $argumentCount = \count($arguments);
         if ($argumentCount < 1) {
-            throw new \Icecave\Collections\TypeCheck\Exception\MissingArgumentException('set', 0, 'Icecave\\Collections\\HashSet');
+            throw new \Icecave\Collections\TypeCheck\Exception\MissingArgumentException('set', 0, 'Icecave\\Collections\\SetInterface');
         } elseif ($argumentCount > 1) {
             throw new \Icecave\Collections\TypeCheck\Exception\UnexpectedArgumentException(1, $arguments[1]);
         }
@@ -545,7 +545,7 @@ class HashSetTypeCheck extends \Icecave\Collections\TypeCheck\AbstractValidator
     {
         $argumentCount = \count($arguments);
         if ($argumentCount < 1) {
-            throw new \Icecave\Collections\TypeCheck\Exception\MissingArgumentException('set', 0, 'Icecave\\Collections\\HashSet');
+            throw new \Icecave\Collections\TypeCheck\Exception\MissingArgumentException('set', 0, 'Icecave\\Collections\\SetInterface');
         } elseif ($argumentCount > 1) {
             throw new \Icecave\Collections\TypeCheck\Exception\UnexpectedArgumentException(1, $arguments[1]);
         }
@@ -555,7 +555,7 @@ class HashSetTypeCheck extends \Icecave\Collections\TypeCheck\AbstractValidator
     {
         $argumentCount = \count($arguments);
         if ($argumentCount < 1) {
-            throw new \Icecave\Collections\TypeCheck\Exception\MissingArgumentException('set', 0, 'Icecave\\Collections\\HashSet');
+            throw new \Icecave\Collections\TypeCheck\Exception\MissingArgumentException('set', 0, 'Icecave\\Collections\\SetInterface');
         } elseif ($argumentCount > 1) {
             throw new \Icecave\Collections\TypeCheck\Exception\UnexpectedArgumentException(1, $arguments[1]);
         }
@@ -565,7 +565,7 @@ class HashSetTypeCheck extends \Icecave\Collections\TypeCheck\AbstractValidator
     {
         $argumentCount = \count($arguments);
         if ($argumentCount < 1) {
-            throw new \Icecave\Collections\TypeCheck\Exception\MissingArgumentException('set', 0, 'Icecave\\Collections\\HashSet');
+            throw new \Icecave\Collections\TypeCheck\Exception\MissingArgumentException('set', 0, 'Icecave\\Collections\\SetInterface');
         } elseif ($argumentCount > 1) {
             throw new \Icecave\Collections\TypeCheck\Exception\UnexpectedArgumentException(1, $arguments[1]);
         }
@@ -575,7 +575,7 @@ class HashSetTypeCheck extends \Icecave\Collections\TypeCheck\AbstractValidator
     {
         $argumentCount = \count($arguments);
         if ($argumentCount < 1) {
-            throw new \Icecave\Collections\TypeCheck\Exception\MissingArgumentException('set', 0, 'Icecave\\Collections\\HashSet');
+            throw new \Icecave\Collections\TypeCheck\Exception\MissingArgumentException('set', 0, 'Icecave\\Collections\\SetInterface');
         } elseif ($argumentCount > 1) {
             throw new \Icecave\Collections\TypeCheck\Exception\UnexpectedArgumentException(1, $arguments[1]);
         }
@@ -602,7 +602,7 @@ class HashSetTypeCheck extends \Icecave\Collections\TypeCheck\AbstractValidator
     {
         $argumentCount = \count($arguments);
         if ($argumentCount < 1) {
-            throw new \Icecave\Collections\TypeCheck\Exception\MissingArgumentException('set', 0, 'Icecave\\Collections\\HashSet');
+            throw new \Icecave\Collections\TypeCheck\Exception\MissingArgumentException('set', 0, 'Icecave\\Collections\\SetInterface');
         } elseif ($argumentCount > 1) {
             throw new \Icecave\Collections\TypeCheck\Exception\UnexpectedArgumentException(1, $arguments[1]);
         }

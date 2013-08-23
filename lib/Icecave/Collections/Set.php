@@ -12,7 +12,7 @@ use Serializable;
 /**
  * An iterable collection with unique elements.
  */
-class Set implements MutableIterableInterface, Countable, IteratorAggregate, Serializable
+class Set implements SetInterface, IteratorAggregate, Serializable
 {
     /**
      * @param mixed<mixed>|null $collection An iterable type containing the elements to include in this set, or null to create an empty set.
@@ -543,11 +543,11 @@ class Set implements MutableIterableInterface, Countable, IteratorAggregate, Ser
     /**
      * Check if this set is equal to another.
      *
-     * @param Set $set The set to compare against.
+     * @param SetInterface $set The set to compare against.
      *
      * @return boolean True if this set contains the same elements as $set; otherwise false.
      */
-    public function isEqualSet(Set $set)
+    public function isEqualSet(SetInterface $set)
     {
         $this->typeCheck->isEqualSet(func_get_args());
 
@@ -579,11 +579,11 @@ class Set implements MutableIterableInterface, Countable, IteratorAggregate, Ser
     /**
      * Check if this set is a superset of another.
      *
-     * @param Set $set The set to compare against.
+     * @param SetInterface $set The set to compare against.
      *
      * @return boolean True if this set contains all of the elements in $set; otherwise, false.
      */
-    public function isSuperSet(Set $set)
+    public function isSuperSet(SetInterface $set)
     {
         $this->typeCheck->isSuperSet(func_get_args());
 
@@ -625,11 +625,11 @@ class Set implements MutableIterableInterface, Countable, IteratorAggregate, Ser
     /**
      * Check if this set is a subset of another.
      *
-     * @param Set $set The set to compare against.
+     * @param SetInterface $set The set to compare against.
      *
      * @return boolean True if this set contains only elements present in $set; otherwise, false.
      */
-    public function isSubSet(Set $set)
+    public function isSubSet(SetInterface $set)
     {
         $this->typeCheck->isSubSet(func_get_args());
 
@@ -641,11 +641,11 @@ class Set implements MutableIterableInterface, Countable, IteratorAggregate, Ser
     /**
      * Check if this set is a proper superset of another.
      *
-     * @param Set $set The set to compare against.
+     * @param SetInterface $set The set to compare against.
      *
      * @return boolean True if this set contains all of elements in $set, but is not equal to $set; otherwise, false.
      */
-    public function isProperSuperSet(Set $set)
+    public function isProperSuperSet(SetInterface $set)
     {
         $this->typeCheck->isProperSuperSet(func_get_args());
 
@@ -665,11 +665,11 @@ class Set implements MutableIterableInterface, Countable, IteratorAggregate, Ser
     /**
      * Check if this set is a proper subset of another.
      *
-     * @param Set $set The set to compare against.
+     * @param SetInterface $set The set to compare against.
      *
      * @return boolean True if this set contains only elements present in $set, but is not equal to $set; otherwise, false.
      */
-    public function isProperSubSet(Set $set)
+    public function isProperSubSet(SetInterface $set)
     {
         $this->typeCheck->isProperSubSet(func_get_args());
 
@@ -681,11 +681,11 @@ class Set implements MutableIterableInterface, Countable, IteratorAggregate, Ser
     /**
      * Check if this set is intersecting another.
      *
-     * @param Set $set The set to compare against.
+     * @param SetInterface $set The set to compare against.
      *
      * @return boolean True if this set contains one or more elements present in $set; otherwise false.
      */
-    public function isIntersecting(Set $set)
+    public function isIntersecting(SetInterface $set)
     {
         $this->typeCheck->isIntersecting(func_get_args());
 
@@ -746,11 +746,11 @@ class Set implements MutableIterableInterface, Countable, IteratorAggregate, Ser
     /**
      * Compute the union of this set and another.
      *
-     * @param Set $set The second set.
+     * @param SetInterface $set The second set.
      *
      * @return Set A set containing all elements of $this and $elements.
      */
-    public function union(Set $set)
+    public function union(SetInterface $set)
     {
         $this->typeCheck->union(func_get_args());
 
@@ -854,9 +854,9 @@ class Set implements MutableIterableInterface, Countable, IteratorAggregate, Ser
     /**
      * Compute the union of this set and another, in place.
      *
-     * @param Set $set The second set.
+     * @param SetInterface $set The second set.
      */
-    public function unionInPlace(Set $set)
+    public function unionInPlace(SetInterface $set)
     {
         $this->typeCheck->unionInPlace(func_get_args());
 
@@ -946,11 +946,11 @@ class Set implements MutableIterableInterface, Countable, IteratorAggregate, Ser
     /**
      * Compute the intersection of this set and another.
      *
-     * @param Set $set The second set.
+     * @param SetInterface $set The second set.
      *
      * @return Set A set containing only the elements present in $this and $elements.
      */
-    public function intersect(Set $set)
+    public function intersect(SetInterface $set)
     {
         $this->typeCheck->intersect(func_get_args());
 
@@ -1021,9 +1021,9 @@ class Set implements MutableIterableInterface, Countable, IteratorAggregate, Ser
     /**
      * Compute the intersection of this set and another, in place.
      *
-     * @param Set $set The second set.
+     * @param SetInterface $set The second set.
      */
-    public function intersectInPlace(Set $set)
+    public function intersectInPlace(SetInterface $set)
     {
         $this->typeCheck->intersectInPlace(func_get_args());
 
@@ -1102,11 +1102,11 @@ class Set implements MutableIterableInterface, Countable, IteratorAggregate, Ser
     /**
      * Compute the difference (or complement) of this set and another.
      *
-     * @param Set $set The second set.
+     * @param SetInterface $set The second set.
      *
      * @return Set A set containing only the elements present in $this, but not $elements.
      */
-    public function diff(Set $set)
+    public function diff(SetInterface $set)
     {
         $this->typeCheck->diff(func_get_args());
 
@@ -1196,9 +1196,9 @@ class Set implements MutableIterableInterface, Countable, IteratorAggregate, Ser
     /**
      * Compute the difference (or complement) of this set and another, in place.
      *
-     * @param Set $set The second set.
+     * @param SetInterface $set The second set.
      */
-    public function diffInPlace(Set $set)
+    public function diffInPlace(SetInterface $set)
     {
         $this->typeCheck->diffInPlace(func_get_args());
 
@@ -1268,11 +1268,11 @@ class Set implements MutableIterableInterface, Countable, IteratorAggregate, Ser
      *
      * The symmetric difference is the set of elements which are in either of the sets and not in their intersection.
      *
-     * @param Set $set The second set.
+     * @param SetInterface $set The second set.
      *
      * @return Set A set containing only the elements present in $this, or $elements, but not both.
      */
-    public function symmetricDiff(Set $set)
+    public function symmetricDiff(SetInterface $set)
     {
         $this->typeCheck->symmetricDiff(func_get_args());
 
@@ -1373,9 +1373,9 @@ class Set implements MutableIterableInterface, Countable, IteratorAggregate, Ser
      *
      * The symmetric difference is the set of elements which are in either of the sets and not in their intersection.
      *
-     * @param Set $set The second set.
+     * @param SetInterface $set The second set.
      */
-    public function symmetricDiffInPlace(Set $set)
+    public function symmetricDiffInPlace(SetInterface $set)
     {
         $this->typeCheck->symmetricDiffInPlace(func_get_args());
 
@@ -1488,11 +1488,15 @@ class Set implements MutableIterableInterface, Countable, IteratorAggregate, Ser
     }
 
     /**
-     * @param Set $set
+     * @param SetInterface $set
      */
-    private function assertCompatible(Set $set)
+    private function assertCompatible(SetInterface $set)
     {
-        if ($set->comparator != $this->comparator) {
+        $className = get_class($this);
+
+        if (!$set instanceof $className) {
+            throw new InvalidArgumentException('The given set is not an instance of ' . $className . '.');
+        } elseif ($set->comparator != $this->comparator) {
             throw new InvalidArgumentException('The given set does not use the same comparator.');
         }
     }

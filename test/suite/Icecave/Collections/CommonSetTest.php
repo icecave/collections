@@ -4,6 +4,7 @@ namespace Icecave\Collections;
 use Eloquent\Liberator\Liberator;
 use Ezzatron\PHPUnit\ParameterizedTestCase;
 use Icecave\Collections\Iterator\Traits;
+use Phake;
 
 /**
  * @covers Icecave\Collections\Set
@@ -486,6 +487,13 @@ class CommonSetTest extends ParameterizedTestCase
         $this->assertSame($isEqual, $set->isEqualSet($this->collection));
     }
 
+    public function testIsEqualSetIncompatibleType()
+    {
+        $set = Phake::mock(__NAMESPACE__ . '\SetInterface');
+        $this->setExpectedException('InvalidArgumentException', 'The given set is not an instance of ' . $this->className . '.');
+        $this->collection->isEqualSet($set);
+    }
+
     public function testIsEqualSetIncompatible()
     {
         $this->setExpectedException('InvalidArgumentException', 'The given set does not use the same ');
@@ -501,6 +509,13 @@ class CommonSetTest extends ParameterizedTestCase
         $set = $this->createSet($rhsElements);
 
         $this->assertSame($isSuperSet, $this->collection->isSuperSet($set));
+    }
+
+    public function testIsSuperSetIncompatibleType()
+    {
+        $set = Phake::mock(__NAMESPACE__ . '\SetInterface');
+        $this->setExpectedException('InvalidArgumentException', 'The given set is not an instance of ' . $this->className . '.');
+        $this->collection->isSuperSet($set);
     }
 
     public function testIsSuperSetIncompatible()
@@ -520,6 +535,13 @@ class CommonSetTest extends ParameterizedTestCase
         $this->assertSame($isSubSet, $this->collection->isSubSet($set));
     }
 
+    public function testIsSubSetIncompatibleType()
+    {
+        $set = Phake::mock(__NAMESPACE__ . '\SetInterface');
+        $this->setExpectedException('InvalidArgumentException', 'The given set is not an instance of ' . $this->className . '.');
+        $this->collection->isSubSet($set);
+    }
+
     public function testIsSubSetIncompatible()
     {
         $this->setExpectedException('InvalidArgumentException', 'The given set does not use the same ');
@@ -535,6 +557,13 @@ class CommonSetTest extends ParameterizedTestCase
         $set = $this->createSet($rhsElements);
 
         $this->assertSame($isProperSuperSet, $this->collection->isProperSuperSet($set));
+    }
+
+    public function testIsProperSuperSetIncompatibleType()
+    {
+        $set = Phake::mock(__NAMESPACE__ . '\SetInterface');
+        $this->setExpectedException('InvalidArgumentException', 'The given set is not an instance of ' . $this->className . '.');
+        $this->collection->isProperSuperSet($set);
     }
 
     public function testIsProperSuperSetIncompatible()
@@ -554,6 +583,13 @@ class CommonSetTest extends ParameterizedTestCase
         $this->assertSame($isProperSubSet, $this->collection->isProperSubSet($set));
     }
 
+    public function testIsProperSubSetIncompatibleType()
+    {
+        $set = Phake::mock(__NAMESPACE__ . '\SetInterface');
+        $this->setExpectedException('InvalidArgumentException', 'The given set is not an instance of ' . $this->className . '.');
+        $this->collection->isProperSubSet($set);
+    }
+
     public function testIsProperSubSetIncompatible()
     {
         $this->setExpectedException('InvalidArgumentException', 'The given set does not use the same ');
@@ -570,6 +606,13 @@ class CommonSetTest extends ParameterizedTestCase
 
         $this->assertSame($isIntersecting, $this->collection->isIntersecting($set));
         $this->assertSame($isIntersecting, $set->isIntersecting($this->collection));
+    }
+
+    public function testIsIntersectingIncompatibleType()
+    {
+        $set = Phake::mock(__NAMESPACE__ . '\SetInterface');
+        $this->setExpectedException('InvalidArgumentException', 'The given set is not an instance of ' . $this->className . '.');
+        $this->collection->isIntersecting($set);
     }
 
     public function testIsIntersectingIncompatible()
@@ -611,6 +654,13 @@ class CommonSetTest extends ParameterizedTestCase
         $this->verifyElements($expectedElements, $result);
     }
 
+    public function testUnionIncompatibleType()
+    {
+        $set = Phake::mock(__NAMESPACE__ . '\SetInterface');
+        $this->setExpectedException('InvalidArgumentException', 'The given set is not an instance of ' . $this->className . '.');
+        $this->collection->union($set);
+    }
+
     public function testUnionIncompatible()
     {
         $this->setExpectedException('InvalidArgumentException', 'The given set does not use the same ');
@@ -627,6 +677,13 @@ class CommonSetTest extends ParameterizedTestCase
 
         $this->collection->unionInPlace($set);
         $this->verifyElements($expectedElements);
+    }
+
+    public function testUnionInPlaceIncompatibleType()
+    {
+        $set = Phake::mock(__NAMESPACE__ . '\SetInterface');
+        $this->setExpectedException('InvalidArgumentException', 'The given set is not an instance of ' . $this->className . '.');
+        $this->collection->unionInPlace($set);
     }
 
     public function testUnionInPlaceIncompatible()
@@ -667,6 +724,13 @@ class CommonSetTest extends ParameterizedTestCase
         $this->verifyElements($expectedElements, $result);
     }
 
+    public function testIntersectIncompatibleType()
+    {
+        $set = Phake::mock(__NAMESPACE__ . '\SetInterface');
+        $this->setExpectedException('InvalidArgumentException', 'The given set is not an instance of ' . $this->className . '.');
+        $this->collection->intersect($set);
+    }
+
     public function testIntersectIncompatible()
     {
         $this->setExpectedException('InvalidArgumentException', 'The given set does not use the same ');
@@ -683,6 +747,13 @@ class CommonSetTest extends ParameterizedTestCase
 
         $this->collection->intersectInPlace($set);
         $this->verifyElements($expectedElements);
+    }
+
+    public function testIntersectInPlaceIncompatibleType()
+    {
+        $set = Phake::mock(__NAMESPACE__ . '\SetInterface');
+        $this->setExpectedException('InvalidArgumentException', 'The given set is not an instance of ' . $this->className . '.');
+        $this->collection->intersectInPlace($set);
     }
 
     public function testIntersectInPlaceIncompatible()
@@ -723,6 +794,13 @@ class CommonSetTest extends ParameterizedTestCase
         $this->verifyElements($expectedElements, $result);
     }
 
+    public function testDiffIncompatibleType()
+    {
+        $set = Phake::mock(__NAMESPACE__ . '\SetInterface');
+        $this->setExpectedException('InvalidArgumentException', 'The given set is not an instance of ' . $this->className . '.');
+        $this->collection->diff($set);
+    }
+
     public function testDiffIncompatible()
     {
         $this->setExpectedException('InvalidArgumentException', 'The given set does not use the same ');
@@ -739,6 +817,13 @@ class CommonSetTest extends ParameterizedTestCase
 
         $this->collection->diffInPlace($set);
         $this->verifyElements($expectedElements);
+    }
+
+    public function testDiffInPlaceIncompatibleType()
+    {
+        $set = Phake::mock(__NAMESPACE__ . '\SetInterface');
+        $this->setExpectedException('InvalidArgumentException', 'The given set is not an instance of ' . $this->className . '.');
+        $this->collection->diffInPlace($set);
     }
 
     public function testDiffInPlaceIncompatible()
@@ -779,6 +864,13 @@ class CommonSetTest extends ParameterizedTestCase
         $this->verifyElements($expectedElements, $result);
     }
 
+    public function testSymmetricDiffIncompatibleType()
+    {
+        $set = Phake::mock(__NAMESPACE__ . '\SetInterface');
+        $this->setExpectedException('InvalidArgumentException', 'The given set is not an instance of ' . $this->className . '.');
+        $this->collection->symmetricDiff($set);
+    }
+
     public function testSymmetricDiffIncompatible()
     {
         $this->setExpectedException('InvalidArgumentException', 'The given set does not use the same ');
@@ -795,6 +887,13 @@ class CommonSetTest extends ParameterizedTestCase
 
         $this->collection->symmetricDiffInPlace($set);
         $this->verifyElements($expectedElements);
+    }
+
+    public function testSymmetricDiffInPlaceIncompatibleType()
+    {
+        $set = Phake::mock(__NAMESPACE__ . '\SetInterface');
+        $this->setExpectedException('InvalidArgumentException', 'The given set is not an instance of ' . $this->className . '.');
+        $this->collection->symmetricDiffInPlace($set);
     }
 
     public function testSymmetricDiffInPlaceIncompatible()

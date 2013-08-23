@@ -439,19 +439,19 @@ class CollectionTypeCheck extends \Icecave\Collections\TypeCheck\AbstractValidat
         $argumentCount = \count($arguments);
         if ($argumentCount < 2) {
             if ($argumentCount < 1) {
-                throw new \Icecave\Collections\TypeCheck\Exception\MissingArgumentException('collection', 0, 'Icecave\\Collections\\MutableSequenceInterface|Icecave\\Collections\\QueuedAccessInterface|Icecave\\Collections\\Set|Icecave\\Collections\\HashSet|ArrayAccess|array');
+                throw new \Icecave\Collections\TypeCheck\Exception\MissingArgumentException('collection', 0, 'Icecave\\Collections\\MutableSequenceInterface|Icecave\\Collections\\QueuedAccessInterface|Icecave\\Collections\\SetInterface|ArrayAccess|array');
             }
             throw new \Icecave\Collections\TypeCheck\Exception\MissingArgumentException('element', 1, 'mixed');
         } elseif ($argumentCount > 2) {
             throw new \Icecave\Collections\TypeCheck\Exception\UnexpectedArgumentException(2, $arguments[2]);
         }
         $value = $arguments[0];
-        if (!($value instanceof \Icecave\Collections\MutableSequenceInterface || $value instanceof \Icecave\Collections\QueuedAccessInterface || $value instanceof \Icecave\Collections\Set || $value instanceof \Icecave\Collections\HashSet || $value instanceof \ArrayAccess || \is_array($value))) {
+        if (!($value instanceof \Icecave\Collections\MutableSequenceInterface || $value instanceof \Icecave\Collections\QueuedAccessInterface || $value instanceof \Icecave\Collections\SetInterface || $value instanceof \ArrayAccess || \is_array($value))) {
             throw new \Icecave\Collections\TypeCheck\Exception\UnexpectedArgumentValueException(
                 'collection',
                 0,
                 $arguments[0],
-                'Icecave\\Collections\\MutableSequenceInterface|Icecave\\Collections\\QueuedAccessInterface|Icecave\\Collections\\Set|Icecave\\Collections\\HashSet|ArrayAccess|array'
+                'Icecave\\Collections\\MutableSequenceInterface|Icecave\\Collections\\QueuedAccessInterface|Icecave\\Collections\\SetInterface|ArrayAccess|array'
             );
         }
     }
@@ -461,19 +461,19 @@ class CollectionTypeCheck extends \Icecave\Collections\TypeCheck\AbstractValidat
         $argumentCount = \count($arguments);
         if ($argumentCount < 2) {
             if ($argumentCount < 1) {
-                throw new \Icecave\Collections\TypeCheck\Exception\MissingArgumentException('collection', 0, 'Icecave\\Collections\\MutableSequenceInterface|Icecave\\Collections\\QueuedAccessInterface|Icecave\\Collections\\Set|Icecave\\Collections\\HashSet|ArrayAccess|array');
+                throw new \Icecave\Collections\TypeCheck\Exception\MissingArgumentException('collection', 0, 'Icecave\\Collections\\MutableSequenceInterface|Icecave\\Collections\\QueuedAccessInterface|Icecave\\Collections\\SetInterface|ArrayAccess|array');
             }
             throw new \Icecave\Collections\TypeCheck\Exception\MissingArgumentException('elements', 1, 'mixed<mixed>');
         } elseif ($argumentCount > 2) {
             throw new \Icecave\Collections\TypeCheck\Exception\UnexpectedArgumentException(2, $arguments[2]);
         }
         $value = $arguments[0];
-        if (!($value instanceof \Icecave\Collections\MutableSequenceInterface || $value instanceof \Icecave\Collections\QueuedAccessInterface || $value instanceof \Icecave\Collections\Set || $value instanceof \Icecave\Collections\HashSet || $value instanceof \ArrayAccess || \is_array($value))) {
+        if (!($value instanceof \Icecave\Collections\MutableSequenceInterface || $value instanceof \Icecave\Collections\QueuedAccessInterface || $value instanceof \Icecave\Collections\SetInterface || $value instanceof \ArrayAccess || \is_array($value))) {
             throw new \Icecave\Collections\TypeCheck\Exception\UnexpectedArgumentValueException(
                 'collection',
                 0,
                 $arguments[0],
-                'Icecave\\Collections\\MutableSequenceInterface|Icecave\\Collections\\QueuedAccessInterface|Icecave\\Collections\\Set|Icecave\\Collections\\HashSet|ArrayAccess|array'
+                'Icecave\\Collections\\MutableSequenceInterface|Icecave\\Collections\\QueuedAccessInterface|Icecave\\Collections\\SetInterface|ArrayAccess|array'
             );
         }
         $value = $arguments[1];
@@ -598,12 +598,12 @@ class CollectionTypeCheck extends \Icecave\Collections\TypeCheck\AbstractValidat
         }
         if ($argumentCount > 3) {
             $value = $arguments[3];
-            if (!($value instanceof \Icecave\Collections\MutableSequenceInterface || $value instanceof \Icecave\Collections\QueuedAccessInterface || $value instanceof \Icecave\Collections\Set || $value instanceof \Icecave\Collections\HashSet || $value instanceof \ArrayAccess || \is_array($value))) {
+            if (!($value instanceof \Icecave\Collections\MutableSequenceInterface || $value instanceof \Icecave\Collections\QueuedAccessInterface || $value instanceof \Icecave\Collections\SetInterface || $value instanceof \ArrayAccess || \is_array($value))) {
                 throw new \Icecave\Collections\TypeCheck\Exception\UnexpectedArgumentValueException(
                     'collection',
                     3,
                     $arguments[3],
-                    'Icecave\\Collections\\MutableSequenceInterface|Icecave\\Collections\\QueuedAccessInterface|Icecave\\Collections\\Set|Icecave\\Collections\\HashSet|ArrayAccess|array'
+                    'Icecave\\Collections\\MutableSequenceInterface|Icecave\\Collections\\QueuedAccessInterface|Icecave\\Collections\\SetInterface|ArrayAccess|array'
                 );
             }
         }
