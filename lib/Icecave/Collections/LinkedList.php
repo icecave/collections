@@ -1335,6 +1335,99 @@ class LinkedList implements MutableRandomAccessInterface, Countable, Iterator, S
         $this->currentNode = $this->nodeFrom($this->head, $currentIndex);
     }
 
+    ///////////////////////////////////////////
+    // Implementation of ComparableInterface //
+    ///////////////////////////////////////////
+
+    /**
+     * Compare this object with another value, yielding a result according to the following table:
+     *
+     * +--------------------+---------------+
+     * | Condition          | Result        |
+     * +--------------------+---------------+
+     * | $this == $value    | $result === 0 |
+     * | $this < $value     | $result < 0   |
+     * | $this > $value     | $result > 0   |
+     * +--------------------+---------------+
+     *
+     * @param mixed $value The value to compare.
+     *
+     * @return integer                                         The result of the comparison.
+     * @throws Icecave\Parity\Exception\NotComparableException Indicates that the implementation does not know how to compare $this to $value.
+     */
+    public function compare($value)
+    {
+        if ($value instanceof self) {
+            return Collection::compare($this->elements, $value->elements);
+        }
+
+        return Parity::compare($this, $value);
+    }
+
+    ///////////////////////////////////////////////////
+    // Implementation of ExtendedComparableInterface //
+    ///////////////////////////////////////////////////
+
+    /**
+     * @param mixed $value The value to compare.
+     *
+     * @return boolean True if $this == $value.
+     */
+    public function isEqualTo($value)
+    {
+        return $this->compare($value) === 0;
+    }
+
+    /**
+     * @param mixed $value The value to compare.
+     *
+     * @return boolean True if $this != $value.
+     */
+    public function isNotEqualTo($value)
+    {
+        return $this->compare($value) !== 0;
+    }
+
+    /**
+     * @param mixed $value The value to compare.
+     *
+     * @return boolean True if $this < $value.
+     */
+    public function isLessThan($value)
+    {
+        return $this->compare($value) < 0;
+    }
+
+    /**
+     * @param mixed $value The value to compare.
+     *
+     * @return boolean True if $this > $value.
+     */
+    public function isGreaterThan($value)
+    {
+        return $this->compare($value) > 0;
+    }
+
+    /**
+     * @param mixed $value The value to compare.
+     *
+     * @return boolean True if $this <= $value.
+     */
+    public function isLessThanOrEqualTo($value)
+    {
+        return $this->compare($value) <= 0;
+    }
+
+    /**
+     * @param mixed $value The value to compare.
+     *
+     * @return boolean True if $this >= $value.
+     */
+    public function isGreaterThanOrEqualTo($value)
+    {
+        return $this->compare($value) >= 0;
+    }
+
     ////////////////////////////
     // Model specific methods //
     ////////////////////////////

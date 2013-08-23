@@ -49,12 +49,10 @@ abstract class Collection
     {
         TypeCheck::get(__CLASS__)->size(func_get_args());
 
-        if ($collection instanceof CollectionInterface) {
-            return $collection->size();
-        } elseif ($collection instanceof Countable) {
-            return count($collection);
-        } elseif (is_array($collection)) {
-            return count($collection);
+        $size = static::trySize($collection);
+
+        if (null !== $size) {
+            return $size;
         }
 
         $count = 0;
@@ -652,6 +650,43 @@ abstract class Collection
     }
 
     /**
+     * Compare two collections.
+     *
+     * @param mixed<mixed> $lhs
+     * @param mixed<mixed> $rhs
+     * @param callable $comparator The comparator to use for size and element comparisons.
+     *
+     * @return integer The result of the comparison.
+     */
+    public static function compare($lhs, $rhs, $comparator = 'Icecave\Parity\Parity::compare')
+    {
+        $lhsSize = static::trySize($lhs);
+        $rhsSize = static::trySize($rhs);
+
+        if ($lhsSize !== $rhsSize && null !== $lhsSize && null !== $rhsSize) {
+            return call_user_func($comparator, $lhsSize, $rhsSize);
+        }
+
+        $lhs = static::getIterator($lhs);
+        $rhs = static::getIterator($rhs);
+
+        $lhs->rewind();
+        $rhs->rewind();
+
+        while ($lhs->valid() && $rhs->valid()) {
+            $cmp = call_user_func($comparator, $lhs->current(), $rhs->current());
+            if (0 !== $cmp) {
+                return $cmp;
+            }
+
+            $lhs->next();
+            $rhs->next();
+        }
+
+        return call_user_func($comparator, $lhs->valid(), $rhs->valid());
+    }
+
+    /**
      * Return the index of the first element in a sorted collection that is not less than the given element.
      *
      * Searches all elements in the range [$begin, $end), i.e. $begin is inclusive, $end is exclusive.
@@ -754,5 +789,18 @@ abstract class Collection
         }
 
         return $insertIndex;
+    }
+
+    private static function trySize($collection)
+    {
+        if ($collection instanceof CollectionInterface) {
+            return $collection->size();
+        } elseif ($collection instanceof Countable) {
+            return count($collection);
+        } elseif (is_array($collection)) {
+            return count($collection);
+        }
+
+        return null;
     }
 }

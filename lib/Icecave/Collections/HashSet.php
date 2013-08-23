@@ -424,9 +424,9 @@ class HashSet implements SetInterface, IteratorAggregate, Serializable
         $this->__construct($elements, $hashFunction);
     }
 
-    ////////////////////////////
-    // Model specific methods //
-    ////////////////////////////
+    ////////////////////////////////////
+    // Implementation of SetInterface //
+    ////////////////////////////////////
 
     /**
      * Return the first of the given elements that is contained in the set.
@@ -860,6 +860,99 @@ class HashSet implements SetInterface, IteratorAggregate, Serializable
         $this->unionInPlace($set);
         $this->diffInPlace($intersection);
     }
+
+    ///////////////////////////////////////////
+    // Implementation of ComparableInterface //
+    ///////////////////////////////////////////
+
+    /**
+     * Compare this object with another value, yielding a result according to the following table:
+     *
+     * +--------------------+---------------+
+     * | Condition          | Result        |
+     * +--------------------+---------------+
+     * | $this == $value    | $result === 0 |
+     * | $this < $value     | $result < 0   |
+     * | $this > $value     | $result > 0   |
+     * +--------------------+---------------+
+     *
+     * @param mixed $value The value to compare.
+     *
+     * @return integer                                         The result of the comparison.
+     * @throws Icecave\Parity\Exception\NotComparableException Indicates that the implementation does not know how to compare $this to $value.
+     */
+    public function compare($value)
+    {
+        throw new \Exception('Not implemented.');
+    }
+
+    ///////////////////////////////////////////////////
+    // Implementation of ExtendedComparableInterface //
+    ///////////////////////////////////////////////////
+
+    /**
+     * @param mixed $value The value to compare.
+     *
+     * @return boolean True if $this == $value.
+     */
+    public function isEqualTo($value)
+    {
+        return $this->compare($value) === 0;
+    }
+
+    /**
+     * @param mixed $value The value to compare.
+     *
+     * @return boolean True if $this != $value.
+     */
+    public function isNotEqualTo($value)
+    {
+        return $this->compare($value) !== 0;
+    }
+
+    /**
+     * @param mixed $value The value to compare.
+     *
+     * @return boolean True if $this < $value.
+     */
+    public function isLessThan($value)
+    {
+        return $this->compare($value) < 0;
+    }
+
+    /**
+     * @param mixed $value The value to compare.
+     *
+     * @return boolean True if $this > $value.
+     */
+    public function isGreaterThan($value)
+    {
+        return $this->compare($value) > 0;
+    }
+
+    /**
+     * @param mixed $value The value to compare.
+     *
+     * @return boolean True if $this <= $value.
+     */
+    public function isLessThanOrEqualTo($value)
+    {
+        return $this->compare($value) <= 0;
+    }
+
+    /**
+     * @param mixed $value The value to compare.
+     *
+     * @return boolean True if $this >= $value.
+     */
+    public function isGreaterThanOrEqualTo($value)
+    {
+        return $this->compare($value) >= 0;
+    }
+
+    ////////////////////////////
+    // Model specific methods //
+    ////////////////////////////
 
     /**
      * @param mixed $key
