@@ -1,5 +1,5 @@
 <?php
-namespace Icecave\Collections\Utility;
+namespace Icecave\Collections\Detail;
 
 use Icecave\Collections\TypeCheck\TypeCheck;
 use Icecave\Parity\Comparator\DeepComparator;

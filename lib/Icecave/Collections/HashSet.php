@@ -26,7 +26,7 @@ class HashSet implements SetInterface, IteratorAggregate, Serializable
         $this->typeCheck = TypeCheck::get(__CLASS__, func_get_args());
 
         if (null === $hashFunction) {
-            $hashFunction = new Utility\AssociativeKeyGenerator;
+            $hashFunction = new Detail\AssociativeKeyGenerator;
         }
 
         $this->hashFunction = $hashFunction;

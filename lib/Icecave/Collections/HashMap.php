@@ -24,7 +24,7 @@ class HashMap implements MutableAssociativeInterface, Countable, Iterator, Array
         $this->typeCheck = TypeCheck::get(__CLASS__, func_get_args());
 
         if (null === $hashFunction) {
-            $hashFunction = new Utility\AssociativeKeyGenerator;
+            $hashFunction = new Detail\AssociativeKeyGenerator;
         }
 
         $this->hashFunction = $hashFunction;
