@@ -16,10 +16,10 @@ use Serializable;
 class HashMap implements MutableAssociativeInterface, Countable, Iterator, ArrayAccess, Serializable
 {
     /**
-     * @param mixed<mixed>|null $collection   An iterable type containing the elements to include in this map, or null to create an empty map.
+     * @param mixed<mixed>|null $elements     An iterable type containing the elements to include in this map, or null to create an empty map.
      * @param callable|null     $hashFunction The function to use for generating hashes of element values, or null to use the default.
      */
-    public function __construct($collection = null, $hashFunction = null)
+    public function __construct($elements = null, $hashFunction = null)
     {
         $this->typeCheck = TypeCheck::get(__CLASS__, func_get_args());
 
@@ -30,11 +30,32 @@ class HashMap implements MutableAssociativeInterface, Countable, Iterator, Array
         $this->hashFunction = $hashFunction;
         $this->elements = array();
 
-        if (null !== $collection) {
-            foreach ($collection as $key => $value) {
+        if (null !== $elements) {
+            foreach ($elements as $key => $value) {
                 $this->set($key, $value);
             }
         }
+    }
+
+    /**
+     * Create a HashMap from a sequence of pairs.
+     *
+     * @param mixed $element,... Elements to include in the collection.
+     *
+     * @return HashMap
+     */
+    public static function create()
+    {
+        TypeCheck::get(__CLASS__)->create(func_get_args());
+
+        $map = new static;
+
+        foreach (func_get_args() as $element) {
+            list($key, $value) = $element;
+            $map->set($key, $value);
+        }
+
+        return $map;
     }
 
     ///////////////////////////////////////////

@@ -39,6 +39,18 @@ class StackTest extends PHPUnit_Framework_TestCase
         $this->assertSame(3, $this->collection->next());
     }
 
+    public function testCreate()
+    {
+        $collection = Stack::create(1, 2, 3);
+
+        $this->assertInstanceOf(__NAMESPACE__ . '\Stack', $collection);
+        $this->assertSame(3, $collection->size());
+        $this->assertSame(3, $collection->pop());
+        $this->assertSame(2, $collection->pop());
+        $this->assertSame(1, $collection->pop());
+        $this->assertSame(0, $collection->size());
+    }
+
     public function testSerialization()
     {
         $this->collection->push(1);

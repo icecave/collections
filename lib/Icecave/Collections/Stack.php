@@ -14,16 +14,16 @@ use SplStack;
 class Stack implements QueuedAccessInterface, Countable, Serializable
 {
     /**
-     * @param mixed<mixed>|null $collection An iterable type containing the elements to include in this list, or null to create an empty list.
+     * @param mixed<mixed>|null $elements An iterable type containing the elements to include in this list, or null to create an empty list.
      */
-    public function __construct($collection = null)
+    public function __construct($elements = null)
     {
         $this->typeCheck = TypeCheck::get(__CLASS__, func_get_args());
 
         $this->clear();
 
-        if (null !== $collection) {
-            foreach ($collection as $element) {
+        if (null !== $elements) {
+            foreach ($elements as $element) {
                 $this->push($element);
             }
         }
@@ -34,6 +34,20 @@ class Stack implements QueuedAccessInterface, Countable, Serializable
         $this->typeCheck->validateClone(func_get_args());
 
         $this->elements = clone $this->elements;
+    }
+
+    /**
+     * Create a Stack.
+     *
+     * @param mixed $element,... Elements to include in the collection.
+     *
+     * @return Stack
+     */
+    public static function create()
+    {
+        TypeCheck::get(__CLASS__)->create(func_get_args());
+
+        return new static(func_get_args());
     }
 
     ///////////////////////////////////////////

@@ -6,22 +6,11 @@ class PriorityQueueTypeCheck extends \Icecave\Collections\TypeCheck\AbstractVali
     public function validateConstruct(array $arguments)
     {
         $argumentCount = \count($arguments);
-        if ($argumentCount < 1) {
-            throw new \Icecave\Collections\TypeCheck\Exception\MissingArgumentException('prioritizer', 0, 'callable');
-        } elseif ($argumentCount > 2) {
+        if ($argumentCount > 2) {
             throw new \Icecave\Collections\TypeCheck\Exception\UnexpectedArgumentException(2, $arguments[2]);
         }
-        $value = $arguments[0];
-        if (!\is_callable($value)) {
-            throw new \Icecave\Collections\TypeCheck\Exception\UnexpectedArgumentValueException(
-                'prioritizer',
-                0,
-                $arguments[0],
-                'callable'
-            );
-        }
-        if ($argumentCount > 1) {
-            $value = $arguments[1];
+        if ($argumentCount > 0) {
+            $value = $arguments[0];
             $check = function ($value) {
                 $check = function ($value) {
                     if (!\is_array($value) && !$value instanceof \Traversable) {
@@ -36,15 +25,31 @@ class PriorityQueueTypeCheck extends \Icecave\Collections\TypeCheck\AbstractVali
                 }
                 return $value === null;
             };
-            if (!$check($arguments[1])) {
+            if (!$check($arguments[0])) {
                 throw new \Icecave\Collections\TypeCheck\Exception\UnexpectedArgumentValueException(
-                    'collection',
-                    1,
-                    $arguments[1],
+                    'elements',
+                    0,
+                    $arguments[0],
                     'mixed<mixed>|null'
                 );
             }
         }
+        if ($argumentCount > 1) {
+            $value = $arguments[1];
+            if (!(\is_callable($value) || $value === null)) {
+                throw new \Icecave\Collections\TypeCheck\Exception\UnexpectedArgumentValueException(
+                    'prioritizer',
+                    1,
+                    $arguments[1],
+                    'callable|null'
+                );
+            }
+        }
+    }
+
+    public function create(array $arguments)
+    {
+        $argumentCount = \count($arguments);
     }
 
     public function validateToString(array $arguments)

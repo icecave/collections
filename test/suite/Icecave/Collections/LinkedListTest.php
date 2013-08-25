@@ -59,6 +59,14 @@ class LinkedListTest extends PHPUnit_Framework_TestCase
         $this->assertSame(array(1, 2, 3), $this->collection->elements());
     }
 
+    public function testCreate()
+    {
+        $collection = LinkedList::create(1, 2, 3);
+
+        $this->assertInstanceOf(__NAMESPACE__ . '\LinkedList', $collection);
+        $this->assertSame(array(1, 2, 3), $collection->elements());
+    }
+
     public function testSerialization()
     {
         $this->collection->pushBack(1);

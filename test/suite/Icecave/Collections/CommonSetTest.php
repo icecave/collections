@@ -110,6 +110,19 @@ class CommonSetTest extends ParameterizedTestCase
         $this->verifyElements(1, 2, 3);
     }
 
+    public function testCreate()
+    {
+        $collection = call_user_func(
+            $this->className . '::create',
+            1,
+            2,
+            3
+        );
+
+        $this->assertInstanceOf($this->className, $collection);
+        $this->verifyElements(1, 2, 3, $collection);
+    }
+
     ///////////////////////////////////////////
     // Implementation of CollectionInterface //
     ///////////////////////////////////////////

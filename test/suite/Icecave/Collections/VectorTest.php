@@ -47,6 +47,14 @@ class VectorTest extends PHPUnit_Framework_TestCase
         $this->assertSame(array(1, 2, 3), $this->collection->elements());
     }
 
+    public function testCreate()
+    {
+        $collection = Vector::create(1, 2, 3);
+
+        $this->assertInstanceOf(__NAMESPACE__ . '\Vector', $collection);
+        $this->assertSame(array(1, 2, 3), $collection->elements());
+    }
+
     public function testSerialization()
     {
         $this->collection->pushBack(1);

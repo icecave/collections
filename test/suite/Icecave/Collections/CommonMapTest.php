@@ -123,6 +123,19 @@ class CommonMapTest extends ParameterizedTestCase
         $this->verifyElements(array(10, 1), array(20, 2), array(30, 3));
     }
 
+    public function testCreate()
+    {
+        $collection = call_user_func(
+            $this->className . '::create',
+            array(10, 1),
+            array(20, 2),
+            array(30, 3)
+        );
+
+        $this->assertInstanceOf($this->className, $collection);
+        $this->verifyElements(array(10, 1), array(20, 2), array(30, 3), $collection);
+    }
+
     ///////////////////////////////////////////
     // Implementation of CollectionInterface //
     ///////////////////////////////////////////

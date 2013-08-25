@@ -27,7 +27,7 @@ class LinkedListTypeCheck extends \Icecave\Collections\TypeCheck\AbstractValidat
             };
             if (!$check($arguments[0])) {
                 throw new \Icecave\Collections\TypeCheck\Exception\UnexpectedArgumentValueException(
-                    'collection',
+                    'elements',
                     0,
                     $arguments[0],
                     'mixed<mixed>|null'
@@ -41,6 +41,11 @@ class LinkedListTypeCheck extends \Icecave\Collections\TypeCheck\AbstractValidat
         if (\count($arguments) > 0) {
             throw new \Icecave\Collections\TypeCheck\Exception\UnexpectedArgumentException(0, $arguments[0]);
         }
+    }
+
+    public function create(array $arguments)
+    {
+        $argumentCount = \count($arguments);
     }
 
     public function size(array $arguments)

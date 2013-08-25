@@ -8,7 +8,7 @@ class PriorityQueueTest extends PHPUnit_Framework_TestCase
     public function setUp()
     {
         $this->prioritizer = __CLASS__ . '::identityPrioritizer';
-        $this->collection = new PriorityQueue($this->prioritizer);
+        $this->collection = new PriorityQueue(null, $this->prioritizer);
     }
 
     public static function identityPrioritizer($value)
@@ -23,8 +23,24 @@ class PriorityQueueTest extends PHPUnit_Framework_TestCase
 
     public function testConstructorWithArray()
     {
-        $collection = new PriorityQueue($this->prioritizer, array(1, 2, 3));
+        $collection = new PriorityQueue(array(1, 2, 3), $this->prioritizer);
         $this->assertSame(3, $collection->size());
+        $this->assertSame(3, $collection->pop());
+        $this->assertSame(2, $collection->pop());
+        $this->assertSame(1, $collection->pop());
+        $this->assertSame(0, $collection->size());
+    }
+
+    public function testCreate()
+    {
+        $collection = PriorityQueue::create(1, 2, 3);
+
+        $this->assertInstanceOf(__NAMESPACE__ . '\PriorityQueue', $collection);
+        $this->assertSame(3, $collection->size());
+        $this->assertSame(3, $collection->pop());
+        $this->assertSame(2, $collection->pop());
+        $this->assertSame(1, $collection->pop());
+        $this->assertSame(0, $collection->size());
     }
 
     public function testSerialization()
@@ -195,8 +211,8 @@ class PriorityQueueTest extends PHPUnit_Framework_TestCase
 
     public function testCanCompare()
     {
-        $this->assertTrue($this->collection->canCompare(new PriorityQueue($this->prioritizer)));
-        $this->assertFalse($this->collection->canCompare(new PriorityQueue(function () {})));
+        $this->assertTrue($this->collection->canCompare(new PriorityQueue(null, $this->prioritizer)));
+        $this->assertFalse($this->collection->canCompare(new PriorityQueue(null, function () {})));
         $this->assertFalse($this->collection->canCompare(new Queue));
         $this->assertFalse($this->collection->canCompare(array()));
     }

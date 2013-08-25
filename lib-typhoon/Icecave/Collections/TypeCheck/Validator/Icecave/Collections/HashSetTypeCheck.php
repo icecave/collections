@@ -27,7 +27,7 @@ class HashSetTypeCheck extends \Icecave\Collections\TypeCheck\AbstractValidator
             };
             if (!$check($arguments[0])) {
                 throw new \Icecave\Collections\TypeCheck\Exception\UnexpectedArgumentValueException(
-                    'collection',
+                    'elements',
                     0,
                     $arguments[0],
                     'mixed<mixed>|null'
@@ -45,6 +45,11 @@ class HashSetTypeCheck extends \Icecave\Collections\TypeCheck\AbstractValidator
                 );
             }
         }
+    }
+
+    public function create(array $arguments)
+    {
+        $argumentCount = \count($arguments);
     }
 
     public function size(array $arguments)

@@ -17,15 +17,37 @@ use SplPriorityQueue;
 class PriorityQueue extends Queue implements Serializable
 {
     /**
-     * @param callable          $prioritizer A function used to generate the priority for a given element.
-     * @param mixed<mixed>|null $collection  An iterable type containing the elements to include in this list, or null to create an empty list.
+     * The default prioritizer simply uses each element as its own priority.
+     *
+     * @param mixed<mixed>|null $elements    An iterable type containing the elements to include in this list, or null to create an empty list.
+     * @param callable|null     $prioritizer A function used to generate the priority for a given element, or null to use the default.
      */
-    public function __construct($prioritizer, $collection = null)
+    public function __construct($elements = null, $prioritizer = null)
     {
         $this->typeCheck = TypeCheck::get(__CLASS__, func_get_args());
 
+        if (null === $prioritizer) {
+            $prioritizer = function ($element) {
+                return $element;
+            };
+        }
         $this->prioritizer = $prioritizer;
-        parent::__construct($collection);
+
+        parent::__construct($elements);
+    }
+
+    /**
+     * Create a PriorityQueue.
+     *
+     * @param mixed $element,... Elements to include in the collection.
+     *
+     * @return PriorityQueue
+     */
+    public static function create()
+    {
+        TypeCheck::get(__CLASS__)->create(func_get_args());
+
+        return new static(func_get_args());
     }
 
     ///////////////////////////////////////////
@@ -137,8 +159,8 @@ class PriorityQueue extends Queue implements Serializable
 
         return serialize(
             array(
-                $this->prioritizer,
-                iterator_to_array($this->elements)
+                iterator_to_array($this->elements),
+                $this->prioritizer
             )
         );
     }
@@ -152,8 +174,8 @@ class PriorityQueue extends Queue implements Serializable
     {
         TypeCheck::get(__CLASS__)->unserialize(func_get_args());
 
-        list($prioritizer, $elements) = unserialize($packet);
-        $this->__construct($prioritizer, $elements);
+        list($elements, $prioritizer) = unserialize($packet);
+        $this->__construct($elements, $prioritizer);
     }
 
     /////////////////////////////////////////////////////

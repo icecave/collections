@@ -18,10 +18,10 @@ use Serializable;
 class HashSet implements SetInterface, IteratorAggregate, Serializable
 {
     /**
-     * @param mixed<mixed>|null $collection   An iterable type containing the elements to include in this set, or null to create an empty set.
+     * @param mixed<mixed>|null $elements     An iterable type containing the elements to include in this set, or null to create an empty set.
      * @param callable|null     $hashFunction The function to use for generating hashes of elements, or null to use the default.
      */
-    public function __construct($collection = null, $hashFunction = null)
+    public function __construct($elements = null, $hashFunction = null)
     {
         $this->typeCheck = TypeCheck::get(__CLASS__, func_get_args());
 
@@ -32,11 +32,23 @@ class HashSet implements SetInterface, IteratorAggregate, Serializable
         $this->hashFunction = $hashFunction;
         $this->elements = array();
 
-        if (null !== $collection) {
-            foreach ($collection as $element) {
-                $this->add($element);
-            }
+        if (null !== $elements) {
+            $this->addMany($elements);
         }
+    }
+
+    /**
+     * Create a HashSet.
+     *
+     * @param mixed $element,... Elements to include in the set.
+     *
+     * @return HashSet
+     */
+    public static function create()
+    {
+        TypeCheck::get(__CLASS__)->create(func_get_args());
+
+        return new static(func_get_args());
     }
 
     ///////////////////////////////////////////

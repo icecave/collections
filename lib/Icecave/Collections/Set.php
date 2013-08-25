@@ -16,10 +16,10 @@ use Serializable;
 class Set implements SetInterface, IteratorAggregate, Serializable
 {
     /**
-     * @param mixed<mixed>|null $collection An iterable type containing the elements to include in this set, or null to create an empty set.
+     * @param mixed<mixed>|null $elements   An iterable type containing the elements to include in this set, or null to create an empty set.
      * @param callable|null     $comparator The function to use for comparing elements, or null to use the default.
      */
-    public function __construct($collection = null, $comparator = null)
+    public function __construct($elements = null, $comparator = null)
     {
         $this->typeCheck = TypeCheck::get(__CLASS__, func_get_args());
 
@@ -30,10 +30,8 @@ class Set implements SetInterface, IteratorAggregate, Serializable
         $this->comparator = $comparator;
         $this->elements = new Vector;
 
-        if (null !== $collection) {
-            foreach ($collection as $element) {
-                $this->add($element);
-            }
+        if (null !== $elements) {
+            $this->addMany($elements);
         }
     }
 
@@ -42,6 +40,20 @@ class Set implements SetInterface, IteratorAggregate, Serializable
         $this->typeCheck->validateClone(func_get_args());
 
         $this->elements = clone $this->elements;
+    }
+
+    /**
+     * Create a Set.
+     *
+     * @param mixed $element,... Elements to include in the collection.
+     *
+     * @return Set
+     */
+    public static function create()
+    {
+        TypeCheck::get(__CLASS__)->create(func_get_args());
+
+        return new static(func_get_args());
     }
 
     ///////////////////////////////////////////

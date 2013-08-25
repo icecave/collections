@@ -17,19 +17,19 @@ use SplFixedArray;
 class Vector implements MutableRandomAccessInterface, Countable, Iterator, SeekableIterator, ArrayAccess, Serializable
 {
     /**
-     * @param mixed<mixed>|null $collection An iterable type containing the elements to include in this vector, or null to create an empty vector.
+     * @param mixed<mixed>|null $elements An iterable type containing the elements to include in this vector, or null to create an empty vector.
      */
-    public function __construct($collection = null)
+    public function __construct($elements = null)
     {
         $this->typeCheck = TypeCheck::get(__CLASS__, func_get_args());
 
-        if (is_array($collection)) {
-            $this->elements = SplFixedArray::fromArray($collection, false);
-            $this->size = count($collection);
+        if (is_array($elements)) {
+            $this->elements = SplFixedArray::fromArray($elements, false);
+            $this->size = count($elements);
         } else {
             $this->clear();
-            if (null !== $collection) {
-                $this->insertMany(0, $collection);
+            if (null !== $elements) {
+                $this->insertMany(0, $elements);
             }
         }
     }
@@ -39,6 +39,20 @@ class Vector implements MutableRandomAccessInterface, Countable, Iterator, Seeka
         $this->typeCheck->validateClone(func_get_args());
 
         $this->elements = clone $this->elements;
+    }
+
+    /**
+     * Create a Vector.
+     *
+     * @param mixed $element,... Elements to include in the collection.
+     *
+     * @return Vector
+     */
+    public static function create()
+    {
+        TypeCheck::get(__CLASS__)->create(func_get_args());
+
+        return new static(func_get_args());
     }
 
     ///////////////////////////////////////////

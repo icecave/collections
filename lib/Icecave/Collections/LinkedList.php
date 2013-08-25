@@ -15,16 +15,16 @@ use stdClass;
 class LinkedList implements MutableRandomAccessInterface, Countable, Iterator, Serializable
 {
     /**
-     * @param mixed<mixed>|null $collection An iterable type containing the elements to include in this list, or null to create an empty list.
+     * @param mixed<mixed>|null $elements An iterable type containing the elements to include in this list, or null to create an empty list.
      */
-    public function __construct($collection = null)
+    public function __construct($elements = null)
     {
         $this->typeCheck = TypeCheck::get(__CLASS__, func_get_args());
 
         $this->clear();
 
-        if (null !== $collection) {
-            $this->insertMany(0, $collection);
+        if (null !== $elements) {
+            $this->insertMany(0, $elements);
         }
     }
 
@@ -59,6 +59,20 @@ class LinkedList implements MutableRandomAccessInterface, Countable, Iterator, S
         }
 
         $this->tail = $prev;
+    }
+
+    /**
+     * Create a LinkedList.
+     *
+     * @param mixed $element,... Elements to include in the collection.
+     *
+     * @return LinkedList
+     */
+    public static function create()
+    {
+        TypeCheck::get(__CLASS__)->create(func_get_args());
+
+        return new static(func_get_args());
     }
 
     ///////////////////////////////////////////
