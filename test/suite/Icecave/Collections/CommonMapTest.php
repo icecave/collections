@@ -926,4 +926,66 @@ class CommonMapTest extends ParameterizedTestCase
 
         $this->assertTrue($this->collection->isEmpty());
     }
+
+    ////////////////////////////////////////////////////////////////
+    // Implementation of [Restricted|Extended]ComparableInterface //
+    ////////////////////////////////////////////////////////////////
+
+    /**
+     * @dataProvider getCompareData
+     */
+    public function testCompare($lhs, $rhs, $expectedResult)
+    {
+        $lhs = $this->createMap($lhs);
+        $rhs = $this->createMap($rhs);
+
+        $cmp = $lhs->compare($rhs);
+
+        if ($expectedResult < 0) {
+            $this->assertLessThan(0, $cmp);
+        } elseif ($expectedResult > 0) {
+            $this->assertGreaterThan(0, $cmp);
+        } else {
+            $this->assertSame(0, $cmp);
+        }
+
+        $this->assertSame($expectedResult === 0, $lhs->isEqualTo($rhs));
+        $this->assertSame($expectedResult === 0, $rhs->isEqualTo($lhs));
+
+        $this->assertSame($expectedResult !== 0, $lhs->isNotEqualTo($rhs));
+        $this->assertSame($expectedResult !== 0, $rhs->isNotEqualTo($lhs));
+
+        $this->assertSame($expectedResult < 0, $lhs->isLessThan($rhs));
+        $this->assertSame($expectedResult > 0, $rhs->isLessThan($lhs));
+
+        $this->assertSame($expectedResult > 0, $lhs->isGreaterThan($rhs));
+        $this->assertSame($expectedResult < 0, $rhs->isGreaterThan($lhs));
+
+        $this->assertSame($expectedResult <= 0, $lhs->isLessThanOrEqualTo($rhs));
+        $this->assertSame($expectedResult >= 0, $rhs->isLessThanOrEqualTo($lhs));
+
+        $this->assertSame($expectedResult >= 0, $lhs->isGreaterThanOrEqualTo($rhs));
+        $this->assertSame($expectedResult <= 0, $rhs->isGreaterThanOrEqualTo($lhs));
+    }
+
+    public function testCompareFailure()
+    {
+        $this->setExpectedException('Icecave\Parity\Exception\NotComparableException');
+        $collection = $this->createMap();
+        $collection->compare(array());
+    }
+
+    public function getCompareData()
+    {
+        return array(
+            'empty'          => array(array(),                                     array(),                                      0),
+            'smaller'        => array(array(array(1, 'value')),                    array(1, 2),                                 -1),
+            'larger'         => array(array(array(1, 'value'), array(2, 'value')), array(array(1, 'value')),                    +1),
+            'same'           => array(array(array(1, 'value'), array(2, 'value')), array(array(1, 'value'), array(2, 'value')),  0),
+            'lesser'         => array(array(array(1, 'value'), array(2, 'value')), array(array(1, 'value'), array(3, 'value')), -1),
+            'greater'        => array(array(array(1, 'value'), array(2, 'value')), array(array(1, 'value'), array(1, 'value')), +1),
+            'lesser by key'  => array(array(array(1, 'value'), array(2, 'b')),     array(array(1, 'value'), array(2, 'c')),     -1),
+            'greater by key' => array(array(array(1, 'value'), array(2, 'b')),     array(array(1, 'value'), array(2, 'a')),     +1),
+        );
+    }
 }

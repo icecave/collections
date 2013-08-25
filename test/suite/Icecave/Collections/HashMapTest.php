@@ -36,4 +36,13 @@ class HashMapTest extends PHPUnit_Framework_TestCase
 
         $this->assertSame('sha1', Liberator::liberate($collection)->hashFunction);
     }
+
+    public function testCanCompare()
+    {
+        $collection = new HashMap;
+
+        $this->assertTrue($collection->canCompare(new HashMap));
+        $this->assertFalse($collection->canCompare(new HashMap(null, function() {})));
+        $this->assertFalse($collection->canCompare(array()));
+    }
 }

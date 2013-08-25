@@ -32,4 +32,13 @@ class MapTest extends PHPUnit_Framework_TestCase
 
         $this->assertSame('strcmp', Liberator::liberate($collection)->comparator);
     }
+
+    public function testCanCompare()
+    {
+        $collection = new Map;
+
+        $this->assertTrue($collection->canCompare(new Map));
+        $this->assertFalse($collection->canCompare(new Map(null, function() {})));
+        $this->assertFalse($collection->canCompare(array()));
+    }
 }

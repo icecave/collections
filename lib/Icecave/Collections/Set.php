@@ -4,6 +4,7 @@ namespace Icecave\Collections;
 use Countable;
 use Icecave\Collections\Iterator\Traits;
 use Icecave\Collections\TypeCheck\TypeCheck;
+use Icecave\Parity\Exception\NotComparableException;
 use Icecave\Repr\Repr;
 use InvalidArgumentException;
 use IteratorAggregate;
@@ -377,9 +378,9 @@ class Set implements SetInterface, IteratorAggregate, Serializable
         $this->elements->append($elements);
     }
 
-    ////////////////////////////
-    // Model specific methods //
-    ////////////////////////////
+    ////////////////////////////////////
+    // Implementation of SetInterface //
+    ////////////////////////////////////
 
     /**
      * Return the first of the given elements that is contained in the set.
@@ -1465,6 +1466,140 @@ class Set implements SetInterface, IteratorAggregate, Serializable
             }
         }
     }
+
+    ///////////////////////////////////////////
+    // Implementation of ComparableInterface //
+    ///////////////////////////////////////////
+
+    /**
+     * Compare this object with another value, yielding a result according to the following table:
+     *
+     * +--------------------+---------------+
+     * | Condition          | Result        |
+     * +--------------------+---------------+
+     * | $this == $value    | $result === 0 |
+     * | $this < $value     | $result < 0   |
+     * | $this > $value     | $result > 0   |
+     * +--------------------+---------------+
+     *
+     * @param mixed $value The value to compare.
+     *
+     * @return integer                                         The result of the comparison.
+     * @throws Icecave\Parity\Exception\NotComparableException Indicates that the implementation does not know how to compare $this to $value.
+     */
+    public function compare($value)
+    {
+        $this->typeCheck->compare(func_get_args());
+
+        if (!$this->canCompare($value)) {
+            throw new NotComparableException($this, $value);
+        }
+
+        return Collection::compare($this->elements, $value->elements);
+    }
+
+    /////////////////////////////////////////////////////
+    // Implementation of RestrictedComparableInterface //
+    /////////////////////////////////////////////////////
+
+    /**
+     * Check if $this is able to be compared to another value.
+     *
+     * A return value of false indicates that calling $this->compare($value)
+     * will throw an exception.
+     *
+     * @param mixed $value The value to compare.
+     *
+     * @return boolean True if $this can be compared to $value.
+     */
+    public function canCompare($value)
+    {
+        $this->typeCheck->canCompare(func_get_args());
+
+        return is_object($value)
+            && __CLASS__ === get_class($value)
+            && $this->comparator == $value->comparator;
+    }
+
+    ///////////////////////////////////////////////////
+    // Implementation of ExtendedComparableInterface //
+    ///////////////////////////////////////////////////
+
+    /**
+     * @param mixed $value The value to compare.
+     *
+     * @return boolean True if $this == $value.
+     */
+    public function isEqualTo($value)
+    {
+        $this->typeCheck->isEqualTo(func_get_args());
+
+        return $this->compare($value) === 0;
+    }
+
+    /**
+     * @param mixed $value The value to compare.
+     *
+     * @return boolean True if $this != $value.
+     */
+    public function isNotEqualTo($value)
+    {
+        $this->typeCheck->isNotEqualTo(func_get_args());
+
+        return $this->compare($value) !== 0;
+    }
+
+    /**
+     * @param mixed $value The value to compare.
+     *
+     * @return boolean True if $this < $value.
+     */
+    public function isLessThan($value)
+    {
+        $this->typeCheck->isLessThan(func_get_args());
+
+        return $this->compare($value) < 0;
+    }
+
+    /**
+     * @param mixed $value The value to compare.
+     *
+     * @return boolean True if $this > $value.
+     */
+    public function isGreaterThan($value)
+    {
+        $this->typeCheck->isGreaterThan(func_get_args());
+
+        return $this->compare($value) > 0;
+    }
+
+    /**
+     * @param mixed $value The value to compare.
+     *
+     * @return boolean True if $this <= $value.
+     */
+    public function isLessThanOrEqualTo($value)
+    {
+        $this->typeCheck->isLessThanOrEqualTo(func_get_args());
+
+        return $this->compare($value) <= 0;
+    }
+
+    /**
+     * @param mixed $value The value to compare.
+     *
+     * @return boolean True if $this >= $value.
+     */
+    public function isGreaterThanOrEqualTo($value)
+    {
+        $this->typeCheck->isGreaterThanOrEqualTo(func_get_args());
+
+        return $this->compare($value) >= 0;
+    }
+
+    ////////////////////////////
+    // Model specific methods //
+    ////////////////////////////
 
     /**
      * @param mixed $lhs

@@ -1461,6 +1461,71 @@ class VectorTest extends PHPUnit_Framework_TestCase
         $this->assertSame(array('foo', 'spam'), $this->collection->elements());
     }
 
+    ////////////////////////////////////////////////////////////////
+    // Implementation of [Restricted|Extended]ComparableInterface //
+    ////////////////////////////////////////////////////////////////
+
+    /**
+     * @dataProvider getCompareData
+     */
+    public function testCompare($lhs, $rhs, $expectedResult)
+    {
+        $lhs = new Vector($lhs);
+        $rhs = new Vector($rhs);
+
+        $cmp = $lhs->compare($rhs);
+
+        if ($expectedResult < 0) {
+            $this->assertLessThan(0, $cmp);
+        } elseif ($expectedResult > 0) {
+            $this->assertGreaterThan(0, $cmp);
+        } else {
+            $this->assertSame(0, $cmp);
+        }
+
+        $this->assertSame($expectedResult === 0, $lhs->isEqualTo($rhs));
+        $this->assertSame($expectedResult === 0, $rhs->isEqualTo($lhs));
+
+        $this->assertSame($expectedResult !== 0, $lhs->isNotEqualTo($rhs));
+        $this->assertSame($expectedResult !== 0, $rhs->isNotEqualTo($lhs));
+
+        $this->assertSame($expectedResult < 0, $lhs->isLessThan($rhs));
+        $this->assertSame($expectedResult > 0, $rhs->isLessThan($lhs));
+
+        $this->assertSame($expectedResult > 0, $lhs->isGreaterThan($rhs));
+        $this->assertSame($expectedResult < 0, $rhs->isGreaterThan($lhs));
+
+        $this->assertSame($expectedResult <= 0, $lhs->isLessThanOrEqualTo($rhs));
+        $this->assertSame($expectedResult >= 0, $rhs->isLessThanOrEqualTo($lhs));
+
+        $this->assertSame($expectedResult >= 0, $lhs->isGreaterThanOrEqualTo($rhs));
+        $this->assertSame($expectedResult <= 0, $rhs->isGreaterThanOrEqualTo($lhs));
+    }
+
+    public function testCompareFailure()
+    {
+        $this->setExpectedException('Icecave\Parity\Exception\NotComparableException');
+        $this->collection->compare(array());
+    }
+
+    public function testCanCompare()
+    {
+        $this->assertTrue($this->collection->canCompare(new Vector));
+        $this->assertFalse($this->collection->canCompare(array()));
+    }
+
+    public function getCompareData()
+    {
+        return array(
+            'empty'         => array(array(),     array(),      0),
+            'smaller'       => array(array(1),    array(1, 2), -1),
+            'larger'        => array(array(1, 2), array(1),    +1),
+            'same'          => array(array(1, 2), array(1, 2),  0),
+            'lesser'        => array(array(1, 0), array(1, 1), -1),
+            'greater'       => array(array(1, 1), array(1, 0), +1),
+        );
+    }
+
     ////////////////////////////
     // Model specific methods //
     ////////////////////////////

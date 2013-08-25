@@ -122,4 +122,14 @@ class PriorityQueueTypeCheck extends \Icecave\Collections\TypeCheck\AbstractVali
         }
     }
 
+    public function canCompare(array $arguments)
+    {
+        $argumentCount = \count($arguments);
+        if ($argumentCount < 1) {
+            throw new \Icecave\Collections\TypeCheck\Exception\MissingArgumentException('value', 0, 'mixed');
+        } elseif ($argumentCount > 1) {
+            throw new \Icecave\Collections\TypeCheck\Exception\UnexpectedArgumentException(1, $arguments[1]);
+        }
+    }
+
 }

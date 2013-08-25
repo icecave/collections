@@ -156,5 +156,29 @@ class PriorityQueue extends Queue implements Serializable
         $this->__construct($prioritizer, $elements);
     }
 
+    /////////////////////////////////////////////////////
+    // Implementation of RestrictedComparableInterface //
+    /////////////////////////////////////////////////////
+
+    /**
+     * Check if $this is able to be compared to another value.
+     *
+     * A return value of false indicates that calling $this->compare($value)
+     * will throw an exception.
+     *
+     * @param mixed $value The value to compare.
+     *
+     * @return boolean True if $this can be compared to $value.
+     */
+    public function canCompare($value)
+    {
+        $this->typeCheck->canCompare(func_get_args());
+
+        return is_object($value)
+            && __CLASS__ === get_class($value)
+            && $this->prioritizer == $value->prioritizer;
+    }
+
     private $typeCheck;
+    private $prioritizer;
 }

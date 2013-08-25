@@ -189,4 +189,27 @@ class PriorityQueueTest extends PHPUnit_Framework_TestCase
         $this->assertSame(0, $this->collection->next());
     }
 
+    ////////////////////////////////////////////////////////////////
+    // Implementation of [Restricted|Extended]ComparableInterface //
+    ////////////////////////////////////////////////////////////////
+
+    public function testCanCompare()
+    {
+        $this->assertTrue($this->collection->canCompare(new PriorityQueue($this->prioritizer)));
+        $this->assertFalse($this->collection->canCompare(new PriorityQueue(function () {})));
+        $this->assertFalse($this->collection->canCompare(new Queue));
+        $this->assertFalse($this->collection->canCompare(array()));
+    }
+
+    public function getCompareData()
+    {
+        return array(
+            'empty'         => array(array(),     array(),      0),
+            'smaller'       => array(array(1),    array(1, 2), -1),
+            'larger'        => array(array(1, 2), array(1),    +1),
+            'same'          => array(array(1, 2), array(1, 2),  0),
+            'lesser'        => array(array(1, 0), array(1, 1), -1),
+            'greater'       => array(array(1, 1), array(1, 0), +1),
+        );
+    }
 }

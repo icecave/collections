@@ -650,6 +650,64 @@ class CollectionTypeCheck extends \Icecave\Collections\TypeCheck\AbstractValidat
         }
     }
 
+    public function compare(array $arguments)
+    {
+        $argumentCount = \count($arguments);
+        if ($argumentCount < 2) {
+            if ($argumentCount < 1) {
+                throw new \Icecave\Collections\TypeCheck\Exception\MissingArgumentException('lhs', 0, 'mixed<mixed>');
+            }
+            throw new \Icecave\Collections\TypeCheck\Exception\MissingArgumentException('rhs', 1, 'mixed<mixed>');
+        } elseif ($argumentCount > 3) {
+            throw new \Icecave\Collections\TypeCheck\Exception\UnexpectedArgumentException(3, $arguments[3]);
+        }
+        $value = $arguments[0];
+        $check = function ($value) {
+            if (!\is_array($value) && !$value instanceof \Traversable) {
+                return false;
+            }
+            foreach ($value as $key => $subValue) {
+            }
+            return true;
+        };
+        if (!$check($arguments[0])) {
+            throw new \Icecave\Collections\TypeCheck\Exception\UnexpectedArgumentValueException(
+                'lhs',
+                0,
+                $arguments[0],
+                'mixed<mixed>'
+            );
+        }
+        $value = $arguments[1];
+        $check = function ($value) {
+            if (!\is_array($value) && !$value instanceof \Traversable) {
+                return false;
+            }
+            foreach ($value as $key => $subValue) {
+            }
+            return true;
+        };
+        if (!$check($arguments[1])) {
+            throw new \Icecave\Collections\TypeCheck\Exception\UnexpectedArgumentValueException(
+                'rhs',
+                1,
+                $arguments[1],
+                'mixed<mixed>'
+            );
+        }
+        if ($argumentCount > 2) {
+            $value = $arguments[2];
+            if (!\is_callable($value)) {
+                throw new \Icecave\Collections\TypeCheck\Exception\UnexpectedArgumentValueException(
+                    'comparator',
+                    2,
+                    $arguments[2],
+                    'callable'
+                );
+            }
+        }
+    }
+
     public function lowerBound(array $arguments)
     {
         $argumentCount = \count($arguments);
@@ -826,6 +884,16 @@ class CollectionTypeCheck extends \Icecave\Collections\TypeCheck\AbstractValidat
                     'integer|null'
                 );
             }
+        }
+    }
+
+    public function trySize(array $arguments)
+    {
+        $argumentCount = \count($arguments);
+        if ($argumentCount < 1) {
+            throw new \Icecave\Collections\TypeCheck\Exception\MissingArgumentException('collection', 0, 'mixed');
+        } elseif ($argumentCount > 1) {
+            throw new \Icecave\Collections\TypeCheck\Exception\UnexpectedArgumentException(1, $arguments[1]);
         }
     }
 

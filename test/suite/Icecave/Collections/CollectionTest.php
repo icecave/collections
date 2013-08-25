@@ -2,18 +2,19 @@
 namespace Icecave\Collections;
 
 use ArrayIterator;
-use LimitIterator;
 use Icecave\Collections\Iterator\Traits;
-use PHPUnit_Framework_TestCase;
+use Icecave\Collections\TestFixtures\UncountableIterator;
+use LimitIterator;
 use Phake;
+use PHPUnit_Framework_TestCase;
 use SplDoublyLinkedList;
-use SplStack;
-use SplQueue;
+use SplFixedArray;
 use SplMaxHeap;
 use SplMinHeap;
-use SplPriorityQueue;
-use SplFixedArray;
 use SplObjectStorage;
+use SplPriorityQueue;
+use SplQueue;
+use SplStack;
 
 class CollectionTest extends PHPUnit_Framework_TestCase
 {
@@ -575,6 +576,79 @@ class CollectionTest extends PHPUnit_Framework_TestCase
             array(new Traits(true,  false), $this->countable),
             array(new Traits(false, false), $this->traversable),
         );
+    }
+
+    /**
+     * @dataProvider getCompareData
+     */
+    public function testCompare($lhs, $rhs, $expectedResult)
+    {
+        $cmp = Collection::compare($lhs, $rhs);
+
+        if ($expectedResult < 0) {
+            $this->assertLessThan(0, $cmp);
+        } elseif ($expectedResult > 0) {
+            $this->assertGreaterThan(0, $cmp);
+        } else {
+            $this->assertSame(0, $cmp);
+        }
+    }
+
+    /**
+     * @dataProvider getCompareData
+     */
+    public function testCompareWithCustomComparator($lhs, $rhs, $expectedResult)
+    {
+        $inverseComparator = function ($lhs, $rhs) {
+            return $rhs - $lhs;
+        };
+
+        $cmp = Collection::compare($lhs, $rhs, $inverseComparator);
+
+        if ($expectedResult < 0) {
+            $this->assertGreaterThan(0, $cmp);
+        } elseif ($expectedResult > 0) {
+            $this->assertLessThan(0, $cmp);
+        } else {
+            $this->assertSame(0, $cmp);
+        }
+    }
+
+    public function getCompareData()
+    {
+        $arrayData = array(
+            'empty'         => array(array(),     array(),      0),
+            'smaller'       => array(array(1),    array(1, 2), -1),
+            'larger'        => array(array(1, 2), array(1),    +1),
+            'same'          => array(array(1, 2), array(1, 2),  0),
+            'lesser'        => array(array(1, 0), array(1, 1), -1),
+            'greater'       => array(array(1, 1), array(1, 0), +1),
+        );
+
+        $data = array();
+
+        foreach ($arrayData as $name => $parameters) {
+            list($lhs, $rhs, $result) = $parameters;
+            $data[$name . ', both uncountable'] = array(
+                new UncountableIterator($lhs),
+                new UncountableIterator($rhs),
+                $result
+            );
+
+            $data[$name . ', lhs uncountable'] = array(
+                new UncountableIterator($lhs),
+                $rhs,
+                $result
+            );
+
+            $data[$name . ', rhs uncountable'] = array(
+                $lhs,
+                new UncountableIterator($rhs),
+                $result
+            );
+        }
+
+        return array_merge($arrayData, $data);
     }
 
     /**
