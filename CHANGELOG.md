@@ -5,6 +5,7 @@
 This release includes numerous naming changes to improve consistency across the project. Please be aware that some new
 methods and classes have been added with the same name as existing methods which have been renamed.
 
+* **[BC]** The `mbstring` extension is now required
 * **[BC]** Renamed `MutableAssociativeInterface::merge()` to `mergeInPlace()`
 * **[BC]** Renamed `AssociativeInterface::combine()` to `merge()`
 * **[BC]** Renamed `MutableIterableInterface::filter()` to `filterInPlace()`
