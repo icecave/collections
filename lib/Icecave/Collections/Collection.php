@@ -660,6 +660,8 @@ abstract class Collection
      */
     public static function compare($lhs, $rhs, $comparator = 'Icecave\Parity\Parity::compare')
     {
+        TypeCheck::get(__CLASS__)->compare(func_get_args());
+
         $lhsSize = static::trySize($lhs);
         $rhsSize = static::trySize($rhs);
 
