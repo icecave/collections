@@ -13,7 +13,7 @@ use Traversable;
 class SequentialKeyIterator extends IteratorIterator
 {
     /**
-     * @param Traversable $iterator The collection to iterate.
+     * @param Traversable $iterator The collection to be iterated.
      */
     public function __construct(Traversable $iterator)
     {
@@ -25,6 +25,8 @@ class SequentialKeyIterator extends IteratorIterator
     }
 
     /**
+     * Fetch the current key.
+     *
      * @return integer The current key.
      */
     public function key()

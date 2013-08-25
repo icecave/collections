@@ -1,36 +1,59 @@
 <?php
 namespace Icecave\Collections;
 
-use ArrayIterator;
 use Countable;
-use Icecave\Collections\Iterator\SequentialKeyIterator;
+use Icecave\Collections\Iterator\Traits;
 use Icecave\Collections\TypeCheck\TypeCheck;
+use Icecave\Parity\Exception\NotComparableException;
 use Icecave\Repr\Repr;
+use InvalidArgumentException;
 use IteratorAggregate;
 use Serializable;
 
-class Set implements MutableIterableInterface, Countable, IteratorAggregate, Serializable
+/**
+ * An iterable collection with unique elements.
+ */
+class Set implements SetInterface, IteratorAggregate, Serializable
 {
     /**
-     * @param mixed<mixed>|null $collection   An iterable type containing the elements to include in this set, or null to create an empty set.
-     * @param callable|null     $hashFunction The function to use for generating hashes of elements, or null to use the default.
+     * @param mixed<mixed>|null $elements   An iterable type containing the elements to include in this set, or null to create an empty set.
+     * @param callable|null     $comparator The function to use for comparing elements, or null to use the default.
      */
-    public function __construct($collection = null, $hashFunction = null)
+    public function __construct($elements = null, $comparator = null)
     {
         $this->typeCheck = TypeCheck::get(__CLASS__, func_get_args());
 
-        if (null === $hashFunction) {
-            $hashFunction = new AssociativeKeyGenerator;
+        if (null === $comparator) {
+            $comparator = new Detail\ObjectIdentityComparator;
         }
 
-        $this->hashFunction = $hashFunction;
-        $this->elements = array();
+        $this->comparator = $comparator;
+        $this->elements = new Vector;
 
-        if (null !== $collection) {
-            foreach ($collection as $element) {
-                $this->add($element);
-            }
+        if (null !== $elements) {
+            $this->addMany($elements);
         }
+    }
+
+    public function __clone()
+    {
+        $this->typeCheck->validateClone(func_get_args());
+
+        $this->elements = clone $this->elements;
+    }
+
+    /**
+     * Create a Set.
+     *
+     * @param mixed $element,... Elements to include in the collection.
+     *
+     * @return Set
+     */
+    public static function create()
+    {
+        TypeCheck::get(__CLASS__)->create(func_get_args());
+
+        return new static(func_get_args());
     }
 
     ///////////////////////////////////////////
@@ -48,7 +71,7 @@ class Set implements MutableIterableInterface, Countable, IteratorAggregate, Ser
     {
         $this->typeCheck->size(func_get_args());
 
-        return count($this->elements);
+        return $this->elements->size();
     }
 
     /**
@@ -60,7 +83,7 @@ class Set implements MutableIterableInterface, Countable, IteratorAggregate, Ser
     {
         $this->typeCheck->isEmpty(func_get_args());
 
-        return empty($this->elements);
+        return $this->elements->isEmpty();
     }
 
     /**
@@ -75,19 +98,7 @@ class Set implements MutableIterableInterface, Countable, IteratorAggregate, Ser
     {
         if ($this->isEmpty()) {
             return '<Set 0>';
-        }
-
-        $elements = array();
-        $index = 0;
-        foreach ($this->elements as $element) {
-            if ($index++ === 3) {
-                break;
-            }
-
-            $elements[] = Repr::repr($element);
-        }
-
-        if ($this->size() > 3) {
+        } elseif ($this->size() > 3) {
             $format = '<Set %d [%s, ...]>';
         } else {
             $format = '<Set %d [%s]>';
@@ -96,7 +107,14 @@ class Set implements MutableIterableInterface, Countable, IteratorAggregate, Ser
         return sprintf(
             $format,
             $this->size(),
-            implode(', ', $elements)
+            implode(
+                ', ',
+                $this
+                    ->elements
+                    ->slice(0, 3)
+                    ->map('Icecave\Repr\Repr::repr')
+                    ->elements()
+            )
         );
     }
 
@@ -111,7 +129,23 @@ class Set implements MutableIterableInterface, Countable, IteratorAggregate, Ser
     {
         $this->typeCheck->clear(func_get_args());
 
-        $this->elements = array();
+        $this->elements->clear();
+    }
+
+    //////////////////////////////////////////////
+    // Implementation of IteratorTraitsProvider //
+    //////////////////////////////////////////////
+
+    /**
+     * Return traits describing the collection's iteration capabilities.
+     *
+     * @return Traits
+     */
+    public function iteratorTraits()
+    {
+        $this->typeCheck->iteratorTraits(func_get_args());
+
+        return new Traits(true, true);
     }
 
     /////////////////////////////////////////
@@ -127,23 +161,21 @@ class Set implements MutableIterableInterface, Countable, IteratorAggregate, Ser
     {
         $this->typeCheck->elements(func_get_args());
 
-        return array_values($this->elements);
+        return $this->elements->elements();
     }
 
     /**
      * Check if the collection contains an element with the given value.
      *
-     * @param mixed $value The value to check.
+     * @param mixed $element The value to check.
      *
-     * @return boolean True if the collection contains $value; otherwise, false.
+     * @return boolean True if the collection contains $element; otherwise, false.
      */
-    public function contains($value)
+    public function contains($element)
     {
         $this->typeCheck->contains(func_get_args());
 
-        $hash = $this->generateHash($value);
-
-        return array_key_exists($hash, $this->elements);
+        return null !== $this->binarySearch($element);
     }
 
     /**
@@ -156,23 +188,12 @@ class Set implements MutableIterableInterface, Countable, IteratorAggregate, Ser
      *
      * @return Set The filtered collection.
      */
-    public function filtered($predicate = null)
+    public function filter($predicate = null)
     {
-        $this->typeCheck->filtered(func_get_args());
+        $this->typeCheck->filter(func_get_args());
 
-        if (null === $predicate) {
-            $predicate = function ($element) {
-                return null !== $element;
-            };
-        }
-
-        $result = new static(null, $this->hashFunction);
-
-        foreach ($this->elements as $element) {
-            if (call_user_func($predicate, $element)) {
-                $result->add($element);
-            }
-        }
+        $result = $this->createSet();
+        $result->elements = $this->elements->filter($predicate);
 
         return $result;
     }
@@ -194,11 +215,10 @@ class Set implements MutableIterableInterface, Countable, IteratorAggregate, Ser
     {
         $this->typeCheck->map(func_get_args());
 
-        $result = new static(null, $this->hashFunction);
-
-        foreach ($this->elements as $element) {
-            $result->add(call_user_func($transform, $element));
-        }
+        $result = $this->createSet();
+        $result->addMany(
+            $this->elements->map($transform)
+        );
 
         return $result;
     }
@@ -210,20 +230,20 @@ class Set implements MutableIterableInterface, Countable, IteratorAggregate, Ser
      *
      * @param callable $predicate A predicate function used to determine which partitioned collection to place the elements in.
      *
-     * @return tuple<IterableInterface, IterableInterface> A 2-tuple containing the partitioned collections. The first collection contains the element for which the predicate returned true.
+     * @return tuple<IterableInterface,IterableInterface> A 2-tuple containing the partitioned collections. The first collection contains the element for which the predicate returned true.
      */
     public function partition($predicate)
     {
         $this->typeCheck->partition(func_get_args());
 
-        $left = new static;
-        $right = new static;
+        $left  = $this->createSet();
+        $right = $this->createSet();
 
         foreach ($this->elements as $element) {
             if (call_user_func($predicate, $element)) {
-                $left->add($element);
+                $left->elements->pushBack($element);
             } else {
-                $right->add($element);
+                $right->elements->pushBack($element);
             }
         }
 
@@ -241,9 +261,7 @@ class Set implements MutableIterableInterface, Countable, IteratorAggregate, Ser
     {
         $this->typeCheck->each(func_get_args());
 
-        foreach ($this->elements as $element) {
-            call_user_func($callback, $element);
-        }
+        $this->elements->each($callback);
     }
 
     /**
@@ -259,13 +277,7 @@ class Set implements MutableIterableInterface, Countable, IteratorAggregate, Ser
     {
         $this->typeCheck->all(func_get_args());
 
-        foreach ($this->elements as $element) {
-            if (!call_user_func($predicate, $element)) {
-                return false;
-            }
-        }
-
-        return true;
+        return $this->elements->all($predicate);
     }
 
     /**
@@ -281,13 +293,7 @@ class Set implements MutableIterableInterface, Countable, IteratorAggregate, Ser
     {
         $this->typeCheck->any(func_get_args());
 
-        foreach ($this->elements as $element) {
-            if (call_user_func($predicate, $element)) {
-                return true;
-            }
-        }
-
-        return false;
+        return $this->elements->any($predicate);
     }
 
     ////////////////////////////////////////////////
@@ -302,21 +308,11 @@ class Set implements MutableIterableInterface, Countable, IteratorAggregate, Ser
      *
      * @param callable|null $predicate A predicate function used to determine which elements to retain, or null to retain all elements with non-null values.
      */
-    public function filter($predicate = null)
+    public function filterInPlace($predicate = null)
     {
-        $this->typeCheck->filter(func_get_args());
+        $this->typeCheck->filterInPlace(func_get_args());
 
-        if (null === $predicate) {
-            $predicate = function ($element) {
-                return null !== $element;
-            };
-        }
-
-        foreach ($this->elements as $hash => $element) {
-            if (!call_user_func($predicate, $element)) {
-                unset($this->elements[$hash]);
-            }
-        }
+        $this->elements->filterInPlace($predicate);
     }
 
     /**
@@ -329,12 +325,12 @@ class Set implements MutableIterableInterface, Countable, IteratorAggregate, Ser
      *
      * @param callable $transform The transform to apply to each element.
      */
-    public function apply($transform)
+    public function mapInPlace($transform)
     {
-        $this->typeCheck->apply(func_get_args());
+        $this->typeCheck->mapInPlace(func_get_args());
 
-        $result = $this->map($transform);
-        $this->elements = $result->elements;
+        $this->elements->mapInPlace($transform);
+        $this->elements->sortInPlace($this->comparator);
     }
 
     /////////////////////////////////
@@ -356,9 +352,7 @@ class Set implements MutableIterableInterface, Countable, IteratorAggregate, Ser
     {
         $this->typeCheck->getIterator(func_get_args());
 
-        return new SequentialKeyIterator(
-            new ArrayIterator($this->elements)
-        );
+        return $this->elements;
     }
 
     ////////////////////////////////////
@@ -366,6 +360,8 @@ class Set implements MutableIterableInterface, Countable, IteratorAggregate, Ser
     ////////////////////////////////////
 
     /**
+     * Serialize the collection.
+     *
      * @return string The serialized data.
      */
     public function serialize()
@@ -375,25 +371,28 @@ class Set implements MutableIterableInterface, Countable, IteratorAggregate, Ser
         return serialize(
             array(
                 $this->elements(),
-                $this->hashFunction
+                $this->comparator
             )
         );
     }
 
     /**
+     * Unserialize collection data.
+     *
      * @param string $packet The serialized data.
      */
     public function unserialize($packet)
     {
         TypeCheck::get(__CLASS__)->unserialize(func_get_args());
 
-        list($elements, $hashFunction) = unserialize($packet);
-        $this->__construct($elements, $hashFunction);
+        list($elements, $comparator) = unserialize($packet);
+        $this->__construct(null, $comparator);
+        $this->elements->append($elements);
     }
 
-    ////////////////////////////
-    // Model specific methods //
-    ////////////////////////////
+    ////////////////////////////////////
+    // Implementation of SetInterface //
+    ////////////////////////////////////
 
     /**
      * Return the first of the given elements that is contained in the set.
@@ -446,8 +445,7 @@ class Set implements MutableIterableInterface, Countable, IteratorAggregate, Ser
         $this->typeCheck->cascadeIterable(func_get_args());
 
         foreach ($elements as $element) {
-            $hash = $this->generateHash($element);
-            if (array_key_exists($hash, $this->elements)) {
+            if ($this->contains($element)) {
                 return $element;
             }
         }
@@ -471,8 +469,7 @@ class Set implements MutableIterableInterface, Countable, IteratorAggregate, Ser
         $this->typeCheck->cascadeIterableWithDefault(func_get_args());
 
         foreach ($elements as $element) {
-            $hash = $this->generateHash($element);
-            if (array_key_exists($hash, $this->elements)) {
+            if ($this->contains($element)) {
                 return $element;
             }
         }
@@ -491,14 +488,31 @@ class Set implements MutableIterableInterface, Countable, IteratorAggregate, Ser
     {
         $this->typeCheck->add(func_get_args());
 
-        $hash = $this->generateHash($element);
-        if (array_key_exists($hash, $this->elements)) {
+        $insertIndex = null;
+
+        if (null !== $this->binarySearch($element, 0, $insertIndex)) {
             return false;
         }
 
-        $this->elements[$hash] = $element;
+        $this->elements->insert($insertIndex, $element);
 
         return true;
+    }
+
+    /**
+     * Add multiple elements to the set.
+     *
+     * @see Set::unionInPlace() may be faster when adding all elements from a another set.
+     *
+     * @param mixed<mixed> $elements The elements to add.
+     */
+    public function addMany($elements)
+    {
+        $this->typeCheck->addMany(func_get_args());
+
+        foreach ($elements as $element) {
+            $this->add($element);
+        }
     }
 
     /**
@@ -512,51 +526,62 @@ class Set implements MutableIterableInterface, Countable, IteratorAggregate, Ser
     {
         $this->typeCheck->remove(func_get_args());
 
-        $hash = $this->generateHash($element);
-        if (array_key_exists($hash, $this->elements)) {
-            unset($this->elements[$hash]);
+        $index = $this->binarySearch($element);
 
-            return true;
+        if (null === $index) {
+            return false;
         }
 
-        return false;
+        $this->elements->remove($index);
+
+        return true;
+    }
+
+    /**
+     * Remove multiple elements from the set.
+     *
+     * @see Set::diffInPlace() may be faster when removing all elements from a another set.
+     *
+     * @param mixed<mixed> $elements The elements to remote.
+     */
+    public function removeMany($elements)
+    {
+        $this->typeCheck->removeMany(func_get_args());
+
+        foreach ($elements as $element) {
+            $this->remove($element);
+        }
     }
 
     /**
      * Check if this set is equal to another.
      *
-     * @param mixed<mixed> $elements The elements of the second set.
+     * @param SetInterface $set The set to compare against.
      *
-     * @return boolean True if this set contains the same elements as $elements; otherwise false.
+     * @return boolean True if this set contains the same elements as $set; otherwise false.
      */
-    public function isEqual($elements)
+    public function isEqualSet(SetInterface $set)
     {
-        $this->typeCheck->isEqual(func_get_args());
+        $this->typeCheck->isEqualSet(func_get_args());
 
-        $size = 0;
-        foreach ($elements as $element) {
-            ++$size;
-            if (!$this->contains($element)) {
-                return false;
-            }
+        $this->assertCompatible($set);
+
+        if ($this->size() !== $set->size()) {
+            return false;
+        } elseif ($this->isEmpty()) {
+            return true;
         }
 
-        return $this->size() === $size;
-    }
+        // All elements in $set are greater than all elements in $this ...
+        if ($this->compareElements($this->elements->back(), $set->elements->front()) < 0) {
+            return false;
+        // All elements in $this are greater than all elements in $set ...
+        } elseif ($this->compareElements($set->elements->back(), $this->elements->front()) < 0) {
+            return false;
+        }
 
-    /**
-     * Check if this set is equal to, or a superset of another.
-     *
-     * @param mixed<mixed> $elements The $elements of the second set.
-     *
-     * @return boolean True if this set contains all of the given elements; otherwise, false.
-     */
-    public function isSuperset($elements)
-    {
-        $this->typeCheck->isSuperset(func_get_args());
-
-        foreach ($elements as $element) {
-            if (!$this->contains($element)) {
+        foreach ($this->elements as $index => $element) {
+            if (0 !== $this->compareElements($element, $set->elements[$index])) {
                 return false;
             }
         }
@@ -565,85 +590,276 @@ class Set implements MutableIterableInterface, Countable, IteratorAggregate, Ser
     }
 
     /**
-     * Check if this set is equal to, or a subset of another.
+     * Check if this set is a superset of another.
      *
-     * @param mixed<mixed> $elements The $elements of the second set.
+     * @param SetInterface $set The set to compare against.
      *
-     * @return boolean True if this set contains only elements present in $elements; otherwise, false.
+     * @return boolean True if this set contains all of the elements in $set; otherwise, false.
      */
-    public function isSubset($elements)
+    public function isSuperSet(SetInterface $set)
     {
-        $this->typeCheck->isSubset(func_get_args());
+        $this->typeCheck->isSuperSet(func_get_args());
 
-        $matches = 0;
-        foreach ($elements as $element) {
-            if ($this->contains($element)) {
-                ++$matches;
-            }
+        $this->assertCompatible($set);
+
+        // Everything is a super-set of the empty set ...
+        if ($set->isEmpty()) {
+            return true;
+        // $this cannot be a superset if it has less elements ...
+        } elseif ($this->size() < $set->size()) {
+            return false;
+        // $this can not be a superset if its first element is greater than the first element of $set ...
+        } elseif ($this->compareElements($this->elements->front(), $set->elements->front()) > 0) {
+            return false;
+        // $this can not be a superset if its last element is less than the last element of $set ...
+        } elseif ($this->compareElements($this->elements->back(), $set->elements->back()) < 0) {
+            return false;
         }
 
-        return $this->size() === $matches;
-    }
+        $lhsIndex = 0;
+        $rhsIndex = 0;
 
-    /**
-     * Check if this set is a strict superset of another.
-     *
-     * @param mixed<mixed> $elements The $elements of the second set.
-     *
-     * @return boolean True if this set contains all of the given elements; otherwise, false.
-     */
-    public function isStrictSuperset($elements)
-    {
-        $this->typeCheck->isStrictSuperset(func_get_args());
+        while (true) {
+            $cmp = $this->compareElements(
+                $this->elements[$lhsIndex++],
+                $set->elements[$rhsIndex]
+            );
 
-        $size = 0;
-        foreach ($elements as $element) {
-            ++$size;
-            if (!$this->contains($element)) {
+            if ($cmp > 0) {
                 return false;
+            } elseif (0 === $cmp && ++$rhsIndex === $set->size()) {
+                break;
             }
-        }
+        };
 
-        return $this->size() > $size;
+        return true;
     }
 
     /**
-     * Check if this set is a strict subset of another.
+     * Check if this set is a subset of another.
      *
-     * @param mixed<mixed> $elements The $elements of the second set.
+     * @param SetInterface $set The set to compare against.
      *
-     * @return boolean True if this set contains only elements present in $elements; otherwise, false.
+     * @return boolean True if this set contains only elements present in $set; otherwise, false.
      */
-    public function isStrictSubset($elements)
+    public function isSubSet(SetInterface $set)
     {
-        $this->typeCheck->isStrictSubset(func_get_args());
+        $this->typeCheck->isSubSet(func_get_args());
 
-        $matches = 0;
-        $size = 0;
-        foreach ($elements as $element) {
-            ++$size;
-            if ($this->contains($element)) {
-                ++$matches;
+        $this->assertCompatible($set);
+
+        return $set->isSuperSet($this);
+    }
+
+    /**
+     * Check if this set is a proper superset of another.
+     *
+     * @param SetInterface $set The set to compare against.
+     *
+     * @return boolean True if this set contains all of elements in $set, but is not equal to $set; otherwise, false.
+     */
+    public function isProperSuperSet(SetInterface $set)
+    {
+        $this->typeCheck->isProperSuperSet(func_get_args());
+
+        $this->assertCompatible($set);
+
+        // Everything is a super-set of the empty set ...
+        if (!$this->isEmpty() && $set->isEmpty()) {
+            return true;
+        // $this cannot be a superset if it has less or same number of elements ...
+        } elseif ($this->size() <= $set->size()) {
+            return false;
+        } else {
+            return $this->isSuperSet($set);
+        }
+    }
+
+    /**
+     * Check if this set is a proper subset of another.
+     *
+     * @param SetInterface $set The set to compare against.
+     *
+     * @return boolean True if this set contains only elements present in $set, but is not equal to $set; otherwise, false.
+     */
+    public function isProperSubSet(SetInterface $set)
+    {
+        $this->typeCheck->isProperSubSet(func_get_args());
+
+        $this->assertCompatible($set);
+
+        return $set->isProperSuperSet($this);
+    }
+
+    /**
+     * Check if this set is intersecting another.
+     *
+     * @param SetInterface $set The set to compare against.
+     *
+     * @return boolean True if this set contains one or more elements present in $set; otherwise false.
+     */
+    public function isIntersecting(SetInterface $set)
+    {
+        $this->typeCheck->isIntersecting(func_get_args());
+
+        $this->assertCompatible($set);
+
+        // Nothing intersects with the empty set ...
+        if ($this->isEmpty() || $set->isEmpty()) {
+            return false;
+        }
+
+        $cmp = $this->compareElements(
+            $this->elements->back(),
+            $set->elements->front()
+        );
+
+        // All elements in $set are greater than all elements in $this ...
+        if ($cmp < 0) {
+            return false;
+        // Tail of $this equal to head of $set ...
+        } elseif (0 === $cmp) {
+            return true;
+        }
+
+        $cmp = $this->compareElements(
+            $set->elements->back(),
+            $this->elements->front()
+        );
+
+        // All elements in $this are greater than all elements in $set ...
+        if ($cmp < 0) {
+            return false;
+        // Tail of $set equal to head of $this ...
+        } elseif (0 === $cmp) {
+            return true;
+        }
+
+        $lhsIndex = 0;
+        $rhsIndex = 0;
+
+        while ($lhsIndex !== $this->size() && $rhsIndex !== $set->size()) {
+            $cmp = $this->compareElements(
+                $this->elements[$lhsIndex],
+                $set->elements[$rhsIndex]
+            );
+
+            if ($cmp < 0) {
+                ++$lhsIndex;
+            } elseif ($cmp > 0) {
+                ++$rhsIndex;
+            } else {
+                return true;
             }
         }
 
-        return $matches < $size
-            && $this->size() === $matches;
+        return false;
     }
 
     /**
      * Compute the union of this set and another.
      *
-     * @param mixed<mixed> $elements The elements of the second set.
+     * @param SetInterface $set The second set.
      *
      * @return Set A set containing all elements of $this and $elements.
      */
-    public function union($elements)
+    public function union(SetInterface $set)
     {
         $this->typeCheck->union(func_get_args());
 
-        $result = clone $this;
-        $result->unionInPlace($elements);
+        $this->assertCompatible($set);
+
+        //
+        // Union with an empty set is always the non-empty set ...
+        //
+        if ($this->isEmpty()) {
+            return clone $set;
+        } elseif ($set->isEmpty()) {
+            return clone $this;
+        }
+
+        $result = $this->createSet();
+        $result->elements->reserve(max($this->size(), $set->size()));
+
+        //
+        // Compare tail/head ...
+        //
+        $cmp = $this->compareElements($this->elements->back(), $set->elements->front());
+
+        // All elements in $set are greater than all elements in $this ...
+        if ($cmp < 0) {
+            $result->elements->append($this->elements);
+            $result->elements->append($set->elements);
+
+            return $result;
+        // Tail of $this equal to head of $set ...
+        } elseif (0 === $cmp) {
+            $result->elements->append($this->elements);
+            $result->elements->append($set->elements->slice(1));
+
+            return $result;
+        }
+
+        //
+        // Compare head/tail ...
+        //
+        $cmp = $this->compareElements($set->elements->back(), $this->elements->front());
+
+        // All elements in $this are greater than all elements in $set ...
+        if ($cmp < 0) {
+            $result->elements->append($set->elements);
+            $result->elements->append($this->elements);
+
+            return $result;
+        // Tail of $set equal to head of $this ...
+        } elseif (0 === $cmp) {
+            $result->elements->append($set->elements);
+            $result->elements->append($this->elements->slice(1));
+
+            return $result;
+        }
+
+        //
+        // Merge both sides ...
+        //
+        $lhsIndex = 0;
+        $rhsIndex = 0;
+
+        while (true) {
+            $cmp = $this->compareElements(
+                $this->elements[$lhsIndex],
+                $set->elements[$rhsIndex]
+            );
+
+            // Element from $this is less, add it next ..
+            if ($cmp < 0) {
+                $result->elements->pushBack($this->elements[$lhsIndex]);
+                ++$lhsIndex;
+
+            // Element from $set is less, add it next ..
+            } elseif ($cmp > 0) {
+                $result->elements->pushBack($set->elements[$rhsIndex]);
+                ++$rhsIndex;
+
+            // Elements are equivalent, add to the result and advance index for both sides ...
+            } else {
+                $result->elements->pushBack($this->elements[$lhsIndex]);
+                ++$lhsIndex;
+                ++$rhsIndex;
+            }
+
+            // Reached the end of $this first, append the rest of $set ...
+            if ($lhsIndex === $this->size()) {
+                if ($rhsIndex !== $set->size()) {
+                    $result->elements->append($set->elements->slice($rhsIndex));
+                }
+                break;
+            // Reached the end of $set first, append the rest of $this ...
+            } elseif ($rhsIndex === $set->size()) {
+                $result->elements->append($this->elements->slice($lhsIndex));
+                break;
+            }
+        }
 
         return $result;
     }
@@ -651,17 +867,91 @@ class Set implements MutableIterableInterface, Countable, IteratorAggregate, Ser
     /**
      * Compute the union of this set and another, in place.
      *
-     * @param mixed<mixed> $elements The elements of the second set.
+     * @param SetInterface $set The second set.
      */
-    public function unionInPlace($elements)
+    public function unionInPlace(SetInterface $set)
     {
         $this->typeCheck->unionInPlace(func_get_args());
 
-        if ($elements instanceof self && $this->hashFunction == $elements->hashFunction) {
-            $this->elements += $elements->elements;
-        } else {
-            foreach ($elements as $element) {
-                $this->add($element);
+        $this->assertCompatible($set);
+
+        //
+        // Union with an empty set is always the non-empty set ...
+        //
+        if ($this->isEmpty()) {
+            $this->elements->append($set->elements);
+
+            return;
+        } elseif ($set->isEmpty()) {
+            return;
+        }
+
+        $this->elements->reserve($set->size());
+
+        //
+        // Compare tail/head ...
+        //
+        $cmp = $this->compareElements($this->elements->back(), $set->elements->front());
+
+        // All elements in $set are greater than all elements in $this ...
+        if ($cmp < 0) {
+            $this->elements->append($set->elements);
+
+            return;
+        // Tail of $this equal to head of $set ...
+        } elseif (0 === $cmp) {
+            $this->elements->append($set->elements->slice(1));
+
+            return;
+        }
+
+        //
+        // Compare head/tail ...
+        //
+        $cmp = $this->compareElements($set->elements->back(), $this->elements->front());
+
+        // All elements in $this are greater than all elements in $set ...
+        if ($cmp < 0) {
+            $this->elements->insertMany(0, $set->elements);
+
+            return;
+        // Tail of $set equal to head of $this ...
+        } elseif (0 === $cmp) {
+            $this->elements->insertMany(0, $set->elements->range(0, -1));
+
+            return;
+        }
+
+        //
+        // Merge elements from $set into $this ...
+        //
+
+        $lhsIndex = 0;
+        $rhsIndex = 0;
+
+        while (true) {
+            $cmp = $this->compareElements(
+                $this->elements[$lhsIndex],
+                $set->elements[$rhsIndex]
+            );
+
+            // Element from $set is less, add it next ..
+            if ($cmp > 0) {
+                $this->elements->insert($lhsIndex, $set->elements[$rhsIndex]);
+                ++$rhsIndex;
+
+            // Elements are equivalent ...
+            } elseif (0 === $cmp) {
+                ++$rhsIndex;
+            }
+
+            if (++$lhsIndex === $this->size()) {
+                if ($rhsIndex !== $set->size()) {
+                    $this->elements->append($set->elements->slice($rhsIndex));
+                }
+                break;
+            } elseif ($rhsIndex === $set->size()) {
+                break;
             }
         }
     }
@@ -669,16 +959,74 @@ class Set implements MutableIterableInterface, Countable, IteratorAggregate, Ser
     /**
      * Compute the intersection of this set and another.
      *
-     * @param mixed<mixed> $elements The elements of the second set.
+     * @param SetInterface $set The second set.
      *
      * @return Set A set containing only the elements present in $this and $elements.
      */
-    public function intersect($elements)
+    public function intersect(SetInterface $set)
     {
         $this->typeCheck->intersect(func_get_args());
 
-        $result = clone $this;
-        $result->intersectInPlace($elements);
+        $this->assertCompatible($set);
+
+        //
+        // Intersection with empty set is always empty ..
+        //
+        if ($this->isEmpty() || $set->isEmpty()) {
+            return $this->createSet();
+        }
+
+        //
+        // Compare tail/head ...
+        //
+        $cmp = $this->compareElements($this->elements->back(), $set->elements->front());
+
+        // All elements in $set are greater than all elements in $this ...
+        if ($cmp < 0) {
+            return $this->createSet();
+        // Tail of $this equal to head of $set ...
+        } elseif (0 === $cmp) {
+            return $this->createSet(
+                array($this->elements->back())
+            );
+        }
+
+        //
+        // Compare head/tail ...
+        //
+        $cmp = $this->compareElements($set->elements->back(), $this->elements->front());
+
+        // All elements in $this are greater than all elements in $set ...
+        if ($cmp < 0) {
+            return $this->createSet();
+        // Tail of $set equal to head of $this ...
+        } elseif (0 === $cmp) {
+            return $this->createSet(
+                array($this->elements->front())
+            );
+        }
+
+        //
+        // Build intersection from both sides ...
+        //
+        $lhsIndex = 0;
+        $rhsIndex = 0;
+
+        $result = $this->createSet();
+
+        while ($lhsIndex !== $this->size() && $rhsIndex !== $set->size()) {
+            $cmp = $this->compareElements($this->elements[$lhsIndex], $set->elements[$rhsIndex]);
+
+            if ($cmp < 0) {
+                ++$lhsIndex;
+            } elseif ($cmp > 0) {
+                ++$rhsIndex;
+            } else {
+                $result->elements->pushBack($this->elements[$lhsIndex]);
+                ++$lhsIndex;
+                ++$rhsIndex;
+            }
+        }
 
         return $result;
     }
@@ -686,76 +1034,640 @@ class Set implements MutableIterableInterface, Countable, IteratorAggregate, Ser
     /**
      * Compute the intersection of this set and another, in place.
      *
-     * @param mixed<mixed> $elements The elements of the second set.
+     * @param SetInterface $set The second set.
      */
-    public function intersectInPlace($elements)
+    public function intersectInPlace(SetInterface $set)
     {
         $this->typeCheck->intersectInPlace(func_get_args());
 
-        if ($elements instanceof self && $this->hashFunction == $elements->hashFunction) {
-            $this->elements = array_intersect_assoc($this->elements, $elements->elements);
-        } else {
-            $newElements = array();
+        $this->assertCompatible($set);
 
-            foreach ($elements as $element) {
-                $hash = $this->generateHash($element);
-                if (array_key_exists($hash, $this->elements)) {
-                    $newElements[$hash] = $element;
-                }
+        //
+        // Intersection with empty set is always empty set ...
+        //
+        if ($this->isEmpty()) {
+            return;
+        } elseif ($set->isEmpty()) {
+            $this->clear();
+
+            return;
+        }
+
+        //
+        // Compare tail/head ...
+        //
+        $cmp = $this->compareElements($this->elements->back(), $set->elements->front());
+
+        // All elements in $set are greater than all elements in $this ...
+        if ($cmp < 0) {
+            $this->clear();
+
+            return;
+        // Tail of $this equal to head of $set ...
+        } elseif (0 === $cmp) {
+            $this->elements->popfront();
+
+            return;
+        }
+
+        //
+        // Compare head/tail ...
+        //
+        $cmp = $this->compareElements($set->elements->back(), $this->elements->front());
+
+        // All elements in $this are greater than all elements in $set ...
+        if ($cmp < 0) {
+            $this->clear();
+
+            return;
+        // Tail of $set equal to head of $this ...
+        } elseif (0 === $cmp) {
+            $this->elements->popBack();
+
+            return;
+        }
+
+        //
+        // Remove elements not in $set ...
+        //
+        $lhsIndex = $this->size() - 1;
+        $rhsIndex = $set->size() - 1;
+
+        while ($lhsIndex >= 0 && $rhsIndex >= 0) {
+            $cmp = $this->compareElements($this->elements[$lhsIndex], $set->elements[$rhsIndex]);
+
+            if ($cmp < 0) {
+                --$rhsIndex;
+            } elseif ($cmp > 0) {
+                $this->elements->remove($lhsIndex--);
+            } else {
+                --$lhsIndex;
+                --$rhsIndex;
             }
+        }
 
-            $this->elements = $newElements;
+        // Remove any remaining elements ...
+        if ($lhsIndex >= 0) {
+            $this->elements->removeMany(0, $lhsIndex + 1);
         }
     }
 
     /**
-     * Compute the complement (or difference) of this set and another.
+     * Compute the difference (or complement) of this set and another.
      *
-     * @param mixed<mixed> $elements The elements of the second set.
+     * @param SetInterface $set The second set.
      *
      * @return Set A set containing only the elements present in $this, but not $elements.
      */
-    public function complement($elements)
+    public function diff(SetInterface $set)
     {
-        $this->typeCheck->complement(func_get_args());
+        $this->typeCheck->diff(func_get_args());
 
-        $result = clone $this;
-        $result->complementInPlace($elements);
+        $this->assertCompatible($set);
+
+        //
+        // Empty set produces empty set ...
+        //
+        if ($this->isEmpty()) {
+            return $this->createSet();
+        }
+
+        //
+        // Diff to empty set produces $this ...
+        //
+        if ($set->isEmpty()) {
+            return clone $this;
+        }
+
+        //
+        // Compare tail/head ...
+        //
+        $cmp = $this->compareElements($this->elements->back(), $set->elements->front());
+
+        // All elements in $set are greater than all elements in $this ...
+        if ($cmp < 0) {
+            return clone $this;
+        // Tail of $this equal to head of $set ...
+        } elseif (0 === $cmp) {
+            $result = clone $this;
+            $result->elements->popBack();
+
+            return $result;
+        }
+
+        //
+        // Compare head/tail ...
+        //
+        $cmp = $this->compareElements($set->elements->back(), $this->elements->front());
+
+        // All elements in $this are greater than all elements in $set ...
+        if ($cmp < 0) {
+            return clone $this;
+        // Tail of $set equal to head of $this ...
+        } elseif (0 === $cmp) {
+            $result = clone $this;
+            $result->elements->popFront();
+
+            return $result;
+        }
+
+        //
+        // Build diff from both sides ...
+        //
+        $lhsIndex = 0;
+        $rhsIndex = 0;
+
+        $result = $this->createSet();
+        $result->elements->reserve($this->size() - $set->size());
+
+         while (true) {
+            $cmp = $this->compareElements($this->elements[$lhsIndex], $set->elements[$rhsIndex]);
+
+            if ($cmp < 0) {
+                $result->elements->pushBack($this->elements[$lhsIndex]);
+                ++$lhsIndex;
+            } elseif ($cmp > 0) {
+                ++$rhsIndex;
+            } else {
+                ++$lhsIndex;
+                ++$rhsIndex;
+            }
+
+            if ($rhsIndex === $set->size()) {
+                if ($lhsIndex !== $this->size()) {
+                    $result->elements->append($this->elements->slice($lhsIndex));
+                }
+                break;
+            } elseif ($lhsIndex === $this->size()) {
+                break;
+            }
+        }
 
         return $result;
     }
 
     /**
-     * Compute the complement (or difference) of this set and another, in place.
+     * Compute the difference (or complement) of this set and another, in place.
      *
-     * @param mixed<mixed> $elements The elements of the second set.
+     * @param SetInterface $set The second set.
      */
-    public function complementInPlace($elements)
+    public function diffInPlace(SetInterface $set)
     {
-        $this->typeCheck->complementInPlace(func_get_args());
+        $this->typeCheck->diffInPlace(func_get_args());
 
-        if ($elements instanceof self && $this->hashFunction == $elements->hashFunction) {
-            $this->elements = array_diff_assoc($this->elements, $elements->elements);
-        } else {
-            foreach ($elements as $element) {
-                $hash = $this->generateHash($element);
-                unset($this->elements[$hash]);
+        $this->assertCompatible($set);
+
+        //
+        // Empty set produces empty set ...
+        // Diff to empty set produces $this ...
+        //
+        if ($this->isEmpty() || $set->isEmpty()) {
+            return;
+        }
+
+        //
+        // Compare tail/head ...
+        //
+        $cmp = $this->compareElements($this->elements->back(), $set->elements->front());
+
+        // All elements in $set are greater than all elements in $this ...
+        if ($cmp < 0) {
+            return;
+        // Tail of $this equal to head of $set ...
+        } elseif (0 === $cmp) {
+            $this->elements->popBack();
+
+            return;
+        }
+
+        //
+        // Compare head/tail ...
+        //
+        $cmp = $this->compareElements($set->elements->back(), $this->elements->front());
+
+        // All elements in $this are greater than all elements in $set ...
+        if ($cmp < 0) {
+            return;
+        // Tail of $set equal to head of $this ...
+        } elseif (0 === $cmp) {
+            $this->elements->popFront();
+
+            return;
+        }
+
+        //
+        // Remove elements that are in $set ...
+        //
+        $lhsIndex = $this->size() - 1;
+        $rhsIndex = $set->size() - 1;
+
+        while ($lhsIndex >= 0 && $rhsIndex >= 0) {
+            $cmp = $this->compareElements($this->elements[$lhsIndex], $set->elements[$rhsIndex]);
+
+            if ($cmp < 0) {
+                --$rhsIndex;
+            } elseif ($cmp > 0) {
+                --$lhsIndex;
+            } else {
+                $this->elements->remove($lhsIndex);
+                --$lhsIndex;
+                --$rhsIndex;
             }
         }
     }
 
     /**
-     * @param mixed $key
+     * Compute the symmetric difference (or complement) of this set and another.
      *
-     * @return integer|string
+     * The symmetric difference is the set of elements which are in either of the sets and not in their intersection.
+     *
+     * @param SetInterface $set The second set.
+     *
+     * @return Set A set containing only the elements present in $this, or $elements, but not both.
      */
-    private function generateHash($key)
+    public function symmetricDiff(SetInterface $set)
     {
-        return call_user_func($this->hashFunction, $key);
+        $this->typeCheck->symmetricDiff(func_get_args());
+
+        $this->assertCompatible($set);
+
+        //
+        // Symmetric diff with an empty set is always the non-empty set ...
+        //
+        if ($this->isEmpty()) {
+            return clone $set;
+        } elseif ($set->isEmpty()) {
+            return clone $this;
+        }
+
+        $result = $this->createSet();
+
+        //
+        // Compare tail/head ...
+        //
+        $cmp = $this->compareElements($this->elements->back(), $set->elements->front());
+
+        // All elements in $set are greater than all elements in $this ...
+        if ($cmp < 0) {
+            $result->elements->append($this->elements);
+            $result->elements->append($set->elements);
+
+            return $result;
+        // Tail of $this equal to head of $set ...
+        } elseif (0 === $cmp) {
+            $result->elements->append($this->elements->range(0, -1));
+            $result->elements->append($set->elements->slice(1));
+
+            return $result;
+        }
+
+        //
+        // Compare head/tail ...
+        //
+        $cmp = $this->compareElements($set->elements->back(), $this->elements->front());
+
+        // All elements in $this are greater than all elements in $set ...
+        if ($cmp < 0) {
+            $result->elements->append($set->elements);
+            $result->elements->append($this->elements);
+
+            return $result;
+        // Tail of $set equal to head of $this ...
+        } elseif (0 === $cmp) {
+            $result->elements->append($set->elements->range(0, -1));
+            $result->elements->append($this->elements->slice(1));
+
+            return $result;
+        }
+
+        //
+        // Build symmetric diff from both sides ...
+        //
+        $lhsIndex = 0;
+        $rhsIndex = 0;
+
+        while (true) {
+            $cmp = $this->compareElements($this->elements[$lhsIndex], $set->elements[$rhsIndex]);
+
+            // Element from $this is less, add it next ..
+            if ($cmp < 0) {
+                $result->elements->pushBack($this->elements[$lhsIndex]);
+                ++$lhsIndex;
+
+            // Element from $set is less, add it next ..
+            } elseif ($cmp > 0) {
+                $result->elements->pushBack($set->elements[$rhsIndex]);
+                ++$rhsIndex;
+
+            // Elements are equivalent, add to the result and advance index for both sides ...
+            } else {
+                ++$lhsIndex;
+                ++$rhsIndex;
+            }
+
+            // Reached the end of $this first, append the rest of $set ...
+            if ($lhsIndex === $this->size()) {
+                if ($rhsIndex !== $set->size()) {
+                    $result->elements->append($set->elements->slice($rhsIndex));
+                }
+                break;
+            // Reached the end of $set first, append the rest of $this ...
+            } elseif ($rhsIndex === $set->size()) {
+                $result->elements->append($this->elements->slice($lhsIndex));
+                break;
+            }
+        }
+
+        return $result;
+    }
+
+    /**
+     * Compute the symmetric difference (or complement) of this set and another, in place.
+     *
+     * The symmetric difference is the set of elements which are in either of the sets and not in their intersection.
+     *
+     * @param SetInterface $set The second set.
+     */
+    public function symmetricDiffInPlace(SetInterface $set)
+    {
+        $this->typeCheck->symmetricDiffInPlace(func_get_args());
+
+        $this->assertCompatible($set);
+
+        //
+        // Symmetric diff with an empty set is always the non-empty set ...
+        //
+        if ($this->isEmpty()) {
+            $this->elements->append($set->elements);
+
+            return;
+        } elseif ($set->isEmpty()) {
+            return;
+        }
+
+        //
+        // Compare tail/head ...
+        //
+        $cmp = $this->compareElements($this->elements->back(), $set->elements->front());
+
+        // All elements in $set are greater than all elements in $this ...
+        if ($cmp < 0) {
+            $this->elements->append($set->elements);
+
+            return;
+        // Tail of $this equal to head of $set ...
+        } elseif (0 === $cmp) {
+            $this->elements->popBack();
+            $this->elements->append($set->elements->slice(1));
+
+            return;
+        }
+
+        //
+        // Compare head/tail ...
+        //
+        $cmp = $this->compareElements($set->elements->back(), $this->elements->front());
+
+        // All elements in $this are greater than all elements in $set ...
+        if ($cmp < 0) {
+            $this->elements->insertMany(0, $set->elements);
+
+            return;
+        // Tail of $set equal to head of $this ...
+        } elseif (0 === $cmp) {
+            $this->elements->popFront();
+            $this->elements->insertMany(0, $set->elements->range(0, -1));
+
+            return;
+        }
+
+        //
+        // Add/remove elements to build symmetric diff in place ...
+        //
+        $lhsIndex = 0;
+        $rhsIndex = 0;
+
+        while (true) {
+            $cmp = $this->compareElements($this->elements[$lhsIndex], $set->elements[$rhsIndex]);
+
+            // Element from $this is less ...
+            if ($cmp < 0) {
+                ++$lhsIndex;
+
+            // Element from $set is less ...
+            } elseif ($cmp > 0) {
+                $this->elements->insert($lhsIndex, $set->elements[$rhsIndex]);
+                ++$lhsIndex;
+                ++$rhsIndex;
+
+            // Elements are equivalent, add to the result and advance index for both sides ...
+            } else {
+                $this->elements->remove($lhsIndex);
+                ++$rhsIndex;
+            }
+
+            // Reached the end of $this first, append the rest of $set ...
+            if ($lhsIndex === $this->size()) {
+                if ($rhsIndex !== $set->size()) {
+                    $this->elements->append($set->elements->slice($rhsIndex));
+                }
+                break;
+            // Reached the end of $set first, append the rest of $this ...
+            } elseif ($rhsIndex === $set->size()) {
+                break;
+            }
+        }
+    }
+
+    ///////////////////////////////////////////
+    // Implementation of ComparableInterface //
+    ///////////////////////////////////////////
+
+    /**
+     * Compare this object with another value, yielding a result according to the following table:
+     *
+     * +--------------------+---------------+
+     * | Condition          | Result        |
+     * +--------------------+---------------+
+     * | $this == $value    | $result === 0 |
+     * | $this < $value     | $result < 0   |
+     * | $this > $value     | $result > 0   |
+     * +--------------------+---------------+
+     *
+     * @param mixed $value The value to compare.
+     *
+     * @return integer                                         The result of the comparison.
+     * @throws Icecave\Parity\Exception\NotComparableException Indicates that the implementation does not know how to compare $this to $value.
+     */
+    public function compare($value)
+    {
+        $this->typeCheck->compare(func_get_args());
+
+        if (!$this->canCompare($value)) {
+            throw new NotComparableException($this, $value);
+        }
+
+        return Collection::compare($this->elements, $value->elements);
+    }
+
+    /////////////////////////////////////////////////////
+    // Implementation of RestrictedComparableInterface //
+    /////////////////////////////////////////////////////
+
+    /**
+     * Check if $this is able to be compared to another value.
+     *
+     * A return value of false indicates that calling $this->compare($value)
+     * will throw an exception.
+     *
+     * @param mixed $value The value to compare.
+     *
+     * @return boolean True if $this can be compared to $value.
+     */
+    public function canCompare($value)
+    {
+        $this->typeCheck->canCompare(func_get_args());
+
+        return is_object($value)
+            && __CLASS__ === get_class($value)
+            && $this->comparator == $value->comparator;
+    }
+
+    ///////////////////////////////////////////////////
+    // Implementation of ExtendedComparableInterface //
+    ///////////////////////////////////////////////////
+
+    /**
+     * @param mixed $value The value to compare.
+     *
+     * @return boolean True if $this == $value.
+     */
+    public function isEqualTo($value)
+    {
+        $this->typeCheck->isEqualTo(func_get_args());
+
+        return $this->compare($value) === 0;
+    }
+
+    /**
+     * @param mixed $value The value to compare.
+     *
+     * @return boolean True if $this != $value.
+     */
+    public function isNotEqualTo($value)
+    {
+        $this->typeCheck->isNotEqualTo(func_get_args());
+
+        return $this->compare($value) !== 0;
+    }
+
+    /**
+     * @param mixed $value The value to compare.
+     *
+     * @return boolean True if $this < $value.
+     */
+    public function isLessThan($value)
+    {
+        $this->typeCheck->isLessThan(func_get_args());
+
+        return $this->compare($value) < 0;
+    }
+
+    /**
+     * @param mixed $value The value to compare.
+     *
+     * @return boolean True if $this > $value.
+     */
+    public function isGreaterThan($value)
+    {
+        $this->typeCheck->isGreaterThan(func_get_args());
+
+        return $this->compare($value) > 0;
+    }
+
+    /**
+     * @param mixed $value The value to compare.
+     *
+     * @return boolean True if $this <= $value.
+     */
+    public function isLessThanOrEqualTo($value)
+    {
+        $this->typeCheck->isLessThanOrEqualTo(func_get_args());
+
+        return $this->compare($value) <= 0;
+    }
+
+    /**
+     * @param mixed $value The value to compare.
+     *
+     * @return boolean True if $this >= $value.
+     */
+    public function isGreaterThanOrEqualTo($value)
+    {
+        $this->typeCheck->isGreaterThanOrEqualTo(func_get_args());
+
+        return $this->compare($value) >= 0;
+    }
+
+    ////////////////////////////
+    // Model specific methods //
+    ////////////////////////////
+
+    /**
+     * @param mixed $lhs
+     * @param mixed $rhs
+     *
+     * @return integer
+     */
+    private function compareElements($lhs, $rhs)
+    {
+        return call_user_func($this->comparator, $lhs, $rhs);
+    }
+
+    /**
+     * @param mixed<mixed>|null $elements
+     *
+     * @return Set
+     */
+    private function createSet($elements = null)
+    {
+        return new self($elements, $this->comparator);
+    }
+
+    /**
+     * @param SetInterface $set
+     */
+    private function assertCompatible(SetInterface $set)
+    {
+        $className = get_class($this);
+
+        if (!$set instanceof $className) {
+            throw new InvalidArgumentException('The given set is not an instance of ' . $className . '.');
+        } elseif ($set->comparator != $this->comparator) {
+            throw new InvalidArgumentException('The given set does not use the same comparator.');
+        }
+    }
+
+    /**
+     * @param mixed        $element
+     * @param integer      $begin
+     * @param integer|null &$insertIndex
+     *
+     * @return integer|null
+     */
+    private function binarySearch($element, $begin = 0, &$insertIndex = null)
+    {
+        return Collection::binarySearch(
+            $this->elements,
+            $element,
+            $this->comparator,
+            $begin,
+            null,
+            $insertIndex
+        );
     }
 
     private $typeCheck;
-    private $hashFunction;
+    private $comparator;
     private $elements;
-    private $index;
 }

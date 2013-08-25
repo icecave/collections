@@ -1,5 +1,5 @@
 <?php
-namespace Icecave\Collections;
+namespace Icecave\Collections\Detail;
 
 use Icecave\Collections\TypeCheck\TypeCheck;
 
@@ -23,6 +23,8 @@ class AssociativeKeyGenerator
     }
 
     /**
+     * Generate a suitable key value for use in a PHP array.
+     *
      * @param mixed $value The value for which a key is required.
      *
      * @return int|string The key to use.
@@ -35,6 +37,8 @@ class AssociativeKeyGenerator
     }
 
     /**
+     * Generate a suitable key value for use in a PHP array.
+     *
      * @param mixed $value The value for which a key is required.
      *
      * @return integer|string The key to use.
@@ -64,6 +68,8 @@ class AssociativeKeyGenerator
     }
 
     /**
+     * Generate a suitable key value for use in a PHP array.
+     *
      * @param array $value The value for which a key is required.
      *
      * @return integer|string The key to use.

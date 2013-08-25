@@ -13,12 +13,12 @@ interface MutableSequenceInterface extends SequenceInterface, MutableIterableInt
      *
      * @param callable|null $comparator A strcmp style comparator function.
      */
-    public function sort($comparator = null);
+    public function sortInPlace($comparator = null);
 
     /**
      * Reverse this sequence in-place.
      */
-    public function reverse();
+    public function reverseInPlace();
 
     /**
      * Appending elements in the given sequence to this sequence.

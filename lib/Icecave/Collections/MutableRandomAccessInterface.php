@@ -27,12 +27,32 @@ interface MutableRandomAccessInterface extends RandomAccessInterface, MutableSeq
     public function insert($index, $element);
 
     /**
-     * Insert a range of elements at a particular index.
+     * Insert all elements from another collection at a particular index.
      *
      * @param integer      $index    The index at which the elements are inserted, if index is a negative number the elements are inserted that far from the end of the sequence.
      * @param mixed<mixed> $elements The elements to insert.
      */
     public function insertMany($index, $elements);
+
+    /**
+     * Insert a sub-range of another collection at a particular index.
+     *
+     * This method generally provides an optimised form of:
+     *
+     *    $this->insertMany($index, $elements->range($begin, $end))
+     *
+     * And as such, the implementation may require $elements to be the same type as $this.
+     *
+     * Replaces all elements from the range [$begin, $end), i.e. $begin is inclusive, $end is exclusive.
+     *
+     * @param integer               $index    The index at which the elements are inserted, if index is a negative number the elements are inserted that far from the end of the sequence.
+     * @param RandomAccessInterface $elements The elements to insert.
+     * @param integer               $begin    The index of the first element from $elements to insert, if begin is a negative number the removal begins that far from the end of the sequence.
+     * @param integer               $end|null The index of the last element to $elements to insert, if end is a negative number the removal ends that far from the end of the sequence.
+     *
+     * @throws Exception\IndexException if $index, $begin or $end is out of range.
+     */
+    public function insertRange($index, RandomAccessInterface $elements, $begin, $end = null);
 
     /**
      * Remove the element at a given index.
@@ -63,7 +83,7 @@ interface MutableRandomAccessInterface extends RandomAccessInterface, MutableSeq
      * @param integer $begin The index of the first element to remove, if begin is a negative number the removal begins that far from the end of the sequence.
      * @param integer $end   The index of the last element to remove, if end is a negative number the removal ends that far from the end of the sequence.
      *
-     * @throws Exception\IndexException if $index is out of range.
+     * @throws Exception\IndexException if $begin or $end is out of range.
      */
     public function removeRange($begin, $end);
 

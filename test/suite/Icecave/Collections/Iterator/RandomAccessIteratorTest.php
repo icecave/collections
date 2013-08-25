@@ -8,15 +8,15 @@ class RandomAccessIteratorTest extends PHPUnit_Framework_TestCase
 {
     public function setUp()
     {
-        $this->_collection = new Vector(array(1, 2, 3));
-        $this->_iterator = new RandomAccessIterator($this->_collection);
+        $this->collection = new Vector(array(1, 2, 3));
+        $this->iterator = new RandomAccessIterator($this->collection);
     }
 
     public function testIteration()
     {
         $result = array();
 
-        foreach ($this->_iterator as $index => $value) {
+        foreach ($this->iterator as $index => $value) {
             $result[$index] = $value;
         }
 
@@ -25,6 +25,6 @@ class RandomAccessIteratorTest extends PHPUnit_Framework_TestCase
 
     public function testCollection()
     {
-        $this->assertSame($this->_collection, $this->_iterator->collection());
+        $this->assertSame($this->collection, $this->iterator->collection());
     }
 }

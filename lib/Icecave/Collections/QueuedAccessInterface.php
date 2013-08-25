@@ -2,7 +2,7 @@
 namespace Icecave\Collections;
 
 /**
- * A [LF]IFO queue.
+ * The common interface between queues and stacks.
  */
 interface QueuedAccessInterface extends MutableCollectionInterface
 {

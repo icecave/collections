@@ -127,7 +127,7 @@ interface AssociativeInterface extends IterableInterface
      *
      * @return AssociativeInterface The merged collection.
      */
-    public function combine(AssociativeInterface $collection);
+    public function merge(AssociativeInterface $collection);
 
     /**
      * Create a new collection containing the elements associated with the provided keys.

@@ -1,14 +1,15 @@
 <?php
 namespace Icecave\Collections;
 
+use Exception;
 use PHPUnit_Framework_TestCase;
 
 class PriorityQueueTest extends PHPUnit_Framework_TestCase
 {
     public function setUp()
     {
-        $this->_prioritizer = __CLASS__ . '::identityPrioritizer';
-        $this->_collection = new PriorityQueue($this->_prioritizer);
+        $this->prioritizer = __CLASS__ . '::identityPrioritizer';
+        $this->collection = new PriorityQueue(null, $this->prioritizer);
     }
 
     public static function identityPrioritizer($value)
@@ -18,22 +19,38 @@ class PriorityQueueTest extends PHPUnit_Framework_TestCase
 
     public function testConstructor()
     {
-        $this->assertSame(0, $this->_collection->size());
+        $this->assertSame(0, $this->collection->size());
     }
 
     public function testConstructorWithArray()
     {
-        $collection = new PriorityQueue($this->_prioritizer, array(1, 2, 3));
+        $collection = new PriorityQueue(array(1, 2, 3), $this->prioritizer);
         $this->assertSame(3, $collection->size());
+        $this->assertSame(3, $collection->pop());
+        $this->assertSame(2, $collection->pop());
+        $this->assertSame(1, $collection->pop());
+        $this->assertSame(0, $collection->size());
+    }
+
+    public function testCreate()
+    {
+        $collection = PriorityQueue::create(1, 2, 3);
+
+        $this->assertInstanceOf(__NAMESPACE__ . '\PriorityQueue', $collection);
+        $this->assertSame(3, $collection->size());
+        $this->assertSame(3, $collection->pop());
+        $this->assertSame(2, $collection->pop());
+        $this->assertSame(1, $collection->pop());
+        $this->assertSame(0, $collection->size());
     }
 
     public function testSerialization()
     {
-        $this->_collection->push(1);
-        $this->_collection->push(2);
-        $this->_collection->push(3);
+        $this->collection->push(1);
+        $this->collection->push(2);
+        $this->collection->push(3);
 
-        $packet = serialize($this->_collection);
+        $packet = serialize($this->collection);
         $collection = unserialize($packet);
 
         $this->assertSame(3, $collection->pop());
@@ -48,41 +65,41 @@ class PriorityQueueTest extends PHPUnit_Framework_TestCase
 
     public function testSize()
     {
-        $this->assertSame(0, $this->_collection->size());
+        $this->assertSame(0, $this->collection->size());
 
-        $this->_collection->push('foo');
-        $this->_collection->push('bar');
-        $this->_collection->push('spam');
+        $this->collection->push('foo');
+        $this->collection->push('bar');
+        $this->collection->push('spam');
 
-        $this->assertSame(3, $this->_collection->size());
+        $this->assertSame(3, $this->collection->size());
 
-        $this->_collection->clear();
+        $this->collection->clear();
 
-        $this->assertSame(0, $this->_collection->size());
+        $this->assertSame(0, $this->collection->size());
     }
 
     public function testIsEmpty()
     {
-        $this->assertTrue($this->_collection->isEmpty());
+        $this->assertTrue($this->collection->isEmpty());
 
-        $this->_collection->push('foo');
+        $this->collection->push('foo');
 
-        $this->assertFalse($this->_collection->isEmpty());
+        $this->assertFalse($this->collection->isEmpty());
 
-        $this->_collection->clear();
+        $this->collection->clear();
 
-        $this->assertTrue($this->_collection->isEmpty());
+        $this->assertTrue($this->collection->isEmpty());
     }
 
     public function testToString()
     {
-        $this->assertSame('<PriorityQueue 0>', $this->_collection->__toString());
+        $this->assertSame('<PriorityQueue 0>', $this->collection->__toString());
 
-        $this->_collection->push(1);
-        $this->_collection->push(2);
-        $this->_collection->push(3);
+        $this->collection->push(1);
+        $this->collection->push(2);
+        $this->collection->push(3);
 
-        $this->assertSame("<PriorityQueue 3 [next: 3]>", $this->_collection->__toString());
+        $this->assertSame("<PriorityQueue 3 [next: 3]>", $this->collection->__toString());
     }
 
     //////////////////////////////////////////////////
@@ -91,11 +108,11 @@ class PriorityQueueTest extends PHPUnit_Framework_TestCase
 
     public function testClear()
     {
-        $this->_collection->push('foo');
+        $this->collection->push('foo');
 
-        $this->_collection->clear();
+        $this->collection->clear();
 
-        $this->assertTrue($this->_collection->isEmpty());
+        $this->assertTrue($this->collection->isEmpty());
     }
 
     /////////////////////////////////////////////
@@ -104,89 +121,128 @@ class PriorityQueueTest extends PHPUnit_Framework_TestCase
 
     public function testNext()
     {
-        $this->_collection->push(1);
-        $this->_collection->push(2);
+        $this->collection->push(1);
+        $this->collection->push(2);
 
-        $this->assertSame(2, $this->_collection->next());
+        $this->assertSame(2, $this->collection->next());
     }
 
     public function testNextWithEmptyCollection()
     {
         $this->setExpectedException(__NAMESPACE__ . '\Exception\EmptyCollectionException');
-        $this->_collection->next();
+        $this->collection->next();
     }
 
     public function testTryNext()
     {
-        $this->_collection->push(1);
-        $this->_collection->push(2);
+        $this->collection->push(1);
+        $this->collection->push(2);
 
         $element = null;
-        $this->assertTrue($this->_collection->tryNext($element));
+        $this->assertTrue($this->collection->tryNext($element));
         $this->assertSame(2, $element);
     }
 
     public function testTryNextWithEmptyCollection()
     {
         $element = '<not null>';
-        $this->assertFalse($this->_collection->tryNext($element));
+        $this->assertFalse($this->collection->tryNext($element));
         $this->assertSame('<not null>', $element); // Reference should not be changed on failure.
     }
 
     public function testPop()
     {
-        $this->_collection->push(1);
-        $this->_collection->push(2);
+        $this->collection->push(1);
+        $this->collection->push(2);
 
-        $this->assertSame(2, $this->_collection->pop());
-        $this->assertSame(1, $this->_collection->size());
+        $this->assertSame(2, $this->collection->pop());
+        $this->assertSame(1, $this->collection->size());
     }
 
     public function testPopWithEmptyCollection()
     {
         $this->setExpectedException(__NAMESPACE__ . '\Exception\EmptyCollectionException');
-        $this->_collection->pop();
+        $this->collection->pop();
     }
 
     public function testTryPop()
     {
-        $this->_collection->push(1);
-        $this->_collection->push(2);
+        $this->collection->push(1);
+        $this->collection->push(2);
 
         $element = null;
-        $this->assertTrue($this->_collection->tryPop($element));
+        $this->assertTrue($this->collection->tryPop($element));
         $this->assertSame(2, $element);
-        $this->assertSame(1, $this->_collection->size());
+        $this->assertSame(1, $this->collection->size());
     }
 
     public function testTryPopWithEmptyCollection()
     {
         $element = '<not null>';
-        $this->assertFalse($this->_collection->tryPop($element));
+        $this->assertFalse($this->collection->tryPop($element));
         $this->assertSame('<not null>', $element); // Reference should not be changed on failure.
     }
 
     public function testPush()
     {
-        $this->_collection->push(2);
+        $this->collection->push(2);
 
-        $this->assertSame(2, $this->_collection->next());
+        $this->assertSame(2, $this->collection->next());
 
-        $this->_collection->push(1);
+        $this->collection->push(1);
 
-        $this->assertSame(2, $this->_collection->next());
+        $this->assertSame(2, $this->collection->next());
 
-        $this->_collection->push(3);
+        $this->collection->push(3);
 
-        $this->assertSame(3, $this->_collection->next());
+        $this->assertSame(3, $this->collection->next());
     }
 
     public function testPushWithExplicitPriority()
     {
-        $this->_collection->push(1);
-        $this->_collection->push(0, 3);
+        $this->collection->push(1);
+        $this->collection->push(0, 3);
 
-        $this->assertSame(0, $this->_collection->next());
+        $this->assertSame(0, $this->collection->next());
     }
 
+    /**
+     * @group regression
+     * @link https://github.com/IcecaveStudios/collections/issues/56
+     */
+    public function testPushWithFalsyPriority()
+    {
+        $prioritizer = function () {
+            throw new Exception('Prioritizer called unexpectedly.');
+        };
+
+        $collection = new PriorityQueue(null, $prioritizer);
+        $collection->push('value', 0);
+
+        $this->assertSame('value', $collection->next());
+    }
+
+    ////////////////////////////////////////////////////////////////
+    // Implementation of [Restricted|Extended]ComparableInterface //
+    ////////////////////////////////////////////////////////////////
+
+    public function testCanCompare()
+    {
+        $this->assertTrue($this->collection->canCompare(new PriorityQueue(null, $this->prioritizer)));
+        $this->assertFalse($this->collection->canCompare(new PriorityQueue(null, function () {})));
+        $this->assertFalse($this->collection->canCompare(new Queue));
+        $this->assertFalse($this->collection->canCompare(array()));
+    }
+
+    public function getCompareData()
+    {
+        return array(
+            'empty'         => array(array(),     array(),      0),
+            'smaller'       => array(array(1),    array(1, 2), -1),
+            'larger'        => array(array(1, 2), array(1),    +1),
+            'same'          => array(array(1, 2), array(1, 2),  0),
+            'lesser'        => array(array(1, 0), array(1, 1), -1),
+            'greater'       => array(array(1, 1), array(1, 0), +1),
+        );
+    }
 }

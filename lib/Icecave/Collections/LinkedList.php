@@ -2,27 +2,29 @@
 namespace Icecave\Collections;
 
 use Countable;
+use Icecave\Collections\Iterator\Traits;
 use Icecave\Collections\TypeCheck\TypeCheck;
+use Icecave\Parity\Exception\NotComparableException;
 use Iterator;
 use Serializable;
 use stdClass;
 
 /**
- * A singly-linked list.
+ * A mutable sequence with efficient addition and removal of elements.
  */
 class LinkedList implements MutableRandomAccessInterface, Countable, Iterator, Serializable
 {
     /**
-     * @param mixed<mixed>|null $collection An iterable type containing the elements to include in this list, or null to create an empty list.
+     * @param mixed<mixed>|null $elements An iterable type containing the elements to include in this list, or null to create an empty list.
      */
-    public function __construct($collection = null)
+    public function __construct($elements = null)
     {
         $this->typeCheck = TypeCheck::get(__CLASS__, func_get_args());
 
         $this->clear();
 
-        if (null !== $collection) {
-            $this->insertMany(0, $collection);
+        if (null !== $elements) {
+            $this->insertMany(0, $elements);
         }
     }
 
@@ -57,6 +59,20 @@ class LinkedList implements MutableRandomAccessInterface, Countable, Iterator, S
         }
 
         $this->tail = $prev;
+    }
+
+    /**
+     * Create a LinkedList.
+     *
+     * @param mixed $element,... Elements to include in the collection.
+     *
+     * @return LinkedList
+     */
+    public static function create()
+    {
+        TypeCheck::get(__CLASS__)->create(func_get_args());
+
+        return new static(func_get_args());
     }
 
     ///////////////////////////////////////////
@@ -139,6 +155,22 @@ class LinkedList implements MutableRandomAccessInterface, Countable, Iterator, S
         $this->currentIndex = 0;
     }
 
+    //////////////////////////////////////////////
+    // Implementation of IteratorTraitsProvider //
+    //////////////////////////////////////////////
+
+    /**
+     * Return traits describing the collection's iteration capabilities.
+     *
+     * @return Traits
+     */
+    public function iteratorTraits()
+    {
+        $this->typeCheck->iteratorTraits(func_get_args());
+
+        return new Traits(true, true);
+    }
+
     /////////////////////////////////////////
     // Implementation of IterableInterface //
     /////////////////////////////////////////
@@ -188,9 +220,9 @@ class LinkedList implements MutableRandomAccessInterface, Countable, Iterator, S
      *
      * @return LinkedList The filtered collection.
      */
-    public function filtered($predicate = null)
+    public function filter($predicate = null)
     {
-        $this->typeCheck->filtered(func_get_args());
+        $this->typeCheck->filter(func_get_args());
 
         if (null === $predicate) {
             $predicate = function ($element) {
@@ -239,7 +271,7 @@ class LinkedList implements MutableRandomAccessInterface, Countable, Iterator, S
      *
      * @param callable $predicate A predicate function used to determine which partitioned collection to place the elements in.
      *
-     * @return tuple<IterableInterface, IterableInterface> A 2-tuple containing the partitioned collections. The first collection contains the element for which the predicate returned true.
+     * @return tuple<IterableInterface,IterableInterface> A 2-tuple containing the partitioned collections. The first collection contains the element for which the predicate returned true.
      */
     public function partition($predicate)
     {
@@ -328,9 +360,9 @@ class LinkedList implements MutableRandomAccessInterface, Countable, Iterator, S
      *
      * @param callable|null $predicate A predicate function used to determine which elements to retain, or null to retain all non-null elements.
      */
-    public function filter($predicate = null)
+    public function filterInPlace($predicate = null)
     {
-        $this->typeCheck->filter(func_get_args());
+        $this->typeCheck->filterInPlace(func_get_args());
 
         if (null === $predicate) {
             $predicate = function ($element) {
@@ -369,9 +401,9 @@ class LinkedList implements MutableRandomAccessInterface, Countable, Iterator, S
      *
      * @param callable $transform The transform to apply to each element.
      */
-    public function apply($transform)
+    public function mapInPlace($transform)
     {
-        $this->typeCheck->apply(func_get_args());
+        $this->typeCheck->mapInPlace(func_get_args());
 
         for ($node = $this->head; null !== $node; $node = $node->next) {
             $node->element = call_user_func($transform, $node->element);
@@ -463,12 +495,12 @@ class LinkedList implements MutableRandomAccessInterface, Countable, Iterator, S
      *
      * @return LinkedList
      */
-    public function sorted($comparator = null)
+    public function sort($comparator = null)
     {
-        $this->typeCheck->sorted(func_get_args());
+        $this->typeCheck->sort(func_get_args());
 
         $result = clone $this;
-        $result->sort($comparator);
+        $result->sortInPlace($comparator);
 
         return $result;
     }
@@ -480,9 +512,9 @@ class LinkedList implements MutableRandomAccessInterface, Countable, Iterator, S
      *
      * @return LinkedList The reversed sequence.
      */
-    public function reversed()
+    public function reverse()
     {
-        $this->typeCheck->reversed(func_get_args());
+        $this->typeCheck->reverse(func_get_args());
 
         $result = new static;
 
@@ -526,9 +558,9 @@ class LinkedList implements MutableRandomAccessInterface, Countable, Iterator, S
      *
      * @param callable|null $comparator A strcmp style comparator function.
      */
-    public function sort($comparator = null)
+    public function sortInPlace($comparator = null)
     {
-        $this->typeCheck->sort(func_get_args());
+        $this->typeCheck->sortInPlace(func_get_args());
 
         if ($this->size <= 1) {
             return;
@@ -614,9 +646,9 @@ class LinkedList implements MutableRandomAccessInterface, Countable, Iterator, S
     /**
      * Reverse this sequence in-place.
      */
-    public function reverse()
+    public function reverseInPlace()
     {
-        $this->typeCheck->reverse(func_get_args());
+        $this->typeCheck->reverseInPlace(func_get_args());
 
         $prev = null;
         $node = $this->head;
@@ -804,7 +836,7 @@ class LinkedList implements MutableRandomAccessInterface, Countable, Iterator, S
      * @param mixed $index The index of the element to fetch, if index is a negative number the element that far from the end of the sequence is returned.
      *
      * @return mixed                    The element at $index.
-     * @throws Exception\IndexException if no such index exists.
+     * @throws Exception\IndexException if $index is out of range.
      */
     public function get($index)
     {
@@ -858,7 +890,7 @@ class LinkedList implements MutableRandomAccessInterface, Countable, Iterator, S
      * @param integer $end   The index at which the slice will end. If end is a negative number the slice will end that far from the end of the sequence.
      *
      * @return SequenceInterface        The sliced sequence.
-     * @throws Exception\IndexException if $index is out of range.
+     * @throws Exception\IndexException if $begin or $end is out of range.
      */
     public function range($begin, $end)
     {
@@ -873,13 +905,16 @@ class LinkedList implements MutableRandomAccessInterface, Countable, Iterator, S
     /**
      * Find the index of the first instance of a particular element in the sequence.
      *
-     * @param mixed   $element    The element to search for.
-     * @param integer $startIndex The index to start searching from.
+     * Searches all elements in the range [$begin, $end), i.e. $begin is inclusive, $end is exclusive.
+     *
+     * @param mixed        $element The element to search for.
+     * @param integer      $begin   The index to start searching from.
+     * @param integer|null $end     The index to to stop searching at, or null to search to the end of the sequence.
      *
      * @return integer|null             The index of the element, or null if is not present in the sequence.
-     * @throws Exception\IndexException if $startIndex is out of range.
+     * @throws Exception\IndexException if $begin or $end is out of range.
      */
-    public function indexOf($element, $startIndex = 0)
+    public function indexOf($element, $begin = 0, $end = null)
     {
         $this->typeCheck->indexOf(func_get_args());
 
@@ -887,19 +922,22 @@ class LinkedList implements MutableRandomAccessInterface, Countable, Iterator, S
             return $element === $e;
         };
 
-        return $this->find($predicate, $startIndex);
+        return $this->find($predicate, $begin, $end);
     }
 
     /**
      * Find the index of the last instance of a particular element in the sequence.
      *
-     * @param mixed        $element    The element to search for.
-     * @param integer|null $startIndex The index to start searching from, or null to use the last index.
+     * Searches all elements in the range [$begin, $end), i.e. $begin is inclusive, $end is exclusive.
+     *
+     * @param mixed        $element The element to search for.
+     * @param integer      $begin   The index to start searching from.
+     * @param integer|null $end     The index to to stop searching at, or null to search to the end of the sequence.
      *
      * @return integer|null             The index of the element, or null if is not present in the sequence.
-     * @throws Exception\IndexException if $startIndex is out of range.
+     * @throws Exception\IndexException if $begin is out of range.
      */
-    public function indexOfLast($element, $startIndex = null)
+    public function indexOfLast($element, $begin = 0, $end = null)
     {
         $this->typeCheck->indexOfLast(func_get_args());
 
@@ -907,19 +945,22 @@ class LinkedList implements MutableRandomAccessInterface, Countable, Iterator, S
             return $element === $e;
         };
 
-        return $this->findLast($predicate, $startIndex);
+        return $this->findLast($predicate, $begin, $end);
     }
 
     /**
      * Find the index of the first instance of an element matching given criteria.
      *
-     * @param callable $predicate  A predicate function used to determine which element constitutes a match.
-     * @param integer  $startIndex The index to start searching from.
+     * Searches all elements in the range [$begin, $end), i.e. $begin is inclusive, $end is exclusive.
+     *
+     * @param callable     $predicate A predicate function used to determine which element constitutes a match.
+     * @param integer      $begin     The index to start searching from.
+     * @param integer|null $end       The index to to stop searching at, or null to search to the end of the sequence.
      *
      * @return integer|null             The index of the element, or null if is not present in the sequence.
-     * @throws Exception\IndexException if $startIndex is out of range.
+     * @throws Exception\IndexException if $begin is out of range.
      */
-    public function find($predicate, $startIndex = 0)
+    public function find($predicate, $begin = 0, $end = null)
     {
         $this->typeCheck->find(func_get_args());
 
@@ -927,12 +968,18 @@ class LinkedList implements MutableRandomAccessInterface, Countable, Iterator, S
             return null;
         }
 
-        $this->validateIndex($startIndex);
+        $this->validateIndex($begin);
+        $this->validateIndex($end, $this->size);
 
-        for ($index = 0, $node = $this->head; null !== $node; ++$index, $node = $node->next) {
-            if ($index >= $startIndex && call_user_func($predicate, $node->element)) {
-                return $index;
+        $node = $this->nodeAt($begin);
+
+        while (null !== $node && $begin !== $end) {
+            if (call_user_func($predicate, $node->element)) {
+                return $begin;
             }
+
+            ++$begin;
+            $node = $node->next;
         }
 
         return null;
@@ -941,30 +988,37 @@ class LinkedList implements MutableRandomAccessInterface, Countable, Iterator, S
     /**
      * Find the index of the last instance of an element matching given criteria.
      *
-     * @param callable     $predicate  A predicate function used to determine which element constitutes a match.
-     * @param integer|null $startIndex The index to start searching from, or null to use the last index.
+     * Searches all elements in the range [$begin, $end), i.e. $begin is inclusive, $end is exclusive.
+     *
+     * @param callable     $predicate A predicate function used to determine which element constitutes a match.
+     * @param integer      $begin     The index to start searching from.
+     * @param integer|null $end       The index to to stop searching at, or null to search to the end of the sequence.
      *
      * @return integer|null             The index of the element, or null if is not present in the sequence.
-     * @throws Exception\IndexException if $startIndex is out of range.
+     * @throws Exception\IndexException if $begin is out of range.
      */
-    public function findLast($predicate, $startIndex = null)
+    public function findLast($predicate, $begin = 0, $end = null)
     {
         $this->typeCheck->findLast(func_get_args());
 
         if ($this->isEmpty()) {
             return null;
-        } elseif (null === $startIndex) {
-            $startIndex = $this->size - 1;
         }
 
-        $this->validateIndex($startIndex);
+        $this->validateIndex($begin);
+        $this->validateIndex($end, $this->size);
+
+        $node = $this->nodeAt($begin);
 
         $lastIndex = null;
 
-        for ($index = 0, $node = $this->head; null !== $node && $index <= $startIndex; ++$index, $node = $node->next) {
+        while (null !== $node && $begin !== $end) {
             if (call_user_func($predicate, $node->element)) {
-                $lastIndex = $index;
+                $lastIndex = $begin;
             }
+
+            ++$begin;
+            $node = $node->next;
         }
 
         return $lastIndex;
@@ -1007,7 +1061,7 @@ class LinkedList implements MutableRandomAccessInterface, Countable, Iterator, S
     }
 
     /**
-     * Insert a range of elements at a particular index.
+     * Insert all elements from another collection at a particular index.
      *
      * @param integer      $index    The index at which the elements are inserted, if index is a negative number the elements are inserted that far from the end of the sequence.
      * @param mixed<mixed> $elements The elements to insert.
@@ -1020,24 +1074,36 @@ class LinkedList implements MutableRandomAccessInterface, Countable, Iterator, S
 
         list($head, $tail, $size) = $this->createNodes($elements);
 
-        if (null === $head) {
-            return;
-        } elseif (0 === $this->size) {
-            $this->head = $head;
-            $this->tail = $tail;
-        } elseif (0 === $index) {
-            $tail->next = $this->head;
-            $this->head = $head;
-        } elseif ($this->size === $index) {
-            $this->tail->next = $head;
-            $this->tail = $tail;
-        } else {
-            $node = $this->nodeAt($index - 1);
-            $tail->next = $node->next;
-            $node->next = $head;
-        }
+        $this->insertNodes($index, $head, $tail, $size);
+    }
 
-        $this->size += $size;
+    /**
+     * Insert a sub-range of another collection at a particular index.
+     *
+     * Inserts all elements from the range [$begin, $end), i.e. $begin is inclusive, $end is exclusive.
+     *
+     * @param integer                          $index    The index at which the elements are inserted, if index is a negative number the elements are inserted that far from the end of the sequence.
+     * @param RandomAccessInterface+LinkedList $elements The elements to insert.
+     * @param integer                          $begin    The index of the first element from $elements to insert, if begin is a negative number the removal begins that far from the end of the sequence.
+     * @param integer                          $end|null The index of the last element to $elements to insert, if end is a negative number the removal ends that far from the end of the sequence.
+     *
+     * @throws Exception\IndexException if $index, $begin or $end is out of range.
+     */
+    public function insertRange($index, RandomAccessInterface $elements, $begin, $end = null)
+    {
+        $this->typeCheck->insertRange(func_get_args());
+
+        $this->validateIndex($index);
+        $elements->validateIndex($begin);
+        $elements->validateIndex($end, $elements->size);
+
+        list($head, $tail, $size) = $elements->cloneNodes(
+            $elements->nodeAt($begin),
+            null,
+            $end - $begin
+        );
+
+        $this->insertNodes($index, $head, $tail, $size);
     }
 
     /**
@@ -1098,7 +1164,7 @@ class LinkedList implements MutableRandomAccessInterface, Countable, Iterator, S
      * @param integer $begin The index of the first element to remove, if $begin is a negative number the removal begins that far from the end of the sequence.
      * @param integer $end   The index of the last element to remove, if $end is a negative number the removal ends that far from the end of the sequence.
      *
-     * @throws Exception\IndexException if $index is out of range.
+     * @throws Exception\IndexException if $begin or $end is out of range.
      */
     public function removeRange($begin, $end)
     {
@@ -1112,8 +1178,6 @@ class LinkedList implements MutableRandomAccessInterface, Countable, Iterator, S
 
     /**
      * Replace a range of elements with a second set of elements.
-     *
-     * Replaces all elements in the range [$begin, $end), i.e. $begin is inclusive, $end is exclusive.
      *
      * @param integer      $index    The index of the first element to replace, if index is a negative number the replace begins that far from the end of the sequence.
      * @param mixed<mixed> $elements The elements to insert.
@@ -1131,6 +1195,8 @@ class LinkedList implements MutableRandomAccessInterface, Countable, Iterator, S
 
     /**
      * Replace a range of elements with a second set of elements.
+     *
+     * Replaces all elements in the range [$begin, $end), i.e. $begin is inclusive, $end is exclusive.
      *
      * @param integer      $begin    The index of the first element to replace, if begin is a negative number the replace begins that far from the end of the sequence.
      * @param integer      $end      The index of the last element to replace, if end is a negativ enumber the replace ends that far from the end of the sequence.
@@ -1254,6 +1320,8 @@ class LinkedList implements MutableRandomAccessInterface, Countable, Iterator, S
     ////////////////////////////////////
 
     /**
+     * Serialize the collection.
+     *
      * @return string The serialized data.
      */
     public function serialize()
@@ -1269,6 +1337,8 @@ class LinkedList implements MutableRandomAccessInterface, Countable, Iterator, S
     }
 
     /**
+     * Unserialize collection data.
+     *
      * @param string $packet The serialized data.
      */
     public function unserialize($packet)
@@ -1278,6 +1348,135 @@ class LinkedList implements MutableRandomAccessInterface, Countable, Iterator, S
         list($currentIndex, $elements) = unserialize($packet);
         $this->__construct($elements);
         $this->currentNode = $this->nodeFrom($this->head, $currentIndex);
+    }
+
+    ///////////////////////////////////////////
+    // Implementation of ComparableInterface //
+    ///////////////////////////////////////////
+
+    /**
+     * Compare this object with another value, yielding a result according to the following table:
+     *
+     * +--------------------+---------------+
+     * | Condition          | Result        |
+     * +--------------------+---------------+
+     * | $this == $value    | $result === 0 |
+     * | $this < $value     | $result < 0   |
+     * | $this > $value     | $result > 0   |
+     * +--------------------+---------------+
+     *
+     * @param mixed $value The value to compare.
+     *
+     * @return integer                                         The result of the comparison.
+     * @throws Icecave\Parity\Exception\NotComparableException Indicates that the implementation does not know how to compare $this to $value.
+     */
+    public function compare($value)
+    {
+        $this->typeCheck->compare(func_get_args());
+
+        if (!$this->canCompare($value)) {
+            throw new NotComparableException($this, $value);
+        }
+
+        return Collection::compare($this, $value);
+    }
+
+    /////////////////////////////////////////////////////
+    // Implementation of RestrictedComparableInterface //
+    /////////////////////////////////////////////////////
+
+    /**
+     * Check if $this is able to be compared to another value.
+     *
+     * A return value of false indicates that calling $this->compare($value)
+     * will throw an exception.
+     *
+     * @param mixed $value The value to compare.
+     *
+     * @return boolean True if $this can be compared to $value.
+     */
+    public function canCompare($value)
+    {
+        $this->typeCheck->canCompare(func_get_args());
+
+        return is_object($value)
+            && __CLASS__ === get_class($value);
+    }
+
+    ///////////////////////////////////////////////////
+    // Implementation of ExtendedComparableInterface //
+    ///////////////////////////////////////////////////
+
+    /**
+     * @param mixed $value The value to compare.
+     *
+     * @return boolean True if $this == $value.
+     */
+    public function isEqualTo($value)
+    {
+        $this->typeCheck->isEqualTo(func_get_args());
+
+        return $this->compare($value) === 0;
+    }
+
+    /**
+     * @param mixed $value The value to compare.
+     *
+     * @return boolean True if $this != $value.
+     */
+    public function isNotEqualTo($value)
+    {
+        $this->typeCheck->isNotEqualTo(func_get_args());
+
+        return $this->compare($value) !== 0;
+    }
+
+    /**
+     * @param mixed $value The value to compare.
+     *
+     * @return boolean True if $this < $value.
+     */
+    public function isLessThan($value)
+    {
+        $this->typeCheck->isLessThan(func_get_args());
+
+        return $this->compare($value) < 0;
+    }
+
+    /**
+     * @param mixed $value The value to compare.
+     *
+     * @return boolean True if $this > $value.
+     */
+    public function isGreaterThan($value)
+    {
+        $this->typeCheck->isGreaterThan(func_get_args());
+
+        return $this->compare($value) > 0;
+    }
+
+    /**
+     * @param mixed $value The value to compare.
+     *
+     * @return boolean True if $this <= $value.
+     */
+    public function isLessThanOrEqualTo($value)
+    {
+        $this->typeCheck->isLessThanOrEqualTo(func_get_args());
+
+        return $this->compare($value) <= 0;
+    }
+
+    /**
+     * @param mixed $value The value to compare.
+     *
+     * @return boolean True if $this >= $value.
+     */
+    public function isGreaterThanOrEqualTo($value)
+    {
+        $this->typeCheck->isGreaterThanOrEqualTo(func_get_args());
+
+        return $this->compare($value) >= 0;
     }
 
     ////////////////////////////
@@ -1311,7 +1510,9 @@ class LinkedList implements MutableRandomAccessInterface, Countable, Iterator, S
             $max = $this->size - 1;
         }
 
-        if ($index < 0) {
+        if (null === $index) {
+            $index = $max;
+        } elseif ($index < 0) {
             $index += $this->size;
         }
 
@@ -1357,14 +1558,15 @@ class LinkedList implements MutableRandomAccessInterface, Countable, Iterator, S
     /**
      * @param stdClass      $start
      * @param stdClass|null $stop
+     * @param integer|null  $limit
      */
-    private function cloneNodes(stdClass $start, stdClass $stop = null)
+    private function cloneNodes(stdClass $start, stdClass $stop = null, $limit = null)
     {
         $head = null;
         $tail = null;
         $size = 0;
 
-        for ($node = $start; $stop !== $node; $node = $node->next) {
+        for ($node = $start; $stop !== $node && $size !== $limit; $node = $node->next) {
             $n = $this->createNode($node->element);
             if (null === $head) {
                 $head = $n;
@@ -1399,6 +1601,34 @@ class LinkedList implements MutableRandomAccessInterface, Countable, Iterator, S
         }
 
         return array($head, $tail, $size);
+    }
+
+    /**
+     * @param integer       $index
+     * @param stdClass|null $head
+     * @param stdClass|null $tail
+     * @param integer       $size
+     */
+    private function insertNodes($index, stdClass $head = null, stdClass $tail = null, $size)
+    {
+        if (null === $head) {
+            return;
+        } elseif (0 === $this->size) {
+            $this->head = $head;
+            $this->tail = $tail;
+        } elseif (0 === $index) {
+            $tail->next = $this->head;
+            $this->head = $head;
+        } elseif ($this->size === $index) {
+            $this->tail->next = $head;
+            $this->tail = $tail;
+        } else {
+            $node = $this->nodeAt($index - 1);
+            $tail->next = $node->next;
+            $node->next = $head;
+        }
+
+        $this->size += $size;
     }
 
     private $typeCheck;

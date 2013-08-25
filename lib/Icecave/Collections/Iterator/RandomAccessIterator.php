@@ -14,7 +14,7 @@ use Iterator;
 class RandomAccessIterator implements Iterator
 {
     /**
-     * @param RandomAccessInterface $collection The collection to iterate.
+     * @param RandomAccessInterface $collection The collection to be iterated.
      */
     public function __construct(RandomAccessInterface $collection)
     {
@@ -25,7 +25,9 @@ class RandomAccessIterator implements Iterator
     }
 
     /**
-     * @return RandomAccessInterface The collection to iterate.
+     * Fetch the collection to be iterated.
+     *
+     * @return RandomAccessInterface The collection to be iterated.
      */
     public function collection()
     {
@@ -35,6 +37,8 @@ class RandomAccessIterator implements Iterator
     }
 
     /**
+     * Fetch the current value.
+     *
      * @return mixed The current value.
      */
     public function current()
@@ -45,6 +49,8 @@ class RandomAccessIterator implements Iterator
     }
 
     /**
+     * Fetch the current key.
+     *
      * @return mixed The current key.
      */
     public function key()
@@ -75,6 +81,8 @@ class RandomAccessIterator implements Iterator
     }
 
     /**
+     * Check if the current element is valid.
+     *
      * @return boolean True if the iterator points to a valid element; otherwise, false.
      */
     public function valid()

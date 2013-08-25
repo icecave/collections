@@ -3,27 +3,33 @@ namespace Icecave\Collections;
 
 use ArrayAccess;
 use Countable;
+use Icecave\Collections\Iterator\Traits;
 use Icecave\Collections\TypeCheck\TypeCheck;
+use Icecave\Parity\Exception\NotComparableException;
 use Iterator;
+use SeekableIterator;
 use Serializable;
 use SplFixedArray;
 
-class Vector implements MutableRandomAccessInterface, Countable, Iterator, ArrayAccess, Serializable
+/**
+ * A mutable sequence with efficient access by position and iteration.
+ */
+class Vector implements MutableRandomAccessInterface, Countable, Iterator, SeekableIterator, ArrayAccess, Serializable
 {
     /**
-     * @param mixed<mixed>|null $collection An iterable type containing the elements to include in this vector, or null to create an empty vector.
+     * @param mixed<mixed>|null $elements An iterable type containing the elements to include in this vector, or null to create an empty vector.
      */
-    public function __construct($collection = null)
+    public function __construct($elements = null)
     {
         $this->typeCheck = TypeCheck::get(__CLASS__, func_get_args());
 
-        if (is_array($collection)) {
-            $this->elements = SplFixedArray::fromArray($collection, false);
-            $this->size = count($collection);
+        if (is_array($elements)) {
+            $this->elements = SplFixedArray::fromArray($elements, false);
+            $this->size = count($elements);
         } else {
             $this->clear();
-            if (null !== $collection) {
-                $this->insertMany(0, $collection);
+            if (null !== $elements) {
+                $this->insertMany(0, $elements);
             }
         }
     }
@@ -33,6 +39,20 @@ class Vector implements MutableRandomAccessInterface, Countable, Iterator, Array
         $this->typeCheck->validateClone(func_get_args());
 
         $this->elements = clone $this->elements;
+    }
+
+    /**
+     * Create a Vector.
+     *
+     * @param mixed $element,... Elements to include in the collection.
+     *
+     * @return Vector
+     */
+    public static function create()
+    {
+        TypeCheck::get(__CLASS__)->create(func_get_args());
+
+        return new static(func_get_args());
     }
 
     ///////////////////////////////////////////
@@ -111,6 +131,22 @@ class Vector implements MutableRandomAccessInterface, Countable, Iterator, Array
         $this->size = 0;
     }
 
+    //////////////////////////////////////////////
+    // Implementation of IteratorTraitsProvider //
+    //////////////////////////////////////////////
+
+    /**
+     * Return traits describing the collection's iteration capabilities.
+     *
+     * @return Traits
+     */
+    public function iteratorTraits()
+    {
+        $this->typeCheck->iteratorTraits(func_get_args());
+
+        return new Traits(true, true);
+    }
+
     /////////////////////////////////////////
     // Implementation of IterableInterface //
     /////////////////////////////////////////
@@ -157,9 +193,9 @@ class Vector implements MutableRandomAccessInterface, Countable, Iterator, Array
      *
      * @return Vector The filtered collection.
      */
-    public function filtered($predicate = null)
+    public function filter($predicate = null)
     {
-        $this->typeCheck->filtered(func_get_args());
+        $this->typeCheck->filter(func_get_args());
 
         if (null === $predicate) {
             $predicate = function ($element) {
@@ -216,7 +252,7 @@ class Vector implements MutableRandomAccessInterface, Countable, Iterator, Array
      *
      * @param callable $predicate A predicate function used to determine which partitioned collection to place the elements in.
      *
-     * @return tuple<IterableInterface, IterableInterface> A 2-tuple containing the partitioned collections. The first collection contains the element for which the predicate returned true.
+     * @return tuple<IterableInterface,IterableInterface> A 2-tuple containing the partitioned collections. The first collection contains the element for which the predicate returned true.
      */
     public function partition($predicate)
     {
@@ -315,9 +351,9 @@ class Vector implements MutableRandomAccessInterface, Countable, Iterator, Array
      *
      * @param callable|null $predicate A predicate function used to determine which elements to retain, or null to retain all non-null elements.
      */
-    public function filter($predicate = null)
+    public function filterInPlace($predicate = null)
     {
-        $this->typeCheck->filter(func_get_args());
+        $this->typeCheck->filterInPlace(func_get_args());
 
         if (null === $predicate) {
             $predicate = function ($element) {
@@ -330,9 +366,13 @@ class Vector implements MutableRandomAccessInterface, Countable, Iterator, Array
 
         foreach ($this->elements as $index => $element) {
             if ($index >= $size) {
-                $this->elements[$index] = null;
+                break;
             } elseif (call_user_func($predicate, $element)) {
                 $this->elements[$this->size++] = $element;
+            }
+
+            if ($index >= $this->size) {
+                $this->elements[$index] = null;
             }
         }
     }
@@ -344,9 +384,9 @@ class Vector implements MutableRandomAccessInterface, Countable, Iterator, Array
      *
      * @param callable $transform The transform to apply to each element.
      */
-    public function apply($transform)
+    public function mapInPlace($transform)
     {
-        $this->typeCheck->apply(func_get_args());
+        $this->typeCheck->mapInPlace(func_get_args());
 
         foreach ($this->elements as $index => $element) {
             if ($index >= $this->size) {
@@ -440,9 +480,9 @@ class Vector implements MutableRandomAccessInterface, Countable, Iterator, Array
      *
      * @return Vector
      */
-    public function sorted($comparator = null)
+    public function sort($comparator = null)
     {
-        $this->typeCheck->sorted(func_get_args());
+        $this->typeCheck->sort(func_get_args());
 
         $elements = $this->elements();
 
@@ -462,9 +502,9 @@ class Vector implements MutableRandomAccessInterface, Countable, Iterator, Array
      *
      * @return Vector The reversed sequence.
      */
-    public function reversed()
+    public function reverse()
     {
-        $this->typeCheck->reversed(func_get_args());
+        $this->typeCheck->reverse(func_get_args());
 
         $result = new static;
         $result->resize($this->size);
@@ -493,7 +533,7 @@ class Vector implements MutableRandomAccessInterface, Countable, Iterator, Array
     {
         $this->typeCheck->join(func_get_args());
 
-        $result = new static($this->elements);
+        $result = new static($this);
         foreach (func_get_args() as $sequence) {
             $result->insertMany($result->size(), $sequence);
         }
@@ -510,9 +550,9 @@ class Vector implements MutableRandomAccessInterface, Countable, Iterator, Array
      *
      * @param callable|null $comparator A strcmp style comparator function.
      */
-    public function sort($comparator = null)
+    public function sortInPlace($comparator = null)
     {
-        $this->typeCheck->sort(func_get_args());
+        $this->typeCheck->sortInPlace(func_get_args());
 
         $elements = $this->elements();
 
@@ -528,9 +568,9 @@ class Vector implements MutableRandomAccessInterface, Countable, Iterator, Array
     /**
      * Reverse this sequence in-place.
      */
-    public function reverse()
+    public function reverseInPlace()
     {
-        $this->typeCheck->reverse(func_get_args());
+        $this->typeCheck->reverseInPlace(func_get_args());
 
         $first = 0;
         $last  = $this->size;
@@ -687,7 +727,7 @@ class Vector implements MutableRandomAccessInterface, Countable, Iterator, Array
      * @param mixed $index The index of the element to fetch, if index is a negative number the element that far from the end of the sequence is returned.
      *
      * @return mixed                    The element at $index.
-     * @throws Exception\IndexException if no such index exists.
+     * @throws Exception\IndexException if $index is out of range.
      */
     public function get($index)
     {
@@ -739,7 +779,7 @@ class Vector implements MutableRandomAccessInterface, Countable, Iterator, Array
      * @param integer $end   The index at which the slice will end. If end is a negative number the slice will end that far from the end of the sequence.
      *
      * @return SequenceInterface        The sliced sequence.
-     * @throws Exception\IndexException if $index is out of range.
+     * @throws Exception\IndexException if $begin or $end is out of range.
      */
     public function range($begin, $end)
     {
@@ -765,13 +805,16 @@ class Vector implements MutableRandomAccessInterface, Countable, Iterator, Array
     /**
      * Find the index of the first instance of a particular element in the sequence.
      *
-     * @param mixed   $element    The element to search for.
-     * @param integer $startIndex The index to start searching from.
+     * Searches all elements in the range [$begin, $end), i.e. $begin is inclusive, $end is exclusive.
+     *
+     * @param mixed        $element The element to search for.
+     * @param integer      $begin   The index to start searching from.
+     * @param integer|null $end     The index to to stop searching at, or null to search to the end of the sequence.
      *
      * @return integer|null             The index of the element, or null if is not present in the sequence.
-     * @throws Exception\IndexException if $startIndex is out of range.
+     * @throws Exception\IndexException if $begin or $end is out of range.
      */
-    public function indexOf($element, $startIndex = 0)
+    public function indexOf($element, $begin = 0, $end = null)
     {
         $this->typeCheck->indexOf(func_get_args());
 
@@ -779,19 +822,22 @@ class Vector implements MutableRandomAccessInterface, Countable, Iterator, Array
             return $element === $e;
         };
 
-        return $this->find($predicate, $startIndex);
+        return $this->find($predicate, $begin, $end);
     }
 
     /**
      * Find the index of the last instance of a particular element in the sequence.
      *
-     * @param mixed        $element    The element to search for.
-     * @param integer|null $startIndex The index to start searching from, or null to use the last index.
+     * Searches all elements in the range [$begin, $end), i.e. $begin is inclusive, $end is exclusive.
+     *
+     * @param mixed        $element The element to search for.
+     * @param integer      $begin   The index to start searching from.
+     * @param integer|null $end     The index to to stop searching at, or null to search to the end of the sequence.
      *
      * @return integer|null             The index of the element, or null if is not present in the sequence.
-     * @throws Exception\IndexException if $startIndex is out of range.
+     * @throws Exception\IndexException if $begin is out of range.
      */
-    public function indexOfLast($element, $startIndex = null)
+    public function indexOfLast($element, $begin = 0, $end = null)
     {
         $this->typeCheck->indexOfLast(func_get_args());
 
@@ -799,19 +845,22 @@ class Vector implements MutableRandomAccessInterface, Countable, Iterator, Array
             return $element === $e;
         };
 
-        return $this->findLast($predicate, $startIndex);
+        return $this->findLast($predicate, $begin, $end);
     }
 
     /**
      * Find the index of the first instance of an element matching given criteria.
      *
-     * @param callable $predicate  A predicate function used to determine which element constitutes a match.
-     * @param integer  $startIndex The index to start searching from.
+     * Searches all elements in the range [$begin, $end), i.e. $begin is inclusive, $end is exclusive.
+     *
+     * @param callable     $predicate A predicate function used to determine which element constitutes a match.
+     * @param integer      $begin     The index to start searching from.
+     * @param integer|null $end       The index to to stop searching at, or null to search to the end of the sequence.
      *
      * @return integer|null             The index of the element, or null if is not present in the sequence.
-     * @throws Exception\IndexException if $startIndex is out of range.
+     * @throws Exception\IndexException if $begin is out of range.
      */
-    public function find($predicate, $startIndex = 0)
+    public function find($predicate, $begin = 0, $end = null)
     {
         $this->typeCheck->find(func_get_args());
 
@@ -819,11 +868,12 @@ class Vector implements MutableRandomAccessInterface, Countable, Iterator, Array
             return null;
         }
 
-        $this->validateIndex($startIndex);
+        $this->validateIndex($begin);
+        $this->validateIndex($end, $this->size);
 
-        for ($index = $startIndex; $index < $this->size; ++$index) {
-            if (call_user_func($predicate, $this->elements[$index])) {
-                return $index;
+        for (; $begin !== $end; ++$begin) {
+            if (call_user_func($predicate, $this->elements[$begin])) {
+                return $begin;
             }
         }
 
@@ -833,29 +883,31 @@ class Vector implements MutableRandomAccessInterface, Countable, Iterator, Array
     /**
      * Find the index of the last instance of an element matching given criteria.
      *
-     * @param callable     $predicate  A predicate function used to determine which element constitutes a match.
-     * @param integer|null $startIndex The index to start searching from, or null to use the last index.
+     * Searches all elements in the range [$begin, $end), i.e. $begin is inclusive, $end is exclusive.
+     *
+     * @param callable     $predicate A predicate function used to determine which element constitutes a match.
+     * @param integer      $begin     The index to start searching from.
+     * @param integer|null $end       The index to to stop searching at, or null to search to the end of the sequence.
      *
      * @return integer|null             The index of the element, or null if is not present in the sequence.
-     * @throws Exception\IndexException if $startIndex is out of range.
+     * @throws Exception\IndexException if $begin is out of range.
      */
-    public function findLast($predicate, $startIndex = null)
+    public function findLast($predicate, $begin = 0, $end = null)
     {
         $this->typeCheck->findLast(func_get_args());
 
         if ($this->isEmpty()) {
             return null;
-        } elseif (null === $startIndex) {
-            $startIndex = $this->size - 1;
         }
 
-        for ($index = $startIndex; $index >= 0; --$index) {
-            if (call_user_func($predicate, $this->elements[$index])) {
-                return $index;
+        $this->validateIndex($begin);
+        $this->validateIndex($end, $this->size);
+
+        while ($begin !== $end) {
+            if (call_user_func($predicate, $this->elements[--$end])) {
+                return $end;
             }
         }
-
-        return null;
     }
 
     ////////////////////////////////////////////////////
@@ -894,7 +946,7 @@ class Vector implements MutableRandomAccessInterface, Countable, Iterator, Array
     }
 
     /**
-     * Insert a range of elements at a particular index.
+     * Insert all elements from another collection at a particular index.
      *
      * @param integer      $index    The index at which the elements are inserted, if index is a negative number the elements are inserted that far from the end of the sequence.
      * @param mixed<mixed> $elements The elements to insert.
@@ -905,17 +957,62 @@ class Vector implements MutableRandomAccessInterface, Countable, Iterator, Array
 
         $this->validateIndex($index, $this->size);
 
-        $count = count($elements);
+        // The number of elements is not known.
+        // Using the normal expansion rules we create a gap in which to insert the elements.
+        // Once all elements have been inserted the gap is closed.
+        if (!Collection::iteratorTraits($elements)->isCountable) {
+            $shiftIndex = $index;
 
-        if (0 === $count) {
-            return;
+            foreach ($elements as $element) {
+                if ($index === $shiftIndex) {
+                    $actualExpansion = $this->expand(1);
+                    $this->shiftRight($index, $actualExpansion);
+                    $shiftIndex += $actualExpansion;
+                }
+
+                $this->elements[$index++] = $element;
+                ++$this->size;
+            }
+
+            $this->shiftLeft($shiftIndex, $shiftIndex - $index);
+
+        // The number of elements is known, expand the vector once and insert the elements.
+        } elseif ($count = count($elements)) {
+            $this->shiftRight($index, $count);
+            $this->size += $count;
+
+            foreach ($elements as $element) {
+                $this->elements[$index++] = $element;
+            }
         }
+    }
 
-        $this->shiftRight($index, $count);
-        $this->size += $count;
+    /**
+     * Insert a sub-range of another collection at a particular index.
+     *
+     * Inserts all elements from the range [$begin, $end), i.e. $begin is inclusive, $end is exclusive.
+     *
+     * @param integer                      $index    The index at which the elements are inserted, if index is a negative number the elements are inserted that far from the end of the sequence.
+     * @param RandomAccessInterface+Vector $elements The elements to insert.
+     * @param integer                      $begin    The index of the first element from $elements to insert, if begin is a negative number the removal begins that far from the end of the sequence.
+     * @param integer                      $end|null The index of the last element to $elements to insert, if end is a negative number the removal ends that far from the end of the sequence.
+     *
+     * @throws Exception\IndexException if $index, $begin or $end is out of range.
+     */
+    public function insertRange($index, RandomAccessInterface $elements, $begin, $end = null)
+    {
+        $this->typeCheck->insertRange(func_get_args());
 
-        foreach ($elements as $element) {
-            $this->elements[$index++] = $element;
+        $this->validateIndex($index);
+        $elements->validateIndex($begin);
+        $elements->validateIndex($end, $elements->size);
+
+        $size = $end - $begin;
+        $this->shiftRight($index, $size);
+        $this->size += $size;
+
+        while ($begin !== $end) {
+            $this->elements[$index++] = $elements->elements[$begin++];
         }
     }
 
@@ -962,7 +1059,7 @@ class Vector implements MutableRandomAccessInterface, Countable, Iterator, Array
      * @param integer $begin The index of the first element to remove, if $begin is a negative number the removal begins that far from the end of the sequence.
      * @param integer $end   The index of the last element to remove, if $end is a negative number the removal ends that far from the end of the sequence.
      *
-     * @throws Exception\IndexException if $index is out of range.
+     * @throws Exception\IndexException if $begin or $end is out of range.
      */
     public function removeRange($begin, $end)
     {
@@ -976,8 +1073,6 @@ class Vector implements MutableRandomAccessInterface, Countable, Iterator, Array
     /**
      * Replace a range of elements with a second set of elements.
      *
-     * Replaces all elements in the range [$begin, $end), i.e. $begin is inclusive, $end is exclusive.
-     *
      * @param integer      $index    The index of the first element to replace, if index is a negative number the replace begins that far from the end of the sequence.
      * @param mixed<mixed> $elements The elements to insert.
      * @param integer|null $count    The number of elements to replace, or null to replace all elements up to the end of the sequence.
@@ -989,23 +1084,36 @@ class Vector implements MutableRandomAccessInterface, Countable, Iterator, Array
         $this->validateIndex($index);
 
         $count = $this->clamp($count, 0, $this->size - $index);
-        $diff  = count($elements) - $count;
 
-        if ($diff > 0) {
-            $this->shiftRight($index + $count, $diff);
-        } elseif ($diff < 0) {
-            $this->shiftLeft($index + $count, abs($diff));
-        }
+        // Element count is available ...
+        if (Collection::iteratorTraits($elements)->isCountable) {
+            $diff = count($elements) - $count;
 
-        $this->size += $diff;
+            if ($diff > 0) {
+                $this->shiftRight($index + $count, $diff);
+            } elseif ($diff < 0) {
+                $this->shiftLeft($index + $count, abs($diff));
+            }
 
-        foreach ($elements as $element) {
-            $this->elements[$index++] = $element;
+            $this->size += $diff;
+
+            foreach ($elements as $element) {
+                $this->elements[$index++] = $element;
+            }
+
+        // No count is available ...
+        } else {
+            $originalSize = $this->size;
+            $this->insertMany($index, $elements);
+            $elementCount = $this->size - $originalSize;
+            $this->removeMany($index + $elementCount, $count);
         }
     }
 
     /**
      * Replace a range of elements with a second set of elements.
+     *
+     * Replaces all elements in the range [$begin, $end), i.e. $begin is inclusive, $end is exclusive.
      *
      * @param integer      $begin    The index of the first element to replace, if begin is a negative number the replace begins that far from the end of the sequence.
      * @param integer      $end      The index of the last element to replace, if end is a negativ enumber the replace ends that far from the end of the sequence.
@@ -1128,6 +1236,32 @@ class Vector implements MutableRandomAccessInterface, Countable, Iterator, Array
             && $index < $this->size();
     }
 
+    ////////////////////////////////////////
+    // Implementation of SeekableIterator //
+    ////////////////////////////////////////
+
+    /**
+     * @param integer $index
+     */
+    public function seek($index)
+    {
+        $this->typeCheck->seek(func_get_args());
+
+        $this->validateIndex($index);
+
+        $currentIndex = $this->key();
+
+        if ($index < $currentIndex) {
+            $this->rewind();
+        } else {
+            $index -= $currentIndex;
+        }
+
+        while ($index--) {
+            $this->next();
+        }
+    }
+
     ///////////////////////////////////
     // Implementation of ArrayAccess //
     ///////////////////////////////////
@@ -1190,6 +1324,8 @@ class Vector implements MutableRandomAccessInterface, Countable, Iterator, Array
     ////////////////////////////////////
 
     /**
+     * Serialize the collection.
+     *
      * @return string The serialized data.
      */
     public function serialize()
@@ -1200,6 +1336,8 @@ class Vector implements MutableRandomAccessInterface, Countable, Iterator, Array
     }
 
     /**
+     * Unserialize collection data.
+     *
      * @param string $packet The serialized data.
      */
     public function unserialize($packet)
@@ -1210,11 +1348,142 @@ class Vector implements MutableRandomAccessInterface, Countable, Iterator, Array
         $this->__construct($elements);
     }
 
+    ///////////////////////////////////////////
+    // Implementation of ComparableInterface //
+    ///////////////////////////////////////////
+
+    /**
+     * Compare this object with another value, yielding a result according to the following table:
+     *
+     * +--------------------+---------------+
+     * | Condition          | Result        |
+     * +--------------------+---------------+
+     * | $this == $value    | $result === 0 |
+     * | $this < $value     | $result < 0   |
+     * | $this > $value     | $result > 0   |
+     * +--------------------+---------------+
+     *
+     * @param mixed $value The value to compare.
+     *
+     * @return integer                                         The result of the comparison.
+     * @throws Icecave\Parity\Exception\NotComparableException Indicates that the implementation does not know how to compare $this to $value.
+     */
+    public function compare($value)
+    {
+        $this->typeCheck->compare(func_get_args());
+
+        if (!$this->canCompare($value)) {
+            throw new NotComparableException($this, $value);
+        }
+
+        return Collection::compare($this->elements, $value->elements);
+    }
+
+    /////////////////////////////////////////////////////
+    // Implementation of RestrictedComparableInterface //
+    /////////////////////////////////////////////////////
+
+    /**
+     * Check if $this is able to be compared to another value.
+     *
+     * A return value of false indicates that calling $this->compare($value)
+     * will throw an exception.
+     *
+     * @param mixed $value The value to compare.
+     *
+     * @return boolean True if $this can be compared to $value.
+     */
+    public function canCompare($value)
+    {
+        $this->typeCheck->canCompare(func_get_args());
+
+        return is_object($value)
+            && __CLASS__ === get_class($value);
+    }
+
+    ///////////////////////////////////////////////////
+    // Implementation of ExtendedComparableInterface //
+    ///////////////////////////////////////////////////
+
+    /**
+     * @param mixed $value The value to compare.
+     *
+     * @return boolean True if $this == $value.
+     */
+    public function isEqualTo($value)
+    {
+        $this->typeCheck->isEqualTo(func_get_args());
+
+        return $this->compare($value) === 0;
+    }
+
+    /**
+     * @param mixed $value The value to compare.
+     *
+     * @return boolean True if $this != $value.
+     */
+    public function isNotEqualTo($value)
+    {
+        $this->typeCheck->isNotEqualTo(func_get_args());
+
+        return $this->compare($value) !== 0;
+    }
+
+    /**
+     * @param mixed $value The value to compare.
+     *
+     * @return boolean True if $this < $value.
+     */
+    public function isLessThan($value)
+    {
+        $this->typeCheck->isLessThan(func_get_args());
+
+        return $this->compare($value) < 0;
+    }
+
+    /**
+     * @param mixed $value The value to compare.
+     *
+     * @return boolean True if $this > $value.
+     */
+    public function isGreaterThan($value)
+    {
+        $this->typeCheck->isGreaterThan(func_get_args());
+
+        return $this->compare($value) > 0;
+    }
+
+    /**
+     * @param mixed $value The value to compare.
+     *
+     * @return boolean True if $this <= $value.
+     */
+    public function isLessThanOrEqualTo($value)
+    {
+        $this->typeCheck->isLessThanOrEqualTo(func_get_args());
+
+        return $this->compare($value) <= 0;
+    }
+
+    /**
+     * @param mixed $value The value to compare.
+     *
+     * @return boolean True if $this >= $value.
+     */
+    public function isGreaterThanOrEqualTo($value)
+    {
+        $this->typeCheck->isGreaterThanOrEqualTo(func_get_args());
+
+        return $this->compare($value) >= 0;
+    }
+
     ////////////////////////////
     // Model specific methods //
     ////////////////////////////
 
     /**
+     * Fetch the current reserved capacity of the vector.
+     *
      * @return integer The current reserved capacity of the vector.
      */
     public function capacity()
@@ -1258,7 +1527,9 @@ class Vector implements MutableRandomAccessInterface, Countable, Iterator, Array
             $max = $this->size - 1;
         }
 
-        if ($index < 0) {
+        if (null === $index) {
+            $index = $max;
+        } elseif ($index < 0) {
             $index += $this->size;
         }
 
@@ -1273,14 +1544,15 @@ class Vector implements MutableRandomAccessInterface, Countable, Iterator, Array
      */
     private function shiftLeft($index, $count)
     {
+        $capacity = $this->capacity();
         $target = $index - $count;
         $source = $index;
 
-        while ($source < $this->size) {
+        while ($source < $capacity) {
             $this->elements[$target++] = $this->elements[$source++];
         }
 
-        while ($target < $this->size) {
+        while ($target < $capacity) {
             $this->elements[$target++] = null;
         }
     }
@@ -1321,23 +1593,26 @@ class Vector implements MutableRandomAccessInterface, Countable, Iterator, Array
 
     /**
      * @param integer $count
+     *
+     * @return integer The unused capacity of the vector.
      */
     private function expand($count)
     {
-        if ($this->capacity() >= $this->size + $count) {
-            return;
-        }
+        $currentCapacity = $this->capacity();
+        $targetCapacity  = $this->size + $count;
 
-        if (0 === $this->size) {
-            $capacity = $this->size + $count;
+        if (0 === $currentCapacity) {
+            $newCapacity = $targetCapacity;
         } else {
-            $capacity = $this->capacity();
-            $target = $this->size + $count;
-            while ($capacity < $target) {
-                $capacity <<= 1;
+            $newCapacity = $currentCapacity;
+            while ($newCapacity < $targetCapacity) {
+                $newCapacity <<= 1;
             }
         }
-        $this->reserve($capacity);
+
+        $this->reserve($newCapacity);
+
+        return $this->capacity() - $this->size;
     }
 
     private $typeCheck;

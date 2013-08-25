@@ -1,36 +1,73 @@
 # Collections Changelog
 
-### 0.6.0
+### 0.7.0 (2013-08-25)
 
-* Added IterableInterface::partition(), each(), any() and all() - provided by Map, LinkedList, Set and Vector
-* Fixed issue setting/returning previous element in Map::replace() / tryReplace()
-* Set iteration now produces an sequential integer key
+This release includes numerous naming changes to improve consistency across the project. Please be aware that some new
+methods and classes have been added with the same name as existing methods which have been renamed.
 
-### 0.5.1
+* **[BC]** The `mbstring` extension is now required
+* **[BC]** Renamed `MutableAssociativeInterface::merge()` to `mergeInPlace()`
+* **[BC]** Renamed `AssociativeInterface::combine()` to `merge()`
+* **[BC]** Renamed `MutableIterableInterface::filter()` to `filterInPlace()`
+* **[BC]** Renamed `IterableInterface::filtered()` to `filter()`
+* **[BC]** Renamed `MutableSequenceInterface::sort()` to `sortInPlace()`
+* **[BC]** Renamed `MutableSequenceInterface::reverse()` to `reverseInPlace()`
+* **[BC]** Renamed `SequenceInterface::sorted()` to `sort()`
+* **[BC]** Renamed `SequenceInterface::reverse()` to `reversed()`
+* **[BC]** Moved `AssociativeKeyGenerator` into `Icecave\Collections\Detail` namespace (it is not part of the public API)
+* **[BC]** Added begin index parameter to `RandomAccessInterface::indexOfLast()` and `findLast()`
+* **[BC]** Swapped the order of parameters to `PriorityQueue::__construct()`
+* **[BC]** The `Map` class has been renamed to `HashMap`
+* **[BC]** The `Set` class has been renamed to `HashSet`
+* **[BC]** Renamed `Set::isEqual()` to `Set::isEqualSet()`
+* **[BC]** All set-specific operations (union, diff, etc) can now only operate on sets of the same type and hash/comparator function
+* **[BC]** Renamed `Set::isStrictSuperSet()` and `isStrictSubSet()` to `isProperSuperSet()` and `isProperSubSet()`, respectively
+* **[FIXED]** Fixed issue that prevented pushing elements into a `PriorityQueue` with an explicit priority that is weakly equivalent to null (eg, 0)
+* **[FIXED]** Fixed issues with `Vector::filter()` and `join()` whereby additional null values were added to the collection
+* **[FIXED]** Fixed several issues with `Vector` whereby `count()` is called on iterable arguments that are not necessarily countable
+* **[NEW]** `Collection` class provides collection type agnostic operations for generic programming
+* **[NEW]** All collections now implement `ExtendedComparableInterface` from [Icecave\Parity](https://github.com/IcecaveStudios/parity)
+* **[NEW]** Added `Map`, a comparator based associative container
+* **[NEW]** Added `Set`, a comparator based set container
+* **[NEW]** Added `SetInterface`, which adds `isIntersecting()`, `addMany()`, `removeMany()`, `symmetricDiff()` and `symmetricDiffInPlace()`
+* **[NEW]** Added an iterator traits system (see `Collection::iteratorTraits`)
+* **[NEW]** Added `create()` static method to each collection for constructing from elements as variable arguments
+* **[NEW]** Added `MutableRandomAccessInterface::insertRange()`
+* **[IMPROVED]** Prioritizer parameter to `PriorityQueue::__construct()` now defaults to the identity function
+* **[IMPROVED]** Added optional end index parameter to `RandomAccessInterface::indexOf()` and `find()`
+* **[IMPROVED]** `Vector` now implements `SeekableIterator`
 
-* Map and Set collections now retain custom hash function when serializing
+### 0.6.0 (2013-02-25)
 
-### 0.5.0
+* **[NEW]** Added `IterableInterface::partition()`, `each()`, `any()` and `all()`
+* **[FIXED]** Fixed issue setting/returning previous element in `Map::replace()` and `tryReplace()`
+* **[FIXED]** `Set` iteration now produces an sequential integer key
 
-* All collection types are now serializable
-* Added Set::isEqual(), Set::isSuperset(), Set::isSubset(), Set::isStrictSuperset() and Set::isStrictSubset()
+### 0.5.1 (2013-02-07)
 
-### 0.4.0
+* **[FIXED]** `Map` and `Set` collections now retain custom hash function when serializing
 
-* All collection types are now clonable
-* LinkedList::sort() now uses a merge sort instead of converting to a native array
-* Added RandomAccessInterface::indexOfLast(), RandomAccessInterface::find() and RandomAccessInterface::findLast()
+### 0.5.0 (2013-01-13)
 
-### 0.3.0
+* **[NEW]** All collection types are now serializable
+* **[NEW]** Added `Set::isEqual()`, `isSuperset()`, `isSubset()`, `isStrictSuperset()` and `isStrictSubset()`
 
-* Added Typhoon type checks
-* Icecave\Repr now used in __toString() methods
+### 0.4.0 (2013-01-11)
 
-### 0.2.0
+* **[NEW]** All collection types are now clonable
+* **[NEW]** Added `RandomAccessInterface::indexOfLast()`, `find()` and `findLast()`
+* **[IMPROVED]** `LinkedList::sort()` now uses a merge sort instead of converting to a native array
 
-* Added AssociativeIterator and RandomAccessIterator
-* Collections now implement Iterator, Countable and ArrayAccess as appropriate
+### 0.3.0 (2013-01-10)
 
-### 0.1.0
+* **[IMPROVED]** Added Typhoon type checks
+* **[IMPROVED]** [Icecave\Repr](https://github.com/IcecaveStudios/repr) now used in __toString() methods
+
+### 0.2.0 (2013-01-10)
+
+* **[NEW]** Added `AssociativeIterator` and `RandomAccessIterator`
+* **[NEW]** Collections now implement `Iterator`, `Countable` and `ArrayAccess` as appropriate
+
+### 0.1.0 (2013-01-10)
 
 * Initial release

@@ -12,7 +12,7 @@ interface RandomAccessInterface extends SequenceInterface
      * @param mixed $index The index of the element to fetch, if index is a negative number the element that far from the end of the sequence is returned.
      *
      * @return mixed                    The element at $index.
-     * @throws Exception\IndexException if no such index exists.
+     * @throws Exception\IndexException if $index is out of range.
      */
     public function get($index);
 
@@ -40,51 +40,63 @@ interface RandomAccessInterface extends SequenceInterface
      * @param integer $end   The index at which the slice will end. If end is a negative number the slice will end that far from the end of the sequence.
      *
      * @return SequenceInterface        The sliced sequence.
-     * @throws Exception\IndexException if $index is out of range.
+     * @throws Exception\IndexException if $begin or $end is out of range.
      */
     public function range($begin, $end);
 
     /**
      * Find the index of the first instance of a particular element in the sequence.
      *
-     * @param mixed   $element    The element to search for.
-     * @param integer $startIndex The index to start searching from.
+     * Searches all elements in the range [$begin, $end), i.e. $begin is inclusive, $end is exclusive.
+     *
+     * @param mixed        $element The element to search for.
+     * @param integer      $begin   The index to start searching from.
+     * @param integer|null $end     The index to to stop searching at, or null to search to the end of the sequence.
      *
      * @return integer|null             The index of the element, or null if is not present in the sequence.
-     * @throws Exception\IndexException if $startIndex is out of range.
+     * @throws Exception\IndexException if $begin or $end is out of range.
      */
-    public function indexOf($element, $startIndex = 0);
+    public function indexOf($element, $begin = 0, $end = null);
 
     /**
      * Find the index of the last instance of a particular element in the sequence.
      *
-     * @param mixed        $element    The element to search for.
-     * @param integer|null $startIndex The index to start searching from, or null to use the last index.
+     * Searches all elements in the range [$begin, $end), i.e. $begin is inclusive, $end is exclusive.
+     *
+     * @param mixed        $element The element to search for.
+     * @param integer      $begin   The index to start searching from.
+     * @param integer|null $end     The index to to stop searching at, or null to search to the end of the sequence.
      *
      * @return integer|null             The index of the element, or null if is not present in the sequence.
-     * @throws Exception\IndexException if $startIndex is out of range.
+     * @throws Exception\IndexException if $begin is out of range.
      */
-    public function indexOfLast($element, $startIndex = null);
+    public function indexOfLast($element, $begin = 0, $end = null);
 
     /**
      * Find the index of the first instance of an element matching given criteria.
      *
-     * @param callable $predicate  A predicate function used to determine which element constitutes a match.
-     * @param integer  $startIndex The index to start searching from.
+     * Searches all elements in the range [$begin, $end), i.e. $begin is inclusive, $end is exclusive.
+     *
+     * @param callable     $predicate A predicate function used to determine which element constitutes a match.
+     * @param integer      $begin     The index to start searching from.
+     * @param integer|null $end       The index to to stop searching at, or null to search to the end of the sequence.
      *
      * @return integer|null             The index of the element, or null if is not present in the sequence.
-     * @throws Exception\IndexException if $startIndex is out of range.
+     * @throws Exception\IndexException if $begin is out of range.
      */
-    public function find($predicate, $startIndex = 0);
+    public function find($predicate, $begin = 0, $end = null);
 
     /**
      * Find the index of the last instance of an element matching given criteria.
      *
-     * @param callable     $predicate  A predicate function used to determine which element constitutes a match.
-     * @param integer|null $startIndex The index to start searching from, or null to use the last index.
+     * Searches all elements in the range [$begin, $end), i.e. $begin is inclusive, $end is exclusive.
+     *
+     * @param callable     $predicate A predicate function used to determine which element constitutes a match.
+     * @param integer      $begin     The index to start searching from.
+     * @param integer|null $end       The index to to stop searching at, or null to search to the end of the sequence.
      *
      * @return integer|null             The index of the element, or null if is not present in the sequence.
-     * @throws Exception\IndexException if $startIndex is out of range.
+     * @throws Exception\IndexException if $begin is out of range.
      */
-    public function findLast($predicate, $startIndex = null);
+    public function findLast($predicate, $begin = 0, $end = null);
 }

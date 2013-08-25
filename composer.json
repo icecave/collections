@@ -1,6 +1,6 @@
 {
     "name": "icecave/collections",
-    "description": "A set of PHP collection types loosely inspired by the .NET runtime and the C++ STL.",
+    "description": "A PHP collection library loosely inspired by the .NET runtime and the C++ STL.",
     "keywords": ["collection", "container", "array", "sequence", "map", "hash", "stack", "queue"],
     "homepage": "https://github.com/IcecaveStudios/collections",
     "license": "MIT",
@@ -11,13 +11,16 @@
         }
     ],
     "require": {
-        "php": ">=5.3.3",
+        "php": ">=5.3",
+        "ext-mbstring": "*",
+        "icecave/parity": "~0.1",
         "icecave/repr": "~1"
     },
     "require-dev": {
         "eloquent/liberator": "~1",
+        "ezzatron/phpunit-extensions" : "~1",
         "eloquent/typhoon": "~0.9",
-        "icecave/archer": "~0.2"
+        "icecave/archer": "1.0.0-alpha.2"
     },
     "autoload": {
         "psr-0": {

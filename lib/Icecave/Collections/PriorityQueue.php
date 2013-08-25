@@ -7,7 +7,7 @@ use Serializable;
 use SplPriorityQueue;
 
 /**
- * A prioritized queue.
+ * A prioritized first-in/first-out (FIFO) queue of elements.
  *
  * Higher priority values are moved closer to the front of the queue.
  *
@@ -17,15 +17,37 @@ use SplPriorityQueue;
 class PriorityQueue extends Queue implements Serializable
 {
     /**
-     * @param callable          $prioritizer A function used to generate the priority for a given element.
-     * @param mixed<mixed>|null $collection  An iterable type containing the elements to include in this list, or null to create an empty list.
+     * The default prioritizer simply uses each element as its own priority.
+     *
+     * @param mixed<mixed>|null $elements    An iterable type containing the elements to include in this list, or null to create an empty list.
+     * @param callable|null     $prioritizer A function used to generate the priority for a given element, or null to use the default.
      */
-    public function __construct($prioritizer, $collection = null)
+    public function __construct($elements = null, $prioritizer = null)
     {
         $this->typeCheck = TypeCheck::get(__CLASS__, func_get_args());
 
+        if (null === $prioritizer) {
+            $prioritizer = function ($element) {
+                return $element;
+            };
+        }
         $this->prioritizer = $prioritizer;
-        parent::__construct($collection);
+
+        parent::__construct($elements);
+    }
+
+    /**
+     * Create a PriorityQueue.
+     *
+     * @param mixed $element,... Elements to include in the collection.
+     *
+     * @return PriorityQueue
+     */
+    public static function create()
+    {
+        TypeCheck::get(__CLASS__)->create(func_get_args());
+
+        return new static(func_get_args());
     }
 
     ///////////////////////////////////////////
@@ -98,7 +120,7 @@ class PriorityQueue extends Queue implements Serializable
     {
         $this->typeCheck->push(func_get_args());
 
-        if (null == $priority) {
+        if (null === $priority) {
             $priority = call_user_func($this->prioritizer, $element);
         }
 
@@ -127,6 +149,8 @@ class PriorityQueue extends Queue implements Serializable
     ////////////////////////////////////
 
     /**
+     * Serialize the collection.
+     *
      * @return string The serialized data.
      */
     public function serialize()
@@ -135,22 +159,48 @@ class PriorityQueue extends Queue implements Serializable
 
         return serialize(
             array(
-                $this->prioritizer,
-                iterator_to_array($this->elements)
+                iterator_to_array($this->elements),
+                $this->prioritizer
             )
         );
     }
 
     /**
+     * Unserialize collection data.
+     *
      * @param string $packet The serialized data.
      */
     public function unserialize($packet)
     {
         TypeCheck::get(__CLASS__)->unserialize(func_get_args());
 
-        list($prioritizer, $elements) = unserialize($packet);
-        $this->__construct($prioritizer, $elements);
+        list($elements, $prioritizer) = unserialize($packet);
+        $this->__construct($elements, $prioritizer);
+    }
+
+    /////////////////////////////////////////////////////
+    // Implementation of RestrictedComparableInterface //
+    /////////////////////////////////////////////////////
+
+    /**
+     * Check if $this is able to be compared to another value.
+     *
+     * A return value of false indicates that calling $this->compare($value)
+     * will throw an exception.
+     *
+     * @param mixed $value The value to compare.
+     *
+     * @return boolean True if $this can be compared to $value.
+     */
+    public function canCompare($value)
+    {
+        $this->typeCheck->canCompare(func_get_args());
+
+        return is_object($value)
+            && __CLASS__ === get_class($value)
+            && $this->prioritizer == $value->prioritizer;
     }
 
     private $typeCheck;
+    private $prioritizer;
 }
