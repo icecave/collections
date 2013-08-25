@@ -3,7 +3,7 @@
         "This file locks the dependencies of your project to a known state",
         "Read more about it at http://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file"
     ],
-    "hash": "5a9613c20081fd3f9aed60b410a39d31",
+    "hash": "c08c2904a87380fcb9ae207024ce1df8",
     "packages": [
         {
             "name": "icecave/parity",
