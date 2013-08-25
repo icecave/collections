@@ -1,6 +1,7 @@
 <?php
 namespace Icecave\Collections;
 
+use Exception;
 use PHPUnit_Framework_TestCase;
 
 class PriorityQueueTest extends PHPUnit_Framework_TestCase
@@ -203,6 +204,22 @@ class PriorityQueueTest extends PHPUnit_Framework_TestCase
         $this->collection->push(0, 3);
 
         $this->assertSame(0, $this->collection->next());
+    }
+
+    /**
+     * @group regression
+     * @link https://github.com/IcecaveStudios/collections/issues/56
+     */
+    public function testPushWithFalsyPriority()
+    {
+        $prioritizer = function () {
+            throw new Exception('Prioritizer called unexpectedly.');
+        };
+
+        $collection = new PriorityQueue(null, $prioritizer);
+        $collection->push('value', 0);
+
+        $this->assertSame('value', $collection->next());
     }
 
     ////////////////////////////////////////////////////////////////

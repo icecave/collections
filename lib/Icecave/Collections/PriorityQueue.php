@@ -120,7 +120,7 @@ class PriorityQueue extends Queue implements Serializable
     {
         $this->typeCheck->push(func_get_args());
 
-        if (null == $priority) {
+        if (null === $priority) {
             $priority = call_user_func($this->prioritizer, $element);
         }
 
