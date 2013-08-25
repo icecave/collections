@@ -2,11 +2,12 @@
 namespace Icecave\Collections;
 
 use Icecave\Parity\ExtendedComparableInterface;
+use Icecave\Parity\RestrictedComparableInterface;
 
 /**
  * A collection is an object that stores other objects (called elements).
  */
-interface CollectionInterface extends ExtendedComparableInterface
+interface CollectionInterface extends ExtendedComparableInterface, RestrictedComparableInterface
 {
     /**
      * Fetch the number of elements in the collection.

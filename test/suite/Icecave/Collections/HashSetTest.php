@@ -32,4 +32,13 @@ class HashSetTest extends PHPUnit_Framework_TestCase
 
         $this->assertSame('sha1', Liberator::liberate($collection)->hashFunction);
     }
+
+    public function testCanCompare()
+    {
+        $collection = new HashSet;
+
+        $this->assertTrue($collection->canCompare(new HashSet));
+        $this->assertFalse($collection->canCompare(new HashSet(null, function() {})));
+        $this->assertFalse($collection->canCompare(array()));
+    }
 }

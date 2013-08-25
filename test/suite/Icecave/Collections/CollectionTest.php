@@ -621,7 +621,7 @@ class CollectionTest extends PHPUnit_Framework_TestCase
             'smaller'       => array(array(1),    array(1, 2), -1),
             'larger'        => array(array(1, 2), array(1),    +1),
             'same'          => array(array(1, 2), array(1, 2),  0),
-            'lesses'        => array(array(1, 0), array(1, 1), -1),
+            'lesser'        => array(array(1, 0), array(1, 1), -1),
             'greater'       => array(array(1, 1), array(1, 0), +1),
         );
 

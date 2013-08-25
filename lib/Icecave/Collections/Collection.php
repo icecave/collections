@@ -654,7 +654,7 @@ abstract class Collection
      *
      * @param mixed<mixed> $lhs
      * @param mixed<mixed> $rhs
-     * @param callable $comparator The comparator to use for size and element comparisons.
+     * @param callable     $comparator The comparator to use for size and element comparisons.
      *
      * @return integer The result of the comparison.
      */
@@ -791,6 +791,11 @@ abstract class Collection
         return $insertIndex;
     }
 
+    /**
+     * @param mixed $collection
+     *
+     * @return integer|null
+     */
     private static function trySize($collection)
     {
         if ($collection instanceof CollectionInterface) {

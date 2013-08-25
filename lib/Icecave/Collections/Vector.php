@@ -5,6 +5,7 @@ use ArrayAccess;
 use Countable;
 use Icecave\Collections\Iterator\Traits;
 use Icecave\Collections\TypeCheck\TypeCheck;
+use Icecave\Parity\Exception\NotComparableException;
 use Iterator;
 use SeekableIterator;
 use Serializable;
@@ -1355,11 +1356,35 @@ class Vector implements MutableRandomAccessInterface, Countable, Iterator, Seeka
      */
     public function compare($value)
     {
-        if ($value instanceof self) {
-            return Collection::compare($this->elements, $value->elements);
+        $this->typeCheck->compare(func_get_args());
+
+        if (!$this->canCompare($value)) {
+            throw new NotComparableException($this, $value);
         }
 
-        return Parity::compare($this, $value);
+        return Collection::compare($this->elements, $value->elements);
+    }
+
+    /////////////////////////////////////////////////////
+    // Implementation of RestrictedComparableInterface //
+    /////////////////////////////////////////////////////
+
+    /**
+     * Check if $this is able to be compared to another value.
+     *
+     * A return value of false indicates that calling $this->compare($value)
+     * will throw an exception.
+     *
+     * @param mixed $value The value to compare.
+     *
+     * @return boolean True if $this can be compared to $value.
+     */
+    public function canCompare($value)
+    {
+        $this->typeCheck->canCompare(func_get_args());
+
+        return is_object($value)
+            && __CLASS__ === get_class($value);
     }
 
     ///////////////////////////////////////////////////
@@ -1373,6 +1398,8 @@ class Vector implements MutableRandomAccessInterface, Countable, Iterator, Seeka
      */
     public function isEqualTo($value)
     {
+        $this->typeCheck->isEqualTo(func_get_args());
+
         return $this->compare($value) === 0;
     }
 
@@ -1383,6 +1410,8 @@ class Vector implements MutableRandomAccessInterface, Countable, Iterator, Seeka
      */
     public function isNotEqualTo($value)
     {
+        $this->typeCheck->isNotEqualTo(func_get_args());
+
         return $this->compare($value) !== 0;
     }
 
@@ -1393,6 +1422,8 @@ class Vector implements MutableRandomAccessInterface, Countable, Iterator, Seeka
      */
     public function isLessThan($value)
     {
+        $this->typeCheck->isLessThan(func_get_args());
+
         return $this->compare($value) < 0;
     }
 
@@ -1403,6 +1434,8 @@ class Vector implements MutableRandomAccessInterface, Countable, Iterator, Seeka
      */
     public function isGreaterThan($value)
     {
+        $this->typeCheck->isGreaterThan(func_get_args());
+
         return $this->compare($value) > 0;
     }
 
@@ -1413,6 +1446,8 @@ class Vector implements MutableRandomAccessInterface, Countable, Iterator, Seeka
      */
     public function isLessThanOrEqualTo($value)
     {
+        $this->typeCheck->isLessThanOrEqualTo(func_get_args());
+
         return $this->compare($value) <= 0;
     }
 
@@ -1423,6 +1458,8 @@ class Vector implements MutableRandomAccessInterface, Countable, Iterator, Seeka
      */
     public function isGreaterThanOrEqualTo($value)
     {
+        $this->typeCheck->isGreaterThanOrEqualTo(func_get_args());
+
         return $this->compare($value) >= 0;
     }
 

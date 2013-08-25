@@ -156,38 +156,27 @@ class PriorityQueue extends Queue implements Serializable
         $this->__construct($prioritizer, $elements);
     }
 
-    ///////////////////////////////////////////
-    // Implementation of ComparableInterface //
-    ///////////////////////////////////////////
+    /////////////////////////////////////////////////////
+    // Implementation of RestrictedComparableInterface //
+    /////////////////////////////////////////////////////
 
     /**
-     * Compare this object with another value, yielding a result according to the following table:
+     * Check if $this is able to be compared to another value.
      *
-     * +--------------------+---------------+
-     * | Condition          | Result        |
-     * +--------------------+---------------+
-     * | $this == $value    | $result === 0 |
-     * | $this < $value     | $result < 0   |
-     * | $this > $value     | $result > 0   |
-     * +--------------------+---------------+
+     * A return value of false indicates that calling $this->compare($value)
+     * will throw an exception.
      *
      * @param mixed $value The value to compare.
      *
-     * @return integer                                         The result of the comparison.
-     * @throws Icecave\Parity\Exception\NotComparableException Indicates that the implementation does not know how to compare $this to $value.
+     * @return boolean True if $this can be compared to $value.
      */
-    public function compare($value)
+    public function canCompare($value)
     {
-        if ($value instanceof self) {
-            $cmp = Parity::compare($this->prioritizer, $value->prioritizer);
-            if (0 !== $cmp) {
-                return $cmp;
-            }
+        $this->typeCheck->canCompare(func_get_args());
 
-            return Collection::compare($this->elements, $value->elements);
-        }
-
-        return Parity::compare($this, $value);
+        return is_object($value)
+            && __CLASS__ === get_class($value)
+            && $this->prioritizer == $value->prioritizer;
     }
 
     private $typeCheck;
