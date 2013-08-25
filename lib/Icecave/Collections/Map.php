@@ -24,7 +24,7 @@ class Map implements MutableAssociativeInterface, Countable, Iterator, ArrayAcce
         $this->typeCheck = TypeCheck::get(__CLASS__, func_get_args());
 
         if (null === $comparator) {
-            $comparator = new Utility\ObjectIdentityComparator;
+            $comparator = new Detail\ObjectIdentityComparator;
         }
 
         $this->comparator = $comparator;
