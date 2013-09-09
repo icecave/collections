@@ -17,34 +17,34 @@ which exposes methods for manipulating both the head and tail of the queue.
 
 ## Concepts
 
-* [Collection](lib/Icecave/Collections/CollectionInterface.php): A collection is an object that stores other objects (called elements).
-* [Mutable Collection](lib/Icecave/Collections/MutableCollectionInterface.php): A mutable collection is a collection on which elements can be added and removed.
-* [Iterable](lib/Icecave/Collections/IterableInterface.php): Iterable collections allow sequential access to the elements without modifying the collection.
-* [Mutable Iterable](lib/Icecave/Collections/MutableIterableInterface.php): An iterable collection that can be modified in place.
-* [Sequence](lib/Icecave/Collections/SequenceInterface.php): A sequence is a variable-sized collection whose elements are arranged in a strict linear order.
-* [Mutable Sequence](lib/Icecave/Collections/MutableSequenceInterface.php): A sequence that supports insertion and removal of elements.
-* [Random Access Sequence](lib/Icecave/Collections/RandomAccessInterface.php): A sequence that provides access to elements by position.
-* [Mutable Random Access Sequence](lib/Icecave/Collections/MutableRandomAccessInterface.php): A sequence that allows insertion & removal of elements by position.
-* [Associative Collection](lib/Icecave/Collections/AssociativeInterface.php): A variable-sized collection that supports efficient retrieval of values based on keys.
-* [Mutable Associative Collection](lib/Icecave/Collections/MutableAssociativeInterface.php): An associative collection that supports insertion and removal of elements.
-* [Queued Access](lib/Icecave/Collections/QueuedAccessInterface.php): A F/LIFO buffer (ie, stacks and queues).
-* [Set](lib/Icecave/Collections/SetInterface.php): Un-ordered, iterable collection with unique elements.
+* [Collection](src/Icecave/Collections/CollectionInterface.php): A collection is an object that stores other objects (called elements).
+* [Mutable Collection](src/Icecave/Collections/MutableCollectionInterface.php): A mutable collection is a collection on which elements can be added and removed.
+* [Iterable](src/Icecave/Collections/IterableInterface.php): Iterable collections allow sequential access to the elements without modifying the collection.
+* [Mutable Iterable](src/Icecave/Collections/MutableIterableInterface.php): An iterable collection that can be modified in place.
+* [Sequence](src/Icecave/Collections/SequenceInterface.php): A sequence is a variable-sized collection whose elements are arranged in a strict linear order.
+* [Mutable Sequence](src/Icecave/Collections/MutableSequenceInterface.php): A sequence that supports insertion and removal of elements.
+* [Random Access Sequence](src/Icecave/Collections/RandomAccessInterface.php): A sequence that provides access to elements by position.
+* [Mutable Random Access Sequence](src/Icecave/Collections/MutableRandomAccessInterface.php): A sequence that allows insertion & removal of elements by position.
+* [Associative Collection](src/Icecave/Collections/AssociativeInterface.php): A variable-sized collection that supports efficient retrieval of values based on keys.
+* [Mutable Associative Collection](src/Icecave/Collections/MutableAssociativeInterface.php): An associative collection that supports insertion and removal of elements.
+* [Queued Access](src/Icecave/Collections/QueuedAccessInterface.php): A F/LIFO buffer (ie, stacks and queues).
+* [Set](src/Icecave/Collections/SetInterface.php): Un-ordered, iterable collection with unique elements.
 
 ## Collections
 
-* [Vector](lib/Icecave/Collections/Vector.php): A mutable sequence with efficient access by position and iteration.
-* [LinkedList](lib/Icecave/Collections/LinkedList.php): A mutable sequence with efficient addition and removal of elements.
-* [Map](lib/Icecave/Collections/Map.php), [HashMap](lib/Icecave/Collections/HashMap.php): Associative collections with efficient access by key.
-* [Set](lib/Icecave/Collections/Set.php), [HashSet](lib/Icecave/Collections/HashSet.php): Iterable collections with unique elements.
-* [Queue](lib/Icecave/Collections/Queue.php): A first-in/first-out (FIFO) queue of elements.
-* [PriorityQueue](lib/Icecave/Collections/PriorityQueue.php): A prioritized first-in/first-out (FIFO) queue of elements.
-* [Stack]((lib/Icecave/Collections/Stack.php): A last-in/first-out (LIFO) stack of elements.
+* [Vector](src/Icecave/Collections/Vector.php): A mutable sequence with efficient access by position and iteration.
+* [LinkedList](src/Icecave/Collections/LinkedList.php): A mutable sequence with efficient addition and removal of elements.
+* [Map](src/Icecave/Collections/Map.php), [HashMap](src/Icecave/Collections/HashMap.php): Associative collections with efficient access by key.
+* [Set](src/Icecave/Collections/Set.php), [HashSet](src/Icecave/Collections/HashSet.php): Iterable collections with unique elements.
+* [Queue](src/Icecave/Collections/Queue.php): A first-in/first-out (FIFO) queue of elements.
+* [PriorityQueue](src/Icecave/Collections/PriorityQueue.php): A prioritized first-in/first-out (FIFO) queue of elements.
+* [Stack]((src/Icecave/Collections/Stack.php): A last-in/first-out (LIFO) stack of elements.
 
 ## Iterators
 
-* [AssociativeIterator](lib/Icecave/Collections/Iterator/AssociativeIterator.php): An iterator for iterating any associative collection.
-* [RandomAccessIterator](lib/Icecave/Collections/Iterator/RandomAccessIterator.php): An iterator for iterating any random access collection.
-* [SequentialKeyIterator](lib/Icecave/Collections/Iterator/SequentialKeyIterator.php): An iterator adaptor for producing sequential integer keys.
+* [AssociativeIterator](src/Icecave/Collections/Iterator/AssociativeIterator.php): An iterator for iterating any associative collection.
+* [RandomAccessIterator](src/Icecave/Collections/Iterator/RandomAccessIterator.php): An iterator for iterating any random access collection.
+* [SequentialKeyIterator](src/Icecave/Collections/Iterator/SequentialKeyIterator.php): An iterator adaptor for producing sequential integer keys.
 
 ## Serialization
 
