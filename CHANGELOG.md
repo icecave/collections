@@ -1,5 +1,9 @@
 # Collections Changelog
 
+### 0.7.1 (2013-09-21)
+
+* **[FIXED]** Fixed issue with `Vector::compare()` whereby equal vectors with differing internal array sizes were not considered equal
+
 ### 0.7.0 (2013-08-25)
 
 This release includes numerous naming changes to improve consistency across the project. Please be aware that some new

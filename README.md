@@ -59,4 +59,4 @@ collection produces a copy of the collection containing the same elements. The e
 <!-- references -->
 [Build Status]: https://travis-ci.org/IcecaveStudios/collections.png?branch=develop
 [Test Coverage]: https://coveralls.io/repos/IcecaveStudios/collections/badge.png?branch=develop
-[SemVer]: http://calm-shore-6115.herokuapp.com/?label=semver&value=0.7.0&color=yellow
+[SemVer]: http://calm-shore-6115.herokuapp.com/?label=semver&value=0.7.1&color=yellow
