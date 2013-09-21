@@ -1510,6 +1510,48 @@ class VectorTest extends PHPUnit_Framework_TestCase
         $this->assertSame($expectedResult <= 0, $rhs->isGreaterThanOrEqualTo($lhs));
     }
 
+    /**
+     * @group regression
+     * @link https://github.com/IcecaveStudios/collections/issues/59
+     * @dataProvider getCompareData
+     */
+    public function testCompareDoesNotLeakReservedNullValues($lhs, $rhs, $expectedResult)
+    {
+        $lhs = new Vector($lhs);
+        $rhs = new Vector($rhs);
+
+        $lhs->shrink();
+        $rhs->reserve($rhs->size() + 1);
+
+        $cmp = $lhs->compare($rhs);
+
+        if ($expectedResult < 0) {
+            $this->assertLessThan(0, $cmp);
+        } elseif ($expectedResult > 0) {
+            $this->assertGreaterThan(0, $cmp);
+        } else {
+            $this->assertSame(0, $cmp);
+        }
+
+        $this->assertSame($expectedResult === 0, $lhs->isEqualTo($rhs));
+        $this->assertSame($expectedResult === 0, $rhs->isEqualTo($lhs));
+
+        $this->assertSame($expectedResult !== 0, $lhs->isNotEqualTo($rhs));
+        $this->assertSame($expectedResult !== 0, $rhs->isNotEqualTo($lhs));
+
+        $this->assertSame($expectedResult < 0, $lhs->isLessThan($rhs));
+        $this->assertSame($expectedResult > 0, $rhs->isLessThan($lhs));
+
+        $this->assertSame($expectedResult > 0, $lhs->isGreaterThan($rhs));
+        $this->assertSame($expectedResult < 0, $rhs->isGreaterThan($lhs));
+
+        $this->assertSame($expectedResult <= 0, $lhs->isLessThanOrEqualTo($rhs));
+        $this->assertSame($expectedResult >= 0, $rhs->isLessThanOrEqualTo($lhs));
+
+        $this->assertSame($expectedResult >= 0, $lhs->isGreaterThanOrEqualTo($rhs));
+        $this->assertSame($expectedResult <= 0, $rhs->isGreaterThanOrEqualTo($lhs));
+    }
+
     public function testCompareFailure()
     {
         $this->setExpectedException('Icecave\Parity\Exception\NotComparableException');

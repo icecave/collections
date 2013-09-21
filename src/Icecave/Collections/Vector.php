@@ -1376,7 +1376,7 @@ class Vector implements MutableRandomAccessInterface, Countable, Iterator, Seeka
             throw new NotComparableException($this, $value);
         }
 
-        return Collection::compare($this->elements, $value->elements);
+        return Collection::compare($this, $value);
     }
 
     /////////////////////////////////////////////////////
