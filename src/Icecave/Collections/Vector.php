@@ -6,15 +6,14 @@ use Countable;
 use Icecave\Collections\Iterator\Traits;
 use Icecave\Collections\TypeCheck\TypeCheck;
 use Icecave\Parity\Exception\NotComparableException;
-use Iterator;
-use SeekableIterator;
+use IteratorAggregate;
 use Serializable;
 use SplFixedArray;
 
 /**
  * A mutable sequence with efficient access by position and iteration.
  */
-class Vector implements MutableRandomAccessInterface, Countable, Iterator, SeekableIterator, ArrayAccess, Serializable
+class Vector implements MutableRandomAccessInterface, Countable, IteratorAggregate, ArrayAccess, Serializable
 {
     /**
      * @param mixed<mixed>|null $elements An iterable type containing the elements to include in this vector, or null to create an empty vector.
@@ -1194,72 +1193,15 @@ class Vector implements MutableRandomAccessInterface, Countable, Iterator, Seeka
         return $this->size();
     }
 
-    ////////////////////////////////
-    // Implementation of Iterator //
-    ////////////////////////////////
+    /////////////////////////////////////////
+    // Implementation of IteratorAggregate //
+    /////////////////////////////////////////
 
-    public function current()
+    public function getIterator()
     {
-        $this->typeCheck->current(func_get_args());
+        $this->typeCheck->getIterator(func_get_args());
 
-        return current($this->elements);
-    }
-
-    public function key()
-    {
-        $this->typeCheck->key(func_get_args());
-
-        return key($this->elements);
-    }
-
-    public function next()
-    {
-        $this->typeCheck->next(func_get_args());
-
-        next($this->elements);
-    }
-
-    public function rewind()
-    {
-        $this->typeCheck->rewind(func_get_args());
-
-        reset($this->elements);
-    }
-
-    public function valid()
-    {
-        $this->typeCheck->valid(func_get_args());
-
-        $index = $this->key();
-
-        return null !== $index
-            && $index < $this->size();
-    }
-
-    ////////////////////////////////////////
-    // Implementation of SeekableIterator //
-    ////////////////////////////////////////
-
-    /**
-     * @param integer $index
-     */
-    public function seek($index)
-    {
-        $this->typeCheck->seek(func_get_args());
-
-        $this->validateIndex($index);
-
-        $currentIndex = $this->key();
-
-        if ($index < $currentIndex) {
-            $this->rewind();
-        } else {
-            $index -= $currentIndex;
-        }
-
-        while ($index--) {
-            $this->next();
-        }
+        return new Iterator\RandomAccessIterator($this);
     }
 
     ///////////////////////////////////

@@ -50,6 +50,18 @@ class CollectionTest extends PHPUnit_Framework_TestCase
         );
     }
 
+    public function getCountableCollections()
+    {
+        $this->setUp();
+
+        return array(
+            array($this->array),
+            array($this->vector),
+            array($this->map),
+            array($this->countable),
+        );
+    }
+
     /**
      * @dataProvider getCollections
      */
@@ -64,6 +76,19 @@ class CollectionTest extends PHPUnit_Framework_TestCase
     public function testSize($collection)
     {
         $this->assertSame(3, Collection::size($collection));
+    }
+
+    /**
+     * @dataProvider getCountableCollections
+     */
+    public function testTrySize($collection)
+    {
+        $this->assertSame(3, Collection::trySize($collection));
+    }
+
+    public function testTrySizeFailure()
+    {
+        $this->assertNull(Collection::trySize($this->traversable));
     }
 
     /**
@@ -389,7 +414,7 @@ class CollectionTest extends PHPUnit_Framework_TestCase
         $iterator = Collection::getIterator(array(1, 2, 3));
         $this->assertSame(array(1, 2, 3), iterator_to_array($iterator));
 
-        $vector = new Vector(array(1, 2, 3));
+        $vector = new ArrayIterator(array(1, 2, 3));
         $this->assertInstanceOf('Iterator', $vector);
         $iterator = Collection::getIterator($vector);
         $this->assertSame(array(1, 2, 3), iterator_to_array($iterator));

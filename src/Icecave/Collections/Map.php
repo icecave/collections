@@ -7,13 +7,13 @@ use Icecave\Collections\Iterator\Traits;
 use Icecave\Collections\TypeCheck\TypeCheck;
 use Icecave\Parity\Exception\NotComparableException;
 use Icecave\Repr\Repr;
-use Iterator;
+use IteratorAggregate;
 use Serializable;
 
 /**
  * An associative collection with efficient access by key.
  */
-class Map implements MutableAssociativeInterface, Countable, Iterator, ArrayAccess, Serializable
+class Map implements MutableAssociativeInterface, Countable, IteratorAggregate, ArrayAccess, Serializable
 {
     /**
      * @param mixed<mixed>|null $elements   An iterable type containing the elements to include in this map, or null to create an empty map.
@@ -1095,47 +1095,17 @@ class Map implements MutableAssociativeInterface, Countable, Iterator, ArrayAcce
         return $this->size();
     }
 
-    ////////////////////////////////
-    // Implementation of Iterator //
-    ////////////////////////////////
+    /////////////////////////////////////////
+    // Implementation of IteratorAggregate //
+    /////////////////////////////////////////
 
-    public function current()
+    public function getIterator()
     {
-        $this->typeCheck->current(func_get_args());
+        $this->typeCheck->getIterator(func_get_args());
 
-        list($key, $value) = $this->elements->current();
-
-        return $value;
-    }
-
-    public function key()
-    {
-        $this->typeCheck->key(func_get_args());
-
-        list($key, $value) = $this->elements->current();
-
-        return $key;
-    }
-
-    public function next()
-    {
-        $this->typeCheck->next(func_get_args());
-
-        $this->elements->next();
-    }
-
-    public function rewind()
-    {
-        $this->typeCheck->rewind(func_get_args());
-
-        $this->elements->rewind();
-    }
-
-    public function valid()
-    {
-        $this->typeCheck->valid(func_get_args());
-
-        return $this->elements->valid();
+        return new Iterator\UnpackIterator(
+            $this->elements->getIterator()
+        );
     }
 
     ///////////////////////////////////

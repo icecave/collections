@@ -390,6 +390,26 @@ class CommonSetTest extends ParameterizedTestCase
         );
     }
 
+    /**
+     * @group regression
+     * @link https://github.com/IcecaveStudios/collections/issues/60
+     */
+    public function testNestedIterator()
+    {
+        $input = array(1, 2, 3);
+        $output = array();
+
+        $this->collection->addMany($input);
+
+        foreach ($this->collection as $e) {
+            foreach ($this->collection as $element) {
+                $output[] = $element;
+            }
+        }
+
+        $this->assertSame(array(1, 2, 3, 1, 2, 3, 1, 2, 3), $output);
+    }
+
     ////////////////////////////
     // Model specific methods //
     ////////////////////////////

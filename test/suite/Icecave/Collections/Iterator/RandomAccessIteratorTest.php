@@ -27,4 +27,18 @@ class RandomAccessIteratorTest extends PHPUnit_Framework_TestCase
     {
         $this->assertSame($this->collection, $this->iterator->collection());
     }
+
+    public function testSeek()
+    {
+        $this->iterator->seek(2);
+
+        $this->assertSame(3, $this->iterator->current());
+    }
+
+    public function testSeekNegativeIndex()
+    {
+        $this->iterator->seek(-2);
+
+        $this->assertSame(2, $this->iterator->current());
+    }
 }

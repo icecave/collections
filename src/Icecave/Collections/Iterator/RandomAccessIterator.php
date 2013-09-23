@@ -4,6 +4,7 @@ namespace Icecave\Collections\Iterator;
 use Icecave\Collections\RandomAccessInterface;
 use Icecave\Collections\TypeCheck\TypeCheck;
 use Iterator;
+use SeekableIterator;
 
 /**
  * A generic iterator for any collection that implement RandomAccessInterface.
@@ -11,7 +12,7 @@ use Iterator;
  * Note that the concrete implementations provided in this package may provide their own
  * iterator for performance reasons.
  */
-class RandomAccessIterator implements Iterator
+class RandomAccessIterator implements Iterator, SeekableIterator
 {
     /**
      * @param RandomAccessInterface $collection The collection to be iterated.
@@ -90,6 +91,20 @@ class RandomAccessIterator implements Iterator
         $this->typeCheck->valid(func_get_args());
 
         return $this->index < $this->collection->size();
+    }
+
+    /**
+     * @param integer $index
+     */
+    public function seek($index)
+    {
+        $this->typeCheck->seek(func_get_args());
+
+        if ($index < 0) {
+            $index += $this->collection()->size();
+        }
+
+        $this->index = $index;
     }
 
     private $typeCheck;

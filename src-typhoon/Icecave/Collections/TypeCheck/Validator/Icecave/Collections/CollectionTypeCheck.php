@@ -41,6 +41,16 @@ class CollectionTypeCheck extends \Icecave\Collections\TypeCheck\AbstractValidat
         }
     }
 
+    public function trySize(array $arguments)
+    {
+        $argumentCount = \count($arguments);
+        if ($argumentCount < 1) {
+            throw new \Icecave\Collections\TypeCheck\Exception\MissingArgumentException('collection', 0, 'mixed');
+        } elseif ($argumentCount > 1) {
+            throw new \Icecave\Collections\TypeCheck\Exception\UnexpectedArgumentException(1, $arguments[1]);
+        }
+    }
+
     public function get(array $arguments)
     {
         $argumentCount = \count($arguments);
@@ -884,16 +894,6 @@ class CollectionTypeCheck extends \Icecave\Collections\TypeCheck\AbstractValidat
                     'integer|null'
                 );
             }
-        }
-    }
-
-    public function trySize(array $arguments)
-    {
-        $argumentCount = \count($arguments);
-        if ($argumentCount < 1) {
-            throw new \Icecave\Collections\TypeCheck\Exception\MissingArgumentException('collection', 0, 'mixed');
-        } elseif ($argumentCount > 1) {
-            throw new \Icecave\Collections\TypeCheck\Exception\UnexpectedArgumentException(1, $arguments[1]);
         }
     }
 
