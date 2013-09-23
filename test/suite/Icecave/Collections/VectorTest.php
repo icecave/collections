@@ -1392,34 +1392,24 @@ class VectorTest extends PHPUnit_Framework_TestCase
         $this->assertSame($input, $result);
     }
 
-    ////////////////////////////////////////
-    // Implementation of SeekableIterator //
-    ////////////////////////////////////////
-
-    public function testSeek()
+    /**
+     * @group regression
+     * @link https://github.com/IcecaveStudios/collections/issues/60
+     */
+    public function testNestedIterator()
     {
-        $input = array(1, 2, 3, 4, 5);
+        $input = array(1, 2, 3);
+        $output = array();
 
         $this->collection->append($input);
 
-        $this->collection->seek(2);
+        foreach ($this->collection as $e) {
+            foreach ($this->collection as $element) {
+                $output[] = $element;
+            }
+        }
 
-        $this->assertSame(3, $this->collection->current());
-    }
-
-    public function testSeekBackwards()
-    {
-        $input = array(1, 2, 3, 4, 5);
-
-        $this->collection->append($input);
-
-        $this->collection->next();
-        $this->collection->next();
-        $this->collection->next();
-
-        $this->collection->seek(1);
-
-        $this->assertSame(2, $this->collection->current());
+        $this->assertSame(array(1, 2, 3, 1, 2, 3, 1, 2, 3), $output);
     }
 
     ///////////////////////////////////

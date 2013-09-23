@@ -414,7 +414,7 @@ class CollectionTest extends PHPUnit_Framework_TestCase
         $iterator = Collection::getIterator(array(1, 2, 3));
         $this->assertSame(array(1, 2, 3), iterator_to_array($iterator));
 
-        $vector = new Vector(array(1, 2, 3));
+        $vector = new ArrayIterator(array(1, 2, 3));
         $this->assertInstanceOf('Iterator', $vector);
         $iterator = Collection::getIterator($vector);
         $this->assertSame(array(1, 2, 3), iterator_to_array($iterator));

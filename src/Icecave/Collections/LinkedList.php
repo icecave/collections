@@ -5,14 +5,14 @@ use Countable;
 use Icecave\Collections\Iterator\Traits;
 use Icecave\Collections\TypeCheck\TypeCheck;
 use Icecave\Parity\Exception\NotComparableException;
-use Iterator;
+use IteratorAggregate;
 use Serializable;
 use stdClass;
 
 /**
  * A mutable sequence with efficient addition and removal of elements.
  */
-class LinkedList implements MutableRandomAccessInterface, Countable, Iterator, Serializable
+class LinkedList implements MutableRandomAccessInterface, Countable, IteratorAggregate, Serializable
 {
     /**
      * @param mixed<mixed>|null $elements An iterable type containing the elements to include in this list, or null to create an empty list.
@@ -47,11 +47,6 @@ class LinkedList implements MutableRandomAccessInterface, Countable, Iterator, S
             // Otherwise this must be the head ...
             } else {
                 $this->head = $newNode;
-            }
-
-            // This node is the current node of iteration ...
-            if ($node === $this->currentNode) {
-                $this->currentNode = $newNode;
             }
 
             $prev = $node;
@@ -150,9 +145,6 @@ class LinkedList implements MutableRandomAccessInterface, Countable, Iterator, S
         $this->head = null;
         $this->tail = null;
         $this->size = 0;
-
-        $this->currentNode = null;
-        $this->currentIndex = 0;
     }
 
     //////////////////////////////////////////////
@@ -640,7 +632,6 @@ class LinkedList implements MutableRandomAccessInterface, Countable, Iterator, S
 
         $this->head = $head;
         $this->tail = $tail;
-        $this->rewind();
     }
 
     /**
@@ -1274,45 +1265,15 @@ class LinkedList implements MutableRandomAccessInterface, Countable, Iterator, S
         return $this->size();
     }
 
-    ////////////////////////////////
-    // Implementation of Iterator //
-    ////////////////////////////////
+    /////////////////////////////////////////
+    // Implementation of IteratorAggregate //
+    /////////////////////////////////////////
 
-    public function current()
+    public function getIterator()
     {
-        $this->typeCheck->current(func_get_args());
+        $this->typeCheck->getIterator(func_get_args());
 
-        return $this->currentNode->element;
-    }
-
-    public function key()
-    {
-        $this->typeCheck->key(func_get_args());
-
-        return $this->currentIndex;
-    }
-
-    public function next()
-    {
-        $this->typeCheck->next(func_get_args());
-
-        $this->currentNode = $this->currentNode->next;
-        ++$this->currentIndex;
-    }
-
-    public function rewind()
-    {
-        $this->typeCheck->rewind(func_get_args());
-
-        $this->currentNode = $this->head;
-        $this->currentIndex = 0;
-    }
-
-    public function valid()
-    {
-        $this->typeCheck->valid(func_get_args());
-
-        return null !== $this->currentNode;
+        return new Detail\LinkedListIterator($this->head, $this->tail);
     }
 
     ////////////////////////////////////
@@ -1328,12 +1289,7 @@ class LinkedList implements MutableRandomAccessInterface, Countable, Iterator, S
     {
         $this->typeCheck->serialize(func_get_args());
 
-        return serialize(
-            array(
-                $this->currentIndex,
-                $this->elements()
-            )
-        );
+        return serialize($this->elements());
     }
 
     /**
@@ -1345,9 +1301,8 @@ class LinkedList implements MutableRandomAccessInterface, Countable, Iterator, S
     {
         TypeCheck::get(__CLASS__)->unserialize(func_get_args());
 
-        list($currentIndex, $elements) = unserialize($packet);
+        $elements = unserialize($packet);
         $this->__construct($elements);
-        $this->currentNode = $this->nodeFrom($this->head, $currentIndex);
     }
 
     ///////////////////////////////////////////
@@ -1635,6 +1590,4 @@ class LinkedList implements MutableRandomAccessInterface, Countable, Iterator, S
     private $head;
     private $tail;
     private $size;
-    private $currentNode;
-    private $currentIndex;
 }

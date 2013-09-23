@@ -642,35 +642,7 @@ class HashMapTypeCheck extends \Icecave\Collections\TypeCheck\AbstractValidator
         }
     }
 
-    public function current(array $arguments)
-    {
-        if (\count($arguments) > 0) {
-            throw new \Icecave\Collections\TypeCheck\Exception\UnexpectedArgumentException(0, $arguments[0]);
-        }
-    }
-
-    public function key(array $arguments)
-    {
-        if (\count($arguments) > 0) {
-            throw new \Icecave\Collections\TypeCheck\Exception\UnexpectedArgumentException(0, $arguments[0]);
-        }
-    }
-
-    public function next(array $arguments)
-    {
-        if (\count($arguments) > 0) {
-            throw new \Icecave\Collections\TypeCheck\Exception\UnexpectedArgumentException(0, $arguments[0]);
-        }
-    }
-
-    public function rewind(array $arguments)
-    {
-        if (\count($arguments) > 0) {
-            throw new \Icecave\Collections\TypeCheck\Exception\UnexpectedArgumentException(0, $arguments[0]);
-        }
-    }
-
-    public function valid(array $arguments)
+    public function getIterator(array $arguments)
     {
         if (\count($arguments) > 0) {
             throw new \Icecave\Collections\TypeCheck\Exception\UnexpectedArgumentException(0, $arguments[0]);

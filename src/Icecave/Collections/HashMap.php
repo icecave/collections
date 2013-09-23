@@ -2,18 +2,19 @@
 namespace Icecave\Collections;
 
 use ArrayAccess;
+use ArrayIterator;
 use Countable;
 use Icecave\Collections\Iterator\Traits;
 use Icecave\Collections\TypeCheck\TypeCheck;
 use Icecave\Parity\Exception\NotComparableException;
 use Icecave\Repr\Repr;
-use Iterator;
+use IteratorAggregate;
 use Serializable;
 
 /**
  * An associative collection with efficient access by key.
  */
-class HashMap implements MutableAssociativeInterface, Countable, Iterator, ArrayAccess, Serializable
+class HashMap implements MutableAssociativeInterface, Countable, IteratorAggregate, ArrayAccess, Serializable
 {
     /**
      * @param mixed<mixed>|null $elements     An iterable type containing the elements to include in this map, or null to create an empty map.
@@ -1057,49 +1058,17 @@ class HashMap implements MutableAssociativeInterface, Countable, Iterator, Array
         return $this->size();
     }
 
-    ////////////////////////////////
-    // Implementation of Iterator //
-    ////////////////////////////////
+    /////////////////////////////////////////
+    // Implementation of IteratorAggregate //
+    /////////////////////////////////////////
 
-    public function current()
+    public function getIterator()
     {
-        $this->typeCheck->current(func_get_args());
+        $this->typeCheck->getIterator(func_get_args());
 
-        $element = current($this->elements);
-        list($key, $value) = $element;
-
-        return $value;
-    }
-
-    public function key()
-    {
-        $this->typeCheck->key(func_get_args());
-
-        $element = current($this->elements);
-        list($key, $value) = $element;
-
-        return $key;
-    }
-
-    public function next()
-    {
-        $this->typeCheck->next(func_get_args());
-
-        next($this->elements);
-    }
-
-    public function rewind()
-    {
-        $this->typeCheck->rewind(func_get_args());
-
-        reset($this->elements);
-    }
-
-    public function valid()
-    {
-        $this->typeCheck->valid(func_get_args());
-
-        return null !== key($this->elements);
+        return new Iterator\UnpackIterator(
+            new ArrayIterator($this->elements)
+        );
     }
 
     ///////////////////////////////////

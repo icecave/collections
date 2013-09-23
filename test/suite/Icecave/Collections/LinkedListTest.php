@@ -5,6 +5,10 @@ use Eloquent\Liberator\Liberator;
 use Icecave\Collections\Iterator\Traits;
 use PHPUnit_Framework_TestCase;
 
+/**
+ * @covers Icecave\Collections\LinkedList
+ * @covers Icecave\Collections\Detail\LinkedListIterator
+ */
 class LinkedListTest extends PHPUnit_Framework_TestCase
 {
     public function setUp()
@@ -44,15 +48,7 @@ class LinkedListTest extends PHPUnit_Framework_TestCase
         $this->collection->pushBack(2);
         $this->collection->pushBack(3);
 
-        $this->collection->rewind();
-        $this->collection->next();
-
         $collection = clone $this->collection;
-
-        // Check that currentNode is updated correctly ...
-        $this->assertSame(2, $collection->current());
-        $this->assertSame(2, $this->collection->current());
-
         $collection->popBack();
 
         $this->assertSame(array(1, 2), $collection->elements());
@@ -1232,6 +1228,26 @@ class LinkedListTest extends PHPUnit_Framework_TestCase
         $result = iterator_to_array($this->collection);
 
         $this->assertSame($input, $result);
+    }
+
+    /**
+     * @group regression
+     * @link https://github.com/IcecaveStudios/collections/issues/60
+     */
+    public function testNestedIterator()
+    {
+        $input = array(1, 2, 3);
+        $output = array();
+
+        $this->collection->append($input);
+
+        foreach ($this->collection as $e) {
+            foreach ($this->collection as $element) {
+                $output[] = $element;
+            }
+        }
+
+        $this->assertSame(array(1, 2, 3, 1, 2, 3, 1, 2, 3), $output);
     }
 
     ////////////////////////////////////////////////////////////////

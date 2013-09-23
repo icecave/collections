@@ -870,6 +870,27 @@ class CommonMapTest extends ParameterizedTestCase
 
     /**
      * @group regression
+     * @link https://github.com/IcecaveStudios/collections/issues/60
+     */
+    public function testNestedIterator()
+    {
+        $this->collection->set('a', 1);
+        $this->collection->set('b', 2);
+        $this->collection->set('c', 3);
+
+        $output = array();
+
+        foreach ($this->collection as $e) {
+            foreach ($this->collection as $element) {
+                $output[] = $element;
+            }
+        }
+
+        $this->assertSame(array(1, 2, 3, 1, 2, 3, 1, 2, 3), $output);
+    }
+
+    /**
+     * @group regression
      * @link https://github.com/IcecaveStudios/collections/issues/34
      */
     public function testIteratorKeyLimitationWorkaround()
@@ -885,8 +906,10 @@ class CommonMapTest extends ParameterizedTestCase
         $keys = array();
         $values = array();
 
-        foreach ($this->collection as $value) {
-            $keys[] = $this->collection->key();
+        $iterator = $this->collection->getIterator();
+
+        foreach ($iterator as $value) {
+            $keys[] = $iterator->key();
             $values[] = $value;
         }
 

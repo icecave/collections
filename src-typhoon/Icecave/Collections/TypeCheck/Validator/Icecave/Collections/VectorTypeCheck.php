@@ -1109,57 +1109,10 @@ class VectorTypeCheck extends \Icecave\Collections\TypeCheck\AbstractValidator
         }
     }
 
-    public function current(array $arguments)
+    public function getIterator(array $arguments)
     {
         if (\count($arguments) > 0) {
             throw new \Icecave\Collections\TypeCheck\Exception\UnexpectedArgumentException(0, $arguments[0]);
-        }
-    }
-
-    public function key(array $arguments)
-    {
-        if (\count($arguments) > 0) {
-            throw new \Icecave\Collections\TypeCheck\Exception\UnexpectedArgumentException(0, $arguments[0]);
-        }
-    }
-
-    public function next(array $arguments)
-    {
-        if (\count($arguments) > 0) {
-            throw new \Icecave\Collections\TypeCheck\Exception\UnexpectedArgumentException(0, $arguments[0]);
-        }
-    }
-
-    public function rewind(array $arguments)
-    {
-        if (\count($arguments) > 0) {
-            throw new \Icecave\Collections\TypeCheck\Exception\UnexpectedArgumentException(0, $arguments[0]);
-        }
-    }
-
-    public function valid(array $arguments)
-    {
-        if (\count($arguments) > 0) {
-            throw new \Icecave\Collections\TypeCheck\Exception\UnexpectedArgumentException(0, $arguments[0]);
-        }
-    }
-
-    public function seek(array $arguments)
-    {
-        $argumentCount = \count($arguments);
-        if ($argumentCount < 1) {
-            throw new \Icecave\Collections\TypeCheck\Exception\MissingArgumentException('index', 0, 'integer');
-        } elseif ($argumentCount > 1) {
-            throw new \Icecave\Collections\TypeCheck\Exception\UnexpectedArgumentException(1, $arguments[1]);
-        }
-        $value = $arguments[0];
-        if (!\is_int($value)) {
-            throw new \Icecave\Collections\TypeCheck\Exception\UnexpectedArgumentValueException(
-                'index',
-                0,
-                $arguments[0],
-                'integer'
-            );
         }
     }
 
