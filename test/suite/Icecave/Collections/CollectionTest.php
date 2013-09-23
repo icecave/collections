@@ -50,6 +50,18 @@ class CollectionTest extends PHPUnit_Framework_TestCase
         );
     }
 
+    public function getCountableCollections()
+    {
+        $this->setUp();
+
+        return array(
+            array($this->array),
+            array($this->vector),
+            array($this->map),
+            array($this->countable),
+        );
+    }
+
     /**
      * @dataProvider getCollections
      */
@@ -64,6 +76,19 @@ class CollectionTest extends PHPUnit_Framework_TestCase
     public function testSize($collection)
     {
         $this->assertSame(3, Collection::size($collection));
+    }
+
+    /**
+     * @dataProvider getCountableCollections
+     */
+    public function testTrySize($collection)
+    {
+        $this->assertSame(3, Collection::trySize($collection));
+    }
+
+    public function testTrySizeFailure()
+    {
+        $this->assertNull(Collection::trySize($this->traversable));
     }
 
     /**

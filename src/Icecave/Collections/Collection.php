@@ -64,6 +64,28 @@ abstract class Collection
     }
 
     /**
+     * Attempt to get the number of elements in a collection.
+     *
+     * @param mixed $collection
+     *
+     * @return integer|null The number of elements in $collection, or null if the size can not be determined without iterating the entire collection.
+     */
+    public static function trySize($collection)
+    {
+        TypeCheck::get(__CLASS__)->trySize(func_get_args());
+
+        if ($collection instanceof CollectionInterface) {
+            return $collection->size();
+        } elseif ($collection instanceof Countable) {
+            return count($collection);
+        } elseif (is_array($collection)) {
+            return count($collection);
+        }
+
+        return null;
+    }
+
+    /**
      * Fetch the value associated with the given key.
      *
      * @param array|Traversable|AssociativeInterface $collection
@@ -791,23 +813,5 @@ abstract class Collection
         }
 
         return $insertIndex;
-    }
-
-    /**
-     * @param mixed $collection
-     *
-     * @return integer|null
-     */
-    private static function trySize($collection)
-    {
-        if ($collection instanceof CollectionInterface) {
-            return $collection->size();
-        } elseif ($collection instanceof Countable) {
-            return count($collection);
-        } elseif (is_array($collection)) {
-            return count($collection);
-        }
-
-        return null;
     }
 }
