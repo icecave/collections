@@ -1,5 +1,10 @@
 # Collections Changelog
 
+### 0.8.0 (2013-09-23)
+
+* **[BC]** Changed `Vector`, `Map`, `HashMap` and `LinkedList` to implement `IteratorAggregate` instead of `Iterator` to prevent issues with nested iteration
+* **[NEW]** Added `Collection::trySize()`
+
 ### 0.7.1 (2013-09-21)
 
 * **[FIXED]** Fixed issue with `Vector::compare()` whereby equal vectors with differing internal array sizes were not considered equal
