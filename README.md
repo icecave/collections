@@ -38,7 +38,7 @@ which exposes methods for manipulating both the head and tail of the queue.
 * [Set](src/Icecave/Collections/Set.php), [HashSet](src/Icecave/Collections/HashSet.php): Iterable collections with unique elements.
 * [Queue](src/Icecave/Collections/Queue.php): A first-in/first-out (FIFO) queue of elements.
 * [PriorityQueue](src/Icecave/Collections/PriorityQueue.php): A prioritized first-in/first-out (FIFO) queue of elements.
-* [Stack]((src/Icecave/Collections/Stack.php): A last-in/first-out (LIFO) stack of elements.
+* [Stack](src/Icecave/Collections/Stack.php): A last-in/first-out (LIFO) stack of elements.
 
 ## Iterators
 
