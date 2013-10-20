@@ -3,11 +3,11 @@
         "This file locks the dependencies of your project to a known state",
         "Read more about it at http://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file"
     ],
-    "hash": "c1f8a58a880ecf4f2976336b46abeb8f",
+    "hash": "99bd4ada77d11c1777ada3f6c5ce9f26",
     "packages": [
         {
             "name": "icecave/parity",
-            "version": "dev-release/1.0.0-alpha.1",
+            "version": "1.0.0-alpha.1",
             "source": {
                 "type": "git",
                 "url": "https://github.com/IcecaveStudios/parity.git",
