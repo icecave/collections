@@ -1,5 +1,9 @@
 # Collections Changelog
 
+### 1.0.0-alpha.1 (2013-10-20)
+
+* **[BC]** Removed `HashMap` and `HashSet`
+
 ### 0.8.0 (2013-09-23)
 
 * **[BC]** Changed `Vector`, `Map`, `HashMap` and `LinkedList` to implement `IteratorAggregate` instead of `Iterator` to prevent issues with nested iteration
