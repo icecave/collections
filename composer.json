@@ -14,7 +14,7 @@
     "require": {
         "php": ">=5.3",
         "ext-mbstring": "*",
-        "icecave/parity": "~0.1.0",
+        "icecave/parity": "~1@dev",
         "icecave/repr": "~1"
     },
     "require-dev": {

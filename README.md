@@ -34,11 +34,11 @@ which exposes methods for manipulating both the head and tail of the queue.
 
 * [Vector](src/Icecave/Collections/Vector.php): A mutable sequence with efficient access by position and iteration.
 * [LinkedList](src/Icecave/Collections/LinkedList.php): A mutable sequence with efficient addition and removal of elements.
-* [Map](src/Icecave/Collections/Map.php), [HashMap](src/Icecave/Collections/HashMap.php): Associative collections with efficient access by key.
-* [Set](src/Icecave/Collections/Set.php), [HashSet](src/Icecave/Collections/HashSet.php): Iterable collections with unique elements.
+* [Map](src/Icecave/Collections/Map.php): Associative collections with efficient access by key.
+* [Set](src/Icecave/Collections/Set.php): Iterable collections with unique elements.
 * [Queue](src/Icecave/Collections/Queue.php): A first-in/first-out (FIFO) queue of elements.
 * [PriorityQueue](src/Icecave/Collections/PriorityQueue.php): A prioritized first-in/first-out (FIFO) queue of elements.
-* [Stack]((src/Icecave/Collections/Stack.php): A last-in/first-out (LIFO) stack of elements.
+* [Stack](src/Icecave/Collections/Stack.php): A last-in/first-out (LIFO) stack of elements.
 
 ## Iterators
 
@@ -59,4 +59,4 @@ collection produces a copy of the collection containing the same elements. The e
 <!-- references -->
 [Build Status]: https://travis-ci.org/IcecaveStudios/collections.png?branch=develop
 [Test Coverage]: https://coveralls.io/repos/IcecaveStudios/collections/badge.png?branch=develop
-[SemVer]: http://calm-shore-6115.herokuapp.com/?label=semver&value=0.8.0&color=yellow
+[SemVer]: http://calm-shore-6115.herokuapp.com/?label=semver&value=1.0.0-alpha.1&color=yellow

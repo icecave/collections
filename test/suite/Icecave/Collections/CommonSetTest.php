@@ -8,7 +8,6 @@ use Phake;
 
 /**
  * @covers Icecave\Collections\Set
- * @covers Icecave\Collections\HashSet
  */
 class CommonSetTest extends ParameterizedTestCase
 {
@@ -16,7 +15,6 @@ class CommonSetTest extends ParameterizedTestCase
     {
         return array(
             array(new Set,     new Set(null, function () {}),     'verifyElementsInSet'),
-            array(new HashSet, new HashSet(null, function () {}), 'verifyElementsInHashSet'),
         );
     }
 
@@ -68,23 +66,6 @@ class CommonSetTest extends ParameterizedTestCase
         $this->assertSame(
             $elements,
             $collection->elements()
-        );
-    }
-
-    public function verifyElementsInHashSet(HashSet $collection, array $elements)
-    {
-        if (count($elements)) {
-            $elements = array_combine($elements, $elements);
-        }
-
-        $actualElements = Liberator::liberate($collection)->elements;
-
-        ksort($elements);
-        ksort($actualElements);
-
-        $this->assertSame(
-            $elements,
-            $actualElements
         );
     }
 

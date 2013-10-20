@@ -1,14 +1,14 @@
 <?php
 namespace Icecave\Collections\Iterator;
 
-use Icecave\Collections\HashMap;
+use Icecave\Collections\Map;
 use PHPUnit_Framework_TestCase;
 
 class AssociativeIteratorTest extends PHPUnit_Framework_TestCase
 {
     public function setUp()
     {
-        $this->collection = new HashMap(array('a' => 1, 'b' => 2, 'c' => 3));
+        $this->collection = new Map(array('a' => 1, 'b' => 2, 'c' => 3));
         $this->iterator = new AssociativeIterator($this->collection);
     }
 

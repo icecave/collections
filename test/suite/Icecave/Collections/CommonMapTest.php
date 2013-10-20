@@ -11,7 +11,6 @@ use stdClass;
 
 /**
  * @covers Icecave\Collections\Map
- * @covers Icecave\Collections\HashMap
  */
 class CommonMapTest extends ParameterizedTestCase
 {
@@ -19,7 +18,6 @@ class CommonMapTest extends ParameterizedTestCase
     {
         return array(
             array(new Map,     'verifyElementsInMap'),
-            array(new HashMap, 'verifyElementsInHashMap'),
         );
     }
 
@@ -65,30 +63,6 @@ class CommonMapTest extends ParameterizedTestCase
         $this->assertSame(
             $elements,
             $collection->elements()
-        );
-    }
-
-    public function verifyElementsInHashMap(HashMap $collection, array $elements)
-    {
-        if (count($elements)) {
-            $e = array();
-
-            foreach ($elements as $element) {
-                list($key, $value) = $element;
-                $e[$key] = $element;
-            }
-
-            $elements = $e;
-        }
-
-        $actualElements = Liberator::liberate($collection)->elements;
-
-        ksort($elements);
-        ksort($actualElements);
-
-        $this->assertSame(
-            $elements,
-            $actualElements
         );
     }
 
