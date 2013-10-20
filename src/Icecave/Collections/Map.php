@@ -5,6 +5,9 @@ use ArrayAccess;
 use Countable;
 use Icecave\Collections\Iterator\Traits;
 use Icecave\Collections\TypeCheck\TypeCheck;
+use Icecave\Parity\Comparator\DeepComparator;
+use Icecave\Parity\Comparator\ObjectIdentityComparator;
+use Icecave\Parity\Comparator\StrictPhpComparator;
 use Icecave\Parity\Exception\NotComparableException;
 use Icecave\Repr\Repr;
 use IteratorAggregate;
@@ -24,7 +27,11 @@ class Map implements MutableAssociativeInterface, Countable, IteratorAggregate, 
         $this->typeCheck = TypeCheck::get(__CLASS__, func_get_args());
 
         if (null === $comparator) {
-            $comparator = new Detail\ObjectIdentityComparator;
+            $comparator = new ObjectIdentityComparator(
+                new DeepComparator(
+                    new StrictPhpComparator
+                )
+            );
         }
 
         $this->comparator = $comparator;
