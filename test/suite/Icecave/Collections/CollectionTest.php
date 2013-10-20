@@ -26,7 +26,7 @@ class CollectionTest extends PHPUnit_Framework_TestCase
 
         $this->array = array(1, 2, 3);
         $this->vector = new Vector($this->array);
-        $this->map = new HashMap($this->array);
+        $this->map = new Map($this->array);
         $this->countable = new ArrayIterator($this->array);
         $this->traversable = Phake::partialMock('LimitIterator', $this->countable);
     }
@@ -213,7 +213,7 @@ class CollectionTest extends PHPUnit_Framework_TestCase
      */
     public function testMapWithArrayAccess($collection)
     {
-        $map = new HashMap;
+        $map = new Map;
 
         $result = Collection::map(
             $collection,
@@ -223,7 +223,7 @@ class CollectionTest extends PHPUnit_Framework_TestCase
             $map
         );
 
-        $expected = new HashMap(
+        $expected = new Map(
             array(
                 0 => 10,
                 10 => 20,
@@ -285,7 +285,7 @@ class CollectionTest extends PHPUnit_Framework_TestCase
      */
     public function testFilterWithArrayAccess($collection)
     {
-        $map = new HashMap;
+        $map = new Map;
 
         $result = Collection::filter(
             $collection,
@@ -295,7 +295,7 @@ class CollectionTest extends PHPUnit_Framework_TestCase
             $map
         );
 
-        $expected = new HashMap(
+        $expected = new Map(
             array(
                 0 => 1,
                 2 => 3,
@@ -405,7 +405,7 @@ class CollectionTest extends PHPUnit_Framework_TestCase
     public function testIsSequential($collection)
     {
         $result   = Collection::isSequential($collection);
-        $expected = !$collection instanceof HashMap;
+        $expected = !$collection instanceof Map;
         $this->assertSame($expected, $result);
     }
 
