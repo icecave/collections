@@ -4,16 +4,20 @@
 [![Test Coverage]](https://coveralls.io/r/IcecaveStudios/collections?branch=develop)
 [![SemVer]](http://semver.org)
 
-**Collections** provides a set of collection types loosely inspired by the .NET runtime and the C++ standard template library.
-
-PHP has long been lacking formal, performant collection types. The addition of the heap-centric collections to the SPL
-has gone some way to addressing this problem but has fallen short in some regards. For example, [SplDoublyLinkedList](http://www.php.net/manual/en/class.spldoublylinkedlist.php)
-does not expose some of the operations that linked lists are designed to solve efficiently, such as insertion and
-deletion operations in the middle of the collection. There are also several broken abstractions. One example is [SplQueue](http://php.net/manual/en/class.splqueue.php)
-which exposes methods for manipulating both the head and tail of the queue.
+**Collections** provides a set of collection types loosely inspired by the .NET runtime and the C++ standard template
+library.
 
 * Install via [Composer](http://getcomposer.org) package [icecave/collections](https://packagist.org/packages/icecave/collections)
 * Read the [API documentation](http://icecavestudios.github.io/collections/artifacts/documentation/api/)
+
+## Rationale
+
+PHP has long been lacking formal, performant collection types. The addition of the heap-centric collections to the SPL
+has gone some way to addressing this problem but has fallen short in some regards. For example,
+[SplDoublyLinkedList](http://www.php.net/manual/en/class.spldoublylinkedlist.php) does not expose some of the operations
+that linked lists are designed to solve efficiently, such as insertion and deletion operations in the middle of the
+collection. There are also several broken abstractions. One example is [SplQueue](http://php.net/manual/en/class.splqueue.php)
+which exposes methods for manipulating both the head and tail of the queue.
 
 ## Concepts
 
