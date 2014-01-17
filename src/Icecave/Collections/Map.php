@@ -4,7 +4,6 @@ namespace Icecave\Collections;
 use ArrayAccess;
 use Countable;
 use Icecave\Collections\Iterator\Traits;
-use Icecave\Collections\TypeCheck\TypeCheck;
 use Icecave\Parity\Comparator\DeepComparator;
 use Icecave\Parity\Comparator\ObjectIdentityComparator;
 use Icecave\Parity\Comparator\StrictPhpComparator;
@@ -24,8 +23,6 @@ class Map implements MutableAssociativeInterface, Countable, IteratorAggregate, 
      */
     public function __construct($elements = null, $comparator = null)
     {
-        $this->typeCheck = TypeCheck::get(__CLASS__, func_get_args());
-
         if (null === $comparator) {
             $comparator = new ObjectIdentityComparator(
                 new DeepComparator(
@@ -46,8 +43,6 @@ class Map implements MutableAssociativeInterface, Countable, IteratorAggregate, 
 
     public function __clone()
     {
-        $this->typeCheck->validateClone(func_get_args());
-
         $this->elements = clone $this->elements;
     }
 
@@ -60,8 +55,6 @@ class Map implements MutableAssociativeInterface, Countable, IteratorAggregate, 
      */
     public static function create()
     {
-        TypeCheck::get(__CLASS__)->create(func_get_args());
-
         $map = new static;
 
         foreach (func_get_args() as $element) {
@@ -85,8 +78,6 @@ class Map implements MutableAssociativeInterface, Countable, IteratorAggregate, 
      */
     public function size()
     {
-        $this->typeCheck->size(func_get_args());
-
         return $this->elements->size();
     }
 
@@ -97,8 +88,6 @@ class Map implements MutableAssociativeInterface, Countable, IteratorAggregate, 
      */
     public function isEmpty()
     {
-        $this->typeCheck->isEmpty(func_get_args());
-
         return $this->elements->isEmpty();
     }
 
@@ -142,8 +131,6 @@ class Map implements MutableAssociativeInterface, Countable, IteratorAggregate, 
      */
     public function clear()
     {
-        $this->typeCheck->clear(func_get_args());
-
         $this->elements->clear();
     }
 
@@ -158,8 +145,6 @@ class Map implements MutableAssociativeInterface, Countable, IteratorAggregate, 
      */
     public function iteratorTraits()
     {
-        $this->typeCheck->iteratorTraits(func_get_args());
-
         return new Traits(true, true);
     }
 
@@ -174,8 +159,6 @@ class Map implements MutableAssociativeInterface, Countable, IteratorAggregate, 
      */
     public function elements()
     {
-        $this->typeCheck->elements(func_get_args());
-
         return $this->elements->elements();
     }
 
@@ -188,8 +171,6 @@ class Map implements MutableAssociativeInterface, Countable, IteratorAggregate, 
      */
     public function contains($value)
     {
-        $this->typeCheck->contains(func_get_args());
-
         foreach ($this->elements as $element) {
             list(, $v) = $element;
             if ($v === $value) {
@@ -212,8 +193,6 @@ class Map implements MutableAssociativeInterface, Countable, IteratorAggregate, 
      */
     public function filter($predicate = null)
     {
-        $this->typeCheck->filter(func_get_args());
-
         if (null === $predicate) {
             $predicate = function ($key, $value) {
                 return null !== $value;
@@ -247,8 +226,6 @@ class Map implements MutableAssociativeInterface, Countable, IteratorAggregate, 
      */
     public function map($transform)
     {
-        $this->typeCheck->map(func_get_args());
-
         $result = $this->createMap();
 
         foreach ($this->elements as $element) {
@@ -273,8 +250,6 @@ class Map implements MutableAssociativeInterface, Countable, IteratorAggregate, 
      */
     public function partition($predicate)
     {
-        $this->typeCheck->partition(func_get_args());
-
         $left  = $this->createMap();
         $right = $this->createMap();
 
@@ -301,8 +276,6 @@ class Map implements MutableAssociativeInterface, Countable, IteratorAggregate, 
      */
     public function each($callback)
     {
-        $this->typeCheck->each(func_get_args());
-
         $this->elements->each(
             function ($element) use ($callback) {
                 return call_user_func_array($callback, $element);
@@ -324,8 +297,6 @@ class Map implements MutableAssociativeInterface, Countable, IteratorAggregate, 
      */
     public function all($predicate)
     {
-        $this->typeCheck->all(func_get_args());
-
         return $this->elements->all(
             function ($element) use ($predicate) {
                 return call_user_func_array($predicate, $element);
@@ -347,8 +318,6 @@ class Map implements MutableAssociativeInterface, Countable, IteratorAggregate, 
      */
     public function any($predicate)
     {
-        $this->typeCheck->any(func_get_args());
-
         return $this->elements->any(
             function ($element) use ($predicate) {
                 return call_user_func_array($predicate, $element);
@@ -370,8 +339,6 @@ class Map implements MutableAssociativeInterface, Countable, IteratorAggregate, 
      */
     public function filterInPlace($predicate = null)
     {
-        $this->typeCheck->filterInPlace(func_get_args());
-
         if (null === $predicate) {
             $predicate = function ($key, $value) {
                 return null !== $value;
@@ -397,8 +364,6 @@ class Map implements MutableAssociativeInterface, Countable, IteratorAggregate, 
      */
     public function mapInPlace($transform)
     {
-        $this->typeCheck->mapInPlace(func_get_args());
-
         foreach ($this->elements as $index => $element) {
             list($key, $value) = $element;
             $value = call_user_func($transform, $key, $value);
@@ -419,8 +384,6 @@ class Map implements MutableAssociativeInterface, Countable, IteratorAggregate, 
      */
     public function hasKey($key)
     {
-        $this->typeCheck->hasKey(func_get_args());
-
         return null !== $this->binarySearch($key);
     }
 
@@ -434,8 +397,6 @@ class Map implements MutableAssociativeInterface, Countable, IteratorAggregate, 
      */
     public function get($key)
     {
-        $this->typeCheck->get(func_get_args());
-
         $value = null;
         if ($this->tryGet($key, $value)) {
             return $value;
@@ -454,8 +415,6 @@ class Map implements MutableAssociativeInterface, Countable, IteratorAggregate, 
      */
     public function tryGet($key, &$value)
     {
-        $this->typeCheck->tryGet(func_get_args());
-
         $index = $this->binarySearch($key);
 
         if (null === $index) {
@@ -477,8 +436,6 @@ class Map implements MutableAssociativeInterface, Countable, IteratorAggregate, 
      */
     public function getWithDefault($key, $default = null)
     {
-        $this->typeCheck->getWithDefault(func_get_args());
-
         $value = null;
         if ($this->tryGet($key, $value)) {
             return $value;
@@ -501,8 +458,6 @@ class Map implements MutableAssociativeInterface, Countable, IteratorAggregate, 
      */
     public function cascade($key)
     {
-        $this->typeCheck->cascade(func_get_args());
-
         return $this->cascadeIterable(func_get_args());
     }
 
@@ -517,8 +472,6 @@ class Map implements MutableAssociativeInterface, Countable, IteratorAggregate, 
      */
     public function cascadeWithDefault($default, $key)
     {
-        $this->typeCheck->cascadeWithDefault(func_get_args());
-
         $keys = func_get_args();
         $default = array_shift($keys);
 
@@ -538,8 +491,6 @@ class Map implements MutableAssociativeInterface, Countable, IteratorAggregate, 
      */
     public function cascadeIterable($keys)
     {
-        $this->typeCheck->cascadeIterable(func_get_args());
-
         $value = null;
         foreach ($keys as $key) {
             if ($this->tryGet($key, $value)) {
@@ -563,8 +514,6 @@ class Map implements MutableAssociativeInterface, Countable, IteratorAggregate, 
      */
     public function cascadeIterableWithDefault($default, $keys)
     {
-        $this->typeCheck->cascadeIterableWithDefault(func_get_args());
-
         $value = null;
         foreach ($keys as $key) {
             if ($this->tryGet($key, $value)) {
@@ -584,8 +533,6 @@ class Map implements MutableAssociativeInterface, Countable, IteratorAggregate, 
      */
     public function keys()
     {
-        $this->typeCheck->keys(func_get_args());
-
         $keys = array();
         foreach ($this->elements as $element) {
             list($key, $value) = $element;
@@ -604,8 +551,6 @@ class Map implements MutableAssociativeInterface, Countable, IteratorAggregate, 
      */
     public function values()
     {
-        $this->typeCheck->values(func_get_args());
-
         $values = array();
         foreach ($this->elements as $element) {
             list($key, $value) = $element;
@@ -628,8 +573,6 @@ class Map implements MutableAssociativeInterface, Countable, IteratorAggregate, 
      */
     public function merge(AssociativeInterface $collection)
     {
-        $this->typeCheck->merge(func_get_args());
-
         $result = clone $this;
 
         foreach (func_get_args() as $collection) {
@@ -654,8 +597,6 @@ class Map implements MutableAssociativeInterface, Countable, IteratorAggregate, 
      */
     public function project($key)
     {
-        $this->typeCheck->project(func_get_args());
-
         return $this->projectIterable(func_get_args());
     }
 
@@ -670,8 +611,6 @@ class Map implements MutableAssociativeInterface, Countable, IteratorAggregate, 
      */
     public function projectIterable($keys)
     {
-        $this->typeCheck->projectIterable(func_get_args());
-
         $result = $this->createMap();
 
         $value = null;
@@ -701,8 +640,6 @@ class Map implements MutableAssociativeInterface, Countable, IteratorAggregate, 
      */
     public function set($key, $value)
     {
-        $this->typeCheck->set(func_get_args());
-
         $index = $this->binarySearch($key, 0, $insertIndex);
 
         if (null === $index) {
@@ -731,8 +668,6 @@ class Map implements MutableAssociativeInterface, Countable, IteratorAggregate, 
      */
     public function add($key, $value)
     {
-        $this->typeCheck->add(func_get_args());
-
         if (!$this->tryAdd($key, $value)) {
             throw new Exception\DuplicateKeyException($key);
         }
@@ -752,8 +687,6 @@ class Map implements MutableAssociativeInterface, Countable, IteratorAggregate, 
      */
     public function tryAdd($key, $value)
     {
-        $this->typeCheck->tryAdd(func_get_args());
-
         if (null !== $this->binarySearch($key, 0, $insertIndex)) {
             return false;
         };
@@ -781,8 +714,6 @@ class Map implements MutableAssociativeInterface, Countable, IteratorAggregate, 
      */
     public function replace($key, $value)
     {
-        $this->typeCheck->replace(func_get_args());
-
         $previous = null;
         if (!$this->tryReplace($key, $value, $previous)) {
             throw new Exception\UnknownKeyException($key);
@@ -806,8 +737,6 @@ class Map implements MutableAssociativeInterface, Countable, IteratorAggregate, 
      */
     public function tryReplace($key, $value, &$previous = null)
     {
-        $this->typeCheck->tryReplace(func_get_args());
-
         $index = $this->binarySearch($key);
 
         if (null === $index) {
@@ -830,8 +759,6 @@ class Map implements MutableAssociativeInterface, Countable, IteratorAggregate, 
      */
     public function remove($key)
     {
-        $this->typeCheck->remove(func_get_args());
-
         $value = null;
         if (!$this->tryRemove($key, $value)) {
             throw new Exception\UnknownKeyException($key);
@@ -850,8 +777,6 @@ class Map implements MutableAssociativeInterface, Countable, IteratorAggregate, 
      */
     public function tryRemove($key, &$value = null)
     {
-        $this->typeCheck->tryRemove(func_get_args());
-
         $index = $this->binarySearch($key);
 
         if (null === $index) {
@@ -874,8 +799,6 @@ class Map implements MutableAssociativeInterface, Countable, IteratorAggregate, 
      */
     public function mergeInPlace(AssociativeInterface $collection)
     {
-        $this->typeCheck->mergeInPlace(func_get_args());
-
         foreach (func_get_args() as $collection) {
             foreach ($collection->elements() as $element) {
                 list($key, $value) = $element;
@@ -894,8 +817,6 @@ class Map implements MutableAssociativeInterface, Countable, IteratorAggregate, 
      */
     public function swap($key1, $key2)
     {
-        $this->typeCheck->swap(func_get_args());
-
         $index1 = $this->binarySearch($key1);
         $index2 = $this->binarySearch($key2);
 
@@ -920,8 +841,6 @@ class Map implements MutableAssociativeInterface, Countable, IteratorAggregate, 
      */
     public function trySwap($key1, $key2)
     {
-        $this->typeCheck->trySwap(func_get_args());
-
         $index1 = $this->binarySearch($key1);
         $index2 = $this->binarySearch($key2);
 
@@ -952,8 +871,6 @@ class Map implements MutableAssociativeInterface, Countable, IteratorAggregate, 
      */
     public function move($source, $target)
     {
-        $this->typeCheck->move(func_get_args());
-
         if (!$this->tryMove($source, $target)) {
             throw new Exception\UnknownKeyException($source);
         }
@@ -973,8 +890,6 @@ class Map implements MutableAssociativeInterface, Countable, IteratorAggregate, 
      */
     public function tryMove($source, $target)
     {
-        $this->typeCheck->tryMove(func_get_args());
-
         $sourceIndex = $this->binarySearch($source);
         $targetIndex = $this->binarySearch($target, 0, $targetInsertIndex);
 
@@ -1023,8 +938,6 @@ class Map implements MutableAssociativeInterface, Countable, IteratorAggregate, 
      */
     public function rename($source, $target)
     {
-        $this->typeCheck->rename(func_get_args());
-
         $sourceIndex = $this->binarySearch($source);
         $targetIndex = $this->binarySearch($target, 0, $targetInsertIndex);
 
@@ -1064,8 +977,6 @@ class Map implements MutableAssociativeInterface, Countable, IteratorAggregate, 
      */
     public function tryRename($source, $target)
     {
-        $this->typeCheck->tryRename(func_get_args());
-
         $sourceIndex = $this->binarySearch($source);
         $targetIndex = $this->binarySearch($target, 0, $targetInsertIndex);
 
@@ -1097,8 +1008,6 @@ class Map implements MutableAssociativeInterface, Countable, IteratorAggregate, 
 
     public function count()
     {
-        $this->typeCheck->count(func_get_args());
-
         return $this->size();
     }
 
@@ -1108,8 +1017,6 @@ class Map implements MutableAssociativeInterface, Countable, IteratorAggregate, 
 
     public function getIterator()
     {
-        $this->typeCheck->getIterator(func_get_args());
-
         return new Iterator\UnpackIterator(
             $this->elements->getIterator()
         );
@@ -1128,8 +1035,6 @@ class Map implements MutableAssociativeInterface, Countable, IteratorAggregate, 
      */
     public function offsetExists($offset)
     {
-        $this->typeCheck->offsetExists(func_get_args());
-
         return $this->hasKey($offset);
     }
 
@@ -1143,8 +1048,6 @@ class Map implements MutableAssociativeInterface, Countable, IteratorAggregate, 
      */
     public function offsetGet($offset)
     {
-        $this->typeCheck->offsetGet(func_get_args());
-
         return $this->get($offset);
     }
 
@@ -1158,8 +1061,6 @@ class Map implements MutableAssociativeInterface, Countable, IteratorAggregate, 
      */
     public function offsetSet($offset, $value)
     {
-        $this->typeCheck->offsetSet(func_get_args());
-
         $this->set($offset, $value);
     }
 
@@ -1170,8 +1071,6 @@ class Map implements MutableAssociativeInterface, Countable, IteratorAggregate, 
      */
     public function offsetUnset($offset)
     {
-        $this->typeCheck->offsetUnset(func_get_args());
-
         $this->tryRemove($offset);
     }
 
@@ -1186,8 +1085,6 @@ class Map implements MutableAssociativeInterface, Countable, IteratorAggregate, 
      */
     public function serialize()
     {
-        $this->typeCheck->serialize(func_get_args());
-
         return serialize(
             array(
                 $this->elements(),
@@ -1203,8 +1100,6 @@ class Map implements MutableAssociativeInterface, Countable, IteratorAggregate, 
      */
     public function unserialize($packet)
     {
-        TypeCheck::get(__CLASS__)->unserialize(func_get_args());
-
         list($elements, $comparator) = unserialize($packet);
 
         $this->__construct(null, $comparator);
@@ -1233,8 +1128,6 @@ class Map implements MutableAssociativeInterface, Countable, IteratorAggregate, 
      */
     public function compare($value)
     {
-        $this->typeCheck->compare(func_get_args());
-
         if (!$this->canCompare($value)) {
             throw new NotComparableException($this, $value);
         }
@@ -1258,8 +1151,6 @@ class Map implements MutableAssociativeInterface, Countable, IteratorAggregate, 
      */
     public function canCompare($value)
     {
-        $this->typeCheck->canCompare(func_get_args());
-
         return is_object($value)
             && __CLASS__ === get_class($value)
             && $this->comparator == $value->comparator;
@@ -1276,8 +1167,6 @@ class Map implements MutableAssociativeInterface, Countable, IteratorAggregate, 
      */
     public function isEqualTo($value)
     {
-        $this->typeCheck->isEqualTo(func_get_args());
-
         return $this->compare($value) === 0;
     }
 
@@ -1288,8 +1177,6 @@ class Map implements MutableAssociativeInterface, Countable, IteratorAggregate, 
      */
     public function isNotEqualTo($value)
     {
-        $this->typeCheck->isNotEqualTo(func_get_args());
-
         return $this->compare($value) !== 0;
     }
 
@@ -1300,8 +1187,6 @@ class Map implements MutableAssociativeInterface, Countable, IteratorAggregate, 
      */
     public function isLessThan($value)
     {
-        $this->typeCheck->isLessThan(func_get_args());
-
         return $this->compare($value) < 0;
     }
 
@@ -1312,8 +1197,6 @@ class Map implements MutableAssociativeInterface, Countable, IteratorAggregate, 
      */
     public function isGreaterThan($value)
     {
-        $this->typeCheck->isGreaterThan(func_get_args());
-
         return $this->compare($value) > 0;
     }
 
@@ -1324,8 +1207,6 @@ class Map implements MutableAssociativeInterface, Countable, IteratorAggregate, 
      */
     public function isLessThanOrEqualTo($value)
     {
-        $this->typeCheck->isLessThanOrEqualTo(func_get_args());
-
         return $this->compare($value) <= 0;
     }
 
@@ -1336,8 +1217,6 @@ class Map implements MutableAssociativeInterface, Countable, IteratorAggregate, 
      */
     public function isGreaterThanOrEqualTo($value)
     {
-        $this->typeCheck->isGreaterThanOrEqualTo(func_get_args());
-
         return $this->compare($value) >= 0;
     }
 
@@ -1378,7 +1257,6 @@ class Map implements MutableAssociativeInterface, Countable, IteratorAggregate, 
         );
     }
 
-    private $typeCheck;
     private $comparator;
     private $elements;
 }

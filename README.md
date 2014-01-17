@@ -61,6 +61,6 @@ The provided collection implementations support [cloning](http://php.net/manual/
 collection produces a copy of the collection containing the same elements. The elements themselves are not cloned.
 
 <!-- references -->
-[Build Status]: https://travis-ci.org/IcecaveStudios/collections.png?branch=develop
-[Test Coverage]: https://coveralls.io/repos/IcecaveStudios/collections/badge.png?branch=develop
-[SemVer]: http://calm-shore-6115.herokuapp.com/?label=semver&value=1.0.0-alpha.1&color=yellow
+[Build Status]: http://b.adge.me/travis/IcecaveStudios/collections/develop.svg
+[Test Coverage]: http://b.adge.me/coveralls/IcecaveStudios/collections/develop.svg
+[SemVer]: http://b.adge.me/:semver-1.0.0--alpha.1-yellow.svg

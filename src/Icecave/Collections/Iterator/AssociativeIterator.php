@@ -2,7 +2,6 @@
 namespace Icecave\Collections\Iterator;
 
 use Icecave\Collections\AssociativeInterface;
-use Icecave\Collections\TypeCheck\TypeCheck;
 use Iterator;
 
 /**
@@ -18,8 +17,6 @@ class AssociativeIterator implements Iterator
      */
     public function __construct(AssociativeInterface $collection)
     {
-        $this->typeCheck = TypeCheck::get(__CLASS__, func_get_args());
-
         $this->index = 0;
         $this->collection = $collection;
     }
@@ -31,8 +28,6 @@ class AssociativeIterator implements Iterator
      */
     public function collection()
     {
-        $this->typeCheck->collection(func_get_args());
-
         return $this->collection;
     }
 
@@ -43,8 +38,6 @@ class AssociativeIterator implements Iterator
      */
     public function current()
     {
-        $this->typeCheck->current(func_get_args());
-
         return $this->collection->get($this->key());
     }
 
@@ -55,8 +48,6 @@ class AssociativeIterator implements Iterator
      */
     public function key()
     {
-        $this->typeCheck->key(func_get_args());
-
         $keys = $this->collection->keys();
 
         return $keys[$this->index];
@@ -67,8 +58,6 @@ class AssociativeIterator implements Iterator
      */
     public function next()
     {
-        $this->typeCheck->next(func_get_args());
-
         ++$this->index;
     }
 
@@ -77,8 +66,6 @@ class AssociativeIterator implements Iterator
      */
     public function rewind()
     {
-        $this->typeCheck->rewind(func_get_args());
-
         $this->index = 0;
     }
 
@@ -89,13 +76,10 @@ class AssociativeIterator implements Iterator
      */
     public function valid()
     {
-        $this->typeCheck->valid(func_get_args());
-
         return $this->index < $this->collection->size()
             && $this->collection->hasKey($this->key());
     }
 
-    private $typeCheck;
     private $index;
     private $collection;
 }

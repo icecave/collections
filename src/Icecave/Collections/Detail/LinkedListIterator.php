@@ -1,7 +1,6 @@
 <?php
 namespace Icecave\Collections\Detail;
 
-use Icecave\Collections\TypeCheck\TypeCheck;
 use Iterator;
 use stdClass;
 
@@ -13,8 +12,6 @@ class LinkedListIterator implements Iterator
      */
     public function __construct(stdClass $head = null, stdClass $tail = null)
     {
-        $this->typeCheck = TypeCheck::get(__CLASS__, func_get_args());
-
         $this->head = $head;
         $this->tail = $tail;
 
@@ -28,8 +25,6 @@ class LinkedListIterator implements Iterator
      */
     public function current()
     {
-        $this->typeCheck->current(func_get_args());
-
         return $this->currentNode->element;
     }
 
@@ -40,8 +35,6 @@ class LinkedListIterator implements Iterator
      */
     public function key()
     {
-        $this->typeCheck->key(func_get_args());
-
         return $this->currentIndex;
     }
 
@@ -50,8 +43,6 @@ class LinkedListIterator implements Iterator
      */
     public function next()
     {
-        $this->typeCheck->next(func_get_args());
-
         $this->currentNode = $this->currentNode->next;
         ++$this->currentIndex;
     }
@@ -61,8 +52,6 @@ class LinkedListIterator implements Iterator
      */
     public function rewind()
     {
-        $this->typeCheck->rewind(func_get_args());
-
         $this->currentIndex = 0;
         $this->currentNode = $this->head;
     }
@@ -74,12 +63,9 @@ class LinkedListIterator implements Iterator
      */
     public function valid()
     {
-        $this->typeCheck->valid(func_get_args());
-
         return null !== $this->currentNode;
     }
 
-    private $typeCheck;
     private $head;
     private $tail;
     private $currentIndex;

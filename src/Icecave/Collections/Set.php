@@ -3,7 +3,6 @@ namespace Icecave\Collections;
 
 use Countable;
 use Icecave\Collections\Iterator\Traits;
-use Icecave\Collections\TypeCheck\TypeCheck;
 use Icecave\Parity\Comparator\DeepComparator;
 use Icecave\Parity\Comparator\ObjectIdentityComparator;
 use Icecave\Parity\Comparator\StrictPhpComparator;
@@ -24,8 +23,6 @@ class Set implements SetInterface, IteratorAggregate, Serializable
      */
     public function __construct($elements = null, $comparator = null)
     {
-        $this->typeCheck = TypeCheck::get(__CLASS__, func_get_args());
-
         if (null === $comparator) {
             $comparator = new ObjectIdentityComparator(
                 new DeepComparator(
@@ -44,8 +41,6 @@ class Set implements SetInterface, IteratorAggregate, Serializable
 
     public function __clone()
     {
-        $this->typeCheck->validateClone(func_get_args());
-
         $this->elements = clone $this->elements;
     }
 
@@ -58,8 +53,6 @@ class Set implements SetInterface, IteratorAggregate, Serializable
      */
     public static function create()
     {
-        TypeCheck::get(__CLASS__)->create(func_get_args());
-
         return new static(func_get_args());
     }
 
@@ -76,8 +69,6 @@ class Set implements SetInterface, IteratorAggregate, Serializable
      */
     public function size()
     {
-        $this->typeCheck->size(func_get_args());
-
         return $this->elements->size();
     }
 
@@ -88,8 +79,6 @@ class Set implements SetInterface, IteratorAggregate, Serializable
      */
     public function isEmpty()
     {
-        $this->typeCheck->isEmpty(func_get_args());
-
         return $this->elements->isEmpty();
     }
 
@@ -134,8 +123,6 @@ class Set implements SetInterface, IteratorAggregate, Serializable
      */
     public function clear()
     {
-        $this->typeCheck->clear(func_get_args());
-
         $this->elements->clear();
     }
 
@@ -150,8 +137,6 @@ class Set implements SetInterface, IteratorAggregate, Serializable
      */
     public function iteratorTraits()
     {
-        $this->typeCheck->iteratorTraits(func_get_args());
-
         return new Traits(true, true);
     }
 
@@ -166,8 +151,6 @@ class Set implements SetInterface, IteratorAggregate, Serializable
      */
     public function elements()
     {
-        $this->typeCheck->elements(func_get_args());
-
         return $this->elements->elements();
     }
 
@@ -180,8 +163,6 @@ class Set implements SetInterface, IteratorAggregate, Serializable
      */
     public function contains($element)
     {
-        $this->typeCheck->contains(func_get_args());
-
         return null !== $this->binarySearch($element);
     }
 
@@ -197,8 +178,6 @@ class Set implements SetInterface, IteratorAggregate, Serializable
      */
     public function filter($predicate = null)
     {
-        $this->typeCheck->filter(func_get_args());
-
         $result = $this->createSet();
         $result->elements = $this->elements->filter($predicate);
 
@@ -220,8 +199,6 @@ class Set implements SetInterface, IteratorAggregate, Serializable
      */
     public function map($transform)
     {
-        $this->typeCheck->map(func_get_args());
-
         $result = $this->createSet();
         $result->addMany(
             $this->elements->map($transform)
@@ -241,8 +218,6 @@ class Set implements SetInterface, IteratorAggregate, Serializable
      */
     public function partition($predicate)
     {
-        $this->typeCheck->partition(func_get_args());
-
         $left  = $this->createSet();
         $right = $this->createSet();
 
@@ -266,8 +241,6 @@ class Set implements SetInterface, IteratorAggregate, Serializable
      */
     public function each($callback)
     {
-        $this->typeCheck->each(func_get_args());
-
         $this->elements->each($callback);
     }
 
@@ -282,8 +255,6 @@ class Set implements SetInterface, IteratorAggregate, Serializable
      */
     public function all($predicate)
     {
-        $this->typeCheck->all(func_get_args());
-
         return $this->elements->all($predicate);
     }
 
@@ -298,8 +269,6 @@ class Set implements SetInterface, IteratorAggregate, Serializable
      */
     public function any($predicate)
     {
-        $this->typeCheck->any(func_get_args());
-
         return $this->elements->any($predicate);
     }
 
@@ -317,8 +286,6 @@ class Set implements SetInterface, IteratorAggregate, Serializable
      */
     public function filterInPlace($predicate = null)
     {
-        $this->typeCheck->filterInPlace(func_get_args());
-
         $this->elements->filterInPlace($predicate);
     }
 
@@ -334,8 +301,6 @@ class Set implements SetInterface, IteratorAggregate, Serializable
      */
     public function mapInPlace($transform)
     {
-        $this->typeCheck->mapInPlace(func_get_args());
-
         $this->elements->mapInPlace($transform);
         $this->elements->sortInPlace($this->comparator);
     }
@@ -346,8 +311,6 @@ class Set implements SetInterface, IteratorAggregate, Serializable
 
     public function count()
     {
-        $this->typeCheck->count(func_get_args());
-
         return $this->size();
     }
 
@@ -357,8 +320,6 @@ class Set implements SetInterface, IteratorAggregate, Serializable
 
     public function getIterator()
     {
-        $this->typeCheck->getIterator(func_get_args());
-
         return $this->elements;
     }
 
@@ -373,8 +334,6 @@ class Set implements SetInterface, IteratorAggregate, Serializable
      */
     public function serialize()
     {
-        $this->typeCheck->serialize(func_get_args());
-
         return serialize(
             array(
                 $this->elements(),
@@ -390,8 +349,6 @@ class Set implements SetInterface, IteratorAggregate, Serializable
      */
     public function unserialize($packet)
     {
-        TypeCheck::get(__CLASS__)->unserialize(func_get_args());
-
         list($elements, $comparator) = unserialize($packet);
         $this->__construct(null, $comparator);
         $this->elements->append($elements);
@@ -412,8 +369,6 @@ class Set implements SetInterface, IteratorAggregate, Serializable
      */
     public function cascade($element)
     {
-        $this->typeCheck->cascade(func_get_args());
-
         return $this->cascadeIterable(func_get_args());
     }
 
@@ -428,8 +383,6 @@ class Set implements SetInterface, IteratorAggregate, Serializable
      */
     public function cascadeWithDefault($default, $element)
     {
-        $this->typeCheck->cascadeWithDefault(func_get_args());
-
         $elements = func_get_args();
         $default = array_shift($elements);
 
@@ -449,8 +402,6 @@ class Set implements SetInterface, IteratorAggregate, Serializable
      */
     public function cascadeIterable($elements)
     {
-        $this->typeCheck->cascadeIterable(func_get_args());
-
         foreach ($elements as $element) {
             if ($this->contains($element)) {
                 return $element;
@@ -473,8 +424,6 @@ class Set implements SetInterface, IteratorAggregate, Serializable
      */
     public function cascadeIterableWithDefault($default, $elements)
     {
-        $this->typeCheck->cascadeIterableWithDefault(func_get_args());
-
         foreach ($elements as $element) {
             if ($this->contains($element)) {
                 return $element;
@@ -493,8 +442,6 @@ class Set implements SetInterface, IteratorAggregate, Serializable
      */
     public function add($element)
     {
-        $this->typeCheck->add(func_get_args());
-
         $insertIndex = null;
 
         if (null !== $this->binarySearch($element, 0, $insertIndex)) {
@@ -515,8 +462,6 @@ class Set implements SetInterface, IteratorAggregate, Serializable
      */
     public function addMany($elements)
     {
-        $this->typeCheck->addMany(func_get_args());
-
         foreach ($elements as $element) {
             $this->add($element);
         }
@@ -531,8 +476,6 @@ class Set implements SetInterface, IteratorAggregate, Serializable
      */
     public function remove($element)
     {
-        $this->typeCheck->remove(func_get_args());
-
         $index = $this->binarySearch($element);
 
         if (null === $index) {
@@ -553,8 +496,6 @@ class Set implements SetInterface, IteratorAggregate, Serializable
      */
     public function removeMany($elements)
     {
-        $this->typeCheck->removeMany(func_get_args());
-
         foreach ($elements as $element) {
             $this->remove($element);
         }
@@ -569,8 +510,6 @@ class Set implements SetInterface, IteratorAggregate, Serializable
      */
     public function isEqualSet(SetInterface $set)
     {
-        $this->typeCheck->isEqualSet(func_get_args());
-
         $this->assertCompatible($set);
 
         if ($this->size() !== $set->size()) {
@@ -605,8 +544,6 @@ class Set implements SetInterface, IteratorAggregate, Serializable
      */
     public function isSuperSet(SetInterface $set)
     {
-        $this->typeCheck->isSuperSet(func_get_args());
-
         $this->assertCompatible($set);
 
         // Everything is a super-set of the empty set ...
@@ -651,8 +588,6 @@ class Set implements SetInterface, IteratorAggregate, Serializable
      */
     public function isSubSet(SetInterface $set)
     {
-        $this->typeCheck->isSubSet(func_get_args());
-
         $this->assertCompatible($set);
 
         return $set->isSuperSet($this);
@@ -667,8 +602,6 @@ class Set implements SetInterface, IteratorAggregate, Serializable
      */
     public function isProperSuperSet(SetInterface $set)
     {
-        $this->typeCheck->isProperSuperSet(func_get_args());
-
         $this->assertCompatible($set);
 
         // Everything is a super-set of the empty set ...
@@ -691,8 +624,6 @@ class Set implements SetInterface, IteratorAggregate, Serializable
      */
     public function isProperSubSet(SetInterface $set)
     {
-        $this->typeCheck->isProperSubSet(func_get_args());
-
         $this->assertCompatible($set);
 
         return $set->isProperSuperSet($this);
@@ -707,8 +638,6 @@ class Set implements SetInterface, IteratorAggregate, Serializable
      */
     public function isIntersecting(SetInterface $set)
     {
-        $this->typeCheck->isIntersecting(func_get_args());
-
         $this->assertCompatible($set);
 
         // Nothing intersects with the empty set ...
@@ -772,8 +701,6 @@ class Set implements SetInterface, IteratorAggregate, Serializable
      */
     public function union(SetInterface $set)
     {
-        $this->typeCheck->union(func_get_args());
-
         $this->assertCompatible($set);
 
         //
@@ -878,8 +805,6 @@ class Set implements SetInterface, IteratorAggregate, Serializable
      */
     public function unionInPlace(SetInterface $set)
     {
-        $this->typeCheck->unionInPlace(func_get_args());
-
         $this->assertCompatible($set);
 
         //
@@ -972,8 +897,6 @@ class Set implements SetInterface, IteratorAggregate, Serializable
      */
     public function intersect(SetInterface $set)
     {
-        $this->typeCheck->intersect(func_get_args());
-
         $this->assertCompatible($set);
 
         //
@@ -1045,8 +968,6 @@ class Set implements SetInterface, IteratorAggregate, Serializable
      */
     public function intersectInPlace(SetInterface $set)
     {
-        $this->typeCheck->intersectInPlace(func_get_args());
-
         $this->assertCompatible($set);
 
         //
@@ -1128,8 +1049,6 @@ class Set implements SetInterface, IteratorAggregate, Serializable
      */
     public function diff(SetInterface $set)
     {
-        $this->typeCheck->diff(func_get_args());
-
         $this->assertCompatible($set);
 
         //
@@ -1220,8 +1139,6 @@ class Set implements SetInterface, IteratorAggregate, Serializable
      */
     public function diffInPlace(SetInterface $set)
     {
-        $this->typeCheck->diffInPlace(func_get_args());
-
         $this->assertCompatible($set);
 
         //
@@ -1294,8 +1211,6 @@ class Set implements SetInterface, IteratorAggregate, Serializable
      */
     public function symmetricDiff(SetInterface $set)
     {
-        $this->typeCheck->symmetricDiff(func_get_args());
-
         $this->assertCompatible($set);
 
         //
@@ -1397,8 +1312,6 @@ class Set implements SetInterface, IteratorAggregate, Serializable
      */
     public function symmetricDiffInPlace(SetInterface $set)
     {
-        $this->typeCheck->symmetricDiffInPlace(func_get_args());
-
         $this->assertCompatible($set);
 
         //
@@ -1508,8 +1421,6 @@ class Set implements SetInterface, IteratorAggregate, Serializable
      */
     public function compare($value)
     {
-        $this->typeCheck->compare(func_get_args());
-
         if (!$this->canCompare($value)) {
             throw new NotComparableException($this, $value);
         }
@@ -1533,8 +1444,6 @@ class Set implements SetInterface, IteratorAggregate, Serializable
      */
     public function canCompare($value)
     {
-        $this->typeCheck->canCompare(func_get_args());
-
         return is_object($value)
             && __CLASS__ === get_class($value)
             && $this->comparator == $value->comparator;
@@ -1551,8 +1460,6 @@ class Set implements SetInterface, IteratorAggregate, Serializable
      */
     public function isEqualTo($value)
     {
-        $this->typeCheck->isEqualTo(func_get_args());
-
         return $this->compare($value) === 0;
     }
 
@@ -1563,8 +1470,6 @@ class Set implements SetInterface, IteratorAggregate, Serializable
      */
     public function isNotEqualTo($value)
     {
-        $this->typeCheck->isNotEqualTo(func_get_args());
-
         return $this->compare($value) !== 0;
     }
 
@@ -1575,8 +1480,6 @@ class Set implements SetInterface, IteratorAggregate, Serializable
      */
     public function isLessThan($value)
     {
-        $this->typeCheck->isLessThan(func_get_args());
-
         return $this->compare($value) < 0;
     }
 
@@ -1587,8 +1490,6 @@ class Set implements SetInterface, IteratorAggregate, Serializable
      */
     public function isGreaterThan($value)
     {
-        $this->typeCheck->isGreaterThan(func_get_args());
-
         return $this->compare($value) > 0;
     }
 
@@ -1599,8 +1500,6 @@ class Set implements SetInterface, IteratorAggregate, Serializable
      */
     public function isLessThanOrEqualTo($value)
     {
-        $this->typeCheck->isLessThanOrEqualTo(func_get_args());
-
         return $this->compare($value) <= 0;
     }
 
@@ -1611,8 +1510,6 @@ class Set implements SetInterface, IteratorAggregate, Serializable
      */
     public function isGreaterThanOrEqualTo($value)
     {
-        $this->typeCheck->isGreaterThanOrEqualTo(func_get_args());
-
         return $this->compare($value) >= 0;
     }
 
@@ -1674,7 +1571,6 @@ class Set implements SetInterface, IteratorAggregate, Serializable
         );
     }
 
-    private $typeCheck;
     private $comparator;
     private $elements;
 }

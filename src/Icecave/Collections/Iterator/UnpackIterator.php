@@ -1,7 +1,6 @@
 <?php
 namespace Icecave\Collections\Iterator;
 
-use Icecave\Collections\TypeCheck\TypeCheck;
 use Iterator;
 use OuterIterator;
 
@@ -16,8 +15,6 @@ class UnpackIterator implements Iterator, OuterIterator
      */
     public function __construct(Iterator $iterator)
     {
-        $this->typeCheck = TypeCheck::get(__CLASS__, func_get_args());
-
         $this->iterator = $iterator;
     }
 
@@ -26,8 +23,6 @@ class UnpackIterator implements Iterator, OuterIterator
      */
     public function getInnerIterator()
     {
-        $this->typeCheck->getInnerIterator(func_get_args());
-
         return $this->iterator;
     }
 
@@ -38,8 +33,6 @@ class UnpackIterator implements Iterator, OuterIterator
      */
     public function current()
     {
-        $this->typeCheck->current(func_get_args());
-
         list($key, $value) = $this->iterator->current();
 
         return $value;
@@ -52,8 +45,6 @@ class UnpackIterator implements Iterator, OuterIterator
      */
     public function key()
     {
-        $this->typeCheck->key(func_get_args());
-
         list($key, $value) = $this->iterator->current();
 
         return $key;
@@ -64,8 +55,6 @@ class UnpackIterator implements Iterator, OuterIterator
      */
     public function next()
     {
-        $this->typeCheck->next(func_get_args());
-
         $this->iterator->next();
     }
 
@@ -74,8 +63,6 @@ class UnpackIterator implements Iterator, OuterIterator
      */
     public function rewind()
     {
-        $this->typeCheck->rewind(func_get_args());
-
         $this->iterator->rewind();
     }
 
@@ -86,11 +73,8 @@ class UnpackIterator implements Iterator, OuterIterator
      */
     public function valid()
     {
-        $this->typeCheck->valid(func_get_args());
-
         return $this->iterator->valid();
     }
 
-    private $typeCheck;
     private $iterator;
 }

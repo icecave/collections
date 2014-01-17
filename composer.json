@@ -14,26 +14,17 @@
     "require": {
         "php": ">=5.3",
         "ext-mbstring": "*",
-        "icecave/parity": "~1@dev",
+        "icecave/parity": "~1",
         "icecave/repr": "~1"
     },
     "require-dev": {
         "eloquent/liberator": "~1",
         "ezzatron/phpunit-extensions" : "~1",
-        "eloquent/typhoon": "~0.9.0",
         "icecave/archer": "~1"
     },
     "autoload": {
         "psr-0": {
-            "Icecave\\Collections": "src",
-            "Icecave\\Collections\\TypeCheck": "src-typhoon"
-        }
-    },
-    "extra": {
-        "typhoon": {
-            "output-path": "src-typhoon",
-            "validator-namespace": "Icecave\\Collections\\TypeCheck",
-            "use-native-callable": false
+            "Icecave\\Collections": "src"
         }
     }
 }
