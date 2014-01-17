@@ -2,7 +2,6 @@
 namespace Icecave\Collections\Exception;
 
 use Exception;
-use Icecave\Collections\TypeCheck\TypeCheck;
 use UnderflowException;
 
 /**
@@ -15,8 +14,6 @@ class EmptyCollectionException extends UnderflowException implements CollectionE
      */
     public function __construct(Exception $previous = null)
     {
-        TypeCheck::get(__CLASS__, func_get_args());
-
         parent::__construct('Collection is empty.', 0, $previous);
     }
 }

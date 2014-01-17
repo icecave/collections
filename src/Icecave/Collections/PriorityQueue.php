@@ -1,7 +1,6 @@
 <?php
 namespace Icecave\Collections;
 
-use Icecave\Collections\TypeCheck\TypeCheck;
 use Icecave\Repr\Repr;
 use Serializable;
 use SplPriorityQueue;
@@ -24,8 +23,6 @@ class PriorityQueue extends Queue implements Serializable
      */
     public function __construct($elements = null, $prioritizer = null)
     {
-        $this->typeCheck = TypeCheck::get(__CLASS__, func_get_args());
-
         if (null === $prioritizer) {
             $prioritizer = function ($element) {
                 return $element;
@@ -45,8 +42,6 @@ class PriorityQueue extends Queue implements Serializable
      */
     public static function create()
     {
-        TypeCheck::get(__CLASS__)->create(func_get_args());
-
         return new static(func_get_args());
     }
 
@@ -84,8 +79,6 @@ class PriorityQueue extends Queue implements Serializable
      */
     public function clear()
     {
-        $this->typeCheck->clear(func_get_args());
-
         $this->elements = new SplPriorityQueue;
     }
 
@@ -101,8 +94,6 @@ class PriorityQueue extends Queue implements Serializable
      */
     public function next()
     {
-        $this->typeCheck->next(func_get_args());
-
         if ($this->isEmpty()) {
             throw new Exception\EmptyCollectionException;
         }
@@ -118,8 +109,6 @@ class PriorityQueue extends Queue implements Serializable
      */
     public function push($element, $priority = null)
     {
-        $this->typeCheck->push(func_get_args());
-
         if (null === $priority) {
             $priority = call_user_func($this->prioritizer, $element);
         }
@@ -135,8 +124,6 @@ class PriorityQueue extends Queue implements Serializable
      */
     public function pop()
     {
-        $this->typeCheck->pop(func_get_args());
-
         if ($this->isEmpty()) {
             throw new Exception\EmptyCollectionException;
         }
@@ -155,8 +142,6 @@ class PriorityQueue extends Queue implements Serializable
      */
     public function serialize()
     {
-        $this->typeCheck->serialize(func_get_args());
-
         return serialize(
             array(
                 iterator_to_array($this->elements),
@@ -172,8 +157,6 @@ class PriorityQueue extends Queue implements Serializable
      */
     public function unserialize($packet)
     {
-        TypeCheck::get(__CLASS__)->unserialize(func_get_args());
-
         list($elements, $prioritizer) = unserialize($packet);
         $this->__construct($elements, $prioritizer);
     }
@@ -194,13 +177,10 @@ class PriorityQueue extends Queue implements Serializable
      */
     public function canCompare($value)
     {
-        $this->typeCheck->canCompare(func_get_args());
-
         return is_object($value)
             && __CLASS__ === get_class($value)
             && $this->prioritizer == $value->prioritizer;
     }
 
-    private $typeCheck;
     private $prioritizer;
 }

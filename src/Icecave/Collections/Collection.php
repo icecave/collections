@@ -6,7 +6,6 @@ use ArrayIterator;
 use Countable;
 use Icecave\Collections\Iterator\Traits;
 use Icecave\Collections\Iterator\TraitsProviderInterface;
-use Icecave\Collections\TypeCheck\TypeCheck;
 use IteratorAggregate;
 use SplDoublyLinkedList;
 use SplFixedArray;
@@ -29,8 +28,6 @@ abstract class Collection
      */
     public static function isEmpty($collection)
     {
-        TypeCheck::get(__CLASS__)->isEmpty(func_get_args());
-
         if ($collection instanceof CollectionInterface) {
             return $collection->isEmpty();
         }
@@ -47,8 +44,6 @@ abstract class Collection
      */
     public static function size($collection)
     {
-        TypeCheck::get(__CLASS__)->size(func_get_args());
-
         $size = static::trySize($collection);
 
         if (null !== $size) {
@@ -72,8 +67,6 @@ abstract class Collection
      */
     public static function trySize($collection)
     {
-        TypeCheck::get(__CLASS__)->trySize(func_get_args());
-
         if ($collection instanceof CollectionInterface) {
             return $collection->size();
         } elseif ($collection instanceof Countable) {
@@ -96,8 +89,6 @@ abstract class Collection
      */
     public static function get($collection, $key)
     {
-        TypeCheck::get(__CLASS__)->get(func_get_args());
-
         $value = null;
         if (static::tryGet($collection, $key, $value)) {
             return $value;
@@ -117,8 +108,6 @@ abstract class Collection
      */
     public static function tryGet($collection, $key, &$value)
     {
-        TypeCheck::get(__CLASS__)->tryGet(func_get_args());
-
         if ($collection instanceof AssociativeInterface) {
             return $collection->tryGet($key, $value);
         } elseif (is_array($collection)) {
@@ -156,8 +145,6 @@ abstract class Collection
      */
     public static function getWithDefault($collection, $key, $default = null)
     {
-        TypeCheck::get(__CLASS__)->getWithDefault(func_get_args());
-
         $value = null;
         if (static::tryGet($collection, $key, $value)) {
             return $value;
@@ -176,8 +163,6 @@ abstract class Collection
      */
     public static function hasKey($collection, $key)
     {
-        TypeCheck::get(__CLASS__)->hasKey(func_get_args());
-
         if ($collection instanceof AssociativeInterface) {
             return $collection->hasKey($key);
         } elseif ($collection instanceof SequenceInterface) {
@@ -204,8 +189,6 @@ abstract class Collection
      */
     public static function contains($collection, $value)
     {
-        TypeCheck::get(__CLASS__)->contains(func_get_args());
-
         if ($collection instanceof IterableInterface) {
             return $collection->contains($value);
         } elseif (is_array($collection)) {
@@ -229,8 +212,6 @@ abstract class Collection
      */
     public static function keys($collection)
     {
-        TypeCheck::get(__CLASS__)->keys(func_get_args());
-
         if ($collection instanceof AssociativeInterface) {
             return $collection->keys();
         } elseif ($collection instanceof SequenceInterface) {
@@ -256,8 +237,6 @@ abstract class Collection
      */
     public static function values($collection)
     {
-        TypeCheck::get(__CLASS__)->values(func_get_args());
-
         if ($collection instanceof AssociativeInterface) {
             return $collection->values();
         } elseif ($collection instanceof SequenceInterface) {
@@ -285,8 +264,6 @@ abstract class Collection
      */
     public static function elements($collection)
     {
-        TypeCheck::get(__CLASS__)->elements(func_get_args());
-
         if ($collection instanceof AssociativeInterface) {
             return $collection->elements();
         }
@@ -317,8 +294,6 @@ abstract class Collection
      */
     public static function map($collection, $transform, &$result = array())
     {
-        TypeCheck::get(__CLASS__)->map(func_get_args());
-
         static::each(
             $collection,
             function ($key, $value) use ($transform, &$result) {
@@ -344,8 +319,6 @@ abstract class Collection
      */
     public static function filter($collection, $predicate, &$result = array())
     {
-        TypeCheck::get(__CLASS__)->filter(func_get_args());
-
         static::each(
             $collection,
             function ($key, $value) use ($predicate, &$result) {
@@ -368,8 +341,6 @@ abstract class Collection
      */
     public static function each($collection, $callback)
     {
-        TypeCheck::get(__CLASS__)->each(func_get_args());
-
         static::all(
             $collection,
             function ($key, $value) use ($callback) {
@@ -392,8 +363,6 @@ abstract class Collection
      */
     public static function all($collection, $predicate)
     {
-        TypeCheck::get(__CLASS__)->all(func_get_args());
-
         if ($collection instanceof IterableInterface) {
             // Wrap the callback such that a sequential index is produced for the first argument ...
             if ($collection instanceof SequenceInterface) {
@@ -435,8 +404,6 @@ abstract class Collection
      */
    public static function any($collection, $predicate)
    {
-        TypeCheck::get(__CLASS__)->any(func_get_args());
-
         return !static::all(
             $collection,
             function ($key, $value) use ($predicate) {
@@ -454,8 +421,6 @@ abstract class Collection
      */
     public static function isSequential($collection)
     {
-        TypeCheck::get(__CLASS__)->isSequential(func_get_args());
-
         if ($collection instanceof CollectionInterface) {
             return $collection instanceof SequenceInterface;
         }
@@ -479,8 +444,6 @@ abstract class Collection
      */
     public static function getIterator($collection)
     {
-        TypeCheck::get(__CLASS__)->getIterator(func_get_args());
-
         if (is_array($collection)) {
             $collection = new ArrayIterator($collection);
         } elseif ($collection instanceof IteratorAggregate) {
@@ -498,8 +461,6 @@ abstract class Collection
      */
     public static function addElement(&$collection, $element)
     {
-        TypeCheck::get(__CLASS__)->addElement(func_get_args());
-
         if ($collection instanceof MutableSequenceInterface) {
             $collection->pushBack($element);
         } elseif ($collection instanceof QueuedAccessInterface) {
@@ -521,8 +482,6 @@ abstract class Collection
      */
     public static function addElements(&$collection, $elements)
     {
-        TypeCheck::get(__CLASS__)->addElements(func_get_args());
-
         foreach ($elements as $element) {
             static::addElement($collection, $element);
         }
@@ -544,8 +503,6 @@ abstract class Collection
         $emptyResult = '',
         $transform = null
     ) {
-        TypeCheck::get(__CLASS__)->implode(func_get_args());
-
         // Create an identity transform if none is provided ...
         if (null === $transform) {
             $transform = function ($element) {
@@ -591,8 +548,6 @@ abstract class Collection
         $transform = null,
         $encoding = null
     ) {
-        TypeCheck::get(__CLASS__)->explode(func_get_args());
-
         // Attempt to auto-detect encoding from $string ...
         if (null === $encoding) {
             $encoding = mb_internal_encoding();
@@ -650,8 +605,6 @@ abstract class Collection
      */
     public static function iteratorTraits($iterator)
     {
-        TypeCheck::get(__CLASS__)->iteratorTraits(func_get_args());
-
         if ($iterator instanceof TraitsProviderInterface) {
             return $iterator->iteratorTraits();
         } elseif (is_array($iterator)) {
@@ -682,8 +635,6 @@ abstract class Collection
      */
     public static function compare($lhs, $rhs, $comparator = 'Icecave\Parity\Parity::compare')
     {
-        TypeCheck::get(__CLASS__)->compare(func_get_args());
-
         $lhsSize = static::trySize($lhs);
         $rhsSize = static::trySize($rhs);
 
@@ -723,8 +674,6 @@ abstract class Collection
      */
     public static function lowerBound($collection, $element, $comparator, $begin = 0, $end = null)
     {
-        TypeCheck::get(__CLASS__)->lowerBound(func_get_args());
-
         if (null === $end) {
             $end = static::size($collection);
         }
@@ -759,8 +708,6 @@ abstract class Collection
      */
     public static function upperBound($collection, $element, $comparator, $begin = 0, $end = null)
     {
-        TypeCheck::get(__CLASS__)->upperBound(func_get_args());
-
         if (null === $end) {
             $end = static::size($collection);
         }
@@ -798,8 +745,6 @@ abstract class Collection
      */
     public static function binarySearch($collection, $element, $comparator, $begin = 0, $end = null, &$insertIndex = null)
     {
-        TypeCheck::get(__CLASS__)->binarySearch(func_get_args());
-
         if (null === $end) {
             $end = static::size($collection);
         }

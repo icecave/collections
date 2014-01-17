@@ -2,7 +2,6 @@
 namespace Icecave\Collections\Exception;
 
 use Exception;
-use Icecave\Collections\TypeCheck\TypeCheck;
 use Icecave\Repr\Repr;
 use OutOfBoundsException;
 
@@ -17,8 +16,6 @@ class UnknownKeyException extends OutOfBoundsException implements CollectionExce
      */
     public function __construct($key, Exception $previous = null)
     {
-        TypeCheck::get(__CLASS__, func_get_args());
-
         parent::__construct('Key ' . Repr::repr($key) . ' does not exist.', 0, $previous);
     }
 }

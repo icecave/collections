@@ -1,7 +1,6 @@
 <?php
 namespace Icecave\Collections\Iterator;
 
-use Icecave\Collections\TypeCheck\TypeCheck;
 use IteratorIterator;
 use Traversable;
 
@@ -17,8 +16,6 @@ class SequentialKeyIterator extends IteratorIterator
      */
     public function __construct(Traversable $iterator)
     {
-        $this->typeCheck = TypeCheck::get(__CLASS__, func_get_args());
-
         parent::__construct($iterator);
 
         $this->index = 0;
@@ -31,8 +28,6 @@ class SequentialKeyIterator extends IteratorIterator
      */
     public function key()
     {
-        $this->typeCheck->key(func_get_args());
-
         return $this->index;
     }
 
@@ -41,8 +36,6 @@ class SequentialKeyIterator extends IteratorIterator
      */
     public function next()
     {
-        $this->typeCheck->next(func_get_args());
-
         ++$this->index;
         parent::next();
     }
@@ -52,12 +45,9 @@ class SequentialKeyIterator extends IteratorIterator
      */
     public function rewind()
     {
-        $this->typeCheck->rewind(func_get_args());
-
         $this->index = 0;
         parent::rewind();
     }
 
-    private $typeCheck;
     private $index;
 }

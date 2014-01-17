@@ -1,8 +1,6 @@
 <?php
 namespace Icecave\Collections\Iterator;
 
-use Icecave\Collections\TypeCheck\TypeCheck;
-
 /**
  * Describes the traits and capabilities of an iterator.
  */
@@ -16,8 +14,6 @@ final class Traits
         $isCountable,
         $isRewindable
     ) {
-        TypeCheck::get(__CLASS__, func_get_args());
-
         $this->isCountable = $isCountable;
         $this->isRewindable = $isRewindable;
     }

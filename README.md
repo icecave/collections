@@ -4,16 +4,20 @@
 [![Test Coverage]](https://coveralls.io/r/IcecaveStudios/collections?branch=develop)
 [![SemVer]](http://semver.org)
 
-**Collections** provides a set of collection types loosely inspired by the .NET runtime and the C++ standard template library.
-
-PHP has long been lacking formal, performant collection types. The addition of the heap-centric collections to the SPL
-has gone some way to addressing this problem but has fallen short in some regards. For example, [SplDoublyLinkedList](http://www.php.net/manual/en/class.spldoublylinkedlist.php)
-does not expose some of the operations that linked lists are designed to solve efficiently, such as insertion and
-deletion operations in the middle of the collection. There are also several broken abstractions. One example is [SplQueue](http://php.net/manual/en/class.splqueue.php)
-which exposes methods for manipulating both the head and tail of the queue.
+**Collections** provides a set of collection types loosely inspired by the .NET runtime and the C++ standard template
+library.
 
 * Install via [Composer](http://getcomposer.org) package [icecave/collections](https://packagist.org/packages/icecave/collections)
 * Read the [API documentation](http://icecavestudios.github.io/collections/artifacts/documentation/api/)
+
+## Rationale
+
+PHP has long been lacking formal, performant collection types. The addition of the heap-centric collections to the SPL
+has gone some way to addressing this problem but has fallen short in some regards. For example,
+[SplDoublyLinkedList](http://www.php.net/manual/en/class.spldoublylinkedlist.php) does not expose some of the operations
+that linked lists are designed to solve efficiently, such as insertion and deletion operations in the middle of the
+collection. There are also several broken abstractions. One example is [SplQueue](http://php.net/manual/en/class.splqueue.php)
+which exposes methods for manipulating both the head and tail of the queue.
 
 ## Concepts
 
@@ -57,6 +61,6 @@ The provided collection implementations support [cloning](http://php.net/manual/
 collection produces a copy of the collection containing the same elements. The elements themselves are not cloned.
 
 <!-- references -->
-[Build Status]: https://travis-ci.org/IcecaveStudios/collections.png?branch=develop
-[Test Coverage]: https://coveralls.io/repos/IcecaveStudios/collections/badge.png?branch=develop
-[SemVer]: http://calm-shore-6115.herokuapp.com/?label=semver&value=1.0.0-alpha.1&color=yellow
+[Build Status]: http://b.adge.me/travis/IcecaveStudios/collections/develop.svg
+[Test Coverage]: http://b.adge.me/coveralls/IcecaveStudios/collections/develop.svg
+[SemVer]: http://b.adge.me/:semver-1.0.0-green.svg

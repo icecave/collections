@@ -4,7 +4,6 @@ namespace Icecave\Collections;
 use ArrayAccess;
 use Countable;
 use Icecave\Collections\Iterator\Traits;
-use Icecave\Collections\TypeCheck\TypeCheck;
 use Icecave\Parity\Exception\NotComparableException;
 use IteratorAggregate;
 use Serializable;
@@ -20,8 +19,6 @@ class Vector implements MutableRandomAccessInterface, Countable, IteratorAggrega
      */
     public function __construct($elements = null)
     {
-        $this->typeCheck = TypeCheck::get(__CLASS__, func_get_args());
-
         if (is_array($elements)) {
             $this->elements = SplFixedArray::fromArray($elements, false);
             $this->size = count($elements);
@@ -35,8 +32,6 @@ class Vector implements MutableRandomAccessInterface, Countable, IteratorAggrega
 
     public function __clone()
     {
-        $this->typeCheck->validateClone(func_get_args());
-
         $this->elements = clone $this->elements;
     }
 
@@ -49,8 +44,6 @@ class Vector implements MutableRandomAccessInterface, Countable, IteratorAggrega
      */
     public static function create()
     {
-        TypeCheck::get(__CLASS__)->create(func_get_args());
-
         return new static(func_get_args());
     }
 
@@ -67,8 +60,6 @@ class Vector implements MutableRandomAccessInterface, Countable, IteratorAggrega
      */
     public function size()
     {
-        $this->typeCheck->size(func_get_args());
-
         return $this->size;
     }
 
@@ -79,8 +70,6 @@ class Vector implements MutableRandomAccessInterface, Countable, IteratorAggrega
      */
     public function isEmpty()
     {
-        $this->typeCheck->isEmpty(func_get_args());
-
         return 0 === $this->size;
     }
 
@@ -124,8 +113,6 @@ class Vector implements MutableRandomAccessInterface, Countable, IteratorAggrega
      */
     public function clear()
     {
-        $this->typeCheck->clear(func_get_args());
-
         $this->elements = new SplFixedArray;
         $this->size = 0;
     }
@@ -141,8 +128,6 @@ class Vector implements MutableRandomAccessInterface, Countable, IteratorAggrega
      */
     public function iteratorTraits()
     {
-        $this->typeCheck->iteratorTraits(func_get_args());
-
         return new Traits(true, true);
     }
 
@@ -157,8 +142,6 @@ class Vector implements MutableRandomAccessInterface, Countable, IteratorAggrega
      */
     public function elements()
     {
-        $this->typeCheck->elements(func_get_args());
-
         $elements = array();
         foreach ($this->elements as $index => $element) {
             if ($index >= $this->size) {
@@ -180,8 +163,6 @@ class Vector implements MutableRandomAccessInterface, Countable, IteratorAggrega
      */
     public function contains($element)
     {
-        $this->typeCheck->contains(func_get_args());
-
         return null !== $this->indexOf($element);
     }
 
@@ -194,8 +175,6 @@ class Vector implements MutableRandomAccessInterface, Countable, IteratorAggrega
      */
     public function filter($predicate = null)
     {
-        $this->typeCheck->filter(func_get_args());
-
         if (null === $predicate) {
             $predicate = function ($element) {
                 return null !== $element;
@@ -228,8 +207,6 @@ class Vector implements MutableRandomAccessInterface, Countable, IteratorAggrega
      */
     public function map($transform)
     {
-        $this->typeCheck->map(func_get_args());
-
         $result = new static;
         $result->resize($this->size);
 
@@ -255,8 +232,6 @@ class Vector implements MutableRandomAccessInterface, Countable, IteratorAggrega
      */
     public function partition($predicate)
     {
-        $this->typeCheck->partition(func_get_args());
-
         $left = new static;
         $right = new static;
 
@@ -282,8 +257,6 @@ class Vector implements MutableRandomAccessInterface, Countable, IteratorAggrega
      */
     public function each($callback)
     {
-        $this->typeCheck->each(func_get_args());
-
         foreach ($this->elements as $index => $element) {
             if ($index >= $this->size) {
                 break;
@@ -304,8 +277,6 @@ class Vector implements MutableRandomAccessInterface, Countable, IteratorAggrega
      */
     public function all($predicate)
     {
-        $this->typeCheck->all(func_get_args());
-
         foreach ($this->elements as $index => $element) {
             if ($index >= $this->size) {
                 break;
@@ -328,8 +299,6 @@ class Vector implements MutableRandomAccessInterface, Countable, IteratorAggrega
      */
     public function any($predicate)
     {
-        $this->typeCheck->any(func_get_args());
-
         foreach ($this->elements as $index => $element) {
             if ($index >= $this->size) {
                 break;
@@ -352,8 +321,6 @@ class Vector implements MutableRandomAccessInterface, Countable, IteratorAggrega
      */
     public function filterInPlace($predicate = null)
     {
-        $this->typeCheck->filterInPlace(func_get_args());
-
         if (null === $predicate) {
             $predicate = function ($element) {
                 return null !== $element;
@@ -385,8 +352,6 @@ class Vector implements MutableRandomAccessInterface, Countable, IteratorAggrega
      */
     public function mapInPlace($transform)
     {
-        $this->typeCheck->mapInPlace(func_get_args());
-
         foreach ($this->elements as $index => $element) {
             if ($index >= $this->size) {
                 break;
@@ -408,8 +373,6 @@ class Vector implements MutableRandomAccessInterface, Countable, IteratorAggrega
      */
     public function front()
     {
-        $this->typeCheck->front(func_get_args());
-
         if ($this->isEmpty()) {
             throw new Exception\EmptyCollectionException;
         }
@@ -426,8 +389,6 @@ class Vector implements MutableRandomAccessInterface, Countable, IteratorAggrega
      */
     public function tryFront(&$element)
     {
-        $this->typeCheck->tryFront(func_get_args());
-
         if ($this->isEmpty()) {
             return false;
         }
@@ -444,8 +405,6 @@ class Vector implements MutableRandomAccessInterface, Countable, IteratorAggrega
      */
     public function back()
     {
-        $this->typeCheck->back(func_get_args());
-
         if ($this->isEmpty()) {
             throw new Exception\EmptyCollectionException;
         }
@@ -462,8 +421,6 @@ class Vector implements MutableRandomAccessInterface, Countable, IteratorAggrega
      */
     public function tryBack(&$element)
     {
-        $this->typeCheck->tryBack(func_get_args());
-
         if ($this->isEmpty()) {
             return false;
         }
@@ -481,8 +438,6 @@ class Vector implements MutableRandomAccessInterface, Countable, IteratorAggrega
      */
     public function sort($comparator = null)
     {
-        $this->typeCheck->sort(func_get_args());
-
         $elements = $this->elements();
 
         if (null === $comparator) {
@@ -503,8 +458,6 @@ class Vector implements MutableRandomAccessInterface, Countable, IteratorAggrega
      */
     public function reverse()
     {
-        $this->typeCheck->reverse(func_get_args());
-
         $result = new static;
         $result->resize($this->size);
 
@@ -530,8 +483,6 @@ class Vector implements MutableRandomAccessInterface, Countable, IteratorAggrega
      */
     public function join($sequence)
     {
-        $this->typeCheck->join(func_get_args());
-
         $result = new static($this);
         foreach (func_get_args() as $sequence) {
             $result->insertMany($result->size(), $sequence);
@@ -551,8 +502,6 @@ class Vector implements MutableRandomAccessInterface, Countable, IteratorAggrega
      */
     public function sortInPlace($comparator = null)
     {
-        $this->typeCheck->sortInPlace(func_get_args());
-
         $elements = $this->elements();
 
         if (null === $comparator) {
@@ -569,8 +518,6 @@ class Vector implements MutableRandomAccessInterface, Countable, IteratorAggrega
      */
     public function reverseInPlace()
     {
-        $this->typeCheck->reverseInPlace(func_get_args());
-
         $first = 0;
         $last  = $this->size;
 
@@ -587,8 +534,6 @@ class Vector implements MutableRandomAccessInterface, Countable, IteratorAggrega
      */
     public function append($sequence)
     {
-        $this->typeCheck->append(func_get_args());
-
         foreach (func_get_args() as $sequence) {
             $this->insertMany($this->size, $sequence);
         }
@@ -601,8 +546,6 @@ class Vector implements MutableRandomAccessInterface, Countable, IteratorAggrega
      */
     public function pushFront($element)
     {
-        $this->typeCheck->pushFront(func_get_args());
-
         $this->shiftRight(0, 1);
         $this->elements[0] = $element;
         ++$this->size;
@@ -616,8 +559,6 @@ class Vector implements MutableRandomAccessInterface, Countable, IteratorAggrega
      */
     public function popFront()
     {
-        $this->typeCheck->popFront(func_get_args());
-
         $element = $this->front();
         $this->shiftLeft(1, 1);
         --$this->size;
@@ -634,8 +575,6 @@ class Vector implements MutableRandomAccessInterface, Countable, IteratorAggrega
      */
     public function tryPopFront(&$element = null)
     {
-        $this->typeCheck->tryPopFront(func_get_args());
-
         if ($this->isEmpty()) {
             return false;
         }
@@ -651,8 +590,6 @@ class Vector implements MutableRandomAccessInterface, Countable, IteratorAggrega
      */
     public function pushBack($element)
     {
-        $this->typeCheck->pushBack(func_get_args());
-
         $this->expand(1);
         $this->elements[$this->size++] = $element;
     }
@@ -665,8 +602,6 @@ class Vector implements MutableRandomAccessInterface, Countable, IteratorAggrega
      */
     public function popBack()
     {
-        $this->typeCheck->popBack(func_get_args());
-
         $element = $this->back();
         $this->elements[--$this->size] = null;
 
@@ -682,8 +617,6 @@ class Vector implements MutableRandomAccessInterface, Countable, IteratorAggrega
      */
     public function tryPopBack(&$element = null)
     {
-        $this->typeCheck->tryPopBack(func_get_args());
-
         if ($this->isEmpty()) {
             return false;
         }
@@ -700,8 +633,6 @@ class Vector implements MutableRandomAccessInterface, Countable, IteratorAggrega
      */
     public function resize($size, $element = null)
     {
-        $this->typeCheck->resize(func_get_args());
-
         if ($this->size > $size) {
             $this->elements->setSize($size);
             $this->size = $size;
@@ -730,8 +661,6 @@ class Vector implements MutableRandomAccessInterface, Countable, IteratorAggrega
      */
     public function get($index)
     {
-        $this->typeCheck->get(func_get_args());
-
         $this->validateIndex($index);
 
         return $this->elements[$index];
@@ -750,8 +679,6 @@ class Vector implements MutableRandomAccessInterface, Countable, IteratorAggrega
      */
     public function slice($index, $count = null)
     {
-        $this->typeCheck->slice(func_get_args());
-
         $this->validateIndex($index);
 
         if (null === $count) {
@@ -782,8 +709,6 @@ class Vector implements MutableRandomAccessInterface, Countable, IteratorAggrega
      */
     public function range($begin, $end)
     {
-        $this->typeCheck->range(func_get_args());
-
         $this->validateIndex($begin);
         $this->validateIndex($end, $this->size);
 
@@ -815,8 +740,6 @@ class Vector implements MutableRandomAccessInterface, Countable, IteratorAggrega
      */
     public function indexOf($element, $begin = 0, $end = null)
     {
-        $this->typeCheck->indexOf(func_get_args());
-
         $predicate = function ($e) use ($element) {
             return $element === $e;
         };
@@ -838,8 +761,6 @@ class Vector implements MutableRandomAccessInterface, Countable, IteratorAggrega
      */
     public function indexOfLast($element, $begin = 0, $end = null)
     {
-        $this->typeCheck->indexOfLast(func_get_args());
-
         $predicate = function ($e) use ($element) {
             return $element === $e;
         };
@@ -861,8 +782,6 @@ class Vector implements MutableRandomAccessInterface, Countable, IteratorAggrega
      */
     public function find($predicate, $begin = 0, $end = null)
     {
-        $this->typeCheck->find(func_get_args());
-
         if ($this->isEmpty()) {
             return null;
         }
@@ -893,8 +812,6 @@ class Vector implements MutableRandomAccessInterface, Countable, IteratorAggrega
      */
     public function findLast($predicate, $begin = 0, $end = null)
     {
-        $this->typeCheck->findLast(func_get_args());
-
         if ($this->isEmpty()) {
             return null;
         }
@@ -923,8 +840,6 @@ class Vector implements MutableRandomAccessInterface, Countable, IteratorAggrega
      */
     public function set($index, $element)
     {
-        $this->typeCheck->set(func_get_args());
-
         $this->validateIndex($index);
         $this->elements[$index] = $element;
     }
@@ -939,8 +854,6 @@ class Vector implements MutableRandomAccessInterface, Countable, IteratorAggrega
      */
     public function insert($index, $element)
     {
-        $this->typeCheck->insert(func_get_args());
-
         $this->insertMany($index, array($element));
     }
 
@@ -952,8 +865,6 @@ class Vector implements MutableRandomAccessInterface, Countable, IteratorAggrega
      */
     public function insertMany($index, $elements)
     {
-        $this->typeCheck->insertMany(func_get_args());
-
         $this->validateIndex($index, $this->size);
 
         // The number of elements is not known.
@@ -1000,8 +911,6 @@ class Vector implements MutableRandomAccessInterface, Countable, IteratorAggrega
      */
     public function insertRange($index, RandomAccessInterface $elements, $begin, $end = null)
     {
-        $this->typeCheck->insertRange(func_get_args());
-
         $this->validateIndex($index);
         $elements->validateIndex($begin);
         $elements->validateIndex($end, $elements->size);
@@ -1026,8 +935,6 @@ class Vector implements MutableRandomAccessInterface, Countable, IteratorAggrega
      */
     public function remove($index)
     {
-        $this->typeCheck->remove(func_get_args());
-
         $this->removeRange($index, $index + 1);
     }
 
@@ -1041,8 +948,6 @@ class Vector implements MutableRandomAccessInterface, Countable, IteratorAggrega
      */
     public function removeMany($index, $count = null)
     {
-        $this->typeCheck->removeMany(func_get_args());
-
         $this->validateIndex($index);
 
         $count = $this->clamp($count, 0, $this->size - $index);
@@ -1062,8 +967,6 @@ class Vector implements MutableRandomAccessInterface, Countable, IteratorAggrega
      */
     public function removeRange($begin, $end)
     {
-        $this->typeCheck->removeRange(func_get_args());
-
         $this->validateIndex($begin);
         $this->validateIndex($end, $this->size);
         $this->removeMany($begin, $end - $begin);
@@ -1078,8 +981,6 @@ class Vector implements MutableRandomAccessInterface, Countable, IteratorAggrega
      */
     public function replace($index, $elements, $count = null)
     {
-        $this->typeCheck->replace(func_get_args());
-
         $this->validateIndex($index);
 
         $count = $this->clamp($count, 0, $this->size - $index);
@@ -1120,8 +1021,6 @@ class Vector implements MutableRandomAccessInterface, Countable, IteratorAggrega
      */
     public function replaceRange($begin, $end, $elements)
     {
-        $this->typeCheck->replaceRange(func_get_args());
-
         $this->validateIndex($begin);
         $this->validateIndex($end, $this->size);
         $this->replace($begin, $elements, $end - $begin);
@@ -1137,8 +1036,6 @@ class Vector implements MutableRandomAccessInterface, Countable, IteratorAggrega
      */
     public function swap($index1, $index2)
     {
-        $this->typeCheck->swap(func_get_args());
-
         $this->validateIndex($index1);
         $this->validateIndex($index2);
 
@@ -1157,8 +1054,6 @@ class Vector implements MutableRandomAccessInterface, Countable, IteratorAggrega
      */
     public function trySwap($index1, $index2)
     {
-        $this->typeCheck->trySwap(func_get_args());
-
         if ($index1 < 0) {
             $index1 += $this->size;
         }
@@ -1188,8 +1083,6 @@ class Vector implements MutableRandomAccessInterface, Countable, IteratorAggrega
 
     public function count()
     {
-        $this->typeCheck->count(func_get_args());
-
         return $this->size();
     }
 
@@ -1199,8 +1092,6 @@ class Vector implements MutableRandomAccessInterface, Countable, IteratorAggrega
 
     public function getIterator()
     {
-        $this->typeCheck->getIterator(func_get_args());
-
         return new Iterator\RandomAccessIterator($this);
     }
 
@@ -1215,8 +1106,6 @@ class Vector implements MutableRandomAccessInterface, Countable, IteratorAggrega
      */
     public function offsetExists($offset)
     {
-        $this->typeCheck->offsetExists(func_get_args());
-
         return is_integer($offset)
             && $offset >= 0
             && $offset < $this->size();
@@ -1229,8 +1118,6 @@ class Vector implements MutableRandomAccessInterface, Countable, IteratorAggrega
      */
     public function offsetGet($offset)
     {
-        $this->typeCheck->offsetGet(func_get_args());
-
         return $this->get($offset);
     }
 
@@ -1240,8 +1127,6 @@ class Vector implements MutableRandomAccessInterface, Countable, IteratorAggrega
      */
     public function offsetSet($offset, $value)
     {
-        $this->typeCheck->offsetSet(func_get_args());
-
         if (null === $offset) {
             $this->pushBack($value);
         } else {
@@ -1254,8 +1139,6 @@ class Vector implements MutableRandomAccessInterface, Countable, IteratorAggrega
      */
     public function offsetUnset($offset)
     {
-        $this->typeCheck->offsetUnset(func_get_args());
-
         if ($this->offsetExists($offset)) {
             $this->remove($offset);
         }
@@ -1272,8 +1155,6 @@ class Vector implements MutableRandomAccessInterface, Countable, IteratorAggrega
      */
     public function serialize()
     {
-        $this->typeCheck->serialize(func_get_args());
-
         return serialize($this->elements());
     }
 
@@ -1284,8 +1165,6 @@ class Vector implements MutableRandomAccessInterface, Countable, IteratorAggrega
      */
     public function unserialize($packet)
     {
-        TypeCheck::get(__CLASS__)->unserialize(func_get_args());
-
         $elements = unserialize($packet);
         $this->__construct($elements);
     }
@@ -1312,8 +1191,6 @@ class Vector implements MutableRandomAccessInterface, Countable, IteratorAggrega
      */
     public function compare($value)
     {
-        $this->typeCheck->compare(func_get_args());
-
         if (!$this->canCompare($value)) {
             throw new NotComparableException($this, $value);
         }
@@ -1337,8 +1214,6 @@ class Vector implements MutableRandomAccessInterface, Countable, IteratorAggrega
      */
     public function canCompare($value)
     {
-        $this->typeCheck->canCompare(func_get_args());
-
         return is_object($value)
             && __CLASS__ === get_class($value);
     }
@@ -1354,8 +1229,6 @@ class Vector implements MutableRandomAccessInterface, Countable, IteratorAggrega
      */
     public function isEqualTo($value)
     {
-        $this->typeCheck->isEqualTo(func_get_args());
-
         return $this->compare($value) === 0;
     }
 
@@ -1366,8 +1239,6 @@ class Vector implements MutableRandomAccessInterface, Countable, IteratorAggrega
      */
     public function isNotEqualTo($value)
     {
-        $this->typeCheck->isNotEqualTo(func_get_args());
-
         return $this->compare($value) !== 0;
     }
 
@@ -1378,8 +1249,6 @@ class Vector implements MutableRandomAccessInterface, Countable, IteratorAggrega
      */
     public function isLessThan($value)
     {
-        $this->typeCheck->isLessThan(func_get_args());
-
         return $this->compare($value) < 0;
     }
 
@@ -1390,8 +1259,6 @@ class Vector implements MutableRandomAccessInterface, Countable, IteratorAggrega
      */
     public function isGreaterThan($value)
     {
-        $this->typeCheck->isGreaterThan(func_get_args());
-
         return $this->compare($value) > 0;
     }
 
@@ -1402,8 +1269,6 @@ class Vector implements MutableRandomAccessInterface, Countable, IteratorAggrega
      */
     public function isLessThanOrEqualTo($value)
     {
-        $this->typeCheck->isLessThanOrEqualTo(func_get_args());
-
         return $this->compare($value) <= 0;
     }
 
@@ -1414,8 +1279,6 @@ class Vector implements MutableRandomAccessInterface, Countable, IteratorAggrega
      */
     public function isGreaterThanOrEqualTo($value)
     {
-        $this->typeCheck->isGreaterThanOrEqualTo(func_get_args());
-
         return $this->compare($value) >= 0;
     }
 
@@ -1430,8 +1293,6 @@ class Vector implements MutableRandomAccessInterface, Countable, IteratorAggrega
      */
     public function capacity()
     {
-        $this->typeCheck->capacity(func_get_args());
-
         return $this->elements->count();
     }
 
@@ -1442,8 +1303,6 @@ class Vector implements MutableRandomAccessInterface, Countable, IteratorAggrega
      */
     public function reserve($size)
     {
-        $this->typeCheck->reserve(func_get_args());
-
         if ($size > $this->capacity()) {
             $this->elements->setSize($size);
         }
@@ -1454,8 +1313,6 @@ class Vector implements MutableRandomAccessInterface, Countable, IteratorAggrega
      */
     public function shrink()
     {
-        $this->typeCheck->shrink(func_get_args());
-
         $this->elements->setSize($this->size);
     }
 
@@ -1557,7 +1414,6 @@ class Vector implements MutableRandomAccessInterface, Countable, IteratorAggrega
         return $this->capacity() - $this->size;
     }
 
-    private $typeCheck;
     private $elements;
     private $size;
 }

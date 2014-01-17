@@ -38,7 +38,7 @@ class MapTest extends PHPUnit_Framework_TestCase
         $collection = new Map;
 
         $this->assertTrue($collection->canCompare(new Map));
-        $this->assertFalse($collection->canCompare(new Map(null, function() {})));
+        $this->assertFalse($collection->canCompare(new Map(null, function () {})));
         $this->assertFalse($collection->canCompare(array()));
     }
 }

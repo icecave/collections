@@ -2,7 +2,6 @@
 namespace Icecave\Collections;
 
 use Countable;
-use Icecave\Collections\TypeCheck\TypeCheck;
 use Icecave\Parity\Exception\NotComparableException;
 use Icecave\Repr\Repr;
 use Serializable;
@@ -18,8 +17,6 @@ class Stack implements QueuedAccessInterface, Countable, Serializable
      */
     public function __construct($elements = null)
     {
-        $this->typeCheck = TypeCheck::get(__CLASS__, func_get_args());
-
         $this->clear();
 
         if (null !== $elements) {
@@ -31,8 +28,6 @@ class Stack implements QueuedAccessInterface, Countable, Serializable
 
     public function __clone()
     {
-        $this->typeCheck->validateClone(func_get_args());
-
         $this->elements = clone $this->elements;
     }
 
@@ -45,8 +40,6 @@ class Stack implements QueuedAccessInterface, Countable, Serializable
      */
     public static function create()
     {
-        TypeCheck::get(__CLASS__)->create(func_get_args());
-
         return new static(func_get_args());
     }
 
@@ -63,8 +56,6 @@ class Stack implements QueuedAccessInterface, Countable, Serializable
      */
     public function size()
     {
-        $this->typeCheck->size(func_get_args());
-
         return $this->elements->count();
     }
 
@@ -75,8 +66,6 @@ class Stack implements QueuedAccessInterface, Countable, Serializable
      */
     public function isEmpty()
     {
-        $this->typeCheck->isEmpty(func_get_args());
-
         return $this->elements->isEmpty();
     }
 
@@ -110,8 +99,6 @@ class Stack implements QueuedAccessInterface, Countable, Serializable
      */
     public function clear()
     {
-        $this->typeCheck->clear(func_get_args());
-
         $this->elements = new SplStack;
     }
 
@@ -127,8 +114,6 @@ class Stack implements QueuedAccessInterface, Countable, Serializable
      */
     public function next()
     {
-        $this->typeCheck->next(func_get_args());
-
         if ($this->isEmpty()) {
             throw new Exception\EmptyCollectionException;
         }
@@ -145,8 +130,6 @@ class Stack implements QueuedAccessInterface, Countable, Serializable
      */
     public function tryNext(&$element)
     {
-        $this->typeCheck->tryNext(func_get_args());
-
         if ($this->isEmpty()) {
             return false;
         }
@@ -163,8 +146,6 @@ class Stack implements QueuedAccessInterface, Countable, Serializable
      */
     public function push($element)
     {
-        $this->typeCheck->push(func_get_args());
-
         $this->elements->push($element);
     }
 
@@ -176,8 +157,6 @@ class Stack implements QueuedAccessInterface, Countable, Serializable
      */
     public function pop()
     {
-        $this->typeCheck->pop(func_get_args());
-
         if ($this->isEmpty()) {
             throw new Exception\EmptyCollectionException;
         }
@@ -194,8 +173,6 @@ class Stack implements QueuedAccessInterface, Countable, Serializable
      */
     public function tryPop(&$element = null)
     {
-        $this->typeCheck->tryPop(func_get_args());
-
         if ($this->isEmpty()) {
             return false;
         }
@@ -211,8 +188,6 @@ class Stack implements QueuedAccessInterface, Countable, Serializable
 
     public function count()
     {
-        $this->typeCheck->count(func_get_args());
-
         return $this->size();
     }
 
@@ -227,8 +202,6 @@ class Stack implements QueuedAccessInterface, Countable, Serializable
      */
     public function serialize()
     {
-        $this->typeCheck->serialize(func_get_args());
-
         return serialize(
             array_reverse(
                 iterator_to_array($this->elements)
@@ -243,8 +216,6 @@ class Stack implements QueuedAccessInterface, Countable, Serializable
      */
     public function unserialize($packet)
     {
-        TypeCheck::get(__CLASS__)->unserialize(func_get_args());
-
         $elements = unserialize($packet);
         $this->__construct($elements);
     }
@@ -271,8 +242,6 @@ class Stack implements QueuedAccessInterface, Countable, Serializable
      */
     public function compare($value)
     {
-        $this->typeCheck->compare(func_get_args());
-
         if (!$this->canCompare($value)) {
             throw new NotComparableException($this, $value);
         }
@@ -296,8 +265,6 @@ class Stack implements QueuedAccessInterface, Countable, Serializable
      */
     public function canCompare($value)
     {
-        $this->typeCheck->canCompare(func_get_args());
-
         return is_object($value)
             && __CLASS__ === get_class($value);
     }
@@ -313,8 +280,6 @@ class Stack implements QueuedAccessInterface, Countable, Serializable
      */
     public function isEqualTo($value)
     {
-        $this->typeCheck->isEqualTo(func_get_args());
-
         return $this->compare($value) === 0;
     }
 
@@ -325,8 +290,6 @@ class Stack implements QueuedAccessInterface, Countable, Serializable
      */
     public function isNotEqualTo($value)
     {
-        $this->typeCheck->isNotEqualTo(func_get_args());
-
         return $this->compare($value) !== 0;
     }
 
@@ -337,8 +300,6 @@ class Stack implements QueuedAccessInterface, Countable, Serializable
      */
     public function isLessThan($value)
     {
-        $this->typeCheck->isLessThan(func_get_args());
-
         return $this->compare($value) < 0;
     }
 
@@ -349,8 +310,6 @@ class Stack implements QueuedAccessInterface, Countable, Serializable
      */
     public function isGreaterThan($value)
     {
-        $this->typeCheck->isGreaterThan(func_get_args());
-
         return $this->compare($value) > 0;
     }
 
@@ -361,8 +320,6 @@ class Stack implements QueuedAccessInterface, Countable, Serializable
      */
     public function isLessThanOrEqualTo($value)
     {
-        $this->typeCheck->isLessThanOrEqualTo(func_get_args());
-
         return $this->compare($value) <= 0;
     }
 
@@ -373,11 +330,8 @@ class Stack implements QueuedAccessInterface, Countable, Serializable
      */
     public function isGreaterThanOrEqualTo($value)
     {
-        $this->typeCheck->isGreaterThanOrEqualTo(func_get_args());
-
         return $this->compare($value) >= 0;
     }
 
-    private $typeCheck;
     private $elements;
 }
