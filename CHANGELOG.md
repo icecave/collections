@@ -1,5 +1,9 @@
 # Collections Changelog
 
+### 1.0.0 (2014-01-17)
+
+* Stable release (no API changes since 1.0.0-alpha.1).
+
 ### 1.0.0-alpha.1 (2013-10-20)
 
 * **[BC]** Removed `HashMap` and `HashSet`
