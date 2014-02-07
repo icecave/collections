@@ -20,11 +20,11 @@
     "require-dev": {
         "eloquent/liberator": "~1",
         "ezzatron/phpunit-extensions" : "~1",
-        "icecave/archer": "~1"
+        "icecave/archer": "dev-develop"
     },
     "autoload": {
-        "psr-0": {
-            "Icecave\\Collections": "src"
+        "psr-4": {
+            "Icecave\\Collections\\": "src"
         }
     }
 }
