@@ -19,8 +19,8 @@
     },
     "require-dev": {
         "eloquent/liberator": "~1",
-        "ezzatron/phpunit-extensions" : "~1",
-        "icecave/archer": "dev-develop"
+        "ezzatron/phpunit-extensions": "~1",
+        "icecave/archer": "~1"
     },
     "autoload": {
         "psr-4": {
