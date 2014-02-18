@@ -925,7 +925,7 @@ class LinkedList implements MutableRandomAccessInterface, Countable, IteratorAgg
         $this->validateIndex($begin);
         $this->validateIndex($end, null);
 
-        $node = $this->nodeAt($end);
+        $node = $this->nodeAtReverse($end);
 
         while (null !== $node && $begin !== $end) {
             if (call_user_func($predicate, $node->element)) {
@@ -1388,6 +1388,27 @@ class LinkedList implements MutableRandomAccessInterface, Countable, IteratorAgg
     {
         while ($node && $count--) {
             $node = $node->next;
+        }
+
+        return $node;
+    }
+
+    /**
+     * @param integer $index
+     */
+    private function nodeAtReverse($index)
+    {
+        return $this->nodeFromReverse($this->tail, $this->size - $index);
+    }
+
+    /**
+     * @param stdClass $node
+     * @param integer  $count
+     */
+    private function nodeFromReverse(stdClass $node, $count)
+    {
+        while ($node && --$count) {
+            $node = $node->prev;
         }
 
         return $node;
