@@ -923,18 +923,22 @@ class LinkedList implements MutableRandomAccessInterface, Countable, IteratorAgg
         }
 
         $this->validateIndex($begin);
-        $this->validateIndex($end, null);
+        $this->validateIndex($end, $this->size);
+
+        // End is exclusive.
+        --$end;
 
         $node = $this->nodeAtReverse($end);
 
-        while (null !== $node && $begin !== $end) {
-            if (call_user_func($predicate, $node->element)) {
+        do {
+            --$end;
+            $node = $node->prev;
+
+            if ($node && call_user_func($predicate, $node->element)) {
                 return $end;
             }
 
-            --$end;
-            $node = $node->prev;
-        }
+        } while (null !== $node && $begin !== $end);
 
         return null;
     }
@@ -1398,7 +1402,7 @@ class LinkedList implements MutableRandomAccessInterface, Countable, IteratorAgg
      */
     private function nodeAtReverse($index)
     {
-        return $this->nodeFromReverse($this->tail, $this->size - $index);
+        return $this->nodeFromReverse($this->tail, $this->size - 1 - $index);
     }
 
     /**
@@ -1407,7 +1411,7 @@ class LinkedList implements MutableRandomAccessInterface, Countable, IteratorAgg
      */
     private function nodeFromReverse(stdClass $node, $count)
     {
-        while ($node && --$count) {
+        while ($node && $count--) {
             $node = $node->prev;
         }
 

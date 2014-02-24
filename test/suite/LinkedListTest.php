@@ -803,8 +803,8 @@ class LinkedListTest extends PHPUnit_Framework_TestCase
             'match'          => array($elements, 'bar',  0, null, 3),
             'no match'       => array($elements, 'grob', 0, null, null),
             'begin index'    => array($elements, 'bar',  2, null, 3),
-            'range match'    => array($elements, 'bar',  1, 3,    3),
-            'range no match' => array($elements, 'bar',  2, 2,    null),
+            'range match'    => array($elements, 'bar',  1, 3,    1),
+            'range no match' => array($elements, 'bar',  2, 3,    null),
         );
     }
 
