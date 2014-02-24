@@ -73,9 +73,6 @@ abstract class AbstractLinkedListTest extends PHPUnit_Framework_TestCase
         $collection->set(1, 'bbb');
         $collection->set(2, 'ccc');
 
-        // print_r($this->collection);
-        // print_r($collection);
-
         $this->assertSame(
             array('xxx', 'yyy', 'zzz'),
             $this->collection->elements()
