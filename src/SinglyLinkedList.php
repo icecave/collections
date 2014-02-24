@@ -44,7 +44,7 @@ class SinglyLinkedList implements MutableRandomAccessInterface, Countable, Itera
                 $this->head = $newNode;
             }
 
-            $prev = $node;
+            $prev = $newNode;
             $node = $node->next;
         }
 

@@ -45,7 +45,7 @@ class LinkedList implements MutableRandomAccessInterface, Countable, IteratorAgg
                 $this->head = $newNode;
             }
 
-            $prev = $node;
+            $prev = $newNode;
             $node = $node->next;
         }
 
