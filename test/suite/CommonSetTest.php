@@ -2,7 +2,7 @@
 namespace Icecave\Collections;
 
 use Eloquent\Liberator\Liberator;
-use Ezzatron\PHPUnit\ParameterizedTestCase;
+use Eloquent\Phpunit\ParameterizedTestCase;
 use Icecave\Collections\Iterator\Traits;
 use Phake;
 

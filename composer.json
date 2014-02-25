@@ -19,7 +19,7 @@
     },
     "require-dev": {
         "eloquent/liberator": "~1",
-        "ezzatron/phpunit-extensions": "~1",
+        "eloquent/phpunit-extensions": "~2",
         "icecave/archer": "~1"
     },
     "autoload": {

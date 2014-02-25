@@ -2,8 +2,8 @@
 namespace Icecave\Collections;
 
 use Eloquent\Liberator\Liberator;
+use Eloquent\Phpunit\ParameterizedTestCase;
 use Exception;
-use Ezzatron\PHPUnit\ParameterizedTestCase;
 use Icecave\Collections\Exception\DuplicateKeyException;
 use Icecave\Collections\Exception\UnknownKeyException;
 use Icecave\Collections\Iterator\Traits;

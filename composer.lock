@@ -3,7 +3,7 @@
         "This file locks the dependencies of your project to a known state",
         "Read more about it at http://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file"
     ],
-    "hash": "e45fbdeed3812a7a7116002e1887031e",
+    "hash": "41cac546336379eeb75ff8e2175683b4",
     "packages": [
         {
             "name": "icecave/parity",
@@ -220,6 +220,54 @@
             "time": "2013-03-03 23:02:47"
         },
         {
+            "name": "eloquent/phpunit-extensions",
+            "version": "2.0.0",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/eloquent/phpunit-extensions.git",
+                "reference": "a2506ac31abc84e26cf285744ee478bafd3fea5b"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/eloquent/phpunit-extensions/zipball/a2506ac31abc84e26cf285744ee478bafd3fea5b",
+                "reference": "a2506ac31abc84e26cf285744ee478bafd3fea5b",
+                "shasum": ""
+            },
+            "require-dev": {
+                "eloquent/liberator": "~2",
+                "icecave/archer": "~1",
+                "phpunit/phpunit": "~3"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "Eloquent\\Phpunit\\": "src"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Erin Millard",
+                    "email": "ezzatron@gmail.com",
+                    "homepage": "http://ezzatron.com/"
+                }
+            ],
+            "description": "Extensions for PHPUnit to provide additional functionality.",
+            "homepage": "https://github.com/eloquent/phpunit-extensions",
+            "keywords": [
+                "case",
+                "extension",
+                "parameterized",
+                "phpunit",
+                "test",
+                "testing"
+            ],
+            "time": "2014-02-17 09:49:13"
+        },
+        {
             "name": "eloquent/pops",
             "version": "3.1.1",
             "source": {
@@ -264,53 +312,6 @@
                 "proxy"
             ],
             "time": "2013-03-04 10:10:43"
-        },
-        {
-            "name": "ezzatron/phpunit-extensions",
-            "version": "1.0.2",
-            "source": {
-                "type": "git",
-                "url": "https://github.com/ezzatron/phpunit-extensions.git",
-                "reference": "36844d0378bd13443d614f0bc64f1e7779d84919"
-            },
-            "dist": {
-                "type": "zip",
-                "url": "https://api.github.com/repos/ezzatron/phpunit-extensions/zipball/36844d0378bd13443d614f0bc64f1e7779d84919",
-                "reference": "36844d0378bd13443d614f0bc64f1e7779d84919",
-                "shasum": ""
-            },
-            "require-dev": {
-                "eloquent/liberator": "~1.1",
-                "icecave/archer": "~0.2"
-            },
-            "type": "library",
-            "autoload": {
-                "psr-0": {
-                    "Ezzatron\\PHPUnit": "src"
-                }
-            },
-            "notification-url": "https://packagist.org/downloads/",
-            "license": [
-                "MIT"
-            ],
-            "authors": [
-                {
-                    "name": "Erin Millard",
-                    "email": "ezzatron@gmail.com",
-                    "homepage": "http://ezzatron.com/"
-                }
-            ],
-            "description": "Extensions for PHPUnit to provide additional functionality.",
-            "homepage": "https://github.com/ezzatron/phpunit-extensions",
-            "keywords": [
-                "case",
-                "extension",
-                "parameterized",
-                "phpunit",
-                "test",
-                "testing"
-            ],
-            "time": "2013-03-04 10:59:13"
         },
         {
             "name": "guzzle/guzzle",
