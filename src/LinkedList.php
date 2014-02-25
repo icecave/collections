@@ -346,7 +346,7 @@ class LinkedList implements MutableRandomAccessInterface, Countable, IteratorAgg
             // Don't keep the node ...
             } else {
                 $prev->next = $node->next;
-                $node->prev = $prev;
+                $node->next->prev = $prev;
                 --$this->size;
             }
 
@@ -567,6 +567,7 @@ class LinkedList implements MutableRandomAccessInterface, Countable, IteratorAgg
 
                     if ($tail) {
                         $tail->next = $node;
+                        $node->prev = $tail;
                     } else {
                         $head = $node;
                     }
@@ -1482,7 +1483,9 @@ class LinkedList implements MutableRandomAccessInterface, Countable, IteratorAgg
         } else {
             $node = $this->nodeAt($index - 1);
             $tail->next = $node->next;
+            $node->next->prev = $tail;
             $node->next = $head;
+            $head->prev = $node;
         }
 
         $this->size += $size;
