@@ -9,6 +9,11 @@
             "name": "James Harris",
             "email": "james.harris@icecave.com.au",
             "homepage": "https://github.com/jmalloc"
+        },
+        {
+            "name": "Kevin Millar",
+            "email": "koden.km@gmail.com",
+            "homepage": "https://github.com/koden-km"
         }
     ],
     "require": {
