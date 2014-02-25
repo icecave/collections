@@ -4,14 +4,14 @@ namespace Icecave\Collections;
 use Eloquent\Liberator\Liberator;
 
 /**
- * @covers Icecave\Collections\LinkedList
+ * @covers Icecave\Collections\SinglyLinkedList
  * @covers Icecave\Collections\Detail\LinkedListIterator
  */
-class LinkedListTest extends AbstractLinkedListTest
+class SinglyLinkedListTest extends AbstractLinkedListTest
 {
     public function className()
     {
-        return __NAMESPACE__ . '\\LinkedList';
+        return __NAMESPACE__ . '\\SinglyLinkedList';
     }
 
     public function verifyLinkIntegrity($collection)
@@ -24,11 +24,7 @@ class LinkedListTest extends AbstractLinkedListTest
         $tail = Liberator::liberate($collection)->tail;
 
         for ($node = $head; $node && null !== $node->next; $node = $node->next) {
-            if ($node->next) {
-                $this->assertSame($node, $node->next->prev);
-            } elseif ($node->prev) {
-                $this->assertSame($node, $node->prev->next);
-            }
+            // no-op ...
         }
 
         $this->assertSame($tail, $node);

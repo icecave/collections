@@ -11,7 +11,7 @@ use stdClass;
 /**
  * A mutable sequence with efficient addition and removal of elements.
  */
-class LinkedList implements MutableRandomAccessInterface, Countable, IteratorAggregate, Serializable
+class SinglyLinkedList implements MutableRandomAccessInterface, Countable, IteratorAggregate, Serializable
 {
     /**
      * @param mixed<mixed>|null $elements An iterable type containing the elements to include in this list, or null to create an empty list.
@@ -38,7 +38,6 @@ class LinkedList implements MutableRandomAccessInterface, Countable, IteratorAgg
             // If there was a previous node, create the link ...
             if ($prev) {
                 $prev->next = $newNode;
-                $newNode->prev = $prev;
 
             // Otherwise this must be the head ...
             } else {
@@ -53,11 +52,11 @@ class LinkedList implements MutableRandomAccessInterface, Countable, IteratorAgg
     }
 
     /**
-     * Create a LinkedList.
+     * Create a SinglyLinkedList.
      *
      * @param mixed $element,... Elements to include in the collection.
      *
-     * @return LinkedList
+     * @return SinglyLinkedList
      */
     public static function create()
     {
@@ -101,7 +100,7 @@ class LinkedList implements MutableRandomAccessInterface, Countable, IteratorAgg
     public function __toString()
     {
         if ($this->isEmpty()) {
-            return '<LinkedList 0>';
+            return '<SinglyLinkedList 0>';
         }
 
         $elements = $this
@@ -109,9 +108,9 @@ class LinkedList implements MutableRandomAccessInterface, Countable, IteratorAgg
             ->map('Icecave\Repr\Repr::repr');
 
         if ($this->size > 3) {
-            $format = '<LinkedList %d [%s, ...]>';
+            $format = '<SinglyLinkedList %d [%s, ...]>';
         } else {
-            $format = '<LinkedList %d [%s]>';
+            $format = '<SinglyLinkedList %d [%s]>';
         }
 
         return sprintf(
@@ -192,7 +191,7 @@ class LinkedList implements MutableRandomAccessInterface, Countable, IteratorAgg
      *
      * @param callable|null $predicate A predicate function used to determine which elements to include, or null to include all non-null elements.
      *
-     * @return LinkedList The filtered collection.
+     * @return SinglyLinkedList The filtered collection.
      */
     public function filter($predicate = null)
     {
@@ -341,12 +340,10 @@ class LinkedList implements MutableRandomAccessInterface, Countable, IteratorAgg
             // Don't keep the node, and it's the first one ...
             } elseif (null === $prev) {
                 $this->head = $node->next;
-                $this->head->prev = null;
                 --$this->size;
             // Don't keep the node ...
             } else {
                 $prev->next = $node->next;
-                $node->next->prev = $prev;
                 --$this->size;
             }
 
@@ -445,7 +442,7 @@ class LinkedList implements MutableRandomAccessInterface, Countable, IteratorAgg
      *
      * @param callable|null $comparator A strcmp style comparator function.
      *
-     * @return LinkedList
+     * @return SinglyLinkedList
      */
     public function sort($comparator = null)
     {
@@ -460,7 +457,7 @@ class LinkedList implements MutableRandomAccessInterface, Countable, IteratorAgg
      *
      * It is not guaranteed that the concrete type of the reversed collection will match this collection.
      *
-     * @return LinkedList The reversed sequence.
+     * @return SinglyLinkedList The reversed sequence.
      */
     public function reverse()
     {
@@ -567,7 +564,6 @@ class LinkedList implements MutableRandomAccessInterface, Countable, IteratorAgg
 
                     if ($tail) {
                         $tail->next = $node;
-                        $node->prev = $tail;
                     } else {
                         $head = $node;
                     }
@@ -598,7 +594,6 @@ class LinkedList implements MutableRandomAccessInterface, Countable, IteratorAgg
         while ($node) {
             $next = $node->next;
             $node->next = $prev;
-            $node->prev = $next;
             $prev = $node;
             $node = $next;
         }
@@ -632,8 +627,6 @@ class LinkedList implements MutableRandomAccessInterface, Countable, IteratorAgg
 
         if (0 === $this->size++) {
             $this->tail = $this->head;
-        } else {
-            $this->head->next->prev = $this->head;
         }
     }
 
@@ -654,8 +647,6 @@ class LinkedList implements MutableRandomAccessInterface, Countable, IteratorAgg
 
         if (0 === --$this->size) {
             $this->tail = null;
-        } else {
-            $this->head->prev = null;
         }
 
         return $element;
@@ -686,7 +677,7 @@ class LinkedList implements MutableRandomAccessInterface, Countable, IteratorAgg
      */
     public function pushBack($element)
     {
-        $node = $this->createNode($element, null, $this->tail);
+        $node = $this->createNode($element);
 
         if (0 === $this->size++) {
             $this->head = $node;
@@ -716,7 +707,6 @@ class LinkedList implements MutableRandomAccessInterface, Countable, IteratorAgg
             $this->tail = null;
         } else {
             $this->tail = $this->nodeAt($this->size - 1);
-            $this->tail->next->prev = null;
             $this->tail->next = null;
         }
 
@@ -926,18 +916,20 @@ class LinkedList implements MutableRandomAccessInterface, Countable, IteratorAgg
         $this->validateIndex($begin);
         $this->validateIndex($end, $this->size);
 
-        $node = $this->nodeAt(--$end);
+        $node = $this->nodeAt($begin);
 
-        while (null !== $node && $end >= $begin) {
+        $lastIndex = null;
+
+        while (null !== $node && $begin !== $end) {
             if (call_user_func($predicate, $node->element)) {
-                return $end;
+                $lastIndex = $begin;
             }
 
-            --$end;
-            $node = $node->prev;
+            ++$begin;
+            $node = $node->next;
         }
 
-        return null;
+        return $lastIndex;
     }
 
     ////////////////////////////////////////////////////
@@ -992,10 +984,10 @@ class LinkedList implements MutableRandomAccessInterface, Countable, IteratorAgg
      *
      * Inserts all elements from the range [$begin, $end), i.e. $begin is inclusive, $end is exclusive.
      *
-     * @param integer                          $index    The index at which the elements are inserted, if index is a negative number the elements are inserted that far from the end of the sequence.
-     * @param RandomAccessInterface+LinkedList $elements The elements to insert.
-     * @param integer                          $begin    The index of the first element from $elements to insert, if begin is a negative number the removal begins that far from the end of the sequence.
-     * @param integer                          $end|null The index of the last element to $elements to insert, if end is a negative number the removal ends that far from the end of the sequence.
+     * @param integer                                $index    The index at which the elements are inserted, if index is a negative number the elements are inserted that far from the end of the sequence.
+     * @param RandomAccessInterface+SinglyLinkedList $elements The elements to insert.
+     * @param integer                                $begin    The index of the first element from $elements to insert, if begin is a negative number the removal begins that far from the end of the sequence.
+     * @param integer                                $end|null The index of the last element to $elements to insert, if end is a negative number the removal ends that far from the end of the sequence.
      *
      * @throws Exception\IndexException if $index, $begin or $end is out of range.
      */
@@ -1044,9 +1036,7 @@ class LinkedList implements MutableRandomAccessInterface, Countable, IteratorAgg
         if (null !== $count && $count < $this->size - $index) {
             $count = max(0, $count);
             $node = $this->nodeAt($index - 1);
-            $node->next->prev = null;
             $node->next = $this->nodeFrom($node, $count + 1);
-            $node->next->prev = $node;
             $this->size -= $count;
 
         // Remove everything ...
@@ -1056,7 +1046,6 @@ class LinkedList implements MutableRandomAccessInterface, Countable, IteratorAgg
         // Remove everything to the end ...
         } else {
             $node = $this->nodeAt($index - 1);
-            $node->next->prev = null;
             $node->next = null;
             $this->tail = $node;
             $this->size = $index;
@@ -1361,13 +1350,11 @@ class LinkedList implements MutableRandomAccessInterface, Countable, IteratorAgg
     /**
      * @param mixed         $element
      * @param stdClass|null $next
-     * @param stdClass|null $prev
      */
-    private function createNode($element = null, stdClass $next = null, stdClass $prev = null)
+    private function createNode($element = null, stdClass $next = null)
     {
         $node = new stdClass;
         $node->next = $next;
-        $node->prev = $prev;
         $node->element = $element;
 
         return $node;
@@ -1378,13 +1365,7 @@ class LinkedList implements MutableRandomAccessInterface, Countable, IteratorAgg
      */
     private function nodeAt($index)
     {
-        $half = $this->size / 2;
-
-        if ($index <= $half) {
-            return $this->nodeFrom($this->head, $index);
-        }
-
-        return $this->nodeFromReverse($this->tail, $this->size - $index - 1);
+        return $this->nodeFrom($this->head, $index);
     }
 
     /**
@@ -1395,15 +1376,6 @@ class LinkedList implements MutableRandomAccessInterface, Countable, IteratorAgg
     {
         while ($node && $count--) {
             $node = $node->next;
-        }
-
-        return $node;
-    }
-
-    private function nodeFromReverse(stdClass $node, $count)
-    {
-        while ($node && $count--) {
-            $node = $node->prev;
         }
 
         return $node;
@@ -1426,7 +1398,6 @@ class LinkedList implements MutableRandomAccessInterface, Countable, IteratorAgg
                 $head = $n;
             } else {
                 $tail->next = $n;
-                $n->prev = $tail;
             }
             $tail = $n;
             ++$size;
@@ -1450,7 +1421,6 @@ class LinkedList implements MutableRandomAccessInterface, Countable, IteratorAgg
                 $head = $node;
             } else {
                 $tail->next = $node;
-                $node->prev = $tail;
             }
             $tail = $node;
             ++$size;
@@ -1474,18 +1444,14 @@ class LinkedList implements MutableRandomAccessInterface, Countable, IteratorAgg
             $this->tail = $tail;
         } elseif (0 === $index) {
             $tail->next = $this->head;
-            $this->head->prev = $tail;
             $this->head = $head;
         } elseif ($this->size === $index) {
             $this->tail->next = $head;
-            $head->prev = $this->tail;
             $this->tail = $tail;
         } else {
             $node = $this->nodeAt($index - 1);
             $tail->next = $node->next;
-            $node->next->prev = $tail;
             $node->next = $head;
-            $head->prev = $node;
         }
 
         $this->size += $size;
