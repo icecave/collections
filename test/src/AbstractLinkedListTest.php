@@ -81,7 +81,7 @@ abstract class AbstractLinkedListTest extends PHPUnit_Framework_TestCase
 
     public function testCreate()
     {
-        $method = [$this->className, 'create'];
+        $method = array($this->className, 'create');
         $this->collection = $method(1, 2, 3);
 
         $this->assertInstanceOf($this->className, $this->collection);
