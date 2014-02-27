@@ -425,6 +425,37 @@ class CollectionTest extends PHPUnit_Framework_TestCase
         $this->assertSame(array(1, 2, 3), iterator_to_array($iterator));
     }
 
+    public function testGetIteratorFailure()
+    {
+        $this->setExpectedException(
+            'InvalidArgumentException',
+            'Could not produce an iterator for 123.'
+        );
+
+        Collection::getIterator(123);
+    }
+
+    /**
+     * @group regression
+     * @link https://github.com/IcecaveStudios/collections/issues/66
+     */
+    public function testGetIteratorWithNestedIteratorAggregate()
+    {
+        $level1 = Phake::mock('Iterator');
+        $level2 = Phake::mock('IteratorAggregate');
+        $level3 = Phake::mock('IteratorAggregate');
+
+        Phake::when($level3)
+            ->getIterator()
+            ->thenReturn($level2);
+
+        Phake::when($level2)
+            ->getIterator()
+            ->thenReturn($level1);
+
+        $this->assertSame($level1, Collection::getIterator($level3));
+    }
+
     public function testAddElementArray()
     {
         $collection = array('a');

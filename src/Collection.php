@@ -6,6 +6,9 @@ use ArrayIterator;
 use Countable;
 use Icecave\Collections\Iterator\Traits;
 use Icecave\Collections\Iterator\TraitsProviderInterface;
+use Icecave\Repr\Repr;
+use InvalidArgumentException;
+use Iterator;
 use IteratorAggregate;
 use SplDoublyLinkedList;
 use SplFixedArray;
@@ -441,13 +444,22 @@ abstract class Collection
      * @param mixed<mixed> $collection
      *
      * @return Iterator
+     * @throws InvalidArgumentException if no iterator can be produced from the given collection.
      */
     public static function getIterator($collection)
     {
         if (is_array($collection)) {
             $collection = new ArrayIterator($collection);
-        } elseif ($collection instanceof IteratorAggregate) {
-            $collection = $collection->getIterator();
+        } else {
+            while ($collection instanceof IteratorAggregate) {
+                $collection = $collection->getIterator();
+            }
+        }
+
+        if (!$collection instanceof Iterator) {
+            throw new InvalidArgumentException(
+                'Could not produce an iterator for ' . Repr::repr($collection) . '.'
+            );
         }
 
         return $collection;
