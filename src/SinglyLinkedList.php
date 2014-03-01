@@ -4,6 +4,7 @@ namespace Icecave\Collections;
 use Countable;
 use Icecave\Collections\Iterator\Traits;
 use Icecave\Parity\Exception\NotComparableException;
+use InvalidArgumentException;
 use IteratorAggregate;
 use Serializable;
 use stdClass;
@@ -993,6 +994,10 @@ class SinglyLinkedList implements MutableRandomAccessInterface, Countable, Itera
      */
     public function insertRange($index, RandomAccessInterface $elements, $begin, $end = null)
     {
+        if (!$elements instanceof self) {
+            throw new InvalidArgumentException('The given collection is not an instance of ' . __CLASS__ . '.');
+        }
+
         $this->validateIndex($index);
         $elements->validateIndex($begin);
         $elements->validateIndex($end, $elements->size);

@@ -971,6 +971,20 @@ abstract class AbstractLinkedListTest extends PHPUnit_Framework_TestCase
         $this->verifyLinkIntegrity($elements);
     }
 
+    /**
+     * @group regression
+     * @link https://github.com/IcecaveStudios/collections/issues/74
+     */
+    public function testInsertRangeWithInvalidCollectionType()
+    {
+        $this->setExpectedException(
+            'InvalidArgumentException',
+            'The given collection is not an instance of ' . $this->className . '.'
+        );
+
+        $this->collection->insertRange(0, new Vector, 0);
+    }
+
     public function testRemove()
     {
         $this->collection->append(array('foo', 'bar', 'spam'));
