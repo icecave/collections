@@ -3,7 +3,7 @@
         "This file locks the dependencies of your project to a known state",
         "Read more about it at http://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file"
     ],
-    "hash": "7939a69d1ea4f95cfc41357310cdd2f6",
+    "hash": "9f50a4766f30d2d40415153a5dbd5328",
     "packages": [
         {
             "name": "icecave/parity",
@@ -218,54 +218,6 @@
                 "reflection"
             ],
             "time": "2013-03-03 23:02:47"
-        },
-        {
-            "name": "eloquent/phpunit-extensions",
-            "version": "2.0.0",
-            "source": {
-                "type": "git",
-                "url": "https://github.com/eloquent/phpunit-extensions.git",
-                "reference": "a2506ac31abc84e26cf285744ee478bafd3fea5b"
-            },
-            "dist": {
-                "type": "zip",
-                "url": "https://api.github.com/repos/eloquent/phpunit-extensions/zipball/a2506ac31abc84e26cf285744ee478bafd3fea5b",
-                "reference": "a2506ac31abc84e26cf285744ee478bafd3fea5b",
-                "shasum": ""
-            },
-            "require-dev": {
-                "eloquent/liberator": "~2",
-                "icecave/archer": "~1",
-                "phpunit/phpunit": "~3"
-            },
-            "type": "library",
-            "autoload": {
-                "psr-4": {
-                    "Eloquent\\Phpunit\\": "src"
-                }
-            },
-            "notification-url": "https://packagist.org/downloads/",
-            "license": [
-                "MIT"
-            ],
-            "authors": [
-                {
-                    "name": "Erin Millard",
-                    "email": "ezzatron@gmail.com",
-                    "homepage": "http://ezzatron.com/"
-                }
-            ],
-            "description": "Extensions for PHPUnit to provide additional functionality.",
-            "homepage": "https://github.com/eloquent/phpunit-extensions",
-            "keywords": [
-                "case",
-                "extension",
-                "parameterized",
-                "phpunit",
-                "test",
-                "testing"
-            ],
-            "time": "2014-02-17 09:49:13"
         },
         {
             "name": "eloquent/pops",
