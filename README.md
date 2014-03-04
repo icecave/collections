@@ -63,4 +63,4 @@ collection produces a copy of the collection containing the same elements. The e
 <!-- references -->
 [Build Status]: http://img.shields.io/travis/IcecaveStudios/collections/develop.svg
 [Test Coverage]: http://img.shields.io/coveralls/IcecaveStudios/collections/develop.svg
-[SemVer]: http://img.shields.io/:semver-1.0.0-brightgreen.svg
+[SemVer]: http://img.shields.io/:semver-1.1.0-brightgreen.svg

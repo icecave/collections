@@ -1,5 +1,12 @@
 # Collections Changelog
 
+### 1.1.0 (2014-03-04)
+
+* **[FIXED]** `Collection::getIterator()` now correctly resolves nested `IteratorAggregate` iterators
+* **[NEW]** Added `Set::pop()` and `Map::pop()`
+* **[IMPROVED]** `LinkedList` is now implemented as a doubly-linked-list, the original implementation is available as `SinglyLinkedList`
+* **[IMPROVED]** Updated autoloader to [PSR-4](http://www.php-fig.org/psr/psr-4/)
+
 ### 1.0.0 (2014-01-17)
 
 * Stable release (no API changes since 1.0.0-alpha.1).
