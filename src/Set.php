@@ -506,7 +506,7 @@ class Set implements SetInterface, IteratorAggregate, Serializable
      *
      * There is no guarantee as to which element will be returned.
      *
-     * @return mixed The element.
+     * @return mixed                              The element.
      * @throws Exception\EmptyCollectionException if the collection is empty.
      */
     public function pop()

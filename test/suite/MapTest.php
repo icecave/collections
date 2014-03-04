@@ -635,6 +635,27 @@ class MapTest extends PHPUnit_Framework_TestCase
         $this->assertFalse($this->collection->hasKey('a'));
     }
 
+    public function testPop()
+    {
+        $source = new Map(
+            array('a' => 1, 'b' => 2, 'c' => 3)
+        );
+
+        $this->collection->mergeInPlace($source);
+
+        list($key, $value) = $this->collection->pop();
+
+        $this->assertSame($source->get($key), $value);
+        $this->assertFalse($this->collection->hasKey($key));
+    }
+
+    public function testPopWithEmptySet()
+    {
+        $this->setExpectedException('Icecave\Collections\Exception\EmptyCollectionException');
+
+        $this->collection->pop();
+    }
+
     public function testMergeInPlace()
     {
         $this->collection->set(10, 1);
