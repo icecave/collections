@@ -502,6 +502,19 @@ class Set implements SetInterface, IteratorAggregate, Serializable
     }
 
     /**
+     * Remove and return an element from the set.
+     *
+     * There is no guarantee as to which element will be returned.
+     *
+     * @return mixed The element.
+     * @throws Exception\EmptyCollectionException if the collection is empty.
+     */
+    public function pop()
+    {
+        return $this->elements->popBack();
+    }
+
+    /**
      * Check if this set is equal to another.
      *
      * @param SetInterface $set The set to compare against.

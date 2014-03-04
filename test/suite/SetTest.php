@@ -485,6 +485,25 @@ class SetTest extends PHPUnit_Framework_TestCase
         $this->verifyElements(1, 3, 5);
     }
 
+    public function testPop()
+    {
+        $source = Set::create(1, 2, 3, 4, 5);
+
+        $this->collection->unionInPlace($source);
+
+        $element = $this->collection->pop();
+
+        $this->assertTrue($source->contains($element));
+        $this->assertFalse($this->collection->contains($element));
+    }
+
+    public function testPopWithEmptySet()
+    {
+        $this->setExpectedException('Icecave\Collections\Exception\EmptyCollectionException');
+
+        $this->collection->pop();
+    }
+
     /**
      * @dataProvider getMembershipSetData
      */
