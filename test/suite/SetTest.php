@@ -2,49 +2,23 @@
 namespace Icecave\Collections;
 
 use Eloquent\Liberator\Liberator;
-use Ezzatron\PHPUnit\ParameterizedTestCase;
 use Icecave\Collections\Iterator\Traits;
 use Phake;
+use PHPUnit_Framework_TestCase;
 
-/**
- * @covers Icecave\Collections\Set
- */
-class CommonSetTest extends ParameterizedTestCase
+class SetTest extends PHPUnit_Framework_TestCase
 {
-    public function getTestCaseParameters()
+    public function setUp()
     {
-        return array(
-            array(new Set,     new Set(null, function () {}),     'verifyElementsInSet'),
-        );
-    }
-
-    public function setUpParameterized($collection, $incompatibleCollection, $verifyElementsFunction)
-    {
-        $this->className = get_class($collection);
-        $this->shortClassName = substr($this->className, strrpos($this->className, '\\') + 1);
-        $this->collection = $collection;
-        $this->liberatedCollection = Liberator::liberate($this->collection);
-        $this->incompatibleCollection = $incompatibleCollection;
-        $this->verifyElementsFunction = $verifyElementsFunction;
-    }
-
-    private function createSet($elements = null)
-    {
-        $class = $this->className;
-
-        return new $class($elements);
-    }
-
-    private function setupElements()
-    {
-        $this->collection->addMany(func_get_args());
+        $this->collection = new Set;
+        $this->incompatibleCollection = new Set(null, function () {});
     }
 
     private function verifyElements()
     {
         $arguments = func_get_args();
 
-        if (end($arguments) instanceof $this->className) {
+        if (end($arguments) instanceof Set) {
             $collection = array_pop($arguments);
         } else {
             $collection = $this->collection;
@@ -54,17 +28,8 @@ class CommonSetTest extends ParameterizedTestCase
             $arguments = $arguments[0];
         }
 
-        call_user_func(
-            array($this, $this->verifyElementsFunction),
-            $collection,
-            $arguments
-        );
-    }
-
-    public function verifyElementsInSet(Set $collection, array $elements)
-    {
         $this->assertSame(
-            $elements,
+            $arguments,
             $collection->elements()
         );
     }
@@ -76,13 +41,13 @@ class CommonSetTest extends ParameterizedTestCase
 
     public function testConstructorWithArray()
     {
-        $collection = $this->createSet(array(1, 2, 3, 3, 4, 5));
+        $collection = new Set(array(1, 2, 3, 3, 4, 5));
         $this->verifyElements(1, 2, 3, 4, 5, $collection);
     }
 
     public function testClone()
     {
-        $this->setupElements(1, 2, 3);
+        $this->collection->addMany(array(1, 2, 3));
 
         $collection = clone $this->collection;
         $collection->remove(2);
@@ -93,15 +58,46 @@ class CommonSetTest extends ParameterizedTestCase
 
     public function testCreate()
     {
-        $collection = call_user_func(
-            $this->className . '::create',
+        $collection = Set::create(
             1,
             2,
             3
         );
 
-        $this->assertInstanceOf($this->className, $collection);
+        $this->assertInstanceOf('Icecave\Collections\Set', $collection);
         $this->verifyElements(1, 2, 3, $collection);
+    }
+
+    public function testSerialization()
+    {
+        $collection = new Set(array(1, 2, 3));
+
+        $packet = serialize($collection);
+        $unserializedCollection = unserialize($packet);
+
+        $this->assertSame(
+            Liberator::liberate($unserializedCollection)->elements->elements(),
+            Liberator::liberate($collection)->elements->elements()
+        );
+    }
+
+    public function testSerializationOfComparator()
+    {
+        $collection = new Set(null, 'strcmp');
+
+        $packet = serialize($collection);
+        $collection = unserialize($packet);
+
+        $this->assertSame('strcmp', Liberator::liberate($collection)->comparator);
+    }
+
+    public function testCanCompare()
+    {
+        $collection = new Set;
+
+        $this->assertTrue($collection->canCompare(new Set));
+        $this->assertFalse($collection->canCompare(new Set(null, function () {})));
+        $this->assertFalse($collection->canCompare(array()));
     }
 
     ///////////////////////////////////////////
@@ -112,7 +108,7 @@ class CommonSetTest extends ParameterizedTestCase
     {
         $this->assertSame(0, $this->collection->size());
 
-        $this->setupElements(1, 2, 3);
+        $this->collection->addMany(array(1, 2, 3));
         $this->assertSame(3, $this->collection->size());
 
         $this->collection->clear();
@@ -132,13 +128,13 @@ class CommonSetTest extends ParameterizedTestCase
 
     public function testToString()
     {
-        $this->assertSame('<' . $this->shortClassName . ' 0>', $this->collection->__toString());
+        $this->assertSame('<Set 0>', $this->collection->__toString());
 
-        $this->setupElements('a', 'b', 'c');
-        $this->assertSame('<' . $this->shortClassName . ' 3 ["a", "b", "c"]>', $this->collection->__toString());
+        $this->collection->addMany(array('a', 'b', 'c'));
+        $this->assertSame('<Set 3 ["a", "b", "c"]>', $this->collection->__toString());
 
         $this->collection->add('d');
-        $this->assertSame('<' . $this->shortClassName . ' 4 ["a", "b", "c", ...]>', $this->collection->__toString());
+        $this->assertSame('<Set 4 ["a", "b", "c", ...]>', $this->collection->__toString());
     }
 
     //////////////////////////////////////////////////
@@ -170,7 +166,7 @@ class CommonSetTest extends ParameterizedTestCase
     {
         $this->assertSame(array(), $this->collection->elements());
 
-        $this->setupElements(1, 2, 3);
+        $this->collection->addMany(array(1, 2, 3));
         $this->assertSame(array(1, 2, 3), $this->collection->elements());
     }
 
@@ -184,16 +180,16 @@ class CommonSetTest extends ParameterizedTestCase
 
     public function testFilter()
     {
-        $this->setupElements(1, null, 3);
+        $this->collection->addMany(array(1, null, 3));
 
         $result = $this->collection->filter();
-        $this->assertInstanceOf($this->className, $result);
+        $this->assertInstanceOf('Icecave\Collections\Set', $result);
         $this->verifyElements(1, 3, $result);
     }
 
     public function testFilterWithPredicate()
     {
-        $this->setupElements(1, 2, 3, 4, 5);
+        $this->collection->addMany(array(1, 2, 3, 4, 5));
 
         $result = $this->collection->filter(
             function ($value) {
@@ -201,13 +197,13 @@ class CommonSetTest extends ParameterizedTestCase
             }
         );
 
-        $this->assertInstanceOf($this->className, $result);
+        $this->assertInstanceOf('Icecave\Collections\Set', $result);
         $this->verifyElements(1, 3, 5, $result);
     }
 
     public function testMap()
     {
-        $this->setupElements(1, 2, 3);
+        $this->collection->addMany(array(1, 2, 3));
 
         $result = $this->collection->map(
             function ($value) {
@@ -215,13 +211,13 @@ class CommonSetTest extends ParameterizedTestCase
             }
         );
 
-        $this->assertInstanceOf($this->className, $result);
+        $this->assertInstanceOf('Icecave\Collections\Set', $result);
         $this->verifyElements(2, 3, 4, $result);
     }
 
     public function testPartition()
     {
-        $this->setupElements(1, 2, 3, 4, 5);
+        $this->collection->addMany(array(1, 2, 3, 4, 5));
 
         $result = $this->collection->partition(
             function ($element) {
@@ -234,16 +230,16 @@ class CommonSetTest extends ParameterizedTestCase
 
         list($left, $right) = $result;
 
-        $this->assertInstanceOf($this->className, $left);
+        $this->assertInstanceOf('Icecave\Collections\Set', $left);
         $this->verifyElements(1, 2, $left);
 
-        $this->assertInstanceOf($this->className, $right);
+        $this->assertInstanceOf('Icecave\Collections\Set', $right);
         $this->verifyElements(3, 4, 5, $right);
     }
 
     public function testEach()
     {
-        $this->setupElements(1, 2, 3);
+        $this->collection->addMany(array(1, 2, 3));
 
         $calls = array();
         $callback = function ($element) use (&$calls) {
@@ -263,7 +259,7 @@ class CommonSetTest extends ParameterizedTestCase
 
     public function testAll()
     {
-        $this->setupElements(1, 2, 3);
+        $this->collection->addMany(array(1, 2, 3));
 
         $this->assertTrue(
             $this->collection->all(
@@ -284,7 +280,7 @@ class CommonSetTest extends ParameterizedTestCase
 
     public function testAny()
     {
-        $this->setupElements(1, 2, 3);
+        $this->collection->addMany(array(1, 2, 3));
 
         $this->assertTrue(
             $this->collection->any(
@@ -309,7 +305,7 @@ class CommonSetTest extends ParameterizedTestCase
 
     public function testFilterInPlace()
     {
-        $this->setupElements(1, null, 3);
+        $this->collection->addMany(array(1, null, 3));
 
         $this->collection->filterInPlace();
 
@@ -318,7 +314,7 @@ class CommonSetTest extends ParameterizedTestCase
 
     public function testFilterInPlaceWithPredicate()
     {
-        $this->setupElements(1, 2, 3, 4, 5);
+        $this->collection->addMany(array(1, 2, 3, 4, 5));
 
         $this->collection->filterInPlace(
             function ($value) {
@@ -331,7 +327,7 @@ class CommonSetTest extends ParameterizedTestCase
 
     public function testMapInPlace()
     {
-        $this->setupElements(1, 2, 3);
+        $this->collection->addMany(array(1, 2, 3));
 
         $this->collection->mapInPlace(
             function ($value) {
@@ -350,7 +346,7 @@ class CommonSetTest extends ParameterizedTestCase
     {
         $this->assertSame(0, count($this->collection));
 
-        $this->setupElements(1, 2, 3);
+        $this->collection->addMany(array(1, 2, 3));
         $this->assertSame(3, count($this->collection));
 
         $this->collection->clear();
@@ -363,7 +359,7 @@ class CommonSetTest extends ParameterizedTestCase
 
     public function testIteration()
     {
-        $this->setupElements(1, 2, 3);
+        $this->collection->addMany(array(1, 2, 3));
 
         $this->assertSame(
             array(1, 2, 3),
@@ -397,7 +393,7 @@ class CommonSetTest extends ParameterizedTestCase
 
     public function testCascade()
     {
-        $this->setupElements(0, 2, 3);
+        $this->collection->addMany(array(0, 2, 3));
 
         $this->assertSame(2, $this->collection->cascade(1, 2, 3));
     }
@@ -413,14 +409,14 @@ class CommonSetTest extends ParameterizedTestCase
     {
         $this->assertSame(500, $this->collection->cascadeWithDefault(500, 1, 2, 3));
 
-        $this->setupElements(0, 2, 3);
+        $this->collection->addMany(array(0, 2, 3));
 
         $this->assertSame(2, $this->collection->cascadeWithDefault(500, 1, 2, 3));
     }
 
     public function testCascadeIterable()
     {
-        $this->setupElements(0, 2, 3);
+        $this->collection->addMany(array(0, 2, 3));
 
         $this->assertSame(2, $this->collection->cascadeIterable(array(1, 2, 3)));
     }
@@ -429,7 +425,7 @@ class CommonSetTest extends ParameterizedTestCase
     {
         $this->assertSame(500, $this->collection->cascadeIterableWithDefault(500, array(1, 2, 3)));
 
-        $this->setupElements(0, 2, 3);
+        $this->collection->addMany(array(0, 2, 3));
 
         $this->assertSame(2, $this->collection->cascadeIterableWithDefault(500, array(1, 2, 3)));
     }
@@ -489,13 +485,32 @@ class CommonSetTest extends ParameterizedTestCase
         $this->verifyElements(1, 3, 5);
     }
 
+    public function testPop()
+    {
+        $source = Set::create(1, 2, 3, 4, 5);
+
+        $this->collection->unionInPlace($source);
+
+        $element = $this->collection->pop();
+
+        $this->assertTrue($source->contains($element));
+        $this->assertFalse($this->collection->contains($element));
+    }
+
+    public function testPopWithEmptySet()
+    {
+        $this->setExpectedException('Icecave\Collections\Exception\EmptyCollectionException');
+
+        $this->collection->pop();
+    }
+
     /**
      * @dataProvider getMembershipSetData
      */
     public function testIsEqualSet($lhsElements, $rhsElements, $isEqual, $isSuperSet, $isSubSet, $isProperSuperSet, $isProperSubSet, $isIntersecting)
     {
         $this->collection->addMany($lhsElements);
-        $set = $this->createSet($rhsElements);
+        $set = new Set($rhsElements);
 
         $this->assertSame($isEqual, $this->collection->isEqualSet($set));
         $this->assertSame($isEqual, $set->isEqualSet($this->collection));
@@ -504,7 +519,7 @@ class CommonSetTest extends ParameterizedTestCase
     public function testIsEqualSetIncompatibleType()
     {
         $set = Phake::mock(__NAMESPACE__ . '\SetInterface');
-        $this->setExpectedException('InvalidArgumentException', 'The given set is not an instance of ' . $this->className . '.');
+        $this->setExpectedException('InvalidArgumentException', 'The given set is not an instance of Icecave\Collections\Set.');
         $this->collection->isEqualSet($set);
     }
 
@@ -520,7 +535,7 @@ class CommonSetTest extends ParameterizedTestCase
     public function testIsSuperSet($lhsElements, $rhsElements, $isEqual, $isSuperSet, $isSubSet, $isProperSuperSet, $isProperSubSet, $isIntersecting)
     {
         $this->collection->addMany($lhsElements);
-        $set = $this->createSet($rhsElements);
+        $set = new Set($rhsElements);
 
         $this->assertSame($isSuperSet, $this->collection->isSuperSet($set));
     }
@@ -528,7 +543,7 @@ class CommonSetTest extends ParameterizedTestCase
     public function testIsSuperSetIncompatibleType()
     {
         $set = Phake::mock(__NAMESPACE__ . '\SetInterface');
-        $this->setExpectedException('InvalidArgumentException', 'The given set is not an instance of ' . $this->className . '.');
+        $this->setExpectedException('InvalidArgumentException', 'The given set is not an instance of Icecave\Collections\Set.');
         $this->collection->isSuperSet($set);
     }
 
@@ -544,7 +559,7 @@ class CommonSetTest extends ParameterizedTestCase
     public function testIsSubSet($lhsElements, $rhsElements, $isEqual, $isSuperSet, $isSubSet, $isProperSuperSet, $isProperSubSet, $isIntersecting)
     {
         $this->collection->addMany($lhsElements);
-        $set = $this->createSet($rhsElements);
+        $set = new Set($rhsElements);
 
         $this->assertSame($isSubSet, $this->collection->isSubSet($set));
     }
@@ -552,7 +567,7 @@ class CommonSetTest extends ParameterizedTestCase
     public function testIsSubSetIncompatibleType()
     {
         $set = Phake::mock(__NAMESPACE__ . '\SetInterface');
-        $this->setExpectedException('InvalidArgumentException', 'The given set is not an instance of ' . $this->className . '.');
+        $this->setExpectedException('InvalidArgumentException', 'The given set is not an instance of Icecave\Collections\Set.');
         $this->collection->isSubSet($set);
     }
 
@@ -568,7 +583,7 @@ class CommonSetTest extends ParameterizedTestCase
     public function testIsProperSuperSet($lhsElements, $rhsElements, $isEqual, $isSuperSet, $isSubSet, $isProperSuperSet, $isProperSubSet, $isIntersecting)
     {
         $this->collection->addMany($lhsElements);
-        $set = $this->createSet($rhsElements);
+        $set = new Set($rhsElements);
 
         $this->assertSame($isProperSuperSet, $this->collection->isProperSuperSet($set));
     }
@@ -576,7 +591,7 @@ class CommonSetTest extends ParameterizedTestCase
     public function testIsProperSuperSetIncompatibleType()
     {
         $set = Phake::mock(__NAMESPACE__ . '\SetInterface');
-        $this->setExpectedException('InvalidArgumentException', 'The given set is not an instance of ' . $this->className . '.');
+        $this->setExpectedException('InvalidArgumentException', 'The given set is not an instance of Icecave\Collections\Set.');
         $this->collection->isProperSuperSet($set);
     }
 
@@ -592,7 +607,7 @@ class CommonSetTest extends ParameterizedTestCase
     public function testIsProperSubSet($lhsElements, $rhsElements, $isEqual, $isSuperSet, $isSubSet, $isProperSuperSet, $isProperSubSet, $isIntersecting)
     {
         $this->collection->addMany($lhsElements);
-        $set = $this->createSet($rhsElements);
+        $set = new Set($rhsElements);
 
         $this->assertSame($isProperSubSet, $this->collection->isProperSubSet($set));
     }
@@ -600,7 +615,7 @@ class CommonSetTest extends ParameterizedTestCase
     public function testIsProperSubSetIncompatibleType()
     {
         $set = Phake::mock(__NAMESPACE__ . '\SetInterface');
-        $this->setExpectedException('InvalidArgumentException', 'The given set is not an instance of ' . $this->className . '.');
+        $this->setExpectedException('InvalidArgumentException', 'The given set is not an instance of Icecave\Collections\Set.');
         $this->collection->isProperSubSet($set);
     }
 
@@ -616,7 +631,7 @@ class CommonSetTest extends ParameterizedTestCase
     public function testIsIntersecting($lhsElements, $rhsElements, $isEqual, $isSuperSet, $isSubSet, $isProperSuperSet, $isProperSubSet, $isIntersecting)
     {
         $this->collection->addMany($lhsElements);
-        $set = $this->createSet($rhsElements);
+        $set = new Set($rhsElements);
 
         $this->assertSame($isIntersecting, $this->collection->isIntersecting($set));
         $this->assertSame($isIntersecting, $set->isIntersecting($this->collection));
@@ -625,7 +640,7 @@ class CommonSetTest extends ParameterizedTestCase
     public function testIsIntersectingIncompatibleType()
     {
         $set = Phake::mock(__NAMESPACE__ . '\SetInterface');
-        $this->setExpectedException('InvalidArgumentException', 'The given set is not an instance of ' . $this->className . '.');
+        $this->setExpectedException('InvalidArgumentException', 'The given set is not an instance of Icecave\Collections\Set.');
         $this->collection->isIntersecting($set);
     }
 
@@ -661,17 +676,17 @@ class CommonSetTest extends ParameterizedTestCase
     public function testUnion($lhsElements, $rhsElements, $expectedElements)
     {
         $this->collection->addMany($lhsElements);
-        $set = $this->createSet($rhsElements);
+        $set = new Set($rhsElements);
 
         $result = $this->collection->union($set);
-        $this->assertInstanceOf($this->className, $result);
+        $this->assertInstanceOf('Icecave\Collections\Set', $result);
         $this->verifyElements($expectedElements, $result);
     }
 
     public function testUnionIncompatibleType()
     {
         $set = Phake::mock(__NAMESPACE__ . '\SetInterface');
-        $this->setExpectedException('InvalidArgumentException', 'The given set is not an instance of ' . $this->className . '.');
+        $this->setExpectedException('InvalidArgumentException', 'The given set is not an instance of Icecave\Collections\Set.');
         $this->collection->union($set);
     }
 
@@ -687,7 +702,7 @@ class CommonSetTest extends ParameterizedTestCase
     public function testUnionInPlace($lhsElements, $rhsElements, $expectedElements)
     {
         $this->collection->addMany($lhsElements);
-        $set = $this->createSet($rhsElements);
+        $set = new Set($rhsElements);
 
         $this->collection->unionInPlace($set);
         $this->verifyElements($expectedElements);
@@ -696,7 +711,7 @@ class CommonSetTest extends ParameterizedTestCase
     public function testUnionInPlaceIncompatibleType()
     {
         $set = Phake::mock(__NAMESPACE__ . '\SetInterface');
-        $this->setExpectedException('InvalidArgumentException', 'The given set is not an instance of ' . $this->className . '.');
+        $this->setExpectedException('InvalidArgumentException', 'The given set is not an instance of Icecave\Collections\Set.');
         $this->collection->unionInPlace($set);
     }
 
@@ -731,17 +746,17 @@ class CommonSetTest extends ParameterizedTestCase
     public function testIntersect($lhsElements, $rhsElements, $expectedElements)
     {
         $this->collection->addMany($lhsElements);
-        $set = $this->createSet($rhsElements);
+        $set = new Set($rhsElements);
 
         $result = $this->collection->intersect($set);
-        $this->assertInstanceOf($this->className, $result);
+        $this->assertInstanceOf('Icecave\Collections\Set', $result);
         $this->verifyElements($expectedElements, $result);
     }
 
     public function testIntersectIncompatibleType()
     {
         $set = Phake::mock(__NAMESPACE__ . '\SetInterface');
-        $this->setExpectedException('InvalidArgumentException', 'The given set is not an instance of ' . $this->className . '.');
+        $this->setExpectedException('InvalidArgumentException', 'The given set is not an instance of Icecave\Collections\Set.');
         $this->collection->intersect($set);
     }
 
@@ -757,7 +772,7 @@ class CommonSetTest extends ParameterizedTestCase
     public function testIntersectInPlace($lhsElements, $rhsElements, $expectedElements)
     {
         $this->collection->addMany($lhsElements);
-        $set = $this->createSet($rhsElements);
+        $set = new Set($rhsElements);
 
         $this->collection->intersectInPlace($set);
         $this->verifyElements($expectedElements);
@@ -766,7 +781,7 @@ class CommonSetTest extends ParameterizedTestCase
     public function testIntersectInPlaceIncompatibleType()
     {
         $set = Phake::mock(__NAMESPACE__ . '\SetInterface');
-        $this->setExpectedException('InvalidArgumentException', 'The given set is not an instance of ' . $this->className . '.');
+        $this->setExpectedException('InvalidArgumentException', 'The given set is not an instance of Icecave\Collections\Set.');
         $this->collection->intersectInPlace($set);
     }
 
@@ -801,17 +816,17 @@ class CommonSetTest extends ParameterizedTestCase
     public function testDiff($lhsElements, $rhsElements, $expectedElements)
     {
         $this->collection->addMany($lhsElements);
-        $set = $this->createSet($rhsElements);
+        $set = new Set($rhsElements);
 
         $result = $this->collection->diff($set);
-        $this->assertInstanceOf($this->className, $result);
+        $this->assertInstanceOf('Icecave\Collections\Set', $result);
         $this->verifyElements($expectedElements, $result);
     }
 
     public function testDiffIncompatibleType()
     {
         $set = Phake::mock(__NAMESPACE__ . '\SetInterface');
-        $this->setExpectedException('InvalidArgumentException', 'The given set is not an instance of ' . $this->className . '.');
+        $this->setExpectedException('InvalidArgumentException', 'The given set is not an instance of Icecave\Collections\Set.');
         $this->collection->diff($set);
     }
 
@@ -827,7 +842,7 @@ class CommonSetTest extends ParameterizedTestCase
     public function testDiffInPlace($lhsElements, $rhsElements, $expectedElements)
     {
         $this->collection->addMany($lhsElements);
-        $set = $this->createSet($rhsElements);
+        $set = new Set($rhsElements);
 
         $this->collection->diffInPlace($set);
         $this->verifyElements($expectedElements);
@@ -836,7 +851,7 @@ class CommonSetTest extends ParameterizedTestCase
     public function testDiffInPlaceIncompatibleType()
     {
         $set = Phake::mock(__NAMESPACE__ . '\SetInterface');
-        $this->setExpectedException('InvalidArgumentException', 'The given set is not an instance of ' . $this->className . '.');
+        $this->setExpectedException('InvalidArgumentException', 'The given set is not an instance of Icecave\Collections\Set.');
         $this->collection->diffInPlace($set);
     }
 
@@ -871,17 +886,17 @@ class CommonSetTest extends ParameterizedTestCase
     public function testSymmetricDiff($lhsElements, $rhsElements, $expectedElements)
     {
         $this->collection->addMany($lhsElements);
-        $set = $this->createSet($rhsElements);
+        $set = new Set($rhsElements);
 
         $result = $this->collection->symmetricDiff($set);
-        $this->assertInstanceOf($this->className, $result);
+        $this->assertInstanceOf('Icecave\Collections\Set', $result);
         $this->verifyElements($expectedElements, $result);
     }
 
     public function testSymmetricDiffIncompatibleType()
     {
         $set = Phake::mock(__NAMESPACE__ . '\SetInterface');
-        $this->setExpectedException('InvalidArgumentException', 'The given set is not an instance of ' . $this->className . '.');
+        $this->setExpectedException('InvalidArgumentException', 'The given set is not an instance of Icecave\Collections\Set.');
         $this->collection->symmetricDiff($set);
     }
 
@@ -897,7 +912,7 @@ class CommonSetTest extends ParameterizedTestCase
     public function testSymmetricDiffInPlace($lhsElements, $rhsElements, $expectedElements)
     {
         $this->collection->addMany($lhsElements);
-        $set = $this->createSet($rhsElements);
+        $set = new Set($rhsElements);
 
         $this->collection->symmetricDiffInPlace($set);
         $this->verifyElements($expectedElements);
@@ -906,7 +921,7 @@ class CommonSetTest extends ParameterizedTestCase
     public function testSymmetricDiffInPlaceIncompatibleType()
     {
         $set = Phake::mock(__NAMESPACE__ . '\SetInterface');
-        $this->setExpectedException('InvalidArgumentException', 'The given set is not an instance of ' . $this->className . '.');
+        $this->setExpectedException('InvalidArgumentException', 'The given set is not an instance of Icecave\Collections\Set.');
         $this->collection->symmetricDiffInPlace($set);
     }
 
@@ -944,8 +959,8 @@ class CommonSetTest extends ParameterizedTestCase
      */
     public function testCompare($lhs, $rhs, $expectedResult)
     {
-        $lhs = $this->createSet($lhs);
-        $rhs = $this->createSet($rhs);
+        $lhs = new Set($lhs);
+        $rhs = new Set($rhs);
 
         $cmp = $lhs->compare($rhs);
 
@@ -979,7 +994,7 @@ class CommonSetTest extends ParameterizedTestCase
     public function testCompareFailure()
     {
         $this->setExpectedException('Icecave\Parity\Exception\NotComparableException');
-        $collection = $this->createSet();
+        $collection = new Set;
         $collection->compare(array());
     }
 

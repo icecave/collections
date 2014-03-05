@@ -1032,6 +1032,20 @@ class VectorTest extends PHPUnit_Framework_TestCase
         $this->assertSame(array(1, 'c', 'd', 2, 3), $this->collection->elements());
     }
 
+    /**
+     * @group regression
+     * @link https://github.com/IcecaveStudios/collections/issues/74
+     */
+    public function testInsertRangeWithInvalidCollectionType()
+    {
+        $this->setExpectedException(
+            'InvalidArgumentException',
+            'The given collection is not an instance of Icecave\Collections\Vector.'
+        );
+
+        $this->collection->insertRange(0, new LinkedList, 0);
+    }
+
     public function testInsertRangeEmpty()
     {
         $this->collection->append(array(1, 2, 3));

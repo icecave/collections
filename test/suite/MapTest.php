@@ -3,45 +3,24 @@ namespace Icecave\Collections;
 
 use Eloquent\Liberator\Liberator;
 use Exception;
-use Ezzatron\PHPUnit\ParameterizedTestCase;
 use Icecave\Collections\Exception\DuplicateKeyException;
 use Icecave\Collections\Exception\UnknownKeyException;
 use Icecave\Collections\Iterator\Traits;
+use PHPUnit_Framework_TestCase;
 use stdClass;
 
-/**
- * @covers Icecave\Collections\Map
- */
-class CommonMapTest extends ParameterizedTestCase
+class MapTest extends PHPUnit_Framework_TestCase
 {
-    public function getTestCaseParameters()
+    public function setUp()
     {
-        return array(
-            array(new Map,     'verifyElementsInMap'),
-        );
-    }
-
-    public function setUpParameterized($collection, $verifyElementsFunction)
-    {
-        $this->className = get_class($collection);
-        $this->shortClassName = substr($this->className, strrpos($this->className, '\\') + 1);
-        $this->collection = $collection;
-        $this->liberatedCollection = Liberator::liberate($this->collection);
-        $this->verifyElementsFunction = $verifyElementsFunction;
-    }
-
-    private function createMap($elements = null)
-    {
-        $class = $this->className;
-
-        return new $class($elements);
+        $this->collection = new Map;
     }
 
     private function verifyElements()
     {
         $arguments = func_get_args();
 
-        if (end($arguments) instanceof $this->className) {
+        if (end($arguments) instanceof Map) {
             $collection = array_pop($arguments);
         } else {
             $collection = $this->collection;
@@ -51,17 +30,8 @@ class CommonMapTest extends ParameterizedTestCase
             $arguments = $arguments[0];
         }
 
-        call_user_func(
-            array($this, $this->verifyElementsFunction),
-            $collection,
-            $arguments
-        );
-    }
-
-    public function verifyElementsInMap(Map $collection, array $elements)
-    {
         $this->assertSame(
-            $elements,
+            $arguments,
             $collection->elements()
         );
     }
@@ -79,7 +49,7 @@ class CommonMapTest extends ParameterizedTestCase
             30 => 3,
         );
 
-        $collection = $this->createMap($array);
+        $collection = new Map($array);
         $this->verifyElements(array(10, 1), array(20, 2), array(30, 3), $collection);
     }
 
@@ -99,15 +69,50 @@ class CommonMapTest extends ParameterizedTestCase
 
     public function testCreate()
     {
-        $collection = call_user_func(
-            $this->className . '::create',
+        $collection = Map::create(
             array(10, 1),
             array(20, 2),
             array(30, 3)
         );
 
-        $this->assertInstanceOf($this->className, $collection);
+        $this->assertInstanceOf('Icecave\Collections\Map', $collection);
         $this->verifyElements(array(10, 1), array(20, 2), array(30, 3), $collection);
+    }
+
+    public function testSerialization()
+    {
+        $collection = new Map;
+
+        $collection->set('a', 1);
+        $collection->set('b', 2);
+        $collection->set('c', 3);
+
+        $packet = serialize($collection);
+        $unserializedCollection = unserialize($packet);
+
+        $this->assertSame(
+            Liberator::liberate($unserializedCollection)->elements->elements(),
+            Liberator::liberate($collection)->elements->elements()
+        );
+    }
+
+    public function testSerializationOfComparator()
+    {
+        $collection = new Map(null, 'strcmp');
+
+        $packet = serialize($collection);
+        $collection = unserialize($packet);
+
+        $this->assertSame('strcmp', Liberator::liberate($collection)->comparator);
+    }
+
+    public function testCanCompare()
+    {
+        $collection = new Map;
+
+        $this->assertTrue($collection->canCompare(new Map));
+        $this->assertFalse($collection->canCompare(new Map(null, function () {})));
+        $this->assertFalse($collection->canCompare(array()));
     }
 
     ///////////////////////////////////////////
@@ -144,17 +149,17 @@ class CommonMapTest extends ParameterizedTestCase
 
     public function testToString()
     {
-        $this->assertSame('<' . $this->shortClassName . ' 0>', $this->collection->__toString());
+        $this->assertSame('<Map 0>', $this->collection->__toString());
 
         $this->collection->set('a', 1);
         $this->collection->set('b', 2);
         $this->collection->set('c', 3);
 
-        $this->assertSame('<' . $this->shortClassName . ' 3 ["a" => 1, "b" => 2, "c" => 3]>', $this->collection->__toString());
+        $this->assertSame('<Map 3 ["a" => 1, "b" => 2, "c" => 3]>', $this->collection->__toString());
 
         $this->collection->set('d', 4);
 
-        $this->assertSame('<' . $this->shortClassName . ' 4 ["a" => 1, "b" => 2, "c" => 3, ...]>', $this->collection->__toString());
+        $this->assertSame('<Map 4 ["a" => 1, "b" => 2, "c" => 3, ...]>', $this->collection->__toString());
     }
 
     //////////////////////////////////////////////////
@@ -211,7 +216,7 @@ class CommonMapTest extends ParameterizedTestCase
 
         $result = $this->collection->filter();
 
-        $this->assertInstanceOf($this->className, $result);
+        $this->assertInstanceOf('Icecave\Collections\Map', $result);
         $this->verifyElements(array(10, 1), array(30, 3), $result);
     }
 
@@ -229,7 +234,7 @@ class CommonMapTest extends ParameterizedTestCase
             }
         );
 
-        $this->assertInstanceOf($this->className, $result);
+        $this->assertInstanceOf('Icecave\Collections\Map', $result);
         $this->verifyElements(array(10, 1), array(30, 3), array(50, 5), $result);
     }
 
@@ -245,7 +250,7 @@ class CommonMapTest extends ParameterizedTestCase
             }
         );
 
-        $this->assertInstanceOf($this->className, $result);
+        $this->assertInstanceOf('Icecave\Collections\Map', $result);
         $this->verifyElements(array(15, 2), array(25, 3), array(35, 4), $result);
     }
 
@@ -266,10 +271,10 @@ class CommonMapTest extends ParameterizedTestCase
 
         list($left, $right) = $result;
 
-        $this->assertInstanceOf($this->className, $left);
+        $this->assertInstanceOf('Icecave\Collections\Map', $left);
         $this->verifyElements(array(10, 1), array(20, 2), $left);
 
-        $this->assertInstanceOf($this->className, $right);
+        $this->assertInstanceOf('Icecave\Collections\Map', $right);
         $this->verifyElements(array(30, 3), $right);
     }
 
@@ -500,7 +505,7 @@ class CommonMapTest extends ParameterizedTestCase
         $this->collection->set(10, 1);
         $this->collection->set(30, 3);
 
-        $collection = $this->createMap();
+        $collection = new Map;
         $collection->set(10, 10);
         $collection->set(20, 20);
 
@@ -630,12 +635,33 @@ class CommonMapTest extends ParameterizedTestCase
         $this->assertFalse($this->collection->hasKey('a'));
     }
 
+    public function testPop()
+    {
+        $source = new Map(
+            array('a' => 1, 'b' => 2, 'c' => 3)
+        );
+
+        $this->collection->mergeInPlace($source);
+
+        list($key, $value) = $this->collection->pop();
+
+        $this->assertSame($source->get($key), $value);
+        $this->assertFalse($this->collection->hasKey($key));
+    }
+
+    public function testPopWithEmptySet()
+    {
+        $this->setExpectedException('Icecave\Collections\Exception\EmptyCollectionException');
+
+        $this->collection->pop();
+    }
+
     public function testMergeInPlace()
     {
         $this->collection->set(10, 1);
         $this->collection->set(30, 3);
 
-        $collection = $this->createMap();
+        $collection = new Map;
         $collection->set(10, 10);
         $collection->set(20, 20);
 
@@ -946,8 +972,8 @@ class CommonMapTest extends ParameterizedTestCase
      */
     public function testCompare($lhs, $rhs, $expectedResult)
     {
-        $lhs = $this->createMap($lhs);
-        $rhs = $this->createMap($rhs);
+        $lhs = new Map($lhs);
+        $rhs = new Map($rhs);
 
         $cmp = $lhs->compare($rhs);
 
@@ -981,7 +1007,7 @@ class CommonMapTest extends ParameterizedTestCase
     public function testCompareFailure()
     {
         $this->setExpectedException('Icecave\Parity\Exception\NotComparableException');
-        $collection = $this->createMap();
+        $collection = new Map;
         $collection->compare(array());
     }
 

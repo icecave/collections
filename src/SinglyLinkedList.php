@@ -1,46 +1,63 @@
 <?php
 namespace Icecave\Collections;
 
-use ArrayAccess;
 use Countable;
 use Icecave\Collections\Iterator\Traits;
 use Icecave\Parity\Exception\NotComparableException;
+use InvalidArgumentException;
 use IteratorAggregate;
 use Serializable;
-use SplFixedArray;
+use stdClass;
 
 /**
- * A mutable sequence with efficient access by position and iteration.
+ * A mutable sequence with efficient addition and removal of elements.
  */
-class Vector implements MutableRandomAccessInterface, Countable, IteratorAggregate, ArrayAccess, Serializable
+class SinglyLinkedList implements MutableRandomAccessInterface, Countable, IteratorAggregate, Serializable
 {
     /**
-     * @param mixed<mixed>|null $elements An iterable type containing the elements to include in this vector, or null to create an empty vector.
+     * @param mixed<mixed>|null $elements An iterable type containing the elements to include in this list, or null to create an empty list.
      */
     public function __construct($elements = null)
     {
-        if (is_array($elements)) {
-            $this->elements = SplFixedArray::fromArray($elements, false);
-            $this->size = count($elements);
-        } else {
-            $this->clear();
-            if (null !== $elements) {
-                $this->insertMany(0, $elements);
-            }
+        $this->clear();
+
+        if (null !== $elements) {
+            $this->insertMany(0, $elements);
         }
     }
 
     public function __clone()
     {
-        $this->elements = clone $this->elements;
+        $node = $this->head;
+        $prev = null;
+
+        while ($node) {
+
+            // Clone the node ...
+            $newNode = clone $node;
+
+            // If there was a previous node, create the link ...
+            if ($prev) {
+                $prev->next = $newNode;
+
+            // Otherwise this must be the head ...
+            } else {
+                $this->head = $newNode;
+            }
+
+            $prev = $newNode;
+            $node = $node->next;
+        }
+
+        $this->tail = $prev;
     }
 
     /**
-     * Create a Vector.
+     * Create a SinglyLinkedList.
      *
      * @param mixed $element,... Elements to include in the collection.
      *
-     * @return Vector
+     * @return SinglyLinkedList
      */
     public static function create()
     {
@@ -70,7 +87,7 @@ class Vector implements MutableRandomAccessInterface, Countable, IteratorAggrega
      */
     public function isEmpty()
     {
-        return 0 === $this->size;
+        return null === $this->head;
     }
 
     /**
@@ -84,7 +101,7 @@ class Vector implements MutableRandomAccessInterface, Countable, IteratorAggrega
     public function __toString()
     {
         if ($this->isEmpty()) {
-            return '<Vector 0>';
+            return '<SinglyLinkedList 0>';
         }
 
         $elements = $this
@@ -92,9 +109,9 @@ class Vector implements MutableRandomAccessInterface, Countable, IteratorAggrega
             ->map('Icecave\Repr\Repr::repr');
 
         if ($this->size > 3) {
-            $format = '<Vector %d [%s, ...]>';
+            $format = '<SinglyLinkedList %d [%s, ...]>';
         } else {
-            $format = '<Vector %d [%s]>';
+            $format = '<SinglyLinkedList %d [%s]>';
         }
 
         return sprintf(
@@ -113,7 +130,8 @@ class Vector implements MutableRandomAccessInterface, Countable, IteratorAggrega
      */
     public function clear()
     {
-        $this->elements = new SplFixedArray;
+        $this->head = null;
+        $this->tail = null;
         $this->size = 0;
     }
 
@@ -143,12 +161,9 @@ class Vector implements MutableRandomAccessInterface, Countable, IteratorAggrega
     public function elements()
     {
         $elements = array();
-        foreach ($this->elements as $index => $element) {
-            if ($index >= $this->size) {
-                break;
-            } else {
-                $elements[] = $element;
-            }
+
+        for ($node = $this->head; null !== $node; $node = $node->next) {
+            $elements[] = $node->element;
         }
 
         return $elements;
@@ -163,7 +178,13 @@ class Vector implements MutableRandomAccessInterface, Countable, IteratorAggrega
      */
     public function contains($element)
     {
-        return null !== $this->indexOf($element);
+        for ($node = $this->head; null !== $node; $node = $node->next) {
+            if ($element === $node->element) {
+                return true;
+            }
+        }
+
+        return false;
     }
 
     /**
@@ -171,7 +192,7 @@ class Vector implements MutableRandomAccessInterface, Countable, IteratorAggrega
      *
      * @param callable|null $predicate A predicate function used to determine which elements to include, or null to include all non-null elements.
      *
-     * @return Vector The filtered collection.
+     * @return SinglyLinkedList The filtered collection.
      */
     public function filter($predicate = null)
     {
@@ -182,13 +203,10 @@ class Vector implements MutableRandomAccessInterface, Countable, IteratorAggrega
         }
 
         $result = new static;
-        $result->reserve($this->size);
 
-        foreach ($this->elements as $index => $element) {
-            if ($index >= $this->size) {
-                break;
-            } elseif (call_user_func($predicate, $element)) {
-                $result->pushBack($element);
+        for ($node = $this->head; null !== $node; $node = $node->next) {
+            if (call_user_func($predicate, $node->element)) {
+                $result->pushBack($node->element);
             }
         }
 
@@ -208,14 +226,9 @@ class Vector implements MutableRandomAccessInterface, Countable, IteratorAggrega
     public function map($transform)
     {
         $result = new static;
-        $result->resize($this->size);
 
-        foreach ($this->elements as $index => $element) {
-            if ($index >= $this->size) {
-                break;
-            } else {
-                $result->elements[$index] = call_user_func($transform, $element);
-            }
+        for ($node = $this->head; null !== $node; $node = $node->next) {
+            $result->pushBack(call_user_func($transform, $node->element));
         }
 
         return $result;
@@ -235,13 +248,11 @@ class Vector implements MutableRandomAccessInterface, Countable, IteratorAggrega
         $left = new static;
         $right = new static;
 
-        foreach ($this->elements as $index => $element) {
-            if ($index >= $this->size) {
-                break;
-            } elseif (call_user_func($predicate, $element)) {
-                $left->pushBack($element);
+        for ($node = $this->head; null !== $node; $node = $node->next) {
+            if (call_user_func($predicate, $node->element)) {
+                $left->pushBack($node->element);
             } else {
-                $right->pushBack($element);
+                $right->pushBack($node->element);
             }
         }
 
@@ -257,12 +268,8 @@ class Vector implements MutableRandomAccessInterface, Countable, IteratorAggrega
      */
     public function each($callback)
     {
-        foreach ($this->elements as $index => $element) {
-            if ($index >= $this->size) {
-                break;
-            } else {
-                call_user_func($callback, $element);
-            }
+        for ($node = $this->head; null !== $node; $node = $node->next) {
+            call_user_func($callback, $node->element);
         }
     }
 
@@ -277,10 +284,8 @@ class Vector implements MutableRandomAccessInterface, Countable, IteratorAggrega
      */
     public function all($predicate)
     {
-        foreach ($this->elements as $index => $element) {
-            if ($index >= $this->size) {
-                break;
-            } elseif (!call_user_func($predicate, $element)) {
+        for ($node = $this->head; null !== $node; $node = $node->next) {
+            if (!call_user_func($predicate, $node->element)) {
                 return false;
             }
         }
@@ -299,10 +304,8 @@ class Vector implements MutableRandomAccessInterface, Countable, IteratorAggrega
      */
     public function any($predicate)
     {
-        foreach ($this->elements as $index => $element) {
-            if ($index >= $this->size) {
-                break;
-            } elseif (call_user_func($predicate, $element)) {
+        for ($node = $this->head; null !== $node; $node = $node->next) {
+            if (call_user_func($predicate, $node->element)) {
                 return true;
             }
         }
@@ -327,20 +330,28 @@ class Vector implements MutableRandomAccessInterface, Countable, IteratorAggrega
             };
         }
 
-        $size = $this->size;
-        $this->size = 0;
+        $node = $this->head;
+        $prev = null;
 
-        foreach ($this->elements as $index => $element) {
-            if ($index >= $size) {
-                break;
-            } elseif (call_user_func($predicate, $element)) {
-                $this->elements[$this->size++] = $element;
+        while ($node) {
+
+            // Keep the node ...
+            if (call_user_func($predicate, $node->element)) {
+                $prev = $node;
+            // Don't keep the node, and it's the first one ...
+            } elseif (null === $prev) {
+                $this->head = $node->next;
+                --$this->size;
+            // Don't keep the node ...
+            } else {
+                $prev->next = $node->next;
+                --$this->size;
             }
 
-            if ($index >= $this->size) {
-                $this->elements[$index] = null;
-            }
+            $node = $node->next;
         }
+
+        $this->tail = $prev;
     }
 
     /**
@@ -352,12 +363,8 @@ class Vector implements MutableRandomAccessInterface, Countable, IteratorAggrega
      */
     public function mapInPlace($transform)
     {
-        foreach ($this->elements as $index => $element) {
-            if ($index >= $this->size) {
-                break;
-            } else {
-                $this->elements[$index] = call_user_func($transform, $element);
-            }
+        for ($node = $this->head; null !== $node; $node = $node->next) {
+            $node->element = call_user_func($transform, $node->element);
         }
     }
 
@@ -377,7 +384,7 @@ class Vector implements MutableRandomAccessInterface, Countable, IteratorAggrega
             throw new Exception\EmptyCollectionException;
         }
 
-        return $this->elements[0];
+        return $this->head->element;
     }
 
     /**
@@ -392,7 +399,8 @@ class Vector implements MutableRandomAccessInterface, Countable, IteratorAggrega
         if ($this->isEmpty()) {
             return false;
         }
-        $element = $this->front();
+
+        $element = $this->head->element;
 
         return true;
     }
@@ -409,7 +417,7 @@ class Vector implements MutableRandomAccessInterface, Countable, IteratorAggrega
             throw new Exception\EmptyCollectionException;
         }
 
-        return $this->elements[$this->size - 1];
+        return $this->tail->element;
     }
 
     /**
@@ -424,7 +432,8 @@ class Vector implements MutableRandomAccessInterface, Countable, IteratorAggrega
         if ($this->isEmpty()) {
             return false;
         }
-        $element = $this->back();
+
+        $element = $this->tail->element;
 
         return true;
     }
@@ -434,19 +443,14 @@ class Vector implements MutableRandomAccessInterface, Countable, IteratorAggrega
      *
      * @param callable|null $comparator A strcmp style comparator function.
      *
-     * @return Vector
+     * @return SinglyLinkedList
      */
     public function sort($comparator = null)
     {
-        $elements = $this->elements();
+        $result = clone $this;
+        $result->sortInPlace($comparator);
 
-        if (null === $comparator) {
-            sort($elements);
-        } else {
-            usort($elements, $comparator);
-        }
-
-        return new static($elements);
+        return $result;
     }
 
     /**
@@ -454,20 +458,14 @@ class Vector implements MutableRandomAccessInterface, Countable, IteratorAggrega
      *
      * It is not guaranteed that the concrete type of the reversed collection will match this collection.
      *
-     * @return Vector The reversed sequence.
+     * @return SinglyLinkedList The reversed sequence.
      */
     public function reverse()
     {
         $result = new static;
-        $result->resize($this->size);
 
-        $target = $this->size - 1;
-        foreach ($this->elements as $index => $element) {
-            if ($index >= $this->size) {
-                break;
-            } else {
-                $result->elements[$target--] = $element;
-            }
+        for ($node = $this->head; null !== $node; $node = $node->next) {
+            $result->pushFront($node->element);
         }
 
         return $result;
@@ -483,9 +481,11 @@ class Vector implements MutableRandomAccessInterface, Countable, IteratorAggrega
      */
     public function join($sequence)
     {
-        $result = new static($this);
+        $result = new static;
+        list($result->head, $result->tail, $result->size) = $this->cloneNodes($this->head);
+
         foreach (func_get_args() as $sequence) {
-            $result->insertMany($result->size(), $sequence);
+            $result->insertMany($result->size, $sequence);
         }
 
         return $result;
@@ -498,19 +498,90 @@ class Vector implements MutableRandomAccessInterface, Countable, IteratorAggrega
     /**
      * Sort this sequence in-place.
      *
+     * @link http://www.chiark.greenend.org.uk/~sgtatham/algorithms/listsort.html
+     *
      * @param callable|null $comparator A strcmp style comparator function.
      */
     public function sortInPlace($comparator = null)
     {
-        $elements = $this->elements();
-
-        if (null === $comparator) {
-            sort($elements);
-        } else {
-            usort($elements, $comparator);
+        if ($this->size <= 1) {
+            return;
         }
 
-        $this->elements = SplFixedArray::fromArray($elements);
+        if (null === $comparator) {
+            $comparator = function ($a, $b) {
+                if ($a < $b) {
+                    return -1;
+                } elseif ($a > $b) {
+                    return 1;
+                } else {
+                    return 0;
+                }
+            };
+        }
+
+        $chunkSize = 1;
+
+        $left = null;
+        $head = $this->head;
+        $tail = null;
+
+        do {
+            $left = $head;
+            $head = null;
+            $tail = null;
+
+            $mergeCount = 0;
+
+            while ($left) {
+                ++$mergeCount;
+
+                $right = $left;
+
+                for ($leftSize = 0; $right && $leftSize < $chunkSize; ++$leftSize) {
+                    $right = $right->next;
+                }
+
+                $rightSize = $chunkSize;
+
+                while ($leftSize || ($right && $rightSize)) {
+                    if (0 === $leftSize) {
+                        $node = $right;
+                        $right = $right->next;
+                        --$rightSize;
+                    } elseif (!$right || 0 === $rightSize) {
+                        $node = $left;
+                        $left = $left->next;
+                        --$leftSize;
+                    } elseif (call_user_func($comparator, $left->element, $right->element) <= 0) {
+                        $node = $left;
+                        $left = $left->next;
+                        --$leftSize;
+                    } else {
+                        $node = $right;
+                        $right = $right->next;
+                        --$rightSize;
+                    }
+
+                    if ($tail) {
+                        $tail->next = $node;
+                    } else {
+                        $head = $node;
+                    }
+
+                    $tail = $node;
+                }
+
+                $left = $right;
+            }
+
+            $tail->next = null;
+            $chunkSize *= 2;
+
+        } while ($mergeCount > 1);
+
+        $this->head = $head;
+        $this->tail = $tail;
     }
 
     /**
@@ -518,12 +589,19 @@ class Vector implements MutableRandomAccessInterface, Countable, IteratorAggrega
      */
     public function reverseInPlace()
     {
-        $first = 0;
-        $last  = $this->size;
+        $prev = null;
+        $node = $this->head;
 
-        while (($first !== $last) && ($first !== --$last)) {
-            $this->swap($first++, $last);
+        while ($node) {
+            $next = $node->next;
+            $node->next = $prev;
+            $prev = $node;
+            $node = $next;
         }
+
+        $head       = $this->head;
+        $this->head = $this->tail;
+        $this->tail = $head;
     }
 
     /**
@@ -546,9 +624,11 @@ class Vector implements MutableRandomAccessInterface, Countable, IteratorAggrega
      */
     public function pushFront($element)
     {
-        $this->shiftRight(0, 1);
-        $this->elements[0] = $element;
-        ++$this->size;
+        $this->head = $this->createNode($element, $this->head);
+
+        if (0 === $this->size++) {
+            $this->tail = $this->head;
+        }
     }
 
     /**
@@ -559,9 +639,16 @@ class Vector implements MutableRandomAccessInterface, Countable, IteratorAggrega
      */
     public function popFront()
     {
-        $element = $this->front();
-        $this->shiftLeft(1, 1);
-        --$this->size;
+        if ($this->isEmpty()) {
+            throw new Exception\EmptyCollectionException;
+        }
+
+        $element    = $this->head->element;
+        $this->head = $this->head->next;
+
+        if (0 === --$this->size) {
+            $this->tail = null;
+        }
 
         return $element;
     }
@@ -578,6 +665,7 @@ class Vector implements MutableRandomAccessInterface, Countable, IteratorAggrega
         if ($this->isEmpty()) {
             return false;
         }
+
         $element = $this->popFront();
 
         return true;
@@ -590,8 +678,15 @@ class Vector implements MutableRandomAccessInterface, Countable, IteratorAggrega
      */
     public function pushBack($element)
     {
-        $this->expand(1);
-        $this->elements[$this->size++] = $element;
+        $node = $this->createNode($element);
+
+        if (0 === $this->size++) {
+            $this->head = $node;
+        } else {
+            $this->tail->next = $node;
+        }
+
+        $this->tail = $node;
     }
 
     /**
@@ -602,8 +697,19 @@ class Vector implements MutableRandomAccessInterface, Countable, IteratorAggrega
      */
     public function popBack()
     {
-        $element = $this->back();
-        $this->elements[--$this->size] = null;
+        if ($this->isEmpty()) {
+            throw new Exception\EmptyCollectionException;
+        }
+
+        $element = $this->tail->element;
+
+        if (0 === --$this->size) {
+            $this->head = null;
+            $this->tail = null;
+        } else {
+            $this->tail = $this->nodeAt($this->size - 1);
+            $this->tail->next = null;
+        }
 
         return $element;
     }
@@ -620,6 +726,7 @@ class Vector implements MutableRandomAccessInterface, Countable, IteratorAggrega
         if ($this->isEmpty()) {
             return false;
         }
+
         $element = $this->popBack();
 
         return true;
@@ -634,15 +741,10 @@ class Vector implements MutableRandomAccessInterface, Countable, IteratorAggrega
     public function resize($size, $element = null)
     {
         if ($this->size > $size) {
-            $this->elements->setSize($size);
-            $this->size = $size;
-        } elseif (null === $element) {
-            $this->reserve($size);
-            $this->size = $size;
+            $this->removeMany($size);
         } else {
-            $this->reserve($size);
-            while ($this->size < $size) {
-                $this->elements[$this->size++] = $element;
+            while ($size--) {
+                $this->pushBack($element);
             }
         }
     }
@@ -663,7 +765,7 @@ class Vector implements MutableRandomAccessInterface, Countable, IteratorAggrega
     {
         $this->validateIndex($index);
 
-        return $this->elements[$index];
+        return $this->nodeAt($index)->element;
     }
 
     /**
@@ -681,17 +783,19 @@ class Vector implements MutableRandomAccessInterface, Countable, IteratorAggrega
     {
         $this->validateIndex($index);
 
+        $start = $this->nodeAt($index);
+
         if (null === $count) {
-            $end = $this->size;
+            $stop = null;
         } else {
-            $end = $this->clamp(
-                $index + $count,
-                $index,
-                $this->size
-            );
+            $count = max(0, min($this->size - $index, $count));
+            $stop = $this->nodeFrom($start, $count);
         }
 
-        return $this->range($index, $end);
+        $result = new static;
+        list($result->head, $result->tail, $result->size) = $this->cloneNodes($start, $stop);
+
+        return $result;
     }
 
     /**
@@ -712,18 +816,7 @@ class Vector implements MutableRandomAccessInterface, Countable, IteratorAggrega
         $this->validateIndex($begin);
         $this->validateIndex($end, $this->size);
 
-        $result = new static;
-
-        if ($begin < $end) {
-            $result->resize($end - $begin);
-
-            $index = 0;
-            while ($index < $result->size()) {
-                $result->elements[$index++] = $this->elements[$begin++];
-            }
-        }
-
-        return $result;
+        return $this->slice($begin, $end - $begin);
     }
 
     /**
@@ -789,10 +882,15 @@ class Vector implements MutableRandomAccessInterface, Countable, IteratorAggrega
         $this->validateIndex($begin);
         $this->validateIndex($end, $this->size);
 
-        for (; $begin !== $end; ++$begin) {
-            if (call_user_func($predicate, $this->elements[$begin])) {
+        $node = $this->nodeAt($begin);
+
+        while (null !== $node && $begin !== $end) {
+            if (call_user_func($predicate, $node->element)) {
                 return $begin;
             }
+
+            ++$begin;
+            $node = $node->next;
         }
 
         return null;
@@ -819,11 +917,20 @@ class Vector implements MutableRandomAccessInterface, Countable, IteratorAggrega
         $this->validateIndex($begin);
         $this->validateIndex($end, $this->size);
 
-        while ($begin !== $end) {
-            if (call_user_func($predicate, $this->elements[--$end])) {
-                return $end;
+        $node = $this->nodeAt($begin);
+
+        $lastIndex = null;
+
+        while (null !== $node && $begin !== $end) {
+            if (call_user_func($predicate, $node->element)) {
+                $lastIndex = $begin;
             }
+
+            ++$begin;
+            $node = $node->next;
         }
+
+        return $lastIndex;
     }
 
     ////////////////////////////////////////////////////
@@ -841,7 +948,8 @@ class Vector implements MutableRandomAccessInterface, Countable, IteratorAggrega
     public function set($index, $element)
     {
         $this->validateIndex($index);
-        $this->elements[$index] = $element;
+
+        $this->nodeAt($index)->element = $element;
     }
 
     /**
@@ -867,34 +975,9 @@ class Vector implements MutableRandomAccessInterface, Countable, IteratorAggrega
     {
         $this->validateIndex($index, $this->size);
 
-        // The number of elements is not known.
-        // Using the normal expansion rules we create a gap in which to insert the elements.
-        // Once all elements have been inserted the gap is closed.
-        if (!Collection::iteratorTraits($elements)->isCountable) {
-            $shiftIndex = $index;
+        list($head, $tail, $size) = $this->createNodes($elements);
 
-            foreach ($elements as $element) {
-                if ($index === $shiftIndex) {
-                    $actualExpansion = $this->expand(1);
-                    $this->shiftRight($index, $actualExpansion);
-                    $shiftIndex += $actualExpansion;
-                }
-
-                $this->elements[$index++] = $element;
-                ++$this->size;
-            }
-
-            $this->shiftLeft($shiftIndex, $shiftIndex - $index);
-
-        // The number of elements is known, expand the vector once and insert the elements.
-        } elseif ($count = count($elements)) {
-            $this->shiftRight($index, $count);
-            $this->size += $count;
-
-            foreach ($elements as $element) {
-                $this->elements[$index++] = $element;
-            }
-        }
+        $this->insertNodes($index, $head, $tail, $size);
     }
 
     /**
@@ -902,26 +985,30 @@ class Vector implements MutableRandomAccessInterface, Countable, IteratorAggrega
      *
      * Inserts all elements from the range [$begin, $end), i.e. $begin is inclusive, $end is exclusive.
      *
-     * @param integer                      $index    The index at which the elements are inserted, if index is a negative number the elements are inserted that far from the end of the sequence.
-     * @param RandomAccessInterface+Vector $elements The elements to insert.
-     * @param integer                      $begin    The index of the first element from $elements to insert, if begin is a negative number the removal begins that far from the end of the sequence.
-     * @param integer                      $end|null The index of the last element to $elements to insert, if end is a negative number the removal ends that far from the end of the sequence.
+     * @param integer                                $index    The index at which the elements are inserted, if index is a negative number the elements are inserted that far from the end of the sequence.
+     * @param RandomAccessInterface+SinglyLinkedList $elements The elements to insert.
+     * @param integer                                $begin    The index of the first element from $elements to insert, if begin is a negative number the removal begins that far from the end of the sequence.
+     * @param integer                                $end|null The index of the last element to $elements to insert, if end is a negative number the removal ends that far from the end of the sequence.
      *
      * @throws Exception\IndexException if $index, $begin or $end is out of range.
      */
     public function insertRange($index, RandomAccessInterface $elements, $begin, $end = null)
     {
+        if (!$elements instanceof self) {
+            throw new InvalidArgumentException('The given collection is not an instance of ' . __CLASS__ . '.');
+        }
+
         $this->validateIndex($index);
         $elements->validateIndex($begin);
         $elements->validateIndex($end, $elements->size);
 
-        $size = $end - $begin;
-        $this->shiftRight($index, $size);
-        $this->size += $size;
+        list($head, $tail, $size) = $elements->cloneNodes(
+            $elements->nodeAt($begin),
+            null,
+            $end - $begin
+        );
 
-        while ($begin !== $end) {
-            $this->elements[$index++] = $elements->elements[$begin++];
-        }
+        $this->insertNodes($index, $head, $tail, $size);
     }
 
     /**
@@ -950,9 +1037,24 @@ class Vector implements MutableRandomAccessInterface, Countable, IteratorAggrega
     {
         $this->validateIndex($index);
 
-        $count = $this->clamp($count, 0, $this->size - $index);
-        $this->shiftLeft($index + $count, $count);
-        $this->size -= $count;
+        // Remove, but not all the way to the end ...
+        if (null !== $count && $count < $this->size - $index) {
+            $count = max(0, $count);
+            $node = $this->nodeAt($index - 1);
+            $node->next = $this->nodeFrom($node, $count + 1);
+            $this->size -= $count;
+
+        // Remove everything ...
+        } elseif (0 === $index) {
+            $this->clear();
+
+        // Remove everything to the end ...
+        } else {
+            $node = $this->nodeAt($index - 1);
+            $node->next = null;
+            $this->tail = $node;
+            $this->size = $index;
+        }
     }
 
     /**
@@ -969,6 +1071,7 @@ class Vector implements MutableRandomAccessInterface, Countable, IteratorAggrega
     {
         $this->validateIndex($begin);
         $this->validateIndex($end, $this->size);
+
         $this->removeMany($begin, $end - $begin);
     }
 
@@ -983,31 +1086,8 @@ class Vector implements MutableRandomAccessInterface, Countable, IteratorAggrega
     {
         $this->validateIndex($index);
 
-        $count = $this->clamp($count, 0, $this->size - $index);
-
-        // Element count is available ...
-        if (Collection::iteratorTraits($elements)->isCountable) {
-            $diff = count($elements) - $count;
-
-            if ($diff > 0) {
-                $this->shiftRight($index + $count, $diff);
-            } elseif ($diff < 0) {
-                $this->shiftLeft($index + $count, abs($diff));
-            }
-
-            $this->size += $diff;
-
-            foreach ($elements as $element) {
-                $this->elements[$index++] = $element;
-            }
-
-        // No count is available ...
-        } else {
-            $originalSize = $this->size;
-            $this->insertMany($index, $elements);
-            $elementCount = $this->size - $originalSize;
-            $this->removeMany($index + $elementCount, $count);
-        }
+        $this->removeMany($index, $count);
+        $this->insertMany($index, $elements);
     }
 
     /**
@@ -1022,8 +1102,9 @@ class Vector implements MutableRandomAccessInterface, Countable, IteratorAggrega
     public function replaceRange($begin, $end, $elements)
     {
         $this->validateIndex($begin);
-        $this->validateIndex($end, $this->size);
-        $this->replace($begin, $elements, $end - $begin);
+
+        $this->removeRange($begin, $end);
+        $this->insertMany($begin, $elements);
     }
 
     /**
@@ -1039,9 +1120,7 @@ class Vector implements MutableRandomAccessInterface, Countable, IteratorAggrega
         $this->validateIndex($index1);
         $this->validateIndex($index2);
 
-        $temp = $this->elements[$index1];
-        $this->elements[$index1] = $this->elements[$index2];
-        $this->elements[$index2] = $temp;
+        $this->doSwap($index1, $index2);
     }
 
     /**
@@ -1055,24 +1134,22 @@ class Vector implements MutableRandomAccessInterface, Countable, IteratorAggrega
     public function trySwap($index1, $index2)
     {
         if ($index1 < 0) {
-            $index1 += $this->size;
+            $index1 += $this->size();
         }
 
         if ($index2 < 0) {
-            $index2 += $this->size;
+            $index2 += $this->size();
         }
 
-        if ($index1 < 0 || $index1 >= $this->size) {
+        if ($index1 < 0 || $index1 >= $this->size()) {
             return false;
         }
 
-        if ($index2 < 0 || $index2 >= $this->size) {
+        if ($index2 < 0 || $index2 >= $this->size()) {
             return false;
         }
 
-        $temp = $this->elements[$index1];
-        $this->elements[$index1] = $this->elements[$index2];
-        $this->elements[$index2] = $temp;
+        $this->doSwap($index1, $index2);
 
         return true;
     }
@@ -1092,56 +1169,7 @@ class Vector implements MutableRandomAccessInterface, Countable, IteratorAggrega
 
     public function getIterator()
     {
-        return new Iterator\RandomAccessIterator($this);
-    }
-
-    ///////////////////////////////////
-    // Implementation of ArrayAccess //
-    ///////////////////////////////////
-
-    /**
-     * @param mixed $offset
-     *
-     * @return boolean True if offset is a valid, in-range index for this vector; otherwise, false.
-     */
-    public function offsetExists($offset)
-    {
-        return is_integer($offset)
-            && $offset >= 0
-            && $offset < $this->size();
-    }
-
-    /**
-     * @param integer $offset
-     *
-     * @return mixed The element at the index specified by $offset.
-     */
-    public function offsetGet($offset)
-    {
-        return $this->get($offset);
-    }
-
-    /**
-     * @param integer|null $offset
-     * @param mixed        $value
-     */
-    public function offsetSet($offset, $value)
-    {
-        if (null === $offset) {
-            $this->pushBack($value);
-        } else {
-            $this->set($offset, $value);
-        }
-    }
-
-    /**
-     * @param integer $offset
-     */
-    public function offsetUnset($offset)
-    {
-        if ($this->offsetExists($offset)) {
-            $this->remove($offset);
-        }
+        return new Detail\LinkedListIterator($this->head, $this->tail);
     }
 
     ////////////////////////////////////
@@ -1287,33 +1315,20 @@ class Vector implements MutableRandomAccessInterface, Countable, IteratorAggrega
     ////////////////////////////
 
     /**
-     * Fetch the current reserved capacity of the vector.
-     *
-     * @return integer The current reserved capacity of the vector.
+     * @param integer $index1
+     * @param integer $index2
      */
-    public function capacity()
+    private function doSwap($index1, $index2)
     {
-        return $this->elements->count();
-    }
+        $a = min($index1, $index2);
+        $b = max($index1, $index2);
 
-    /**
-     * Reserve enough memory to hold at least $size elements.
-     *
-     * @param integer $size
-     */
-    public function reserve($size)
-    {
-        if ($size > $this->capacity()) {
-            $this->elements->setSize($size);
-        }
-    }
+        $node1 = $this->nodeAt($a);
+        $node2 = $this->nodeFrom($node1, $b - $a);
 
-    /**
-     * Shrink the reserved memory to match the current vector size.
-     */
-    public function shrink()
-    {
-        $this->elements->setSize($this->size);
+        $element        = $node1->element;
+        $node1->element = $node2->element;
+        $node2->element = $element;
     }
 
     /**
@@ -1338,82 +1353,116 @@ class Vector implements MutableRandomAccessInterface, Countable, IteratorAggrega
     }
 
     /**
-     * @param integer $index
-     * @param integer $count
+     * @param mixed         $element
+     * @param stdClass|null $next
      */
-    private function shiftLeft($index, $count)
+    private function createNode($element = null, stdClass $next = null)
     {
-        $capacity = $this->capacity();
-        $target = $index - $count;
-        $source = $index;
+        $node = new stdClass;
+        $node->next = $next;
+        $node->element = $element;
 
-        while ($source < $capacity) {
-            $this->elements[$target++] = $this->elements[$source++];
-        }
-
-        while ($target < $capacity) {
-            $this->elements[$target++] = null;
-        }
+        return $node;
     }
 
     /**
      * @param integer $index
-     * @param integer $count
      */
-    private function shiftRight($index, $count)
+    private function nodeAt($index)
     {
-        $this->expand($count);
-
-        $source = $this->size - 1;
-        $target = $source + $count;
-
-        while ($source >= $index) {
-            $this->elements[$target--] = $this->elements[$source--];
-        }
+        return $this->nodeFrom($this->head, $index);
     }
 
     /**
-     * @param integer|null $value
-     * @param integer      $min
-     * @param integer      $max
+     * @param stdClass $node
+     * @param integer  $count
      */
-    private function clamp($value, $min, $max)
+    private function nodeFrom(stdClass $node, $count)
     {
-        if (null === $value) {
-            return $max;
-        } elseif ($value > $max) {
-            return $max;
-        } elseif ($value < $min) {
-            return $min;
-        } else {
-            return $value;
+        while ($node && $count--) {
+            $node = $node->next;
         }
+
+        return $node;
     }
 
     /**
-     * @param integer $count
-     *
-     * @return integer The unused capacity of the vector.
+     * @param stdClass      $start
+     * @param stdClass|null $stop
+     * @param integer|null  $limit
      */
-    private function expand($count)
+    private function cloneNodes(stdClass $start, stdClass $stop = null, $limit = null)
     {
-        $currentCapacity = $this->capacity();
-        $targetCapacity  = $this->size + $count;
+        $head = null;
+        $tail = null;
+        $size = 0;
 
-        if (0 === $currentCapacity) {
-            $newCapacity = $targetCapacity;
-        } else {
-            $newCapacity = $currentCapacity;
-            while ($newCapacity < $targetCapacity) {
-                $newCapacity <<= 1;
+        for ($node = $start; $stop !== $node && $size !== $limit; $node = $node->next) {
+            $n = $this->createNode($node->element);
+            if (null === $head) {
+                $head = $n;
+            } else {
+                $tail->next = $n;
             }
+            $tail = $n;
+            ++$size;
         }
 
-        $this->reserve($newCapacity);
-
-        return $this->capacity() - $this->size;
+        return array($head, $tail, $size);
     }
 
-    private $elements;
+    /**
+     * @param mixed<mixed> $elements
+     */
+    private function createNodes($elements)
+    {
+        $head = null;
+        $tail = null;
+        $size = 0;
+
+        foreach ($elements as $element) {
+            $node = $this->createNode($element);
+            if (null === $head) {
+                $head = $node;
+            } else {
+                $tail->next = $node;
+            }
+            $tail = $node;
+            ++$size;
+        }
+
+        return array($head, $tail, $size);
+    }
+
+    /**
+     * @param integer       $index
+     * @param stdClass|null $head
+     * @param stdClass|null $tail
+     * @param integer       $size
+     */
+    private function insertNodes($index, stdClass $head = null, stdClass $tail = null, $size)
+    {
+        if (null === $head) {
+            return;
+        } elseif (0 === $this->size) {
+            $this->head = $head;
+            $this->tail = $tail;
+        } elseif (0 === $index) {
+            $tail->next = $this->head;
+            $this->head = $head;
+        } elseif ($this->size === $index) {
+            $this->tail->next = $head;
+            $this->tail = $tail;
+        } else {
+            $node = $this->nodeAt($index - 1);
+            $tail->next = $node->next;
+            $node->next = $head;
+        }
+
+        $this->size += $size;
+    }
+
+    private $head;
+    private $tail;
     private $size;
 }

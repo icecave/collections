@@ -1,0 +1,11 @@
+#!/usr/bin/env bash
+
+ROOT=$(cd $(dirname $0); pwd)
+
+if [[ $1 == '--grind' ]]; then
+    find $ROOT -name '*.php' -mindepth 2 | xargs -n1 php \
+        -dxdebug.profiler_enable=1 \
+        -dxdebug.profiler_output_dir=/private/var/tmp/
+else
+    find $ROOT -name '*.php' -mindepth 2 | xargs -n1 php
+fi

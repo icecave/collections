@@ -1,34 +1,34 @@
 <?php
 namespace Icecave\Collections;
 
-use Eloquent\Liberator\Liberator;
 use Icecave\Collections\Iterator\Traits;
 use PHPUnit_Framework_TestCase;
+use ReflectionClass;
 
-/**
- * @covers Icecave\Collections\LinkedList
- * @covers Icecave\Collections\Detail\LinkedListIterator
- */
-class LinkedListTest extends PHPUnit_Framework_TestCase
+abstract class AbstractLinkedListTest extends PHPUnit_Framework_TestCase
 {
+    abstract public function className();
+
+    abstract public function verifyLinkIntegrity($collection);
+
+    public function createCollection()
+    {
+        $reflector = new ReflectionClass($this->className());
+
+        return $reflector->newInstanceArgs(func_get_args());
+    }
+
     public function setUp()
     {
-        $this->collection = new LinkedList;
+        $this->className = $this->className();
+        $this->collection = $this->createCollection();
+        $classNameAtoms = explode('\\', $this->className);
+        $this->localClassName = end($classNameAtoms);
     }
 
     public function tearDown()
     {
-        // Verify size ...
-        $this->assertSame(count($this->collection->elements()), $this->collection->size());
-
-        // Verify tail node ...
-        $head = Liberator::liberate($this->collection)->head;
-        $tail = Liberator::liberate($this->collection)->tail;
-
-        for ($node = $head; $node && null !== $node->next; $node = $node->next) {
-            // no-op ...
-        }
-        $this->assertSame($tail, $node);
+        $this->verifyLinkIntegrity($this->collection);
     }
 
     public function testConstructor()
@@ -38,8 +38,8 @@ class LinkedListTest extends PHPUnit_Framework_TestCase
 
     public function testConstructorWithArray()
     {
-        $collection = new LinkedList(array(1, 2, 3));
-        $this->assertSame(array(1, 2, 3), $collection->elements());
+        $this->collection = $this->createCollection(array(1, 2, 3));
+        $this->assertSame(array(1, 2, 3), $this->collection->elements());
     }
 
     public function testClone()
@@ -53,14 +53,39 @@ class LinkedListTest extends PHPUnit_Framework_TestCase
 
         $this->assertSame(array(1, 2), $collection->elements());
         $this->assertSame(array(1, 2, 3), $this->collection->elements());
+
+        $this->verifyLinkIntegrity($collection);
+    }
+
+    /**
+     * @group regression
+     * @link https://github.com/IcecaveStudios/collections/issues/71
+     */
+    public function testCloneDoesNotCorruptOriginalList()
+    {
+        $this->collection->pushBack('xxx');
+        $this->collection->pushBack('yyy');
+        $this->collection->pushBack('zzz');
+
+        $collection = clone $this->collection;
+
+        $collection->set(0, 'aaa');
+        $collection->set(1, 'bbb');
+        $collection->set(2, 'ccc');
+
+        $this->assertSame(
+            array('xxx', 'yyy', 'zzz'),
+            $this->collection->elements()
+        );
     }
 
     public function testCreate()
     {
-        $collection = LinkedList::create(1, 2, 3);
+        $method = array($this->className, 'create');
+        $this->collection = call_user_func($method, 1, 2, 3);
 
-        $this->assertInstanceOf(__NAMESPACE__ . '\LinkedList', $collection);
-        $this->assertSame(array(1, 2, 3), $collection->elements());
+        $this->assertInstanceOf($this->className, $this->collection);
+        $this->assertSame(array(1, 2, 3), $this->collection->elements());
     }
 
     public function testSerialization()
@@ -109,17 +134,17 @@ class LinkedListTest extends PHPUnit_Framework_TestCase
 
     public function testToString()
     {
-        $this->assertSame('<LinkedList 0>', $this->collection->__toString());
+        $this->assertSame('<' . $this->localClassName . ' 0>', $this->collection->__toString());
 
         $this->collection->pushBack('foo');
         $this->collection->pushBack('bar');
         $this->collection->pushBack('spam');
 
-        $this->assertSame('<LinkedList 3 ["foo", "bar", "spam"]>', $this->collection->__toString());
+        $this->assertSame('<' . $this->localClassName . ' 3 ["foo", "bar", "spam"]>', $this->collection->__toString());
 
         $this->collection->pushBack('doom');
 
-        $this->assertSame('<LinkedList 4 ["foo", "bar", "spam", ...]>', $this->collection->__toString());
+        $this->assertSame('<' . $this->localClassName . ' 4 ["foo", "bar", "spam", ...]>', $this->collection->__toString());
     }
 
     //////////////////////////////////////////////////
@@ -175,7 +200,7 @@ class LinkedListTest extends PHPUnit_Framework_TestCase
 
         $result = $this->collection->filter();
 
-        $this->assertInstanceOf(__NAMESPACE__ . '\LinkedList', $result);
+        $this->assertInstanceOf($this->className, $result);
         $this->assertSame(array(1, 2, 3), $result->elements());
     }
 
@@ -189,7 +214,7 @@ class LinkedListTest extends PHPUnit_Framework_TestCase
             }
         );
 
-        $this->assertInstanceOf(__NAMESPACE__ . '\LinkedList', $result);
+        $this->assertInstanceOf($this->className, $result);
         $this->assertSame(array(1, 3, 5), $result->elements());
     }
 
@@ -203,7 +228,7 @@ class LinkedListTest extends PHPUnit_Framework_TestCase
             }
         );
 
-        $this->assertInstanceOf(__NAMESPACE__ . '\LinkedList', $result);
+        $this->assertInstanceOf($this->className, $result);
         $this->assertSame(array(2, 3, 4), $result->elements());
     }
 
@@ -222,10 +247,10 @@ class LinkedListTest extends PHPUnit_Framework_TestCase
 
         list($left, $right) = $result;
 
-        $this->assertInstanceOf(__NAMESPACE__ . '\LinkedList', $left);
+        $this->assertInstanceOf($this->className, $left);
         $this->assertSame(array(1, 2), $left->elements());
 
-        $this->assertInstanceOf(__NAMESPACE__ . '\LinkedList', $right);
+        $this->assertInstanceOf($this->className, $right);
         $this->assertSame(array(3), $right->elements());
     }
 
@@ -397,7 +422,7 @@ class LinkedListTest extends PHPUnit_Framework_TestCase
 
         $result = $this->collection->sort();
 
-        $this->assertInstanceOf(__NAMESPACE__ . '\LinkedList', $result);
+        $this->assertInstanceOf($this->className, $result);
         $this->assertSame(array(1, 2, 3, 4, 5), $result->elements());
 
         // Original should be unchanged.
@@ -414,7 +439,7 @@ class LinkedListTest extends PHPUnit_Framework_TestCase
             }
         );
 
-        $this->assertInstanceOf(__NAMESPACE__ . '\LinkedList', $result);
+        $this->assertInstanceOf($this->className, $result);
         $this->assertSame(array(5, 4, 3, 2, 1), $result->elements());
 
         // Original should be unchanged.
@@ -427,7 +452,7 @@ class LinkedListTest extends PHPUnit_Framework_TestCase
 
         $result = $this->collection->reverse();
 
-        $this->assertInstanceOf(__NAMESPACE__ . '\LinkedList', $result);
+        $this->assertInstanceOf($this->className, $result);
         $this->assertSame(array(5, 4, 3, 2, 1), $result->elements());
     }
 
@@ -440,7 +465,7 @@ class LinkedListTest extends PHPUnit_Framework_TestCase
             array(7, 8, 9)
         );
 
-        $this->assertInstanceOf(__NAMESPACE__ . '\LinkedList', $result);
+        $this->assertInstanceOf($this->className, $result);
         $this->assertSame(array(1, 2, 3, 4, 5, 6, 7, 8, 9), $result->elements());
     }
 
@@ -924,22 +949,40 @@ class LinkedListTest extends PHPUnit_Framework_TestCase
     {
         $this->collection->append(array(1, 2, 3));
 
-        $elements = new LinkedList(array('a', 'b', 'c', 'd', 'e'));
+        $elements = $this->createCollection(array('a', 'b', 'c', 'd', 'e'));
 
         $this->collection->insertRange(1, $elements, 2, 4);
 
         $this->assertSame(array(1, 'c', 'd', 2, 3), $this->collection->elements());
+
+        $this->verifyLinkIntegrity($elements);
     }
 
     public function testInsertRangeEmpty()
     {
         $this->collection->append(array(1, 2, 3));
 
-        $elements = new LinkedList(array('a', 'b', 'c', 'd', 'e'));
+        $elements = $this->createCollection(array('a', 'b', 'c', 'd', 'e'));
 
         $this->collection->insertRange(1, $elements, 2, 2);
 
         $this->assertSame(array(1, 2, 3), $this->collection->elements());
+
+        $this->verifyLinkIntegrity($elements);
+    }
+
+    /**
+     * @group regression
+     * @link https://github.com/IcecaveStudios/collections/issues/74
+     */
+    public function testInsertRangeWithInvalidCollectionType()
+    {
+        $this->setExpectedException(
+            'InvalidArgumentException',
+            'The given collection is not an instance of ' . $this->className . '.'
+        );
+
+        $this->collection->insertRange(0, new Vector, 0);
     }
 
     public function testRemove()
@@ -1259,8 +1302,8 @@ class LinkedListTest extends PHPUnit_Framework_TestCase
      */
     public function testCompare($lhs, $rhs, $expectedResult)
     {
-        $lhs = new LinkedList($lhs);
-        $rhs = new LinkedList($rhs);
+        $lhs = $this->createCollection($lhs);
+        $rhs = $this->createCollection($rhs);
 
         $cmp = $lhs->compare($rhs);
 
@@ -1299,7 +1342,7 @@ class LinkedListTest extends PHPUnit_Framework_TestCase
 
     public function testCanCompare()
     {
-        $this->assertTrue($this->collection->canCompare(new LinkedList));
+        $this->assertTrue($this->collection->canCompare($this->createCollection()));
         $this->assertFalse($this->collection->canCompare(array()));
     }
 

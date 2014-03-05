@@ -790,6 +790,19 @@ class Map implements MutableAssociativeInterface, Countable, IteratorAggregate, 
     }
 
     /**
+     * Remove and return an element from the map.
+     *
+     * There is no guarantee as to which element will be returned.
+     *
+     * @return tuple<mixed,                       mixed> The element.
+     * @throws Exception\EmptyCollectionException if the collection is empty.
+     */
+    public function pop()
+    {
+        return $this->elements->popBack();
+    }
+
+    /**
      * Add the elements from one or more other collections to this collection.
      *
      * Any existing keys are overwritten from left to right.
