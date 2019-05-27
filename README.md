@@ -1,8 +1,6 @@
 # Collections
 
-[![Build Status]](https://travis-ci.org/IcecaveStudios/collections)
-[![Test Coverage]](https://coveralls.io/r/IcecaveStudios/collections?branch=develop)
-[![SemVer]](http://semver.org)
+> **This project has been deprecated by the authors.**
 
 **Collections** provides a set of collection types loosely inspired by the .NET runtime and the C++ standard template
 library.
